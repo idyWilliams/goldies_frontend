@@ -16,7 +16,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <head>
+        <link rel="icon" href="/icon.svg" sizes="any" />
+      </head>
+      <body className="overflow-x-hidden">{children}</body>
     </html>
   );
 }
