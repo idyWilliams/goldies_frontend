@@ -4,11 +4,28 @@ import Chocolate from "../../public/assets/birthday-cake.webp";
 import LemonCake from "../../public/assets/lemon-cake.webp";
 import RedVelvet from "../../public/assets/red-velvet-cake.webp";
 import Footer from "@/components/Footer";
+import BreadCrumbs from "@/components/BreadCrumbs";
 
 const ShopPage = () => {
   return (
     <>
       <Header />
+      <section className="bg-black">
+        <div className="wrapper">
+          <BreadCrumbs
+            items={[
+              {
+                name: "Home",
+                link: "/",
+              },
+              {
+                name: "Shop Page",
+                link: "/shop",
+              },
+            ]}
+          />
+        </div>
+      </section>
       <div className="py-16">
         <div className="wrapper">
           <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-2 md:gap-0 md:gap-y-8 lg:grid-cols-3">
@@ -24,7 +41,7 @@ const ShopPage = () => {
               <h3 className="mt-3 text-xl font-bold">
                 Chocolate and Cream Butter
               </h3>
-              <span>£59.00 - £150</span>
+              <span>&euro;59.00 - &euro;150</span>
               <button className="mt-4 w-[200px] rounded-[50px] bg-black px-8 py-3 font-bold uppercase text-main">
                 Select Option
               </button>
@@ -39,7 +56,7 @@ const ShopPage = () => {
               </figure>
 
               <h3 className="mt-3 text-xl font-bold">Lemon Cake Sponge</h3>
-              <span>£59.00 - £150</span>
+              <span>&euro;59.00 - &euro;150</span>
               <button className="mt-4 w-[200px] rounded-[50px] bg-black px-8 py-3 font-bold text-main">
                 Select Option
               </button>
@@ -54,7 +71,7 @@ const ShopPage = () => {
               </figure>
 
               <h3 className="mt-3 text-xl font-bold">Red Velvet Cake</h3>
-              <span>£59.00 - £150</span>
+              <span>&euro;59.00 - &euro;150</span>
               <button className="mt-4 w-[200px] rounded-[50px] bg-black px-8 py-3 font-bold text-main">
                 Select Option
               </button>
@@ -69,7 +86,7 @@ const ShopPage = () => {
               </figure>
 
               <h3 className="mt-3 text-xl font-bold">Vanilla Lemon Sponge</h3>
-              <span>£59.00 - £150</span>
+              <span>&euro;59.00 - &euro;150</span>
               <button className="mt-4 w-[200px] rounded-[50px] bg-black px-8 py-3 font-bold text-main">
                 Select Option
               </button>
@@ -95,7 +112,7 @@ const ShopPage = () => {
               <h3 className="mt-3 text-xl font-bold">
                 Chocolate and Cream Butter
               </h3>
-              <span>£59.00 - £150</span>
+              <span>&euro;59.00 - &euro;150</span>
               <button className="mt-4 w-[200px] rounded-[50px] bg-main px-8 py-3 font-bold uppercase text-black">
                 Select Option
               </button>
@@ -110,7 +127,7 @@ const ShopPage = () => {
               </figure>
 
               <h3 className="mt-3 text-xl font-bold">Lemon Cake Sponge</h3>
-              <span>£59.00 - £150</span>
+              <span>&euro;59.00 - &euro;150</span>
               <button className="mt-4 w-[200px] rounded-[50px] bg-main px-8 py-3 font-bold text-black">
                 Select Option
               </button>
@@ -125,7 +142,7 @@ const ShopPage = () => {
               </figure>
 
               <h3 className="mt-3 text-xl font-bold">Red Velvet Cake</h3>
-              <span>£59.00 - £150</span>
+              <span>&euro;59.00 - &euro;150</span>
               <button className="mt-4 w-[200px] rounded-[50px] bg-main px-8 py-3 font-bold text-black">
                 Select Option
               </button>
@@ -140,7 +157,7 @@ const ShopPage = () => {
               </figure>
 
               <h3 className="mt-3 text-xl font-bold">Vanilla Lemon Sponge</h3>
-              <span>£59.00 - £150</span>
+              <span>&euro;59.00 - &euro;150</span>
               <button className="mt-4 w-[200px] rounded-[50px] bg-main px-8 py-3 font-bold text-black">
                 Select Option
               </button>
@@ -162,7 +179,7 @@ const ShopPage = () => {
             </div>
             <div className="mt-3 sm:mt-0">
               <h3 className="text-xl font-bold">Lemon Cake</h3>
-              <span>£60.00 - £227.00</span>
+              <span>&euro;60.00 - &euro;227.00</span>
               <ul className="mt-3 flex flex-col gap-2">
                 <li>6″ round serves 10 - 12</li>
                 <li>6″ square serves 16 – 18</li>

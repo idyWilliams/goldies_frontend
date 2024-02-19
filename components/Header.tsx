@@ -6,10 +6,12 @@ import CartIcon from "../public/assets/cart.png";
 import { BsList, BsXLg } from "react-icons/bs";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
   const [show, setShow] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   const handleClick = () => {
     setShow((show: boolean) => !show);
@@ -57,7 +59,10 @@ const Header = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="relative w-[30px] cursor-pointer">
+            <div
+              className="relative w-[30px] cursor-pointer"
+              onClick={() => router.push("/cart")}
+            >
               <Image
                 src={CartIcon}
                 className="h-[25px] w-auto"
