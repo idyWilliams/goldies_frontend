@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Buy Delicious Cakes Online | Goldies Confectioneries",
+  title: "Goldies Confectioneries | Buy Delicious Cakes Online",
   description: "Indulge in delectable cakes from Goldies Confectioneries. Browse our wide selection of cakes for every occasion and order now for a taste of perfection!",
 };
 
