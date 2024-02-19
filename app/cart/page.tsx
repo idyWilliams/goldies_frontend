@@ -8,7 +8,7 @@ const CartPage = () => {
   return (
     <>
       <Header />
-      <section className="bg-gradient-to-br from-black to-neutral-700 py-16 pt-6">
+      <section className="bg-gradient-to-br from-black to-neutral-700 py-16 pt-20">
         <div className="wrapper">
           <div className="">
             <BreadCrumbs

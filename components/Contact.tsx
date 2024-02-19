@@ -23,7 +23,7 @@ const Contact = () => {
                 name="fname"
                 autoComplete="off"
                 id="fname"
-                className="w-full rounded-md bg-[#9C8222] px-4 py-2"
+                className="form-input w-full rounded-md border-0 bg-[#9C8222] px-4 py-2 focus:border-black focus:ring-black "
               />
             </label>
             <label htmlFor="email" className="mb-3 block">
@@ -33,7 +33,7 @@ const Contact = () => {
                 name="email"
                 autoComplete="off"
                 id="email"
-                className="w-full rounded-md bg-[#9C8222] px-4 py-2"
+                className="form-input w-full rounded-md border-0 bg-[#9C8222] px-4 py-2 focus:border-black focus:ring-black "
               />
             </label>
 

@@ -6,11 +6,73 @@ import RedVelvet from "../../public/assets/red-velvet-cake.webp";
 import Footer from "@/components/Footer";
 import BreadCrumbs from "@/components/BreadCrumbs";
 
+const cakeProducts1 = [
+  {
+    id: 1,
+    cakeName: "Chocolate and Cream Butter",
+    image: Chocolate,
+    priceFrom: 59,
+    priceTo: 150,
+  },
+  {
+    id: 1,
+    cakeName: "Lemon Cake Sponge",
+    image: LemonCake,
+    priceFrom: 59,
+    priceTo: 150,
+  },
+  {
+    id: 1,
+    cakeName: "Red Velvet Cake",
+    image: RedVelvet,
+    priceFrom: 59,
+    priceTo: 150,
+  },
+  {
+    id: 1,
+    cakeName: "Vanilla Lemon Sponge",
+    image: LemonCake,
+    priceFrom: 59,
+    priceTo: 150,
+  },
+];
+
+const cakeProducts2 = [
+  {
+    id: 1,
+    cakeName: "Chocolate and Cream Butter",
+    image: Chocolate,
+    priceFrom: 59,
+    priceTo: 150,
+  },
+  {
+    id: 1,
+    cakeName: "Lemon Cake",
+    image: LemonCake,
+    priceFrom: 59,
+    priceTo: 150,
+  },
+  {
+    id: 1,
+    cakeName: "Red Velvet Cake Sponge",
+    image: RedVelvet,
+    priceFrom: 59,
+    priceTo: 150,
+  },
+  {
+    id: 1,
+    cakeName: "Vanilla Lemon Sponge",
+    image: LemonCake,
+    priceFrom: 59,
+    priceTo: 150,
+  },
+];
+
 const ShopPage = () => {
   return (
     <>
       <Header />
-      <section className="bg-black">
+      <section className="bg-black pb-6 pt-20">
         <div className="wrapper">
           <BreadCrumbs
             items={[
@@ -26,145 +88,70 @@ const ShopPage = () => {
           />
         </div>
       </section>
-      <div className="py-16">
+      <section className="py-16 pt-3">
         <div className="wrapper">
+          <h3 className="mb-6 mt-4 text-2xl font-bold text-black">All Cakes</h3>
           <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-2 md:gap-0 md:gap-y-8 lg:grid-cols-3">
-            <div className="flex w-full flex-col items-center md:px-4">
-              <figure className="h-[200px] w-full overflow-hidden md:h-[250px]">
-                <Image
-                  src={Chocolate}
-                  alt="Chocolate and cream butter cake"
-                  className="mx-auto h-full w-full object-cover"
-                />
-              </figure>
+            {cakeProducts1.map((cake: any, index: number) => (
+              <div
+                key={index}
+                className="flex w-full flex-col items-center md:px-4"
+              >
+                <figure className="h-[200px] w-full overflow-hidden md:h-[250px]">
+                  <Image
+                    src={cake.image}
+                    alt={cake.cakeName}
+                    className="mx-auto h-full w-full object-cover"
+                  />
+                </figure>
 
-              <h3 className="mt-3 text-xl font-bold">
-                Chocolate and Cream Butter
-              </h3>
-              <span>&euro;59.00 - &euro;150</span>
-              <button className="mt-4 w-[200px] rounded-[50px] bg-black px-8 py-3 font-bold uppercase text-main">
-                Select Option
-              </button>
-            </div>
-            <div className="flex w-full flex-col items-center md:px-4">
-              <figure className="h-[200px] w-full overflow-hidden md:h-[250px]">
-                <Image
-                  src={LemonCake}
-                  alt="Lemon cake"
-                  className="mx-auto h-full w-full object-cover"
-                />
-              </figure>
-
-              <h3 className="mt-3 text-xl font-bold">Lemon Cake Sponge</h3>
-              <span>&euro;59.00 - &euro;150</span>
-              <button className="mt-4 w-[200px] rounded-[50px] bg-black px-8 py-3 font-bold text-main">
-                Select Option
-              </button>
-            </div>
-            <div className="flex w-full flex-col items-center md:px-4">
-              <figure className="h-[200px] w-full overflow-hidden md:h-[250px]">
-                <Image
-                  src={RedVelvet}
-                  alt="Red Velet cake"
-                  className="mx-auto h-full w-full object-cover"
-                />
-              </figure>
-
-              <h3 className="mt-3 text-xl font-bold">Red Velvet Cake</h3>
-              <span>&euro;59.00 - &euro;150</span>
-              <button className="mt-4 w-[200px] rounded-[50px] bg-black px-8 py-3 font-bold text-main">
-                Select Option
-              </button>
-            </div>
-            <div className="flex w-full flex-col items-center md:px-4">
-              <figure className="h-[200px] w-full overflow-hidden md:h-[250px]">
-                <Image
-                  src={Chocolate}
-                  alt="Vanilla Lemon Sponge"
-                  className="mx-auto h-full w-full object-cover"
-                />
-              </figure>
-
-              <h3 className="mt-3 text-xl font-bold">Vanilla Lemon Sponge</h3>
-              <span>&euro;59.00 - &euro;150</span>
-              <button className="mt-4 w-[200px] rounded-[50px] bg-black px-8 py-3 font-bold text-main">
-                Select Option
-              </button>
-            </div>
+                <h3 className="mt-3 text-xl font-bold capitalize">
+                  {cake.cakeName}
+                </h3>
+                <span className="text-lg">
+                  &euro;{cake.priceFrom} - &euro;{cake.priceTo}
+                </span>
+                <button className="mt-4 w-[200px] rounded-[50px] bg-black px-8 py-3 font-bold uppercase text-main">
+                  Select Option
+                </button>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
+      </section>
 
       {/*  */}
 
-      <div className="bg-black py-16">
+      <section className="bg-black py-16">
         <div className="wrapper">
           <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-2 md:gap-0 md:gap-y-8 lg:grid-cols-3">
-            <div className="flex w-full flex-col items-center text-main md:px-4">
-              <figure className="h-[200px] w-full overflow-hidden md:h-[250px]">
-                <Image
-                  src={Chocolate}
-                  alt="Vanilla Lemon Sponge"
-                  className="mx-auto h-full w-full object-cover"
-                />
-              </figure>
+            {cakeProducts2.map((cake: any, index: number) => (
+              <div
+                key={index}
+                className="flex w-full flex-col items-center md:px-4"
+              >
+                <figure className="h-[200px] w-full overflow-hidden md:h-[250px]">
+                  <Image
+                    src={cake.image}
+                    alt={cake.cakeName}
+                    className="mx-auto h-full w-full object-cover"
+                  />
+                </figure>
 
-              <h3 className="mt-3 text-xl font-bold">
-                Chocolate and Cream Butter
-              </h3>
-              <span>&euro;59.00 - &euro;150</span>
-              <button className="mt-4 w-[200px] rounded-[50px] bg-main px-8 py-3 font-bold uppercase text-black">
-                Select Option
-              </button>
-            </div>
-            <div className="flex w-full flex-col items-center text-main md:px-4">
-              <figure className="h-[200px] w-full overflow-hidden md:h-[250px]">
-                <Image
-                  src={Chocolate}
-                  alt="Vanilla Lemon Sponge"
-                  className="mx-auto h-full w-full object-cover"
-                />
-              </figure>
-
-              <h3 className="mt-3 text-xl font-bold">Lemon Cake Sponge</h3>
-              <span>&euro;59.00 - &euro;150</span>
-              <button className="mt-4 w-[200px] rounded-[50px] bg-main px-8 py-3 font-bold text-black">
-                Select Option
-              </button>
-            </div>
-            <div className="flex w-full flex-col items-center text-main md:px-4">
-              <figure className="h-[200px] w-full overflow-hidden md:h-[250px]">
-                <Image
-                  src={Chocolate}
-                  alt="Vanilla Lemon Sponge"
-                  className="mx-auto h-full w-full object-cover"
-                />
-              </figure>
-
-              <h3 className="mt-3 text-xl font-bold">Red Velvet Cake</h3>
-              <span>&euro;59.00 - &euro;150</span>
-              <button className="mt-4 w-[200px] rounded-[50px] bg-main px-8 py-3 font-bold text-black">
-                Select Option
-              </button>
-            </div>
-            <div className="flex w-full flex-col items-center text-main md:px-4">
-              <figure className="h-[200px] w-full overflow-hidden md:h-[250px]">
-                <Image
-                  src={Chocolate}
-                  alt="Vanilla Lemon Sponge"
-                  className="mx-auto h-full w-full object-cover"
-                />
-              </figure>
-
-              <h3 className="mt-3 text-xl font-bold">Vanilla Lemon Sponge</h3>
-              <span>&euro;59.00 - &euro;150</span>
-              <button className="mt-4 w-[200px] rounded-[50px] bg-main px-8 py-3 font-bold text-black">
-                Select Option
-              </button>
-            </div>
+                <h3 className="mt-3 text-xl font-bold capitalize text-main">
+                  {cake.cakeName}
+                </h3>
+                <span className="text-lg text-main">
+                  &euro;{cake.priceFrom} - &euro;{cake.priceTo}
+                </span>
+                <button className="mt-4 w-[200px] rounded-[50px] bg-main px-8 py-3 font-bold uppercase text-black underline">
+                  Select Option
+                </button>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Product Details */}
       <section className="bg-main py-16">

@@ -4,14 +4,25 @@ import Link from "next/link";
 import Image from "next/image";
 import CartIcon from "../public/assets/cart.png";
 import { BsList, BsXLg } from "react-icons/bs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
+import MobileNav from "./MobileNav";
 
 const Header = () => {
   const [show, setShow] = useState(false);
+  const [sticky, setSticky] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setSticky(window.scrollY >= 300);
+    };
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleClick = () => {
     setShow((show: boolean) => !show);
@@ -19,7 +30,9 @@ const Header = () => {
 
   return (
     <>
-      <header className={`relative z-[999] bg-main py-3`}>
+      <header
+        className={`${sticky ? "fixed shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "absolute"} left-0 top-0  z-[999] w-full bg-main py-3`}
+      >
         <div className="wrapper flex items-center justify-between">
           <Link href="/" className="relative">
             <Image
@@ -30,33 +43,28 @@ const Header = () => {
               alt="Goldis Logo"
             />
           </Link>
-          <div
-            className={`fixed top-0 z-10 flex h-screen w-full justify-end bg-black bg-opacity-30 backdrop-blur-md duration-300 lg:static lg:h-auto lg:w-auto lg:bg-transparent ${show ? "right-0" : "-right-full"}`}
-          >
-            <div className="flex h-full w-8/12 flex-col gap-8 bg-[#f4ecc1] p-9 pt-20 sm:w-6/12 lg:w-auto lg:flex-row lg:gap-8 lg:bg-transparent lg:p-0">
-              <Link
-                href="/"
-                className={`${pathname === "/" ? "font-bold" : ""}`}
-              >
-                Home
-              </Link>
-              <Link href="/#about">About</Link>
-              <Link
-                href="/shop"
-                className={`${pathname === "/shop" ? "font-bold" : ""}`}
-              >
-                Shop Cake
-              </Link>
-              <Link
-                href="/bespoke"
-                className={`${pathname === "/bespoke" ? "font-bold" : ""}`}
-              >
-                Bespoke Cake Order
-              </Link>
-              <Link href="/#testimonials">Testimonials</Link>
-              <Link href="/#contact">Contact</Link>
-            </div>
+
+          <div className="hidden items-center gap-8 lg:flex">
+            <Link href="/" className={`${pathname === "/" ? "font-bold" : ""}`}>
+              Home
+            </Link>
+            <Link href="/#about">About</Link>
+            <Link
+              href="/shop"
+              className={`${pathname === "/shop" ? "font-bold" : ""}`}
+            >
+              Shop Cake
+            </Link>
+            <Link
+              href="/bespoke"
+              className={`${pathname === "/bespoke" ? "font-bold" : ""}`}
+            >
+              Bespoke Cake Order
+            </Link>
+            <Link href="/#testimonials">Testimonials</Link>
+            <Link href="/#contact">Contact</Link>
           </div>
+          <MobileNav pathname={pathname} show={show} setShow={setShow} />
 
           <div className="flex items-center gap-4">
             <div

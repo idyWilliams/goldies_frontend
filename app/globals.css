@@ -57,7 +57,7 @@ body {
 }
 
 .wrapper {
-  @apply container mx-auto px-4 xl:max-w-[1140px];
+  @apply container mx-auto px-4;
 }
 
 @layer utilities {
