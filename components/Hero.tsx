@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const Hero = () => {
   return (
     <section className="bg-main py-16">
@@ -16,14 +18,17 @@ const Hero = () => {
             Your browser does not support the video tag.
           </video>
 
-          <div className="relative z-20 mt-6 flex h-full w-full flex-col items-center justify-center bg-main bg-opacity-40 p-8  backdrop-blur-sm md:items-start">
+          <div className="relative z-20 mt-6 flex h-full w-full flex-col items-center justify-center bg-main bg-opacity-40 p-8 backdrop-blur-sm md:items-start">
             <div className="flex w-full flex-wrap justify-center md:w-9/12 md:justify-start">
               <h1 className="text-center text-3xl font-bold leading-[48px] md:text-left md:text-4xl md:leading-[150%] lg:text-5xl lg:leading-[153%]">
                 Crafting Smiles, One Delicious Moment at a Time
               </h1>
-              <button className="mt-8 inline-block border-2 border-black px-6 py-3 font-bold duration-300 hover:border-main hover:bg-main">
+              <Link
+                href="/shop"
+                className="mt-8 inline-block border-2 border-black px-6 py-3 font-bold shadow-[0_3px_30px_rgba(0,0,0,0.8)] duration-300 hover:border-main hover:bg-main"
+              >
                 Shop Cakes
-              </button>
+              </Link>
             </div>
           </div>
         </div>

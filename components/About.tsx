@@ -1,13 +1,14 @@
 import Image from "next/image";
 import Cake1 from "../public/assets/about.webp";
 import Cake2 from "../public/assets/about2.webp";
+import Link from "next/link";
 
 const About = () => {
   return (
     <>
       <section
         id="about"
-        className="bg-gradient-to-br from-black to-neutral-700 py-16"
+        className="bg-gradient-to-br from-black to-neutral-700 py-16 pt-20"
       >
         <div className="wrapper">
           <div className="flex flex-wrap items-start justify-between md:grid md:grid-cols-2 md:gap-5">
@@ -28,9 +29,12 @@ const About = () => {
                 for memories, a symphony of flavors, and the perfect complement
                 to life&apos;s sweetest moments.
               </p>
-              <button className="mt-4 rounded-[50px] bg-main px-8 py-3 font-bold">
+              <Link
+                href="/shop"
+                className="mt-4 inline-block rounded-[50px] bg-main px-8 py-3 font-bold"
+              >
                 Shop Our Cake
-              </button>
+              </Link>
             </div>
           </div>
           <hr className="my-8 border-0 border-t-2 border-main md:my-12 lg:my-16" />
@@ -49,9 +53,12 @@ const About = () => {
                 connections, and leaving a lasting legacy. Join us in making the
                 world a sweeter place, one bite at a time.
               </p>
-              <button className="mt-4 rounded-[50px] bg-main px-8 py-3 font-bold">
+              <Link
+                href="/bespoke"
+                className="mt-4 inline-block rounded-[50px] bg-main px-8 py-3 font-bold"
+              >
                 Bespoke Cakes
-              </button>
+              </Link>
             </div>
           </div>
         </div>

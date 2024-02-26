@@ -2,6 +2,7 @@ import Image from "next/image";
 import BirthdayCake from "../public/assets/birthday-cake.webp";
 import NumberCake from "../public/assets/number-cake.webp";
 import ChildrenCake from "../public/assets/children-cake.webp";
+import Link from "next/link";
 
 const MileStoneCakes = () => {
   return (
@@ -22,9 +23,12 @@ const MileStoneCakes = () => {
               </figure>
 
               <h3 className="mt-3 text-xl font-bold">Birthday Cakes</h3>
-              <button className="mt-4 w-[200px] rounded-[50px] bg-black px-8 py-3 font-bold tracking-wider text-main">
+              <Link
+                href="/shop"
+                className="mt-4 inline-block w-[200px] rounded-[50px] bg-black px-8 py-3 text-center font-bold tracking-wider text-main"
+              >
                 Explore
-              </button>
+              </Link>
             </div>
             <div className="flex w-full flex-col items-center md:border-x-2 md:border-black md:px-4 lg:px-7">
               <figure className="h-[200px] w-full overflow-hidden md:h-[250px]">
@@ -36,9 +40,12 @@ const MileStoneCakes = () => {
               </figure>
 
               <h3 className="mt-3 text-xl font-bold">Number Cakes</h3>
-              <button className="mt-4 w-[200px] rounded-[50px] bg-black px-8 py-3 font-bold tracking-wider text-main">
+              <Link
+                href="/shop"
+                className="mt-4 inline-block w-[200px] rounded-[50px] bg-black px-8 py-3 text-center font-bold tracking-wider text-main"
+              >
                 Explore
-              </button>
+              </Link>
             </div>
             <div className="flex w-full flex-col items-center md:px-4 lg:px-7">
               <figure className="h-[200px] w-full overflow-hidden md:h-[250px]">
@@ -50,9 +57,12 @@ const MileStoneCakes = () => {
               </figure>
 
               <h3 className="mt-3 text-xl font-bold">Children Cakes</h3>
-              <button className="mt-4 w-[200px] rounded-[50px] bg-black px-8 py-3 font-bold tracking-wider text-main">
+              <Link
+                href="/shop"
+                className="mt-4 inline-block w-[200px] rounded-[50px] bg-black px-8 py-3 text-center font-bold tracking-wider text-main"
+              >
                 Explore
-              </button>
+              </Link>
             </div>
           </div>
 

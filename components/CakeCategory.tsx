@@ -3,6 +3,7 @@ import MilestoneCake from "../public/assets/milestone-cake.webp";
 import KidCake from "../public/assets/kid-cake.webp";
 import Cupcakes from "../public/assets/cupcake.webp";
 import WeddingCake from "../public/assets/wedding-cake.webp";
+import Link from "next/link";
 
 const CakeCategory = () => {
   return (
@@ -19,7 +20,7 @@ const CakeCategory = () => {
             </div>
 
             <figcaption className="mt-2 text-center text-lg font-bold text-neutral-800">
-              Milestone cakes
+              <Link href="/shop">Milestone cakes</Link>
             </figcaption>
           </figure>
           <figure className="w-full">
@@ -31,7 +32,7 @@ const CakeCategory = () => {
               />
             </div>
             <figcaption className="mt-3 text-center text-lg font-bold text-neutral-800">
-              Kids cakes
+              <Link href="/shop">Kids Cakes</Link>
             </figcaption>
           </figure>
           <figure className="w-full">
@@ -43,7 +44,7 @@ const CakeCategory = () => {
               />
             </div>
             <figcaption className="mt-3 text-center text-lg font-bold text-neutral-800">
-              Cupcakes
+              <Link href="/shop">Cupcakes</Link>
             </figcaption>
           </figure>
           <figure className="w-full">
@@ -55,7 +56,7 @@ const CakeCategory = () => {
               />
             </div>
             <figcaption className="mt-3 text-center text-lg font-bold text-neutral-800">
-              Wedding Cakes
+              <Link href="/shop">Wedding Cakes</Link>
             </figcaption>
           </figure>
         </div>
