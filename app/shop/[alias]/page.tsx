@@ -5,23 +5,33 @@ import BreadCrumbs from "@/components/BreadCrumbs";
 import Layout from "@/components/Layout";
 import { BsDash, BsPlus } from "react-icons/bs";
 import { cakeProducts1 } from "../page";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const CakeDetailsPage = ({ params }: any) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const memoizedCakeProducts = useMemo(() => cakeProducts1, []);
 
   console.log("Params Alias:", params);
-  console.log("Cake Products:", cakeProducts1);
-  const getProduct = cakeProducts1.find(
+  console.log("Cake Products:", memoizedCakeProducts);
+
+  const getProduct = memoizedCakeProducts.find(
     (product) => product.slug === params.alias,
   );
   console.log("Found Product:", getProduct);
+
   useEffect(() => {
-    getProduct && setLoading(true);
+    if (getProduct) {
+      setLoading(false);
+    }
   }, [getProduct]);
 
-  if(loading){
-    return <div>Loading...</div>
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!getProduct) {
+    return <div>Product not found.</div>;
   }
 
   return (
@@ -40,7 +50,7 @@ const CakeDetailsPage = ({ params }: any) => {
                   link: "/shop",
                 },
                 {
-                  name: "Lemon Cake",
+                  name: getProduct ? getProduct.cakeName : "",
                   link: "/shop/cakes",
                 },
               ]}
@@ -52,13 +62,13 @@ const CakeDetailsPage = ({ params }: any) => {
             <div className="grid sm:grid-cols-[1fr_2fr] sm:gap-5 md:grid-cols-[1fr_0.5fr_1fr]">
               <div className="sm:col-span-2 md:col-span-1">
                 <Image
-                  src={LemonCake}
-                  alt="Lemon Cake"
+                  src={getProduct.image}
+                  alt={getProduct.slug}
                   className="mx-auto h-full w-full object-cover"
                 />
               </div>
               <div className="mt-3 sm:mt-0">
-                <h3 className="text-xl font-bold">Lemon Cake</h3>
+                <h3 className="text-xl font-bold">{getProduct.cakeName}</h3>
                 <span>&euro;60.00 - &euro;227.00</span>
                 <ul className="mt-3 flex flex-col gap-2">
                   <li>6″ round serves 10 - 12</li>
