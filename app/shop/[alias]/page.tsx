@@ -1,13 +1,28 @@
+"use client";
 import Image from "next/image";
 import LemonCake from "../../../public/assets/lemon-cake.webp";
 import BreadCrumbs from "@/components/BreadCrumbs";
 import Layout from "@/components/Layout";
 import { BsDash, BsPlus } from "react-icons/bs";
-// import { useRouter } from "next/router";
+import { cakeProducts1 } from "../page";
+import { useEffect, useState } from "react";
 
-const CakeDetailsPage = () => {
-  // const router = useRouter();
-  // const { slug } = router.query;
+const CakeDetailsPage = ({ params }: any) => {
+  const [loading, setLoading] = useState(false);
+
+  console.log("Params Alias:", params);
+  console.log("Cake Products:", cakeProducts1);
+  const getProduct = cakeProducts1.find(
+    (product) => product.slug === params.alias,
+  );
+  console.log("Found Product:", getProduct);
+  useEffect(() => {
+    getProduct && setLoading(true);
+  }, [getProduct]);
+
+  if(loading){
+    return <div>Loading...</div>
+  }
 
   return (
     <>
@@ -57,7 +72,7 @@ const CakeDetailsPage = () => {
               <div className="mt-5 sm:mt-0">
                 <label htmlFor="size" className="mb-3 block">
                   <span className="mb-1 inline-block font-bold">Size</span>
-                  <select
+                  {/* <select
                     name="size"
                     id="size"
                     className="form-select w-full rounded-lg border-0 bg-[#fcfaf0] p-3 focus:right-2 focus:border focus:border-black focus:ring-black"
@@ -69,11 +84,11 @@ const CakeDetailsPage = () => {
                     <option value="10">10 Inches</option>
                     <option value="18">18 Inches</option>
                     <option value="custom">Custom Inches</option>
-                  </select>
+                  </select> */}
                 </label>
                 <label htmlFor="filling" className="mb-3 block">
                   <span className="mb-1 inline-block font-bold">Filling</span>
-                  <select
+                  {/* <select
                     name="filling"
                     id="filling"
                     className="form-select w-full rounded-lg border-0 bg-[#fcfaf0] p-3 focus:right-2 focus:border focus:border-black focus:ring-black"
@@ -85,11 +100,11 @@ const CakeDetailsPage = () => {
                     <option value="10">10 Inches</option>
                     <option value="18">18 Inches</option>
                     <option value="custom">Custom Inches</option>
-                  </select>
+                  </select> */}
                 </label>
                 <label htmlFor="shape" className="mb-3 block">
                   <span className="mb-1 inline-block font-bold">Shape</span>
-                  <select
+                  {/* <select
                     name="shape"
                     id="shape"
                     className="form-select w-full rounded-lg border-0 bg-[#fcfaf0] p-3 focus:right-2 focus:border focus:border-black focus:ring-black"
@@ -101,7 +116,7 @@ const CakeDetailsPage = () => {
                     <option value="rect">Rectangle</option>
                     <option value="angle">Triangle</option>
                     <option value="custom">Custom Shape</option>
-                  </select>
+                  </select> */}
                 </label>
               </div>
             </div>
@@ -118,7 +133,7 @@ const CakeDetailsPage = () => {
                     <span className="mb-1 inline-block font-bold">
                       When do you need your cake ready?
                     </span>
-                    <select
+                    {/* <select
                       name="duration"
                       id="duration"
                       className="form-select w-full rounded-lg border-0 bg-[#fcfaf0] p-3 focus:right-2 focus:border focus:border-black focus:ring-black"
@@ -130,7 +145,7 @@ const CakeDetailsPage = () => {
                       <option value="72">72 Hours(3 days)</option>
                       <option value="96">96 Hours(4 days)</option>
                       <option value="week">In a week</option>
-                    </select>
+                    </select> */}
                     <p>
                       48hrs is the minimum time required for all cake orders
                     </p>
@@ -150,7 +165,7 @@ const CakeDetailsPage = () => {
                     <span className="mb-1 inline-block font-bold">
                       Toppings and Add-ons + &euro;10
                     </span>
-                    <select
+                    {/* <select
                       name="toppings"
                       id="toppings"
                       className="form-select w-full rounded-lg border-0 bg-[#fcfaf0] p-3 focus:right-2 focus:border focus:border-black focus:ring-black"
@@ -162,7 +177,7 @@ const CakeDetailsPage = () => {
                       <option value="10">10 Inches</option>
                       <option value="18">18 Inches</option>
                       <option value="custom">Custom Inches</option>
-                    </select>
+                    </select> */}
                   </label>
                   <label htmlFor="message" className="col-span-2 mb-3 block">
                     <span className="mb-1 inline-block font-bold">

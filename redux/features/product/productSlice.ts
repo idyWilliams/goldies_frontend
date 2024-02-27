@@ -28,24 +28,11 @@ export interface IProduct {
   avgRating: number;
   category: string;
   createdAt: string;
-  details: {
-    cookingMethod: string;
-    deliveryDetails: string;
-    productContent: string;
-    productDescription: string;
-    productWeight: number;
-  };
+  name: string;
   // _id: string;
   featured: boolean;
   images: string[];
-  information: {
-    subcartegory: any;
-    categoryQuestions: any[]; // You can define a specific type here if needed
-    productBreed: string;
-    productName: string;
-    typeOfMeat: string;
-    _id: string;
-  };
+
   pricing: {
     productPrice: number;
     quantity: number;
@@ -79,16 +66,16 @@ const initialState: ProductState = {
   totalQuantity: 0,
 };
 
-export const fetchProduct = createAsyncThunk(
-  "product/fetch",
-  async (thunkAPI) => {
-    const response = await fetch(`${""}/api/products/`, {
-      method: "GET",
-    });
-    const data = response.json();
-    return data;
-  }
-);
+// export const fetchProduct = createAsyncThunk(
+//   "product/fetch",
+//   async (thunkAPI) => {
+//     const response = await fetch(`${""}/api/products/`, {
+//       method: "GET",
+//     });
+//     const data = response.json();
+//     return data;
+//   }
+// );
 
 export const productSlice = createSlice({
   name: "product",
@@ -121,7 +108,7 @@ export const productSlice = createSlice({
         // Product is already in the cart
         console.log(`Product is already in the cart. ${action.payload.id}`);
         toast.info(
-          `${product?.information?.productName} is already in your cart`,
+          `${product?.name} is already in your cart`,
           {
             position: "top-right",
             autoClose: 5000,
@@ -145,7 +132,7 @@ export const productSlice = createSlice({
 
         // Product added to the cart successfully
         toast.success(
-          `${product?.information?.productName} has been added to your cart`,
+          `${product?.name} has been added to your cart`,
           {
             position: "top-right",
             autoClose: 5000,
@@ -191,7 +178,7 @@ export const productSlice = createSlice({
 
         localStorage.setItem("cart", JSON.stringify(state.cart));
         toast.warn(
-          `${product?.information?.productName} has been removed from your cart`,
+          `${product?.name} has been removed from your cart`,
           {
             position: "top-right",
             autoClose: 5000,
@@ -233,11 +220,11 @@ export const productSlice = createSlice({
       }
     },
   },
-  extraReducers: (builder) => {
-    builder.addCase(fetchProduct.fulfilled, (state, action) => {
-      state.productList = action.payload;
-    });
-  },
+  // extraReducers: (builder) => {
+  //   builder.addCase(fetchProduct.fulfilled, (state, action) => {
+  //     state.productList = action.payload;
+  //   });
+  // },
 });
 
 export const {
