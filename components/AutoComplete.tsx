@@ -1,8 +1,8 @@
 // components/CustomAutocomplete.tsx
 
 import React from "react";
+//@ts-ignore
 import Select, { ValueType } from "react-select";
-
 
 interface OptionType {
   value: string;
