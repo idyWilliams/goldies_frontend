@@ -79,8 +79,7 @@ const cakeProducts2 = [
   },
 ];
 
-const ShopPage = ({params} : any) => {
-
+const ShopPage = ({ params }: any) => {
   return (
     <>
       <Layout>
@@ -94,7 +93,7 @@ const ShopPage = ({params} : any) => {
                   link: "/",
                 },
                 {
-                  name: "Shop Page",
+                  name: "Shop",
                   link: "/shop",
                 },
               ]}
@@ -171,8 +170,6 @@ const ShopPage = ({params} : any) => {
             </div>
           </div>
         </div> */}
-
-
       </Layout>
     </>
   );
