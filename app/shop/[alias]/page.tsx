@@ -4,7 +4,7 @@ import LemonCake from "../../../public/assets/lemon-cake.webp";
 import BreadCrumbs from "@/components/BreadCrumbs";
 import Layout from "@/components/Layout";
 import { BsDash, BsPlus } from "react-icons/bs";
-import { cakeProducts1 } from "../page";
+// import { cakeProducts1 } from "../page";
 import { useEffect, useMemo, useState } from "react";
 import CustomSelect from "@/components/CustomSelect";
 import { useRouter } from "next/navigation";
@@ -323,29 +323,29 @@ const CakeDetailsPage = ({ params }: any) => {
   const [quantity, setQuantity] = useState<number>(1);
   const router = useRouter();
 
-  const memoizedCakeProducts = useMemo(() => cakeProducts1, []);
+  // const memoizedCakeProducts = useMemo(() => cakeProducts1, []);
 
-  console.log("Params Alias:", params);
-  console.log("Cake Products:", memoizedCakeProducts);
+  // console.log("Params Alias:", params);
+  // console.log("Cake Products:", memoizedCakeProducts);
 
-  const getProduct = memoizedCakeProducts.find(
-    (product) => product.slug === params.alias,
-  );
-  console.log("Found Product:", getProduct);
+  // const getProduct = memoizedCakeProducts.find(
+  //   (product) => product.slug === params.alias,
+  // );
+  // console.log("Found Product:", getProduct);
 
-  useEffect(() => {
-    if (getProduct) {
-      setLoading(false);
-    }
-  }, [getProduct]);
+  // useEffect(() => {
+  //   if (getProduct) {
+  //     setLoading(false);
+  //   }
+  // }, [getProduct]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
 
-  if (!getProduct) {
-    return <div>Product not found.</div>;
-  }
+  // if (!getProduct) {
+  //   return <div>Product not found.</div>;
+  // }
 
   const handleAddToCart = () => {
     // window.scroll(0, 0);
@@ -368,7 +368,8 @@ const CakeDetailsPage = ({ params }: any) => {
                   link: "/shop",
                 },
                 {
-                  name: getProduct ? getProduct.cakeName : "",
+                  name: "hhs",
+                  // name: getProduct ? getProduct.cakeName : "",
                   link: "/shop/cakes",
                 },
               ]}
@@ -379,14 +380,14 @@ const CakeDetailsPage = ({ params }: any) => {
           <div className="wrapper">
             <div className="grid sm:grid-cols-[1.5fr_2fr] sm:gap-5 md:grid-cols-[1fr_1fr] lg:grid-cols-[1fr_1fr_1fr]">
               <div className="sm:col-span-2 md:col-span-1">
-                <Image
+                {/* <Image
                   src={getProduct.image}
                   alt={getProduct.slug}
                   className="mx-auto h-full w-full object-cover"
-                />
+                /> */}
               </div>
               <div className="mt-3 sm:mt-0">
-                <h3 className="text-xl font-bold">{getProduct.cakeName}</h3>
+                {/* <h3 className="text-xl font-bold">{getProduct.cakeName}</h3> */}
                 <span className="font-bold">&euro;60.00 - &euro;227.00</span>
                 <ul className="mt-3 flex flex-col gap-2">
                   <li>6″ round serves 10 - 12</li>
