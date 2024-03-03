@@ -9,84 +9,84 @@ import Link from "next/link";
 import Layout from "../../components/Layout";
 import { BsDash, BsPlus } from "react-icons/bs";
 
-// type CakeProduct = {
-//   id: number;
-//   cakeName: string;
-//   slug: string;
-//   image: StaticImageData;
-//   priceFrom: number;
-//   priceTo: number;
-// };
+type CakeProduct = {
+  id: number;
+  cakeName: string;
+  slug: string;
+  image: StaticImageData;
+  priceFrom: number;
+  priceTo: number;
+};
 
-// export const cakeProducts1 = [
-//   {
-//     id: 1,
-//     cakeName: "Chocolate and Cream Butter",
-//     slug: "chocolate-cream-butter",
-//     image: Chocolate,
-//     priceFrom: 59,
-//     priceTo: 150,
-//   },
-//   {
-//     id: 2,
-//     cakeName: "Lemon Cake Sponge",
-//     slug: "lemon-cake-sponge",
-//     image: LemonCake,
-//     priceFrom: 59,
-//     priceTo: 150,
-//   },
-//   {
-//     id: 3,
-//     cakeName: "Red Velvet Cake",
-//     slug: "red-velvet-cake",
-//     image: RedVelvet,
-//     priceFrom: 59,
-//     priceTo: 150,
-//   },
-//   {
-//     id: 4,
-//     cakeName: "Vanilla Lemon Sponge",
-//     image: LemonCake,
-//     slug: "vanilla-lemon-sponge",
-//     priceFrom: 59,
-//     priceTo: 150,
-//   },
-// ];
+export const cakeProducts1 = [
+  {
+    id: 1,
+    cakeName: "Chocolate and Cream Butter",
+    slug: "chocolate-cream-butter",
+    image: Chocolate,
+    priceFrom: 59,
+    priceTo: 150,
+  },
+  {
+    id: 2,
+    cakeName: "Lemon Cake Sponge",
+    slug: "lemon-cake-sponge",
+    image: LemonCake,
+    priceFrom: 59,
+    priceTo: 150,
+  },
+  {
+    id: 3,
+    cakeName: "Red Velvet Cake",
+    slug: "red-velvet-cake",
+    image: RedVelvet,
+    priceFrom: 59,
+    priceTo: 150,
+  },
+  {
+    id: 4,
+    cakeName: "Vanilla Lemon Sponge",
+    image: LemonCake,
+    slug: "vanilla-lemon-sponge",
+    priceFrom: 59,
+    priceTo: 150,
+  },
+];
 
-// const cakeProducts2 = [
-//   {
-//     id: 1,
-//     cakeName: "Chocolate and Cream Butter",
-//     slug: "chocolate-cream-butter",
-//     image: Chocolate,
-//     priceFrom: 59,
-//     priceTo: 150,
-//   },
-//   {
-//     id: 2,
-//     cakeName: "Lemon Cake",
-//     slug: "lemon-cake",
-//     image: LemonCake,
-//     priceFrom: 59,
-//     priceTo: 150,
-//   },
-//   {
-//     id: 3,
-//     cakeName: "Red Velvet Cake Sponge",
-//     slug: "red-velvet-cake-sponge",
-//     image: RedVelvet,
-//     priceFrom: 59,
-//     priceTo: 150,
-//   },
-//   {
-//     id: 4,
-//     cakeName: "Vanilla Lemon Sponge",
-//     slug: "vanilla-lemon-sponge",
-//     image: LemonCake,
-//     priceFrom: 59,
-//     priceTo: 150,
-//   },
-// ];
+const cakeProducts2 = [
+  {
+    id: 1,
+    cakeName: "Chocolate and Cream Butter",
+    slug: "chocolate-cream-butter",
+    image: Chocolate,
+    priceFrom: 59,
+    priceTo: 150,
+  },
+  {
+    id: 2,
+    cakeName: "Lemon Cake",
+    slug: "lemon-cake",
+    image: LemonCake,
+    priceFrom: 59,
+    priceTo: 150,
+  },
+  {
+    id: 3,
+    cakeName: "Red Velvet Cake Sponge",
+    slug: "red-velvet-cake-sponge",
+    image: RedVelvet,
+    priceFrom: 59,
+    priceTo: 150,
+  },
+  {
+    id: 4,
+    cakeName: "Vanilla Lemon Sponge",
+    slug: "vanilla-lemon-sponge",
+    image: LemonCake,
+    priceFrom: 59,
+    priceTo: 150,
+  },
+];
 
 const ShopPage = ({ params }: any) => {
   return (
@@ -117,7 +117,7 @@ const ShopPage = ({ params }: any) => {
               All Cakes
             </h3>
             <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-2 md:gap-0 md:gap-y-8 lg:grid-cols-3">
-              {/*    {cakeProducts1.map((cake: any, index: number) => (
+                 {cakeProducts1.map((cake: any, index: number) => (
                 <div
                   key={index}
                   className="flex w-full flex-col items-center md:px-4"
@@ -143,7 +143,7 @@ const ShopPage = ({ params }: any) => {
                     Select Option
                   </Link>
                 </div>
-              ))} */}
+              ))}
             </div>
           </div>
         </section>
