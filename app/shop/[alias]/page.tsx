@@ -10,7 +10,7 @@ import RedVelvet from "/public/assets/red-velvet-cake.webp";
 import { useEffect, useMemo, useState } from "react";
 import CustomSelect from "@/components/CustomSelect";
 import { useRouter } from "next/navigation";
-// import { cakeProducts1 } from "../page";
+import { cakeProducts1 } from "../page";
 
 const fillingsList = [
   {
@@ -302,41 +302,6 @@ const cakeSizes = [
   },
 ];
 
-export const cakeProducts1 = [
-  {
-    id: 1,
-    cakeName: "Chocolate and Cream Butter",
-    slug: "chocolate-cream-butter",
-    image: Chocolate,
-    priceFrom: 59,
-    priceTo: 150,
-  },
-  {
-    id: 2,
-    cakeName: "Lemon Cake Sponge",
-    slug: "lemon-cake-sponge",
-    image: LemonCake,
-    priceFrom: 59,
-    priceTo: 150,
-  },
-  {
-    id: 3,
-    cakeName: "Red Velvet Cake",
-    slug: "red-velvet-cake",
-    image: RedVelvet,
-    priceFrom: 59,
-    priceTo: 150,
-  },
-  {
-    id: 4,
-    cakeName: "Vanilla Lemon Sponge",
-    image: LemonCake,
-    slug: "vanilla-lemon-sponge",
-    priceFrom: 59,
-    priceTo: 150,
-  },
-];
-
 function generateSizeArray(minSize: any, maxSize: any) {
   const sizes = [];
   for (let i = minSize; i <= maxSize; i++) {
@@ -405,7 +370,6 @@ const CakeDetailsPage = ({ params }: any) => {
                   link: "/shop",
                 },
                 {
-
                   name: getProduct ? getProduct.cakeName : "",
                   link: "/shop/cakes",
                 },
@@ -424,7 +388,7 @@ const CakeDetailsPage = ({ params }: any) => {
                 />
               </div>
               <div className="mt-3 sm:mt-0">
-                {/* <h3 className="text-xl font-bold">{getProduct.cakeName}</h3> */}
+                <h3 className="text-xl font-bold">{getProduct.cakeName}</h3>
                 <span className="font-bold">&euro;60.00 - &euro;227.00</span>
                 <ul className="mt-3 flex flex-col gap-2">
                   <li>6″ round serves 10 - 12</li>
