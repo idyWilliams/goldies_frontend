@@ -11,7 +11,7 @@ import MobileNav from "./MobileNav";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { ToastContainer, toast } from "react-toastify";
-
+  import "react-toastify/dist/ReactToastify.css";
 const Header = () => {
   const [show, setShow] = useState(false);
   const [sticky, setSticky] = useState(false);
@@ -81,7 +81,7 @@ const Header = () => {
                 className="h-[25px] w-auto"
                 alt="Goldis Logo"
               />
-              {Object.values(cart).length >= 1 && (
+              {Object.values(cart) && Object.values(cart).length >= 1 && (
                 <span className="absolute -right-2 top-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#B89C3D] text-sm text-[#f4ecc1]">
                   {Object.values(cart).length}
                 </span>

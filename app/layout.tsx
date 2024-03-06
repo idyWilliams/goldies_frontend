@@ -5,8 +5,9 @@ import "./globals.css";
 
 import { Provider } from "react-redux";
 import { store } from "@/redux/store";
-import { ProductProvider } from "@/context/productInfoContext";
-import { ShoppingCartProvider } from "@/context/shoppingCartContext";
+import { ShoppingCartProvider } from "@/context/ShoppingCartContext";
+import { ProductProvider } from "@/context/ProductInfoContext";
+
 const metadata: Metadata = {
   title: "Goldies Confectioneries | Buy Delicious Cakes Online",
   description:
