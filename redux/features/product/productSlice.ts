@@ -24,27 +24,12 @@ import { toast } from "react-toastify";
 // }
 
 export interface IProduct {
-  approvalStatus: boolean;
-  avgRating: number;
-  category: string;
-  createdAt: string;
-  name: string;
-  // _id: string;
-  featured: boolean;
-  images: string[];
-
-  pricing: {
-    productPrice: number;
-    quantity: number;
-    saleEndDate: string;
-    saleStartDate: string;
-    _id: string;
-  };
-  reviews: any[]; // You can define a specific type for reviews if needed
-  updatedAt: string;
-  visibilityStatus: string;
-  __v: number;
-  _id: string;
+  id: any;
+  cakeName: string;
+  slug: string;
+  image: string;
+  priceFrom: number;
+  priceTo: number;
 }
 
 export interface ICart {
@@ -94,7 +79,7 @@ export const productSlice = createSlice({
       action: PayloadAction<{ id: string | number }>
     ) => {
       const product = state.productList.find(
-        (product) => product._id === action.payload.id
+        (product) => product.id === action.payload.id
       );
 
       if (!product) {
@@ -107,22 +92,19 @@ export const productSlice = createSlice({
       if (isProductInCart) {
         // Product is already in the cart
         console.log(`Product is already in the cart. ${action.payload.id}`);
-        toast.info(
-          `${product?.name} is already in your cart`,
-          {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-          }
-        );
+        toast.info(`${product?.cakeName} is already in your cart`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
       } else {
         // Product is not in the cart, add it
-        product.pricing.quantity = 1;
+        // product.pricing.quantity = 1;
         state.cart[action.payload.id] = product;
 
         // Update the totalQuantity in the state by adding 1
@@ -131,19 +113,16 @@ export const productSlice = createSlice({
         localStorage.setItem("cart", JSON.stringify(state.cart));
 
         // Product added to the cart successfully
-        toast.success(
-          `${product?.name} has been added to your cart`,
-          {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-          }
-        );
+        toast.success(`${product?.cakeName} has been added to your cart`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
       }
     },
 
@@ -152,7 +131,7 @@ export const productSlice = createSlice({
       action: PayloadAction<{ id: string | number }>
     ) => {
       const product = state.productList.find(
-        (product) => product._id === action.payload.id
+        (product) => product.id === action.payload.id
       );
       if (product) {
         state.favorites[action.payload.id] = product;
@@ -165,31 +144,28 @@ export const productSlice = createSlice({
     ) => {
       const deletedProduct = state.cart[action.payload.id];
       const product = state.productList.find(
-        (product) => product._id === action.payload.id
+        (product) => product.id === action.payload.id
       );
       if (deletedProduct) {
-        const deletedQuantity = deletedProduct.pricing.quantity || 0;
+        // const deletedQuantity = deletedProduct.pricing.quantity || 0;
 
         // Remove the product from the cart
         delete state.cart[action.payload.id];
 
         // Update the totalQuantity in the state by subtracting the deleted quantity
-        state.totalQuantity = (state.totalQuantity || 0) - deletedQuantity;
+        // state.totalQuantity = (state.totalQuantity || 0) - deletedQuantity;
 
         localStorage.setItem("cart", JSON.stringify(state.cart));
-        toast.warn(
-          `${product?.name} has been removed from your cart`,
-          {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-          }
-        );
+        toast.warn(`${product?.cakeName} has been removed from your cart`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
         console.log(`Product is removed from the cart. ${action.payload.id}`);
       }
     },
@@ -200,7 +176,7 @@ export const productSlice = createSlice({
     ) => {
       if (state.cart[action.payload.id]) {
         const product = state.cart[action.payload.id];
-        (product.pricing.quantity as number) += 1;
+        // (product.pricing.quantity as number) += 1;
         state.totalQuantity += 1; // Increase total quantity
         localStorage.setItem("cart", JSON.stringify(state.cart));
       }
@@ -212,11 +188,11 @@ export const productSlice = createSlice({
     ) => {
       if (state.cart[action.payload.id]) {
         const product = state.cart[action.payload.id];
-        if ((product.pricing.quantity as number) > 1) {
-          (product.pricing.quantity as number) -= 1;
-          state.totalQuantity -= 1; // Decrease total quantity
-          localStorage.setItem("cart", JSON.stringify(state.cart));
-        }
+        // if ((product.pricing.quantity as number) > 1) {
+        //   (product.pricing.quantity as number) -= 1;
+        //   state.totalQuantity -= 1; // Decrease total quantity
+        //   localStorage.setItem("cart", JSON.stringify(state.cart));
+        // }
       }
     },
   },
