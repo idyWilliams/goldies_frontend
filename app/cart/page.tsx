@@ -1,6 +1,6 @@
 "use client";
 import BreadCrumbs from "@/components/BreadCrumbs";
-import LemonCake from "../../public/assets/lemon-cake.webp";
+import illustration from "../../public/assets/illistration-removebg-preview.png";
 import Image from "next/image";
 import { BsPlus, BsDash, BsTrash } from "react-icons/bs";
 import Layout from "../../components/Layout";
@@ -213,6 +213,16 @@ const CartPage = () => {
                 </div>
               ) : (
                 <div className="space-y-2 text-center text-main">
+                  <figure className="mx-auto h-28 w-24">
+                    <Image
+                      src={illustration}
+                      alt="illustration"
+                      className="h-full w-full object-cover"
+                      width={40}
+                      height={660}
+                    />
+                  </figure>
+
                   <p>Oops!, Your cart is empty</p>
                   <button
                     onClick={() => router.push("/shop")}
