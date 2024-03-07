@@ -26,6 +26,7 @@ import {
 import { addSlugToCakes } from "@/helper";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { GiShoppingCart } from "react-icons/gi";
 
 function generateSizeArray(minSize: any, maxSize: any) {
   const sizes = [];
@@ -89,6 +90,9 @@ function CakeDetailsPage({ params }: any) {
     console.log(getProduct.id);
   };
 
+  const navigateToCart = () => {
+    router.push("/cart")
+  }
   return (
     <>
       <Layout>
@@ -264,8 +268,14 @@ function CakeDetailsPage({ params }: any) {
                       </span>
                     </div> */}
                     <button
+                      onClick={navigateToCart}
+                      className="flex items-center gap-1 rounded-full border border-black bg-main px-5 py-2 text-black shadow-md"
+                    >
+                      See Cart Item <GiShoppingCart />
+                    </button>
+                    <button
                       onClick={handleClick}
-                      className="rounded-full bg-black px-5 py-2 text-main"
+                      className="rounded-full bg-black px-5 py-2 text-main shadow-md"
                     >
                       Add to Cart
                     </button>
