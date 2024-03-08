@@ -8,12 +8,16 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import MobileNav from "./MobileNav";
-
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { ToastContainer, toast } from "react-toastify";
+  import "react-toastify/dist/ReactToastify.css";
 const Header = () => {
   const [show, setShow] = useState(false);
   const [sticky, setSticky] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  const cart = useSelector((state: RootState) => state.product.cart);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,6 +34,7 @@ const Header = () => {
 
   return (
     <>
+      <ToastContainer />
       <header
         className={`${sticky ? "fixed shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "absolute"} left-0 top-0  z-[999] w-full bg-main py-3`}
       >
@@ -76,9 +81,11 @@ const Header = () => {
                 className="h-[25px] w-auto"
                 alt="Goldis Logo"
               />
-              <span className="absolute -right-2 top-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#B89C3D] text-sm text-[#f4ecc1]">
-                0
-              </span>
+              {Object.values(cart) && Object.values(cart).length >= 1 && (
+                <span className="absolute -right-2 top-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#B89C3D] text-sm text-[#f4ecc1]">
+                  {Object.values(cart).length}
+                </span>
+              )}
             </div>
             <span
               className={` z-30 inline-block cursor-pointer lg:hidden ${show ? "fixed top-4" : "relative"}`}

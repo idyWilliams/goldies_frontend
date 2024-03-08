@@ -3,6 +3,7 @@ import { RxSlash } from "react-icons/rx";
 type itemsType = {
   name: string | undefined;
   link: string;
+  fnx?: any;
 };
 type BreadCrumbType = {
   items: Array<itemsType>;
@@ -17,7 +18,7 @@ const BreadCrumbs = ({ items }: BreadCrumbType) => {
               key={index}
               className="flex items-center gap-x-2 rounded-none text-[#fcfaf0]"
             >
-              <Link href={item.link}>
+              <Link href={item.link} onClick={item.fnx}>
                 <button className="rounded-none text-sm font-normal capitalize leading-[24px] hover:text-main sm:text-base">
                   {item.name}
                 </button>
