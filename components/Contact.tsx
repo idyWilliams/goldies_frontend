@@ -1,7 +1,32 @@
+'use client'
+
 import Image from "next/image";
 import ConsultIcon from "../public/assets/consult.webp";
+import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
+type formProps = {
+  fullName: string;
+  email: string;
+}
 const Contact = () => {
+  const [form, setForm] = useState<formProps>({ fullName: '', email: '' });
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault(); // Prevent default form submission
+    console.log('form:', form);
+    setForm({fullName: '', email: '' });
+    toast('form submitted successfully')
+  };
+
+  const onHandleChange = (event: any) => {
+    const { name, value } = event.target;
+    console.log(value)
+    setForm((form) => {
+      return { ...form, [name]: value };
+    })
+  };
   return (
     <section id="contact" className="bg-main py-16">
       <div className="wrapper grid items-center md:grid-cols-2">
@@ -15,15 +40,17 @@ const Contact = () => {
             <span>8:00 - 22:00</span>
           </div>
 
-          <form id="consult" className="mt-8 w-full">
-            <label htmlFor="fname" className="mb-3 block">
+          <form id="consult" className="mt-8 w-full" onSubmit={handleSubmit}>
+            <label htmlFor="fullName" className="mb-3 block">
               <span className="mb-2 block w-full font-bold">Full Name</span>
               <input
                 type="text"
-                name="fname"
+                name="fullName"
                 autoComplete="off"
-                id="fname"
+                id="fullName"
                 className="form-input w-full rounded-md border-0 bg-[#9C8222] px-4 py-2 focus:border-black focus:ring-black "
+                onChange={(e) => onHandleChange(e)}
+                value={form.fullName}
               />
             </label>
             <label htmlFor="email" className="mb-3 block">
@@ -34,6 +61,8 @@ const Contact = () => {
                 autoComplete="off"
                 id="email"
                 className="form-input w-full rounded-md border-0 bg-[#9C8222] px-4 py-2 focus:border-black focus:ring-black "
+                onChange={(e) => onHandleChange(e)}
+                value={form.email}
               />
             </label>
 
