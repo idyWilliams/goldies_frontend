@@ -87,6 +87,7 @@ const CakeCategory = () => {
           className="absolute left-0 top-0 h-full w-full object-cover"
           preload="auto"
         >
+          <source src="/assets/stir.webm" type="video/webm" />
           <source src="/assets/stir.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
