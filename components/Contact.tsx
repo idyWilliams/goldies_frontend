@@ -14,7 +14,7 @@ const Contact = () => {
   const [form, setForm] = useState<formProps>({ fullName: '', email: '' });
 
   const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault();
     console.log('form:', form);
     setForm({fullName: '', email: '' });
     toast('form submitted successfully')

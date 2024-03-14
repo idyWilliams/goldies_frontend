@@ -53,6 +53,8 @@ function CakeDetailsPage({ params }: any) {
   const router = useRouter();
   const dispatch = useDispatch();
   const cart = useSelector((state: RootState) => state.product.cart);
+  const [time, setTime] = useState("");
+  const [message, setMessage] = useState("");
 
   const cartTotal = Object.values(cart).reduce((acc, current) => {
     return acc + parseFloat(current.maxPrice) * (current.quantity as number);
@@ -85,14 +87,38 @@ function CakeDetailsPage({ params }: any) {
     return <div>Product not found.</div>;
   }
 
+  const data = {
+    shape: create(shapes),
+    size: create(sizes),
+    filling: create(fillings),
+    cakeDetails: {
+      time: time,
+      duration: create(duration),
+      addons: create(addons),
+    },
+    message: message,
+  };
+
+  function create(value: any) {
+    if (value !== null) {
+      const { label, description } = value;
+      return { label, description };
+    }
+  }
+
   const handleClick = () => {
     dispatch(addProductToCart({ id: getProduct.id }));
     console.log(getProduct.id);
+    setShapes({
+      label: "",
+      value: "",
+    });
+    console.log(data, "data");
   };
 
   const navigateToCart = () => {
-    router.push("/cart")
-  }
+    router.push("/cart");
+  };
   return (
     <>
       <Layout>
@@ -207,6 +233,8 @@ function CakeDetailsPage({ params }: any) {
                       id="time"
                       placeholder="Choose an option"
                       className="form-input h-[51px] w-full rounded-lg border-2 border-black bg-[#fcfaf0] p-3 py-4 focus:border-black focus:shadow-none focus:outline-0 focus:ring-0"
+                      value={time}
+                      onChange={(e) => setTime(e.target.value)}
                     />
                   </label>
                   <label htmlFor="toppings" className="mb-3 block">
@@ -228,6 +256,8 @@ function CakeDetailsPage({ params }: any) {
                       id="message"
                       placeholder="Please specify other details like cake text, color, design requests"
                       className="form-input h-[120px] w-full rounded-lg border-2 border-black bg-[#fcfaf0] p-3 focus:right-2 focus:border focus:border-black focus:ring-black"
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
                     />
                   </label>
                   <div className="flex items-start justify-between gap-8 sm:col-[2]">
