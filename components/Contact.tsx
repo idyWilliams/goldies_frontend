@@ -1,36 +1,39 @@
-'use client'
-
+"use client";
 import Image from "next/image";
 import ConsultIcon from "../public/assets/consult.webp";
 import { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 type formProps = {
   fullName: string;
   email: string;
-}
+};
 const Contact = () => {
-  const [form, setForm] = useState<formProps>({ fullName: '', email: '' });
+  const [form, setForm] = useState<formProps>({ fullName: "", email: "" });
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault(); // Prevent default form submission
-    console.log('form:', form);
-    setForm({fullName: '', email: '' });
-    toast('form submitted successfully')
+    console.log("form:", form);
+    setForm({ fullName: "", email: "" });
+    toast("form submitted successfully");
   };
 
   const onHandleChange = (event: any) => {
     const { name, value } = event.target;
-    console.log(value)
+    console.log(value);
     setForm((form) => {
       return { ...form, [name]: value };
-    })
+    });
   };
+
   return (
     <section id="contact" className="bg-main py-16">
       <div className="wrapper grid items-center md:grid-cols-2">
-        <div className="order-2 flex flex-wrap gap-x-8 bg-[#B89C3D] p-5 py-8 md:order-1 ">
+        <div
+          data-aos="fade"
+          className="order-2 flex flex-wrap gap-x-8 bg-[#B89C3D] p-5 py-8 md:order-1 "
+        >
           <div className="mb-3">
             <h3 className="font-bold">Date</h3>
             <span>Mon - Fri</span>
@@ -79,11 +82,20 @@ const Contact = () => {
             src={ConsultIcon}
             alt="Animated coffee cup"
             className="mb-5 w-[100px]"
+            data-aos="fade"
           />
-          <h2 className="mb-2 text-2xl font-bold md:text-3xl">
+          <h2
+            className="mb-2 text-2xl font-bold md:text-3xl"
+            data-aos="fade"
+            data-aos-delay="200"
+          >
             Book a Consultation
           </h2>
-          <p className="leading-[150%] md:text-xl">
+          <p
+            className="leading-[150%] md:text-xl"
+            data-aos="fade"
+            data-aos-delay="300"
+          >
             If you&apos;d like to talk about a project I might be able to help
             with, feel free to book straight in for a free chat using my
             calendar.

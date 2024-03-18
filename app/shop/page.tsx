@@ -7,15 +7,19 @@ import Layout from "../../components/Layout";
 import { BsDash, BsPlus } from "react-icons/bs";
 import { cakeProducts1 } from "@/utils/cakeData";
 import { addSlugToCakes } from "@/helper";
-
-
-
-
+import AOS from "aos";
+import "aos/dist/aos.css";
+import { useEffect } from "react";
 
 const ShopPage = ({ params }: any) => {
-
-
   const cakes = addSlugToCakes(cakeProducts1);
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      easing: "ease",
+      once: true,
+    });
+  }, []);
   return (
     <>
       <Layout>
@@ -40,12 +44,17 @@ const ShopPage = ({ params }: any) => {
         {/* CAKE PRODUCT LIST 1 */}
         <section className="py-16 pt-3">
           <div className="wrapper">
-            <h3 className="mb-6 mt-4 text-2xl font-bold text-black">
+            <h3
+              data-aos="fade-down"
+              className="mb-6 mt-4 text-2xl font-bold text-black "
+            >
               All Cakes
             </h3>
             <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-2 md:gap-0 md:gap-y-8 lg:grid-cols-3">
               {cakes.map((cake: any, index: number) => (
                 <div
+                  data-aos="fade-down"
+                  data-aos-delay={index * 200}
                   key={index}
                   className="flex w-full flex-col items-center md:px-4"
                 >
@@ -74,8 +83,6 @@ const ShopPage = ({ params }: any) => {
             </div>
           </div>
         </section>
-
-
       </Layout>
     </>
   );

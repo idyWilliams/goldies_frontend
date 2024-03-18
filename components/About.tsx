@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import Cake1 from "../public/assets/about.webp";
 import Cake2 from "../public/assets/about2.webp";
@@ -12,14 +13,17 @@ const About = () => {
       >
         <div className="wrapper">
           <div className="flex flex-wrap items-start justify-between md:grid md:grid-cols-2 md:gap-5">
-            <div className="mb-6 h-[250px] w-full md:mb-0 md:h-[350px]">
+            <div
+              data-aos="fade-right"
+              className="mb-6 h-[250px] w-full md:mb-0 md:h-[350px] "
+            >
               <Image
                 src={Cake1}
                 alt="Vercel Logo"
                 className="mx-auto h-full w-full object-cover lg:w-[80%]"
               />
             </div>
-            <div className="w-full">
+            <div data-aos="fade-left" data-aos-delay="500" className="w-full">
               <p className="leading-[150%] text-main lg:text-xl lg:leading-10">
                 <strong>
                   Goldis isn&apos;t just a bakery, it&apos;s a haven for
@@ -39,14 +43,18 @@ const About = () => {
           </div>
           <hr className="my-8 border-0 border-t-2 border-main md:my-12 lg:my-16" />
           <div className="flex flex-wrap items-start justify-between md:grid md:grid-cols-2 md:gap-9">
-            <div className="mb-6 h-[250px] w-full md:order-2 md:mb-0 md:h-[350px]">
+            <div
+              data-aos="fade-left"
+              data-aos-delay="500"
+              className="mb-6 h-[250px] w-full md:order-2 md:mb-0 md:h-[350px]"
+            >
               <Image
                 src={Cake2}
                 alt="Vercel Logo"
                 className="mx-auto h-full w-full object-cover md:w-[80%]"
               />
             </div>
-            <div className="w-full md:order-1">
+            <div data-aos="fade-right" className="w-full md:order-1">
               <p className="leading-[150%] text-main lg:text-xl lg:leading-10">
                 <strong>This vision is not just about sugar and flour,</strong>{" "}
                 It’s about creating moments of joy and sweetness, fostering

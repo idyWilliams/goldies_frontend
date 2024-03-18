@@ -15,6 +15,7 @@
     "@typeform/embed-react": "^3.11.0",
     "@types/lodash-es": "^4.17.12",
     "@types/react-redux": "^7.1.33",
+    "aos": "^2.3.4",
     "lodash-es": "^4.17.21",
     "next": "14.1.0",
     "react": "^18",
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",
+    "@types/aos": "^3.0.7",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
