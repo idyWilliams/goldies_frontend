@@ -1,10 +1,8 @@
 import Header from "@/components/Header";
 import Image from "next/image";
-import BespokeImg from "../../public/assets/large.jpeg";
+// import BespokeImg from "../../public/assets/large.jpeg";
 import Footer from "@/components/Footer";
 import TypeForm from "@/components/TypeForm";
-
-
 
 const BespokePage = () => {
   return (

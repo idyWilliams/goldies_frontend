@@ -1,11 +1,11 @@
 import Chocolate from "/public/assets/birthday-cake.webp";
 import LemonCake from "/public/assets/lemon-cake.webp";
 import RedVelvet from "/public/assets/red-velvet-cake.webp";
-import velvet from "/public/assets/vanilla-bean-cakev2-819x1024.jpg";
-import carrot from "/public/assets/carrot.jpeg";
-import banana from "/public/assets/banana-cake-with-cinnamon-cream-102945-1.jpeg";
+import velvet from "/public/assets/vanilla-bean-cakev2-819x1024.jpg.webp";
+import carrot from "/public/assets/carrot.webp";
+import banana from "/public/assets/banana-cake-with-cinnamon-cream-102945-1.webp";
 import berry from "/public/assets/Fresh-Strawberry-Cake-with-Strawberry-Frosting-3-480x360.webp";
-import coconut from "/public/assets/AT0213_coconut-cream-cake_s4x3.jpg";
+import coconut from "/public/assets/AT0213_coconut-cream-cake_s4x3.webp";
 
 export const fillingsList = [
   {

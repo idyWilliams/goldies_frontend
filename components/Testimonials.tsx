@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState } from "react";
 import { BsStarFill, BsStarHalf } from "react-icons/bs";
 
@@ -92,39 +92,48 @@ const Testimonials = () => {
 
     <section id="testimonials" className="py-16 pt-20">
       <div className="wrapper">
-        <h2 className="mb-8 text-2xl font-bold capitalize md:text-center md:text-3xl">
+        <h2
+          data-aos="fade-down"
+          className="mb-8 text-2xl font-bold capitalize md:text-center md:text-3xl"
+        >
           See how our customers rate us...
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {reviews.map((review: any, index: number) => (
-            <blockquote
-              key={index}
-              className={`rounded-md border border-neutral-300 bg-white p-7 ${
-                hoveredIndex === index ? "shadow-md" : ""
-              }`}
-              onMouseEnter={() => setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(null)}
-            >
-              <div className="flex items-center gap-3">
-                <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-[#b6a650] to-main font-bold">
-                  {clientInitails(review.client)}
-                </span>
-                <div>
-                  <h3 className="text-lg font-bold leading-[1.5]">
-                    {review.client}
-                  </h3>
-                  <div className="flex items-center gap-1">
-                    <BsStarFill size={18} className="text-yellow-500" />
-                    <BsStarFill size={18} className="text-yellow-500" />
-                    <BsStarFill size={18} className="text-yellow-500" />
-                    <BsStarFill size={18} className="text-yellow-500" />
-                    <BsStarHalf size={18} className="text-yellow-500" />
+          {reviews.map((review: any, index: number) => {
+            const delay = index * 100;
+            console.log(delay, "delay");
+            return (
+              <blockquote
+                data-aos="fade-right"
+                data-aos-delay={delay}
+                key={index}
+                className={`rounded-md border border-neutral-300 bg-white p-7 ${
+                  hoveredIndex === index ? "shadow-md" : ""
+                }`}
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-[#b6a650] to-main font-bold">
+                    {clientInitails(review.client)}
+                  </span>
+                  <div>
+                    <h3 className="text-lg font-bold leading-[1.5]">
+                      {review.client}
+                    </h3>
+                    <div className="flex items-center gap-1">
+                      <BsStarFill size={18} className="text-yellow-500" />
+                      <BsStarFill size={18} className="text-yellow-500" />
+                      <BsStarFill size={18} className="text-yellow-500" />
+                      <BsStarFill size={18} className="text-yellow-500" />
+                      <BsStarHalf size={18} className="text-yellow-500" />
+                    </div>
                   </div>
                 </div>
-              </div>
-              <p className="mt-4 leading-[150%]">{review.comment}</p>
-            </blockquote>
-          ))}
+                <p className="mt-4 leading-[150%]">{review.comment}</p>
+              </blockquote>
+            );
+          })}
         </div>
       </div>
     </section>

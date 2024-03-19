@@ -59,15 +59,15 @@ function CakeDetailsPage({ params }: any) {
   const cartTotal = Object.values(cart).reduce((acc, current) => {
     return acc + parseFloat(current.maxPrice) * (current.quantity as number);
   }, 0);
-  console.log(cart, "cart");
+  // console.log(cart, "cart");
 
   const cakes = addSlugToCakes(cakeProducts1);
 
   console.log(cakes, "kkk");
   const cakeProduct = useMemo(() => cakes, []);
 
-  console.log("Params Alias:", params);
-  console.log("Cake Products:", cakeProduct);
+  // console.log("Params Alias:", params);
+  // console.log("Cake Products:", cakeProduct);
 
   const getProduct = cakeProduct.find(
     (product: { slug: any }) => product.slug === params.alias,
@@ -109,12 +109,10 @@ function CakeDetailsPage({ params }: any) {
   const handleClick = () => {
     dispatch(addProductToCart({ id: getProduct.id }));
     console.log(getProduct.id);
-    setShapes({
-      label: "",
-      value: "",
-    });
-    console.log(data, "data");
+    // setShapes(null)
   };
+
+  // console.log(shapes, "shapes")
 
   const navigateToCart = () => {
     router.push("/cart");
@@ -176,7 +174,12 @@ function CakeDetailsPage({ params }: any) {
               </div>
               <div className="mt-5 sm:mt-0 md:col-span-2 lg:col-span-1">
                 <label htmlFor="size" className="mb-3 block">
-                  <span className="mb-1 inline-block font-bold">Size</span>
+                  <span
+                    className="mb-1 inline-block font-bold"
+                    onClick={() => console.log(shapes, "shapes new")}
+                  >
+                    Size
+                  </span>
                   <CustomSelect
                     selectedOption={sizes}
                     setSelectOption={setSizes}

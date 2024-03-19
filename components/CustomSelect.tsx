@@ -12,7 +12,8 @@ export type SelectOptionType = {
 
 type CustomSelectProps = {
   selectedOption: SelectOptionType | null;
-  setSelectOption: (value: React.SetStateAction<any>) => void;
+  // setSelectOption: (value: React.SetStateAction<any>) => void;
+  setSelectOption: any;
   options: any;
   isDisabled?: boolean;
   name?: string;

@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import MilestoneCake from "../public/assets/milestone-cake.webp";
 import KidCake from "../public/assets/kid-cake.webp";
@@ -10,7 +11,7 @@ const CakeCategory = () => {
     <section className="relative overflow-hidden bg-main py-16">
       <div className="wrapper relative z-20">
         <div className="grid grid-cols-2 items-start justify-between gap-4 gap-y-8 md:grid-cols-4">
-          <figure className="w-full">
+          <figure className="w-full" data-aos="fade-down">
             <div className="h-[200px] w-full overflow-hidden rounded-lg md:h-[250px]">
               <Image
                 src={MilestoneCake}
@@ -23,7 +24,7 @@ const CakeCategory = () => {
               <Link href="/shop">Milestone cakes</Link>
             </figcaption>
           </figure>
-          <figure className="w-full">
+          <figure className="w-full" data-aos="fade-down" data-aos-delay="200">
             <div className="h-[200px] w-full overflow-hidden rounded-lg md:h-[250px]">
               <Image
                 src={KidCake}
@@ -35,7 +36,7 @@ const CakeCategory = () => {
               <Link href="/shop">Kids Cakes</Link>
             </figcaption>
           </figure>
-          <figure className="w-full">
+          <figure className="w-full" data-aos="fade-down" data-aos-delay="400">
             <div className="h-[200px] w-full overflow-hidden rounded-lg md:h-[250px]">
               <Image
                 src={Cupcakes}
@@ -47,7 +48,7 @@ const CakeCategory = () => {
               <Link href="/shop">Cupcakes</Link>
             </figcaption>
           </figure>
-          <figure className="w-full">
+          <figure className="w-full" data-aos="fade-down" data-aos-delay="600">
             <div className="h-[200px] w-full overflow-hidden rounded-lg md:h-[250px]">
               <Image
                 src={WeddingCake}
@@ -61,10 +62,10 @@ const CakeCategory = () => {
           </figure>
         </div>
         <div className="mt-12 md:mx-auto md:w-11/12 md:text-center lg:mx-0 lg:w-8/12 lg:text-left">
-          <h2 className="mb-3 text-[28px] font-bold">
+          <h2 className="mb-3 text-[28px] font-bold" data-aos="fade">
             Cakes that celebrate every milestone
           </h2>
-          <p className="md:text-lg lg:text-xl lg:leading-9">
+          <p className="md:text-lg lg:text-xl lg:leading-9" data-aos="fade-up">
             Goldis offers a wide range of cakes for different occasions. Whether
             you need a fun unicorn cake’ for your child&apos;s birthday, an
             impressive tiered cake for a grand wedding, or a simple heart-shaped
@@ -87,6 +88,7 @@ const CakeCategory = () => {
           className="absolute left-0 top-0 h-full w-full object-cover"
           preload="auto"
         >
+          <source src="/assets/stir.webm" type="video/webm" />
           <source src="/assets/stir.mp4" type="video/mp4" />
           Your browser does not support the video tag.
         </video>
