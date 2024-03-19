@@ -11,7 +11,7 @@ import MobileNav from "./MobileNav";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { ToastContainer, toast } from "react-toastify";
-  import "react-toastify/dist/ReactToastify.css";
+import "react-toastify/dist/ReactToastify.css";
 const Header = () => {
   const [show, setShow] = useState(false);
   const [sticky, setSticky] = useState(false);
@@ -39,15 +39,23 @@ const Header = () => {
         className={`${sticky ? "fixed shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "absolute"} left-0 top-0  z-[999] w-full bg-main py-3`}
       >
         <div className="wrapper flex items-center justify-between">
-          <Link href="/" className="relative">
-            <Image
-              src="/assets/goldis-logo.png"
-              className="w-[130px]"
-              width={175}
-              height={92}
-              alt="Goldis Logo"
-            />
-          </Link>
+          <div className="flex items-center gap-3">
+            <span
+              className={` z-30 inline-block cursor-pointer lg:hidden ${show ? "fixed top-4" : "relative"}`}
+              onClick={handleClick}
+            >
+              {show ? <BsXLg size={28} /> : <BsList size={30} />}
+            </span>
+            <Link href="/" className="relative">
+              <Image
+                src="/assets/goldis-logo.png"
+                className="w-[130px]"
+                width={175}
+                height={92}
+                alt="Goldis Logo"
+              />
+            </Link>
+          </div>
 
           <div className="hidden items-center gap-8 lg:flex">
             <Link href="/" className={`${pathname === "/" ? "font-bold" : ""}`}>
@@ -87,12 +95,6 @@ const Header = () => {
                 </span>
               )}
             </div>
-            <span
-              className={` z-30 inline-block cursor-pointer lg:hidden ${show ? "fixed top-4" : "relative"}`}
-              onClick={handleClick}
-            >
-              {show ? <BsXLg size={28} /> : <BsList size={30} />}
-            </span>
           </div>
         </div>
       </header>

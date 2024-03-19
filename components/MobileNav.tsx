@@ -3,7 +3,7 @@ import Link from "next/link";
 const MobileNav = ({ pathname, show, setShow }: any) => {
   return (
     <div
-      className={`fixed top-0 z-10 flex h-screen w-full justify-end bg-black bg-opacity-30 backdrop-blur-md duration-300 lg:hidden ${show ? "right-0" : "-right-full"}`}
+      className={`fixed top-0 z-10 flex h-screen w-full justify-start bg-black bg-opacity-30 backdrop-blur-md duration-300 lg:hidden ${show ? "left-0" : "-left-full"}`}
     >
       <div className="flex h-full w-8/12 flex-col gap-8 bg-[#f4ecc1] p-9 pt-20 sm:w-6/12">
         <Link
