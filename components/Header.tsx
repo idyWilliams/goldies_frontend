@@ -11,13 +11,19 @@ import MobileNav from "./MobileNav";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { ToastContainer, toast } from "react-toastify";
-  import "react-toastify/dist/ReactToastify.css";
+import "react-toastify/dist/ReactToastify.css";
+import { VscAccount } from "react-icons/vsc";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import { BiHeart, BiStore } from "react-icons/bi";
+import { FaRegUserCircle } from "react-icons/fa";
+
 const Header = () => {
   const [show, setShow] = useState(false);
   const [sticky, setSticky] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const cart = useSelector((state: RootState) => state.product.cart);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -70,29 +76,64 @@ const Header = () => {
             <Link href="/#contact">Contact</Link>
           </div>
           <MobileNav pathname={pathname} show={show} setShow={setShow} />
-
-          <div className="flex items-center gap-4">
-            <div
-              className="relative w-[30px] cursor-pointer"
-              onClick={() => router.push("/cart")}
-            >
-              <Image
-                src={CartIcon}
-                className="h-[25px] w-auto"
-                alt="Goldis Logo"
-              />
-              {Object.values(cart) && Object.values(cart).length >= 1 && (
-                <span className="absolute -right-2 top-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#B89C3D] text-sm text-[#f4ecc1]">
-                  {Object.values(cart).length}
-                </span>
+          <div className="flex items-center gap-3">
+            <div className="">
+              <button
+                onClick={() => setIsOpen((prev) => !prev)}
+                className="flex items-center gap-2"
+              >
+                <FaRegUserCircle size={20} /> Account
+                {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
+              </button>
+              {isOpen && (
+                <div className="absolute right-0 top-12 z-20 w-[150px] rounded-md bg-[#E4D064] p-2.5 pb-3 shadow-lg">
+                  <div className="space-y-2">
+                    <span className="flex items-center gap-2 whitespace-nowrap text-sm">
+                      <FaRegUserCircle size={20} />
+                      My Account
+                    </span>
+                    <span className="flex items-center gap-2 text-sm">
+                      <BiStore size={20} />
+                      Orders
+                    </span>
+                    <span className="flex items-center gap-2 whitespace-nowrap text-sm">
+                      <BiHeart size={20} />
+                      Saved Items
+                    </span>
+                  </div>
+                  <div className="my-2 border-b border-black border-opacity-50"></div>
+                  <Link
+                    href={`/login`}
+                    className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064]"
+                  >
+                    Sign In
+                  </Link>
+                </div>
               )}
             </div>
-            <span
-              className={` z-30 inline-block cursor-pointer lg:hidden ${show ? "fixed top-4" : "relative"}`}
-              onClick={handleClick}
-            >
-              {show ? <BsXLg size={28} /> : <BsList size={30} />}
-            </span>
+            <div className="flex items-center gap-4">
+              <div
+                className="relative w-[30px] cursor-pointer"
+                onClick={() => router.push("/cart")}
+              >
+                <Image
+                  src={CartIcon}
+                  className="h-[25px] w-auto"
+                  alt="Goldis Logo"
+                />
+                {Object.values(cart) && Object.values(cart).length >= 1 && (
+                  <span className="absolute -right-2 top-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#B89C3D] text-sm text-[#f4ecc1]">
+                    {Object.values(cart).length}
+                  </span>
+                )}
+              </div>
+              <span
+                className={` z-30 inline-block cursor-pointer lg:hidden ${show ? "fixed top-4" : "relative"}`}
+                onClick={handleClick}
+              >
+                {show ? <BsXLg size={28} /> : <BsList size={30} />}
+              </span>
+            </div>
           </div>
         </div>
       </header>
