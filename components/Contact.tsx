@@ -17,6 +17,10 @@ const Contact = () => {
     console.log("form:", form);
     setForm({ fullName: "", email: "" });
     toast("form submitted successfully");
+    event.preventDefault();
+    console.log("form:", form);
+    setForm({ fullName: "", email: "" });
+    toast("form submitted successfully");
   };
 
   const onHandleChange = (event: any) => {
