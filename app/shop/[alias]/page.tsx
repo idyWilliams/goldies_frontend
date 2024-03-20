@@ -64,7 +64,7 @@ function CakeDetailsPage({ params }: any) {
   const cakes = addSlugToCakes(cakeProducts1);
 
   console.log(cakes, "kkk");
-  const cakeProduct = useMemo(() => cakes, []);
+  const cakeProduct = useMemo(() => cakes, [cakes]);
 
   // console.log("Params Alias:", params);
   // console.log("Cake Products:", cakeProduct);

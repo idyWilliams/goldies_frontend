@@ -13,7 +13,7 @@ const validationSchema = yup.object().shape({
   password: yup.string().required("Password is required"),
 });
 
-export default function page({ params }: any) {
+export default function Page({ params }: any) {
   const [visible, setVisible] = useState(false);
   const router = useRouter();
   const {
