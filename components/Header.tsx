@@ -42,7 +42,7 @@ const Header = () => {
     <>
       <ToastContainer />
       <header
-        className={`${sticky ? "fixed shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "absolute"} left-0 top-0  z-[999] w-full bg-main py-3`}
+        className={`${sticky ? "fixed shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "absolute"} left-0 top-0 z-[999] flex  w-full items-center bg-main py-3 lg:h-20`}
       >
         <div className="wrapper flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -83,9 +83,30 @@ const Header = () => {
             <Link href="/#testimonials">Testimonials</Link>
             <Link href="/#contact">Contact</Link>
           </div>
-          <MobileNav pathname={pathname} show={show} setShow={setShow} />
+          <MobileNav
+            pathname={pathname}
+            show={show}
+            setShow={setShow}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+          />
           <div className="flex items-center gap-3">
-            <div className="">
+            <div
+              className="relative w-[30px] cursor-pointer"
+              onClick={() => router.push("/cart")}
+            >
+              <Image
+                src={CartIcon}
+                className="h-[22px] w-auto"
+                alt="Goldis Logo"
+              />
+              {Object.values(cart) && Object.values(cart).length >= 0 && (
+                <span className="absolute -right-1 top-0 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#89732e] text-xs font-medium text-[#fcf7e8]">
+                  {Object.values(cart).length}
+                </span>
+              )}
+            </div>
+            <div className="hidden lg:block">
               <button
                 onClick={() => setIsOpen((prev) => !prev)}
                 className="flex items-center gap-2"
@@ -94,17 +115,17 @@ const Header = () => {
                 {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
               </button>
               {isOpen && (
-                <div className="absolute right-0 top-12 z-20 w-[150px] rounded-md bg-[#E4D064] p-2.5 pb-3 shadow-lg">
-                  <div className="space-y-2">
-                    <span className="flex items-center gap-2 whitespace-nowrap text-sm">
+                <div className="absolute right-0 top-16 z-20 w-[190px] rounded-md bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
+                  <div className="">
+                    <span className="flex items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
                       <FaRegUserCircle size={20} />
                       My Account
                     </span>
-                    <span className="flex items-center gap-2 text-sm">
+                    <span className="flex items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
                       <BiStore size={20} />
                       Orders
                     </span>
-                    <span className="flex items-center gap-2 whitespace-nowrap text-sm">
+                    <span className="flex items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
                       <BiHeart size={20} />
                       Saved Items
                     </span>
@@ -112,35 +133,12 @@ const Header = () => {
                   <div className="my-2 border-b border-black border-opacity-50"></div>
                   <Link
                     href={`/login`}
-                    className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064]"
+                    className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
                   >
                     Sign In
                   </Link>
                 </div>
               )}
-            </div>
-            <div className="flex items-center gap-4">
-              <div
-                className="relative w-[30px] cursor-pointer"
-                onClick={() => router.push("/cart")}
-              >
-                <Image
-                  src={CartIcon}
-                  className="h-[25px] w-auto"
-                  alt="Goldis Logo"
-                />
-                {Object.values(cart) && Object.values(cart).length >= 1 && (
-                  <span className="absolute -right-2 top-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#B89C3D] text-sm text-[#f4ecc1]">
-                    {Object.values(cart).length}
-                  </span>
-                )}
-              </div>
-              <span
-                className={` z-30 inline-block cursor-pointer lg:hidden ${show ? "fixed top-4" : "relative"}`}
-                onClick={handleClick}
-              >
-                {show ? <BsXLg size={28} /> : <BsList size={30} />}
-              </span>
             </div>
           </div>
         </div>
