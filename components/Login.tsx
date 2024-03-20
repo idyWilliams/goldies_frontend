@@ -88,7 +88,7 @@ export default function Login() {
         </form>
 
         <p className="mt-4 flex items-center justify-center text-[12px]">
-          Don't have an account?&nbsp;&nbsp;
+          Don&apos;t have an account?&nbsp;&nbsp;
           <Link href={"/signup"} className="cursor-pointer text-[#9C8222]">
             Register Now
           </Link>
