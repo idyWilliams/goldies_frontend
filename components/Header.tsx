@@ -16,6 +16,8 @@ import { VscAccount } from "react-icons/vsc";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { BiHeart, BiStore } from "react-icons/bi";
 import { FaRegUserCircle } from "react-icons/fa";
+import { Menu } from "iconsax-react";
+import MenuPopup from "./MenuPopup";
 
 const Header = () => {
   const [show, setShow] = useState(false);
@@ -110,7 +112,7 @@ const Header = () => {
                 {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
               </button>
               {isOpen && (
-                <div className="absolute right-0 top-16 z-20 w-[190px] rounded-md bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
+                <MenuPopup className="absolute right-0 top-16 z-20 w-[190px] rounded-md bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
                   <div className="">
                     <span className="flex items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
                       <FaRegUserCircle size={20} />
@@ -132,7 +134,7 @@ const Header = () => {
                   >
                     Sign In
                   </Link>
-                </div>
+                </MenuPopup>
               )}
             </div>
           </div>

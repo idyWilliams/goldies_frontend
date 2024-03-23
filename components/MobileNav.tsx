@@ -6,9 +6,13 @@ import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 const MobileNav = ({ pathname, show, setShow, isOpen, setIsOpen }: any) => {
   return (
     <div
+      onClick={() => setShow(false)}
       className={`fixed top-0 z-50 flex h-screen w-full justify-start bg-black bg-opacity-30 backdrop-blur-md duration-300 lg:hidden ${show ? "left-0" : "-left-full"}`}
     >
-      <div className="flex h-full w-8/12 flex-col gap-8 bg-main p-9 pl-4 pt-24 sm:w-6/12">
+      <div
+        onClick={(e: any) => e.stopPropagation()}
+        className="flex h-full w-8/12 flex-col gap-8 bg-main p-9 pl-4 pt-24 sm:w-6/12"
+      >
         <div className="relative">
           <button
             onClick={() => setIsOpen((prev: any) => !prev)}

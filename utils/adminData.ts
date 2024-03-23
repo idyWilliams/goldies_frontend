@@ -34,20 +34,23 @@ export const Overview = [
   },
 ];
 
-const topProduct = [
+export const topProduct = [
   {
     id: 1,
     productName: "Wedding Cake",
     sale: 90,
+    percent: 90,
   },
   {
     id: 2,
     productName: "Red Velvet Sponge Cake",
-    sale: 90,
+    sale: 70,
+    percent: 70,
   },
   {
     id: 3,
     productName: "Lemon Cake",
-    sale: 90,
+    sale: 30,
+    percent: 30,
   },
 ];
