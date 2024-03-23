@@ -65,12 +65,13 @@ export default function AdminNav() {
           className={`fixed top-0 h-screen w-full duration-300 ${open ? "left-0" : "-left-full"}`}
         >
           <span
-            className="absolute left-4 top-4 z-50 inline-block cursor-pointer text-main"
+            className="absolute left-3 top-4 z-50 inline-block cursor-pointer text-main"
             onClick={() => setIsOpen(false)}
           >
-            <BsX size={20} />
+            <BsX size={30} />
           </span>
           <div
+            onClick={() => setIsOpen(false)}
             className={`fixed  top-0 h-screen w-full bg-black bg-opacity-50 ${open ? "left-0" : "-left-full"}`}
           ></div>
           <div className="absolute left-0 top-0 z-20 h-screen w-[250px]">

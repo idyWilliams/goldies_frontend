@@ -5,22 +5,25 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BsEyeSlash } from "react-icons/bs";
 import { AiOutlineEye } from "react-icons/ai";
+import ReactPasswordChecklist from "react-password-checklist";
 
 const validationSchema = yup.object().shape({
-  firstName: yup.string().required("firstName is required"),
-  lastName: yup.string().required("lastName is required"),
-  email: yup.string().required("email is required"),
+  firstName: yup.string().required("Firstname is required"),
+  lastName: yup.string().required("Lastname is required"),
+  email: yup.string().required("Email is required"),
   password: yup.string().required("Password is required"),
 });
 
 export default function SignUp() {
   const [visible, setVisible] = useState(false);
+  const [password, setPassword] = useState("");
 
   const {
     register,
     handleSubmit,
     getValues,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
@@ -33,6 +36,8 @@ export default function SignUp() {
     // event.preventDefault();
     const form = getValues();
     console.log(form, "text");
+    reset();
+    setPassword("");
   };
 
   return (
@@ -46,7 +51,7 @@ export default function SignUp() {
         <form id="signup" className="" onSubmit={handleSubmit(onSubmit)}>
           <div className="mt-6 flex w-full items-center justify-center gap-4">
             <label htmlFor="firstName" className="block">
-              <span className="">Firstname</span>
+              <span className="mb-1 inline-block">Firstname</span>
               <input
                 {...register("firstName")}
                 type="text"
@@ -59,7 +64,7 @@ export default function SignUp() {
             </label>
 
             <label htmlFor="lastName" className="block">
-              <span className="">LastName</span>
+              <span className="mb-1 inline-block">Lastname</span>
               <input
                 {...register("lastName")}
                 type="text"
@@ -91,9 +96,11 @@ export default function SignUp() {
               <input
                 {...register("password")}
                 type={visible ? "text" : "password"}
+                value={password}
                 autoComplete="off"
                 id="password"
                 placeholder="Your password"
+                onChange={(e: any) => setPassword(e.target.value)}
                 className={`w-full rounded-sm bg-gray-50 text-[13px] ${errors.password ? "border border-red-500 focus:border-red-500 focus:outline-none focus:ring-0" : "border focus:border-black focus:outline-none focus:ring-black"}`}
               />
               <span
@@ -103,8 +110,23 @@ export default function SignUp() {
                 {visible ? <BsEyeSlash /> : <AiOutlineEye />}
               </span>
             </div>
-            <p className="mt-2 text-[#a10]">{errors.password?.message}</p>
+            {/* <p className="mt-2 text-[#a10]">{errors.password?.message}</p> */}
           </label>
+          {password !== "" && (
+            <ReactPasswordChecklist
+              rules={[
+                "minLength",
+                "specialChar",
+                "number",
+                "capital",
+                //   "match",
+              ]}
+              minLength={8}
+              value={password}
+              // valueAgain={confirmPassword}
+              onChange={(isValid) => {}}
+            />
+          )}
           <button className="mt-4 w-full rounded-sm bg-black px-11 py-2 text-[#9C8222]">
             Register
           </button>
