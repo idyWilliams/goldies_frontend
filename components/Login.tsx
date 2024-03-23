@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Link from "next/link";
+import ReactPasswordChecklist from "react-password-checklist";
 
 const validationSchema = yup.object().shape({
   email: yup.string().required("Email is required"),
@@ -15,11 +16,13 @@ const validationSchema = yup.object().shape({
 
 export default function Login() {
   const [visible, setVisible] = useState(false);
+  const [password, setPassword] = useState("");
   // const [login, setLogin] = useState(true);
   const {
     register,
     handleSubmit,
     getValues,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(validationSchema),
@@ -33,6 +36,8 @@ export default function Login() {
     // event.preventDefault();
     const form = getValues();
     console.log(form);
+    reset();
+    setPassword("");
   };
   return (
     <>
@@ -57,16 +62,18 @@ export default function Login() {
             />
             <p className="mt-2 text-[#a10]">{errors.email?.message}</p>
           </label>
-          <label htmlFor="password" className="mt-4 block">
+          <label htmlFor="password" className="mb-4 mt-4 block">
             <span className="mb-2 block w-full">Password</span>
             <div className="relative">
               <input
                 {...register("password")}
                 type={visible ? "text" : "password"}
                 //   name="password"
+                value={password}
                 autoComplete="off"
                 id="password"
                 placeholder="Your password"
+                onChange={(e: any) => setPassword(e.target.value)}
                 className={`w-full rounded-sm bg-gray-50 text-[13px] ${errors.password ? "border border-red-500 focus:border-red-500 focus:outline-none focus:ring-0" : "border focus:border-black focus:outline-none focus:ring-black"}`}
               />
               <span
@@ -76,8 +83,23 @@ export default function Login() {
                 {visible ? <BsEyeSlash /> : <AiOutlineEye />}
               </span>
             </div>
-            <p className="mt-2 text-[#a10]">{errors.password?.message}</p>
+            {/* <p className="mt-2 text-[#a10]">{errors.password?.message}</p> */}
           </label>
+          {password !== "" && (
+            <ReactPasswordChecklist
+              rules={[
+                "minLength",
+                "specialChar",
+                "number",
+                "capital",
+                //   "match",
+              ]}
+              minLength={8}
+              value={password}
+              // valueAgain={confirmPassword}
+              onChange={(isValid) => {}}
+            />
+          )}
           <p className="mt-2 text-right text-sm">Forgot password?</p>
           <button
             type="submit"
