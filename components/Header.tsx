@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import CartIcon from "../public/assets/cart.png";
-import { BsList, BsXLg } from "react-icons/bs";
+import { BsList, BsX, BsXLg } from "react-icons/bs";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
@@ -36,21 +36,22 @@ const Header = () => {
 
   const handleClick = () => {
     setShow((show: boolean) => !show);
+    setIsOpen(false);
   };
 
   return (
     <>
       <ToastContainer />
       <header
-        className={`${sticky ? "fixed shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "absolute"} left-0 top-0 z-[999] flex  w-full items-center bg-main py-3 lg:h-20`}
+        className={`${sticky ? "fixed shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "absolute border-b border-neutral-900"} left-0 top-0 z-[999] flex  w-full items-center bg-main py-3 lg:h-20`}
       >
         <div className="wrapper flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span
-              className={` z-30 inline-block cursor-pointer lg:hidden ${show ? "fixed top-4" : "relative"}`}
+              className={` z-30 inline-block cursor-pointer lg:hidden`}
               onClick={handleClick}
             >
-              {show ? <BsXLg size={28} /> : <BsList size={30} />}
+              {show ? <BsX size={32} /> : <BsList size={30} />}
             </span>
             <Link href="/" className="relative">
               <Image
@@ -83,13 +84,7 @@ const Header = () => {
             <Link href="/#testimonials">Testimonials</Link>
             <Link href="/#contact">Contact</Link>
           </div>
-          <MobileNav
-            pathname={pathname}
-            show={show}
-            setShow={setShow}
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-          />
+
           <div className="flex items-center gap-3">
             <div
               className="relative w-[30px] cursor-pointer"
@@ -143,6 +138,13 @@ const Header = () => {
           </div>
         </div>
       </header>
+      <MobileNav
+        pathname={pathname}
+        show={show}
+        setShow={setShow}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />
     </>
   );
 };
