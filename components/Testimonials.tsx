@@ -54,42 +54,6 @@ const Testimonials = () => {
   };
 
   return (
-    // <section id="testimonials" className="py-16 pt-20">
-    //   <div className="wrapper">
-    //     <h2 className="mb-8 text-2xl font-bold capitalize md:text-center md:text-3xl">
-    //       See how our customers rate us...
-    //     </h2>
-    //     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-    //       {reviews.map((review: any, index: number) => (
-    //         <blockquote
-    //           key={index}
-    //           className="relative overflow-hidden rounded-md border border-neutral-300 bg-white p-7 transition-all duration-300 hover:shadow-lg"
-    //         >
-    //           <div className="flex items-center gap-3">
-    //             <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-[#b6a650] to-main font-bold">
-    //               {clientInitails(review.client)}
-    //             </span>
-    //             <div>
-    //               <h3 className="text-lg font-bold leading-[1.5]">
-    //                 {review.client}
-    //               </h3>
-    //               <div className="flex items-center gap-1">
-    //                 <BsStarFill size={18} className="text-yellow-500" />
-    //                 <BsStarFill size={18} className="text-yellow-500" />
-    //                 <BsStarFill size={18} className="text-yellow-500" />
-    //                 <BsStarFill size={18} className="text-yellow-500" />
-    //                 <BsStarHalf size={18} className="text-yellow-500" />
-    //               </div>
-    //             </div>
-    //           </div>
-    //           <p className="mt-4 leading-[150%]">{review.comment}</p>
-    //           <div className="absolute inset-0 bg-gradient-to-tr from-[#b6a650] to-main opacity-0 hover:opacity-100"></div>
-    //         </blockquote>
-    //       ))}
-    //     </div>
-    //   </div>
-    // </section>
-
     <section id="testimonials" className="py-16 pt-20">
       <div className="wrapper">
         <h2
@@ -107,9 +71,8 @@ const Testimonials = () => {
                 data-aos="fade-right"
                 data-aos-delay={delay}
                 key={index}
-                className={`rounded-md border border-neutral-300 bg-white p-7 ${
-                  hoveredIndex === index ? "shadow-md" : ""
-                }`}
+                className={`rounded-md border border-neutral-300 bg-white p-7 hover:shadow-md
+                ${hoveredIndex === index ? "" : ""}`}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
               >

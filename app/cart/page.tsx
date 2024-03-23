@@ -37,15 +37,15 @@ const CartPage = () => {
                     name: "Home",
                     link: "/",
                   },
-                  {
-                    name: "Shop",
-                    link: "/shop",
-                  },
-                  {
-                    name: "Cake Details",
-                    link: "#",
-                    fnx: () => router.back(),
-                  },
+                  // {
+                  //   name: "Shop",
+                  //   link: "/shop",
+                  // },
+                  // {
+                  //   name: "Cake Details",
+                  //   link: "#",
+                  //   fnx: () => router.back(),
+                  // },
                   {
                     name: "Cart",
                     link: "/cart",
