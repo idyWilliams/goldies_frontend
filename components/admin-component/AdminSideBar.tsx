@@ -1,5 +1,5 @@
 "use client";
-import { Cake, FolderAdd, Home2, ShoppingBag } from "iconsax-react";
+import { Cake, FolderAdd, Home2, Setting2, ShoppingBag } from "iconsax-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
@@ -49,6 +49,15 @@ export default function AdminSideBar() {
             <FolderAdd size="20" />
             Create Products
           </Link>
+
+          <Link
+            href={"/admin/settings"}
+            className={`flex items-center gap-2 whitespace-nowrap text-sm duration-300 hover:text-main ${pathname === "/admin/settings" ? "text-main" : "text-neutral-500"}`}
+          >
+            <Setting2 size="20" />
+            Settings
+          </Link>
+
           <span
             className={`flex items-center gap-2 whitespace-nowrap text-sm text-neutral-500 duration-300 hover:text-main`}
           >

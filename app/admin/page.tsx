@@ -9,9 +9,9 @@ export default function Page() {
   return (
     <>
       {/* <AdminLayout> */}
-      <div>
-        <Dashboard />
-      </div>
+        <div>
+          <Dashboard />
+        </div>
       {/* </AdminLayout> */}
     </>
   );

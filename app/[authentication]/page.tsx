@@ -36,6 +36,9 @@ export default function Page({ params }: any) {
 
   console.log("params", params);
   console.log("rerender");
+
+  if (params.authentication !== "login" || params.authentication !== "signup")
+    return;
   return (
     <>
       <Header />

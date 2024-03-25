@@ -54,3 +54,98 @@ export const topProduct = [
     percent: 30,
   },
 ];
+
+const generateID = () => {
+  const id = crypto.randomUUID();
+  return `GC${id.slice(0, 5).toUpperCase()}`;
+};
+
+export const productList = [
+  {
+    id: generateID(),
+    productName: "Chocolate Fudge Cake",
+    addedDate: "2024/02/12",
+    category: "fruit cake",
+    priceFrom: 107,
+    priceTo: 200,
+    quantity: 20,
+    status: "active",
+  },
+
+  {
+    id: generateID(),
+    productName: "Red Velvet Cake",
+    addedDate: "2024/02/12",
+    category: "fruit cake",
+    priceFrom: 107,
+    priceTo: 200,
+    quantity: 20,
+    status: "active",
+  },
+
+  {
+    id: generateID(),
+    productName: "Vanilla Bean Cake",
+    addedDate: "2024/02/12",
+    category: "fruit cake",
+    priceFrom: 107,
+    priceTo: 200,
+    quantity: 20,
+    status: "active",
+  },
+
+  {
+    id: generateID(),
+    productName: "Coconut Cream Cake",
+    addedDate: "2024/02/12",
+    category: "fruit cake",
+    priceFrom: 107,
+    priceTo: 200,
+    quantity: 20,
+    status: "active",
+  },
+
+  {
+    id: generateID(),
+    productName: "Coconut Cream Cake",
+    addedDate: "2024/02/12",
+    category: "fruit cake",
+    priceFrom: 107,
+    priceTo: 200,
+    quantity: 20,
+    status: "active",
+  },
+
+  {
+    id: generateID(),
+    productName: "Coconut Cream Cake",
+    addedDate: "2024/02/12",
+    category: "fruit cake",
+    priceFrom: 107,
+    priceTo: 200,
+    quantity: 20,
+    status: "active",
+  },
+
+  {
+    id: generateID(),
+    productName: "Coconut Cream Cake",
+    addedDate: "2024/02/12",
+    category: "fruit cake",
+    priceFrom: 107,
+    priceTo: 200,
+    quantity: 20,
+    status: "active",
+  },
+
+  {
+    id: generateID(),
+    productName: "Coconut Cream Cake",
+    addedDate: "2024/02/12",
+    category: "fruit cake",
+    priceFrom: 107,
+    priceTo: 200,
+    quantity: 20,
+    status: "active",
+  },
+];
