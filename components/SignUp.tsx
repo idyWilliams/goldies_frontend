@@ -64,7 +64,7 @@ export default function SignUp() {
             </label>
 
             <label htmlFor="lastName" className="block">
-              <span className="mb-1 inline-block">Lastname</span>
+              <span className="mb-1 inline-block">Lastame</span>
               <input
                 {...register("lastName")}
                 type="text"

@@ -1,4 +1,5 @@
 import { Cake, Moneys, Profile2User, ShoppingBag } from "iconsax-react";
+import Chocolate from "../public/assets/carrot.webp";
 
 export const Overview = [
   {
@@ -63,6 +64,7 @@ const generateID = () => {
 export const productList = [
   {
     id: generateID(),
+    image: Chocolate,
     productName: "Chocolate Fudge Cake",
     addedDate: "2024/02/12",
     category: "fruit cake",
