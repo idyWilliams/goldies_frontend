@@ -14,7 +14,9 @@ export default function AdminLayout({
         <>
           <AdminSideBar />
         </>
-        <div>{children}</div>
+        <div className="overflow-auto pb-8 pt-[65px] lg:h-screen">
+          {children}
+        </div>
       </div>
     </>
   );

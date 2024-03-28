@@ -66,7 +66,7 @@ const data = [
 export default function Dashboard() {
   return (
     <>
-      <section className="w-full bg-main px-4 py-6 pt-[65px] lg:bg-white lg:p-8 lg:pt-24">
+      <section className="w-full bg-main px-4 py-6 pt-[24px] lg:bg-white lg:p-8 lg:pt-6">
         <div className="bg-main lg:p-8">
           <p className="font-bold">Today&apos;s Sales</p>
           <p className="mb-4 text-[13px]">Sales summary</p>
