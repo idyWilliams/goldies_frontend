@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
 import { productList } from "@/utils/adminData";
-import { ArrowDown2, ArrowUp2 } from "iconsax-react";
+import { ArrowDown2, ArrowUp2, Edit, Eye, Trash } from "iconsax-react";
 import ProductCard from "../ProductCard";
 import Image from "next/image";
 
@@ -21,15 +20,16 @@ const statusColor = (status: string) => {
   switch (status.toLowerCase()) {
     case "active":
       return (
-        <div className="inline-flex items-center gap-2 rounded-[50px] border border-green-700 bg-green-700 bg-opacity-20 px-1 py-[2px] text-sm text-green-700">
-          <span className="h-3 w-3 rounded-full bg-green-700"></span>
+        <div className="inline-flex items-center gap-1 rounded-md bg-green-700 px-3 py-1 text-[8px] uppercase tracking-wider text-white">
+          {/* <span className="h-1 w-1 rounded-full bg-green-700"></span> */}
           Active
         </div>
       );
     case "inactive":
       return (
-        <div className="inline-flex items-center gap-2 rounded-[50px] border border-red-700 bg-red-700 bg-opacity-20 px-1 py-[2px] text-sm text-red-700">
-          <span className="h-3 w-3 rounded-full bg-red-700"></span> Inactive
+        <div className="inline-flex items-center gap-1 rounded-md bg-red-700 px-3 py-1 text-[8px] uppercase tracking-wider text-white">
+          {/* <span className="h-1 w-1 rounded-full bg-red-700"></span> */}
+          Inactive
         </div>
       );
     default:
@@ -37,67 +37,97 @@ const statusColor = (status: string) => {
   }
 };
 
-const accordionData = {
-  title: (
-    <div className="">
-      {productList.map((data: any, index: number) => {
-        return (
-          <ProductCard key={index} className="mb-4 mt-2 bg-white p-4 shadow-xl">
-            <div className="flex justify-between">
-              <div>
-                <div className="flex gap-2">
-                  <Image
-                    src={data.image}
-                    alt={data.productName}
-                    width={50}
-                    height={20}
-                    className=""
-                  />
-                  <div>
-                    <p className="text-sm font-semibold">{data.productName}</p>
-                    <p className="text-xs font-medium">
-                      &euro;{data.priceFrom} - &euro;
-                      {data.priceTo}
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div>
-                <p className="text-xs">{data.addedDate}</p>
-              </div>
-            </div>
-            <div className="ml-14 flex justify-between">
-              <div className="text-[10px]">
-                {statusColor}
-                {data.status}
-              </div>
-              <p className="text-xs">X{data.quantity}</p>
-            </div>
-          </ProductCard>
-        );
-      })}
-      ,
-    </div>
-  ),
-  content: "",
-};
-
-const { title, content } = accordionData;
-
-export default function MobileProductCard() {
+export default function MobileProductCard({ data }: { data: any }) {
   const [isActive, setIsActive] = useState(false);
+
+  const accordionData = {
+    title: (
+      <div className="flex justify-between">
+        <div>
+          <div className="grid grid-cols-[50px_1fr] gap-2">
+            <>
+              <Image
+                src={data.image}
+                alt={data.productName}
+                width={50}
+                height={50}
+                className="h-[50px] w-[50px] object-cover"
+              />
+            </>
+            <div className="flex flex-col items-start">
+              <span className="text-sm font-semibold">{data.productName}</span>
+              <span className="mb-1 text-xs font-medium">
+                &euro;{data.priceFrom} - &euro;
+                {data.priceTo}
+              </span>
+              {statusColor(data.status)}
+            </div>
+          </div>
+        </div>
+        <div className="grid gap-5 text-right ">
+          <span className="text-xs">{data.addedDate}</span>
+          <span className="text-xs">X{data.quantity}</span>
+        </div>
+      </div>
+    ),
+    content: (
+      <div className="mt-5 flex justify-between border-t border-neutral-500 pt-5">
+        <ul className=" space-y-2">
+          <li className="font-bold">Product ID:</li>
+          <li className="font-bold">Category:</li>
+          <li className="font-bold">Action:</li>
+        </ul>
+        <ul className="space-y-2 text-right">
+          <li>{data.id}</li>
+          <li className="capitalize">{data.category}</li>
+          <li className="inline-flex items-center gap-3">
+            <span className="text-blue-700">
+              <Eye size={20} />
+            </span>
+            <span className="text-green-700">
+              <Edit size={20} />
+            </span>
+            <span className="text-red-700">
+              <Trash size={20} />
+            </span>
+          </li>
+        </ul>
+      </div>
+      // <div>
+
+      //   {productList.map((data: any, index: number) => {
+      //     return (
+      //       <div>
+      //         <span>{data.id}</span>
+      //         <span>{data.category}</span>
+      //         <div className="inline-flex items-center gap-3">
+      //           <span className="text-blue-700">
+      //             <Eye size={20} />
+      //           </span>
+      //           <span className="text-green-700">
+      //             <Edit size={20} />
+      //           </span>
+      //           <span className="text-red-700">
+      //             <Trash size={20} />
+      //           </span>
+      //         </div>
+      //       </div>
+      //     );
+      //   })}
+      // </div>
+    ),
+  };
+
+  const { title, content } = accordionData;
   return (
     <>
-      <div className="accordion">
-        <div className="accordion-item">
-          <div
-            className="accordion-title"
-            onClick={() => setIsActive(!isActive)}
-          >
-            <div>{title}</div>
-            <div>{isActive ? <ArrowUp2 /> : <ArrowDown2 />}</div>
+      <div className="relative rounded-lg border border-neutral-200 p-6 shadow-[0_0_30px_rgba(0,0,0,0.1)]">
+        <div onClick={() => setIsActive(!isActive)}>
+          <div>{title}</div>
+          {isActive && <div>{content}</div>}
+          <div className="absolute -bottom-3 left-1/2 z-20 flex h-6 w-6 -translate-x-1/2 items-center justify-center rounded-full border border-neutral-500 bg-white ">
+            {isActive ? <ArrowUp2 /> : <ArrowDown2 />}
           </div>
-          {isActive && <div className="accordion-content">{content}</div>}
         </div>
       </div>
     </>

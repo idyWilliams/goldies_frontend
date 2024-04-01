@@ -165,7 +165,7 @@ export default function Page() {
             <h1 className="text-lg font-extrabold">Products</h1>
             <p className="text-xs">List of all available products created</p>
           </div>
-          <button className="flex cursor-pointer items-center rounded-md bg-black px-5 py-4 text-[10px] text-main">
+          <button className="flex cursor-pointer items-center rounded-md bg-black px-5 py-4 text-[10px] text-main md:hidden">
             <Add size={15} /> ADD NEW
           </button>
         </div>
@@ -183,7 +183,7 @@ export default function Page() {
               <CiSearch />
             </span>
           </label>
-          <button className="hidden cursor-pointer items-center rounded-md bg-black px-5 py-4 text-[10px] text-main md:block">
+          <button className="hidden cursor-pointer items-center rounded-md bg-black px-5 py-4 text-[10px] text-main md:flex">
             <Add size={15} /> ADD NEW
           </button>
           <button className="flex min-w-[83px] cursor-pointer items-center justify-between rounded-md bg-black px-3 py-2 text-[10px] text-main md:hidden">
@@ -197,10 +197,10 @@ export default function Page() {
         <div className="hidden md:block">
           <ProductTable columns={columns} data={productList} />
         </div>
-        <div className="block md:hidden">
-          <div className="">
-            <MobileProductCard />
-          </div>
+        <div className="block space-y-5 md:hidden">
+          {productList.map((product: any, index: number) => (
+            <MobileProductCard data={product} key={index} />
+          ))}
         </div>
       </section>
     </>

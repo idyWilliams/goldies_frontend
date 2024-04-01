@@ -65,3 +65,7 @@ body {
     text-wrap: balance;
   }
 }
+
+span {
+  @apply inline-block;
+}
