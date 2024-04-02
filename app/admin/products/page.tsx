@@ -22,35 +22,6 @@ import {
 } from "iconsax-react";
 import MobileProductCard from "@/components/admin-component/MobileProductCard";
 
-// const ProductColumn = ({ row }: any) => {
-//   console.log(row, "Productrow");
-//   return (
-//     <div className="grid grid-cols-[100px_1fr]">
-//       <Image
-//         src={row?.image}
-//         alt={row?.productName}
-//         className="h-full w-full object-cover object-center"
-//       />
-//       <div>
-//         <h3 className="font-medium capitalize">{row?.productName}</h3>
-//         <span className="inline-block uppercase">id:{row?.id}</span>
-//       </div>
-//     </div>
-//   );
-// };
-// const TColumns: readonly Column<object>[] = [
-//   {
-//     Header: "Product",
-//     accessor: (row: any) => {
-//       return <ProductColumn row={row} />;
-//     },
-//   },
-//   {
-//     Header: "Product",
-//     accessor: "productName",
-//   },
-// ];
-
 type Product = {
   id: string;
   image: any;
@@ -165,7 +136,7 @@ export default function Page() {
             <h1 className="text-lg font-extrabold">Products</h1>
             <p className="text-xs">List of all available products created</p>
           </div>
-          <button className="flex cursor-pointer items-center rounded-md bg-black px-5 py-4 text-[10px] text-main md:hidden">
+          <button className="flex cursor-pointer items-center rounded-md bg-black px-5 py-2 text-[10px] text-main md:hidden">
             <Add size={15} /> ADD NEW
           </button>
         </div>
@@ -190,9 +161,6 @@ export default function Page() {
             Sort by <ArrowDown2 size={15} />
           </button>
         </div>
-        {/* <div>
-          <AdminTable columns={TColumns} data={productList} />
-        </div> */}
 
         <div className="hidden md:block">
           <ProductTable columns={columns} data={productList} />
