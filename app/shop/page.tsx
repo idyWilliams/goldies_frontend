@@ -24,7 +24,7 @@ const ShopPage = ({ params }: any) => {
     <>
       <Layout>
         {/* BREADCRUMBS */}
-        <div className="bg-black pb-6 pt-20">
+        <div className="bg-black pb-4 pt-20 lg:pt-[96px]">
           <div className="wrapper">
             <BreadCrumbs
               items={[

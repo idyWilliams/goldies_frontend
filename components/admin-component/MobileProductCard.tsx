@@ -3,6 +3,7 @@ import { productList } from "@/utils/adminData";
 import { ArrowDown2, ArrowUp2, Edit, Eye, Trash } from "iconsax-react";
 import ProductCard from "../ProductCard";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 type Product = {
   id: string;
@@ -39,24 +40,29 @@ const statusColor = (status: string) => {
 
 export default function MobileProductCard({ data }: { data: any }) {
   const [isActive, setIsActive] = useState(false);
-
+  const router = useRouter();
+  const handleView = () => {
+    router.push(`/products/${data.id}`);
+  };
   const accordionData = {
     title: (
       <div className="flex justify-between">
         <div>
-          <div className="grid grid-cols-[50px_1fr] gap-2">
+          <div className="grid grid-cols-[70px_1fr] items-center gap-2">
             <>
               <Image
                 src={data.image}
                 alt={data.productName}
                 width={50}
                 height={50}
-                className="h-[50px] w-[50px] object-cover"
+                className="h-full w-full object-cover"
               />
             </>
             <div className="flex flex-col items-start">
-              <span className="text-sm font-semibold">{data.productName}</span>
-              <span className="mb-1 text-xs font-medium">
+              <span className="inline-block text-sm font-semibold">
+                {data.productName}
+              </span>
+              <span className="mb-1.5 mt-1 inline-block text-sm font-medium">
                 &euro;{data.priceFrom} - &euro;
                 {data.priceTo}
               </span>
@@ -81,7 +87,7 @@ export default function MobileProductCard({ data }: { data: any }) {
           <li>{data.id}</li>
           <li className="capitalize">{data.category}</li>
           <li className="inline-flex items-center gap-3">
-            <span className="text-blue-700">
+            <span className="text-blue-700" onClick={handleView}>
               <Eye size={20} />
             </span>
             <span className="text-green-700">
@@ -93,28 +99,6 @@ export default function MobileProductCard({ data }: { data: any }) {
           </li>
         </ul>
       </div>
-      // <div>
-
-      //   {productList.map((data: any, index: number) => {
-      //     return (
-      //       <div>
-      //         <span>{data.id}</span>
-      //         <span>{data.category}</span>
-      //         <div className="inline-flex items-center gap-3">
-      //           <span className="text-blue-700">
-      //             <Eye size={20} />
-      //           </span>
-      //           <span className="text-green-700">
-      //             <Edit size={20} />
-      //           </span>
-      //           <span className="text-red-700">
-      //             <Trash size={20} />
-      //           </span>
-      //         </div>
-      //       </div>
-      //     );
-      //   })}
-      // </div>
     ),
   };
 
