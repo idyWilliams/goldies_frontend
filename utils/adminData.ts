@@ -8,7 +8,6 @@ import Strawberry from "../public/assets/Fresh-Strawberry-Cake-with-Strawberry-F
 import Lemon from "../public/assets/lemon-cake.webp";
 import Banana from "../public/assets/banana-cake-with-cinnamon-cream-102945-1.webp";
 
-
 export const Overview = [
   {
     id: 1,
@@ -165,4 +164,10 @@ export const productList = [
     quantity: 20,
     status: "active",
   },
+];
+
+export const options = [
+  { label: "Grapes 🍇", value: "grapes" },
+  { label: "Mango 🥭", value: "mango" },
+  { label: "Strawberry 🍓", value: "strawberry", disabled: true },
 ];
