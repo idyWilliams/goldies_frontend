@@ -7,10 +7,11 @@ import CakeCategory from "@/components/CakeCategory";
 import { Category } from "iconsax-react";
 import { MultiSelect } from "react-multi-select-component";
 import CustomSelect from "@/components/CustomSelect";
-import MobileCreateStep1 from "@/components/admin-component/MobileCreateStep1";
-import MobileCreateStep2 from "@/components/admin-component/MobileCreateStep3";
-import MobileCreateStep3 from "@/components/admin-component/MobileCreateStep2";
 import CreateProductLayout from "@/components/admin-component/create-product/CreateProductLayout";
+import InformationAndPricing from "@/components/admin-component/InformationAndPricing";
+import ProductVariants from "@/components/admin-component/ProductVariants";
+import ProductImages from "@/components/admin-component/ProductImages";
+import StepperController from "@/components/admin-component/create-product/StepperController";
 
 const options = [
   { label: "Milestone Cakes", value: "milestone cakes", disabled: false },
@@ -386,18 +387,12 @@ export default function Page() {
         </div>
       </div>
 
-      <div>
-        <CreateProductLayout />
-      </div>
       <div className="block md:hidden">
-        <MobileCreateStep1 />
+        <CreateProductLayout />
       </div>
 
       <div className="block md:hidden">
-        <MobileCreateStep2 />
-      </div>
-      <div className="block md:hidden">
-        <MobileCreateStep3 />
+        <StepperController />
       </div>
     </section>
   );

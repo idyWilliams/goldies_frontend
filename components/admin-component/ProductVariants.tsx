@@ -14,13 +14,12 @@ const variant = [
   { label: "Sheet", value: "sheet" },
 ];
 
-export default function MobileCreateStep2() {
+export default function ProductVariants() {
   const [shapes, setShapes] = useState([]);
 
   return (
     <section>
       <div>
-        <h1 className="mb-3 font-bold uppercase">Create New Products</h1>
         <div className="mt-3 w-full">
           <h1 className="mb-1 text-[12px]">Product Variants</h1>
           <MultiSelect

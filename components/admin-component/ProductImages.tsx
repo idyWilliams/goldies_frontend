@@ -1,7 +1,7 @@
 import Image from "next/image";
 import React, { useState } from "react";
 
-export default function MobileCreateStep3() {
+export default function ProductImages() {
   const [images, setImages] = useState<any>({
     image1: "",
     image2: "",
@@ -36,7 +36,6 @@ export default function MobileCreateStep3() {
 
   return (
     <section>
-      <h1 className="mb-3 font-bold uppercase">Create New Products</h1>
       <div>
         <h1 className="mb-6 font-bold">Product Images</h1>
         <div className="grid h-full grid-cols-2 grid-rows-[repeat(2,200px)] gap-4">

@@ -9,15 +9,13 @@ const options = [
   { label: "Wedding Cakes", value: "wedding cakes" },
 ];
 
-export default function MobileCreateStep1() {
+export default function InformationAndPricing() {
   const [category, setCategory] = useState<SelectOptionType>(null);
   const [subCategory, setSubCategory] = useState([]);
 
   return (
     <section>
       <div>
-        <h1 className="mb-3 font-bold uppercase">Create New Products</h1>
-        <hr className="border-1 mb-3 border-black" />
         <div>
           <label htmlFor="ProductName" className="">
             <span className="mb-1 block text-[12px]">Product Name</span>
