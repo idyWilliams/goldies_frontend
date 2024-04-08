@@ -71,7 +71,7 @@ export default function Dashboard() {
           <p className="font-bold">Today&apos;s Sales</p>
           <p className="mb-4 text-[13px]">Sales summary</p>
 
-          <div className="grid grid-cols-2 gap-4 text-main lg:grid-cols-4 xl:gap-6">
+          <div className="grid grid-cols-2 gap-4 text-main md:grid-cols-4 xl:gap-6">
             {Overview.map((data: any, index: number) => {
               return (
                 <Card key={index} className="bg-black p-4">

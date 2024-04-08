@@ -21,6 +21,7 @@ import {
   Trash,
 } from "iconsax-react";
 import MobileProductCard from "@/components/admin-component/MobileProductCard";
+import Link from "next/link";
 
 type Product = {
   id: string;
@@ -36,17 +37,17 @@ type Product = {
 
 const statusColor = (status: string) => {
   switch (status.toLowerCase()) {
-    case "active":
+    case "available":
       return (
-        <div className="inline-flex items-center gap-2 rounded-[50px] border border-green-700 bg-green-700 bg-opacity-20 px-1 py-[2px] text-sm text-green-700">
-          <span className="h-3 w-3 rounded-full bg-green-700"></span>
-          Active
+        <div className="inline-flex items-center gap-2 rounded-[50px] border border-green-700 bg-green-700 bg-opacity-10 px-3 py-[2px] text-sm text-green-700">
+          <span className="h-2 w-2 rounded-full bg-green-700"></span>
+          Available
         </div>
       );
-    case "inactive":
+    case "unavailable":
       return (
-        <div className="inline-flex items-center gap-2 rounded-[50px] border border-red-700 bg-red-700 bg-opacity-20 px-1 py-[2px] text-sm text-red-700">
-          <span className="h-3 w-3 rounded-full bg-red-700"></span> Inactive
+        <div className="inline-flex items-center gap-2 rounded-[50px] border border-red-700 bg-red-700 bg-opacity-10 px-3 py-[2px] text-sm text-red-700">
+          <span className="h-2 w-2 rounded-full bg-red-700"></span> Unavailable
         </div>
       );
     default:
@@ -98,7 +99,7 @@ const columns = [
     footer: (info) => info.column.id,
   }),
   columnHelper.accessor("quantity", {
-    header: () => <span>Quantity</span>,
+    header: () => <span>Qnty</span>,
     footer: (info) => info.column.id,
   }),
   columnHelper.accessor((row) => row, {
@@ -111,13 +112,16 @@ const columns = [
     id: "actions",
     cell: (info) => (
       <div className="inline-flex items-center gap-3">
-        <span className="text-blue-700">
+        <Link
+          href={`/admin/products/${info.cell.row.original.id}`}
+          className="cursor-pointer text-blue-700"
+        >
           <Eye size={20} />
-        </span>
-        <span className="text-green-700">
+        </Link>
+        <span className="cursor-pointer text-green-700">
           <Edit size={20} />
         </span>
-        <span className="text-red-700">
+        <span className="cursor-pointer text-red-700">
           <Trash size={20} />
         </span>
       </div>

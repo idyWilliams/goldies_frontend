@@ -8,7 +8,6 @@ import Strawberry from "../public/assets/Fresh-Strawberry-Cake-with-Strawberry-F
 import Lemon from "../public/assets/lemon-cake.webp";
 import Banana from "../public/assets/banana-cake-with-cinnamon-cream-102945-1.webp";
 
-
 export const Overview = [
   {
     id: 1,
@@ -79,7 +78,7 @@ export const productList = [
     priceFrom: 220,
     priceTo: 215,
     quantity: 20,
-    status: "active",
+    status: "available",
   },
 
   {
@@ -91,7 +90,7 @@ export const productList = [
     priceFrom: 251,
     priceTo: 292,
     quantity: 20,
-    status: "inactive",
+    status: "unavailable",
   },
 
   {
@@ -103,7 +102,7 @@ export const productList = [
     priceFrom: 107,
     priceTo: 200,
     quantity: 20,
-    status: "active",
+    status: "available",
   },
 
   {
@@ -115,7 +114,7 @@ export const productList = [
     priceFrom: 107,
     priceTo: 200,
     quantity: 20,
-    status: "active",
+    status: "available",
   },
 
   {
@@ -127,7 +126,7 @@ export const productList = [
     priceFrom: 107,
     priceTo: 200,
     quantity: 20,
-    status: "active",
+    status: "available",
   },
 
   {
@@ -139,7 +138,7 @@ export const productList = [
     priceFrom: 107,
     priceTo: 200,
     quantity: 20,
-    status: "active",
+    status: "available",
   },
 
   {
@@ -151,7 +150,7 @@ export const productList = [
     priceFrom: 107,
     priceTo: 200,
     quantity: 20,
-    status: "active",
+    status: "available",
   },
 
   {
@@ -163,6 +162,6 @@ export const productList = [
     priceFrom: 107,
     priceTo: 200,
     quantity: 20,
-    status: "active",
+    status: "available",
   },
 ];

@@ -12,7 +12,7 @@ export default function AdminSideBar() {
   const pathname = usePathname();
   return (
     <>
-      <section className="hidden h-screen w-full flex-col bg-black py-4 lg:flex lg:pt-24">
+      <section className="z-50 hidden h-screen w-full flex-col bg-black py-4 lg:flex lg:pt-24">
         {/* <div className="my-2 mb-7 border-b border-main border-opacity-50"></div> */}
         <div className="flex flex-col items-start gap-6 px-4">
           <Link
