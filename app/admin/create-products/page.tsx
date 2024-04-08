@@ -1,16 +1,8 @@
 "use client";
-import MultiSelectOption from "@/components/MultiSelect";
 import Image from "next/image";
-import cake1 from "../../../public/assets/AT0213_coconut-cream-cake_s4x3.webp";
 import React, { useState } from "react";
-import CakeCategory from "@/components/CakeCategory";
-import { Category } from "iconsax-react";
 import { MultiSelect } from "react-multi-select-component";
-import CustomSelect from "@/components/CustomSelect";
 import CreateProductLayout from "@/components/admin-component/create-product/CreateProductLayout";
-import InformationAndPricing from "@/components/admin-component/InformationAndPricing";
-import ProductVariants from "@/components/admin-component/ProductVariants";
-import ProductImages from "@/components/admin-component/ProductImages";
 import StepperController from "@/components/admin-component/create-product/StepperController";
 
 const fillingsList = [
@@ -163,49 +155,39 @@ const cakeSizes = [
   },
 ];
 
-const selectedSubCategory = (key: any) => {
-  switch (key.toLowerCase) {
-    case "milestone cakes":
-      return [
-        { label: "Birthday Cakes", value: "birthday_cakes" },
-        { label: "Anniversary Cakes", value: "anniversary_cakes" },
-        { label: "Graduation Cakes", value: "graduation_cakes" },
-        { label: "Baby Shower Cakes", value: "baby_shower_cakes" },
-        { label: "Retirement Cakes", value: "retirement_cakes" },
-      ];
+const milestoneSub = [
+  { label: "Birthday Cakes", value: "birthday_cakes" },
+  { label: "Anniversary Cakes", value: "anniversary_cakes" },
+  { label: "Graduation Cakes", value: "graduation_cakes" },
+  { label: "Baby Shower Cakes", value: "baby_shower_cakes" },
+  { label: "Retirement Cakes", value: "retirement_cakes" },
+];
+const kidsCakeSub = [
+  { label: "Cartoon Character Cakes", value: "cartoon_character_cakes" },
+  { label: "Princess Cakes", value: "princess_cakes" },
+  { label: "Superhero Cakes", value: "superhero_cakes" },
+  { label: "Animal Cakes", value: "animal_cakes" },
+  { label: "Fantasy Cakes", value: "fantasy_cakes" },
+];
+const cupCakeSub = [
+  { label: "Classic Cupcakes", value: "classic_cupcakes" },
+  { label: "Gourmet Cupcakes", value: "gourmet_cupcakes" },
+  { label: "Vegan Cupcakes", value: "vegan_cupcakes" },
+  { label: "Gluten-Free Cupcakes", value: "gluten_free_cupcakes" },
+  { label: "Seasonal Cupcakes", value: "seasonal_cupcakes" },
+];
+const weddingCakeSub = [
+  {
+    label: "Traditional Wedding Cakes",
+    value: "traditional_wedding_cakes",
+  },
+  { label: "Modern Wedding Cakes", value: "modern_wedding_cakes" },
+  { label: "Floral Wedding Cakes", value: "floral_wedding_cakes" },
+  { label: "Rustic Wedding Cakes", value: "rustic_wedding_cakes" },
+  { label: "Themed Wedding Cakes", value: "themed_wedding_cakes" },
+];
 
-    case "kids cakes":
-      return [
-        { label: "Cartoon Character Cakes", value: "cartoon_character_cakes" },
-        { label: "Princess Cakes", value: "princess_cakes" },
-        { label: "Superhero Cakes", value: "superhero_cakes" },
-        { label: "Animal Cakes", value: "animal_cakes" },
-        { label: "Fantasy Cakes", value: "fantasy_cakes" },
-      ];
-    case "cupcakes":
-      return [
-        { label: "Classic Cupcakes", value: "classic_cupcakes" },
-        { label: "Gourmet Cupcakes", value: "gourmet_cupcakes" },
-        { label: "Vegan Cupcakes", value: "vegan_cupcakes" },
-        { label: "Gluten-Free Cupcakes", value: "gluten_free_cupcakes" },
-        { label: "Seasonal Cupcakes", value: "seasonal_cupcakes" },
-      ];
-    case "wedding cakes":
-      return [
-        {
-          label: "Traditional Wedding Cakes",
-          value: "traditional_wedding_cakes",
-        },
-        { label: "Modern Wedding Cakes", value: "modern_wedding_cakes" },
-        { label: "Floral Wedding Cakes", value: "floral_wedding_cakes" },
-        { label: "Rustic Wedding Cakes", value: "rustic_wedding_cakes" },
-        { label: "Themed Wedding Cakes", value: "themed_wedding_cakes" },
-      ];
-
-    default:
-      return;
-  }
-};
+const selectedSubCategory = (key: any) => {};
 
 const options = [
   { label: "Milestone Cakes", value: "milestone cakes", disabled: false },
@@ -221,8 +203,12 @@ export type SelectOptionType = {
 } | null;
 
 export default function Page() {
-  const [category, setCategory] = useState<any>([]);
+  const [category, setCategory] = useState<any>();
   const [subCategory, setSubCategory] = useState([]);
+  const [shapes, setShapes] = useState([]);
+  const [fillings, setFillings] = useState([]);
+  const [sizes, setSizes] = useState([]);
+  const [addOn, setAddOn] = useState([]);
 
   const [images, setImages] = useState<any>({
     image1: "",
@@ -255,372 +241,460 @@ export default function Page() {
     }
     console.log(file, e.target.name);
   };
+  let sub;
+  switch (category && category) {
+    case "milestone cakes":
+      sub = (
+        <MultiSelect
+          disabled={category == null}
+          options={milestoneSub}
+          value={subCategory}
+          onChange={setSubCategory}
+          labelledBy="Select subcategory"
+        />
+      );
+      break;
+
+    case "kids cakes":
+      sub = (
+        <MultiSelect
+          disabled={category == null}
+          options={kidsCakeSub}
+          value={subCategory}
+          onChange={setSubCategory}
+          labelledBy="Select subcategory"
+        />
+      );
+      break;
+    case "cupcakes":
+      sub = (
+        <MultiSelect
+          disabled={category == null}
+          options={cupCakeSub}
+          value={subCategory}
+          onChange={setSubCategory}
+          labelledBy="Select subcategory"
+        />
+      );
+      break;
+    case "wedding cakes":
+      sub = (
+        <MultiSelect
+          disabled={category == null}
+          options={weddingCakeSub}
+          value={subCategory}
+          onChange={setSubCategory}
+          labelledBy="Select subcategory"
+        />
+      );
+      break;
+
+    default:
+      sub = (
+        <MultiSelect
+          disabled={true}
+          options={weddingCakeSub}
+          value={subCategory}
+          onChange={setSubCategory}
+          labelledBy="Select subcategory"
+        />
+      );
+      break;
+  }
+  const createProduct = (e: any) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+
+    const data = {
+      productName: formData.get("productName"),
+      description: formData.get("productDescription"),
+      variants: [
+        { shapes: shapes },
+        { fillings: fillings },
+        { sizes: sizes },
+        { toppings: toppings },
+      ],
+      category: {
+        name: category,
+        subCategory: subCategory,
+      },
+      pricing: {
+        priceFrom: Number(formData.get("priceFrom")),
+        priceTo: Number(formData.get("priceTo")),
+      },
+    };
+    // data.append("productName", productName);
+
+    // Now you can log the FormData and productName
+    console.log(data, "productName");
+  };
+
   return (
     <section className="p-6">
       <div className="hidden md:block">
-        <div className="flex items-center justify-between">
-          <h1 className="font-bold">Create New Products</h1>
-          <button className="rounded-md bg-black px-10 py-2 text-[12px] text-main">
-            Save Changes
-          </button>
-        </div>
-        <hr className="my-6 border-2 text-neutral-500" />
-        <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-          <div className="">
-            <h2 className="mb-3 font-bold">Product Information</h2>
-            <div className="h-full rounded-md border border-neutral-300 p-4">
-              <label htmlFor="ProductName" className="">
-                <span className="mb-1 block after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
-                  Product Name
-                </span>
-                <input
-                  name="productName"
-                  type="text"
-                  autoComplete="off"
-                  id="productName"
-                  placeholder="Product name"
-                  className="mb-4 w-full rounded-sm border-none bg-gray-100 placeholder:text-sm"
-                />
-              </label>
-              <label htmlFor="productDescription" className="">
-                <span className="mb-1 block after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
-                  Product Description
-                </span>
-                <textarea
-                  name="productDescription"
-                  autoComplete="off"
-                  id="productDescription"
-                  placeholder="Product Description"
-                  className="h-[110px] w-full resize-none rounded-sm border-none bg-gray-100 placeholder:text-sm"
-                />
-              </label>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="mt-3 w-full">
-                  <h2 className="mb-1 after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
-                    Category
-                  </h2>
+        <form onSubmit={createProduct}>
+          <div className="flex items-center justify-between">
+            <h1 className="font-bold">Create New Products</h1>
+            <button
+              className="rounded-md bg-black px-10 py-2 text-[12px] text-main"
+              type="submit"
+            >
+              Save Changes
+            </button>
+          </div>
+          <hr className="my-6 border-2 text-neutral-500" />
+          <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+            <div className="">
+              <h2 className="mb-3 font-bold">Product Information</h2>
+              <div className="h-full rounded-md border border-neutral-300 p-4">
+                <label htmlFor="ProductName" className="">
+                  <span className="mb-1 block after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+                    Product Name
+                  </span>
+                  <input
+                    name="productName"
+                    type="text"
+                    autoComplete="off"
+                    id="productName"
+                    placeholder="Product name"
+                    className="mb-4 w-full rounded-sm border-none bg-gray-100 placeholder:text-sm"
+                  />
+                </label>
+                <label htmlFor="productDescription" className="">
+                  <span className="mb-1 block after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+                    Product Description
+                  </span>
+                  <textarea
+                    name="productDescription"
+                    autoComplete="off"
+                    id="productDescription"
+                    placeholder="Product Description"
+                    className="h-[110px] w-full resize-none rounded-sm border-none bg-gray-100 placeholder:text-sm"
+                  />
+                </label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="mt-3 w-full">
+                    <h2 className="mb-1 after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+                      Category
+                    </h2>
 
-                  {/* <CustomSelect
+                    {/* <CustomSelect
                     selectedOption={category}
                     setSelectOption={setCategory}
                     options={options || []}
                   /> */}
 
-                  <select
-                    className="form-select w-full rounded-md border-neutral-300 text-neutral-400"
-                    onChange={(e: any) => setCategory(e.target.value)}
-                    value={category}
-                  >
-                    <option
-                      className=""
-                      value={"select_category"}
-                      // disabled
-                      // selected
+                    <select
+                      className="form-select w-full rounded-md border-neutral-300 text-neutral-400"
+                      onChange={(e: any) => setCategory(e.target.value)}
+                      value={category}
                     >
-                      Select category
-                    </option>
-                    {options.map((option: any, index: number) => (
-                      <option key={index} value={option.value}>
-                        {option.label}
+                      <option
+                        className=""
+                        value={"select_category"}
+                        // disabled
+                        // selected
+                      >
+                        Select category
                       </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="mt-3 w-full">
-                  <h2 className="mb-1 after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
-                    Subcategory
-                  </h2>
-                  <MultiSelect
-                    disabled={category == null}
-                    options={category && selectedSubCategory(category)}
-                    value={subCategory}
-                    onChange={setSubCategory}
-                    labelledBy="Select subcategory"
-                  />
+                      {options.map((option: any, index: number) => (
+                        <option key={index} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="mt-3 w-full">
+                    <h2 className="mb-1 after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+                      Subcategory
+                    </h2>
+                    {sub}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="lg:mt-10 xl:mt-0">
-            <h1 className="mb-3 font-bold">Product Images</h1>
-            <div className="grid grid-cols-4 grid-rows-[180px] gap-4 rounded-md border border-neutral-300 p-4 xl:h-full xl:grid-cols-2">
-              <div className="relative flex flex-col items-center justify-center overflow-hidden rounded-md border border-dashed border-neutral-300 bg-[#F8F8F8]">
-                {!images.image1 && (
-                  <div className="text-balance px-3 text-center text-sm text-neutral-400">
-                    Drop files here or
-                    <label
-                      htmlFor="image1"
-                      className="cursor-pointer italic underline"
-                    >
-                      click here
-                    </label>
-                    &nbsp;to upload.
-                  </div>
-                )}
-                <input
-                  type="file"
-                  name="image1"
-                  id="image1"
-                  onChange={(e: any) => handleChange(e)}
-                  className="hidden"
-                />
-                {images.image1 && (
-                  <div className="group absolute left-0 top-0 h-full w-full">
-                    <Image
-                      src={images.image1}
-                      alt="image"
-                      width={100}
-                      height={100}
-                      className="h-full w-full object-cover"
-                    />
-                    <div className="absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center gap-3 bg-black bg-opacity-50 opacity-0 duration-300 hover:opacity-100">
+            <div className="lg:mt-10 xl:mt-0">
+              <h1 className="mb-3 font-bold">Product Images</h1>
+              <div className="grid grid-cols-4 grid-rows-[180px] gap-4 rounded-md border border-neutral-300 p-4 xl:h-full xl:grid-cols-2">
+                <div className="relative flex flex-col items-center justify-center overflow-hidden rounded-md border border-dashed border-neutral-300 bg-[#F8F8F8]">
+                  {!images.image1 && (
+                    <div className="text-balance px-3 text-center text-sm text-neutral-400">
+                      Drop files here or
                       <label
                         htmlFor="image1"
-                        className="inline-block cursor-pointer rounded-md bg-white px-6 py-2"
+                        className="cursor-pointer italic underline"
                       >
-                        Replace
+                        click here
                       </label>
-                      <button
-                        className="cursor-pointer rounded-md bg-main px-6 py-2"
-                        onClick={() => handleRemove(1)}
-                      >
-                        Remove
-                      </button>
+                      &nbsp;to upload.
                     </div>
-                  </div>
-                )}
-              </div>
-              <div className="relative flex flex-col items-center justify-center overflow-hidden rounded-md border border-dashed border-neutral-300 bg-[#F8F8F8]">
-                {!images.image2 && (
-                  <div className="text-balance px-3 text-center text-sm text-neutral-400">
-                    Drop files here or
-                    <label
-                      htmlFor="image2"
-                      className="cursor-pointer italic underline"
-                    >
-                      click here
-                    </label>
-                    &nbsp;to upload.
-                  </div>
-                )}
-                <input
-                  type="file"
-                  name="image2"
-                  id="image2"
-                  onChange={(e: any) => handleChange(e)}
-                  className="hidden"
-                />
-                {images.image2 && (
-                  <div className="group absolute left-0 top-0 h-full w-full">
-                    <Image
-                      src={images.image2}
-                      alt="image"
-                      width={100}
-                      height={100}
-                      className="h-full w-full object-cover"
-                    />
-                    <div className="absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center gap-3 bg-black bg-opacity-50 opacity-0 duration-300 hover:opacity-100">
+                  )}
+                  <input
+                    type="file"
+                    name="image1"
+                    id="image1"
+                    onChange={(e: any) => handleChange(e)}
+                    className="hidden"
+                  />
+                  {images.image1 && (
+                    <div className="group absolute left-0 top-0 h-full w-full">
+                      <Image
+                        src={images.image1}
+                        alt="image"
+                        width={100}
+                        height={100}
+                        className="h-full w-full object-cover"
+                      />
+                      <div className="absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center gap-3 bg-black bg-opacity-50 opacity-0 duration-300 hover:opacity-100">
+                        <label
+                          htmlFor="image1"
+                          className="inline-block cursor-pointer rounded-md bg-white px-6 py-2"
+                        >
+                          Replace
+                        </label>
+                        <button
+                          className="cursor-pointer rounded-md bg-main px-6 py-2"
+                          onClick={() => handleRemove(1)}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="relative flex flex-col items-center justify-center overflow-hidden rounded-md border border-dashed border-neutral-300 bg-[#F8F8F8]">
+                  {!images.image2 && (
+                    <div className="text-balance px-3 text-center text-sm text-neutral-400">
+                      Drop files here or
                       <label
                         htmlFor="image2"
-                        className="inline-block cursor-pointer rounded-md bg-white px-6 py-2"
+                        className="cursor-pointer italic underline"
                       >
-                        Replace
+                        click here
                       </label>
-                      <button
-                        className="cursor-pointer rounded-md bg-main px-6 py-2"
-                        onClick={() => handleRemove(2)}
-                      >
-                        Remove
-                      </button>
+                      &nbsp;to upload.
                     </div>
-                  </div>
-                )}
-              </div>
-              <div className="relative flex flex-col items-center justify-center overflow-hidden rounded-md border border-dashed border-neutral-300 bg-[#F8F8F8]">
-                {!images.image3 && (
-                  <div className="text-balance px-3 text-center text-sm text-neutral-400">
-                    Drop files here or
-                    <label
-                      htmlFor="image3"
-                      className="cursor-pointer italic underline"
-                    >
-                      click here
-                    </label>
-                    &nbsp;to upload.
-                  </div>
-                )}
-                <input
-                  type="file"
-                  name="image3"
-                  id="image3"
-                  onChange={(e: any) => handleChange(e)}
-                  className="hidden"
-                />
-                {images.image3 && (
-                  <div className="group absolute left-0 top-0 h-full w-full">
-                    <Image
-                      src={images.image3}
-                      alt="image"
-                      width={100}
-                      height={100}
-                      className="h-full w-full object-cover"
-                    />
-                    <div className="absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center gap-3 bg-black bg-opacity-50 opacity-0 duration-300 hover:opacity-100">
+                  )}
+                  <input
+                    type="file"
+                    name="image2"
+                    id="image2"
+                    onChange={(e: any) => handleChange(e)}
+                    className="hidden"
+                  />
+                  {images.image2 && (
+                    <div className="group absolute left-0 top-0 h-full w-full">
+                      <Image
+                        src={images.image2}
+                        alt="image"
+                        width={100}
+                        height={100}
+                        className="h-full w-full object-cover"
+                      />
+                      <div className="absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center gap-3 bg-black bg-opacity-50 opacity-0 duration-300 hover:opacity-100">
+                        <label
+                          htmlFor="image2"
+                          className="inline-block cursor-pointer rounded-md bg-white px-6 py-2"
+                        >
+                          Replace
+                        </label>
+                        <button
+                          className="cursor-pointer rounded-md bg-main px-6 py-2"
+                          onClick={() => handleRemove(2)}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="relative flex flex-col items-center justify-center overflow-hidden rounded-md border border-dashed border-neutral-300 bg-[#F8F8F8]">
+                  {!images.image3 && (
+                    <div className="text-balance px-3 text-center text-sm text-neutral-400">
+                      Drop files here or
                       <label
                         htmlFor="image3"
-                        className="inline-block cursor-pointer rounded-md bg-white px-6 py-2"
+                        className="cursor-pointer italic underline"
                       >
-                        Replace
+                        click here
                       </label>
-                      <button
-                        className="cursor-pointer rounded-md bg-main px-6 py-2"
-                        onClick={() => handleRemove(3)}
-                      >
-                        Remove
-                      </button>
+                      &nbsp;to upload.
                     </div>
-                  </div>
-                )}
-              </div>
-              <div className="relative flex flex-col items-center justify-center overflow-hidden rounded-md border border-dashed border-neutral-300 bg-[#F8F8F8]">
-                {!images.image4 && (
-                  <div className="text-balance px-3 text-center text-sm text-neutral-400">
-                    Drop files here or
-                    <label
-                      htmlFor="image4"
-                      className="cursor-pointer italic underline"
-                    >
-                      click here
-                    </label>
-                    &nbsp;to upload.
-                  </div>
-                )}
-                <input
-                  type="file"
-                  name="image4"
-                  id="image4"
-                  onChange={(e: any) => handleChange(e)}
-                  className="hidden"
-                />
-                {images.image4 && (
-                  <div className="group absolute left-0 top-0 h-full w-full">
-                    <Image
-                      src={images.image4}
-                      alt="image"
-                      width={100}
-                      height={100}
-                      className="h-full w-full object-cover"
-                    />
-                    <div className="absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center gap-3 bg-black bg-opacity-50 opacity-0 duration-300 hover:opacity-100">
+                  )}
+                  <input
+                    type="file"
+                    name="image3"
+                    id="image3"
+                    onChange={(e: any) => handleChange(e)}
+                    className="hidden"
+                  />
+                  {images.image3 && (
+                    <div className="group absolute left-0 top-0 h-full w-full">
+                      <Image
+                        src={images.image3}
+                        alt="image"
+                        width={100}
+                        height={100}
+                        className="h-full w-full object-cover"
+                      />
+                      <div className="absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center gap-3 bg-black bg-opacity-50 opacity-0 duration-300 hover:opacity-100">
+                        <label
+                          htmlFor="image3"
+                          className="inline-block cursor-pointer rounded-md bg-white px-6 py-2"
+                        >
+                          Replace
+                        </label>
+                        <button
+                          className="cursor-pointer rounded-md bg-main px-6 py-2"
+                          onClick={() => handleRemove(3)}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="relative flex flex-col items-center justify-center overflow-hidden rounded-md border border-dashed border-neutral-300 bg-[#F8F8F8]">
+                  {!images.image4 && (
+                    <div className="text-balance px-3 text-center text-sm text-neutral-400">
+                      Drop files here or
                       <label
                         htmlFor="image4"
-                        className="inline-block cursor-pointer rounded-md bg-white px-6 py-2"
+                        className="cursor-pointer italic underline"
                       >
-                        Replace
+                        click here
                       </label>
-                      <button
-                        className="cursor-pointer rounded-md bg-main px-6 py-2"
-                        onClick={() => handleRemove(4)}
-                      >
-                        Remove
-                      </button>
+                      &nbsp;to upload.
                     </div>
+                  )}
+                  <input
+                    type="file"
+                    name="image4"
+                    id="image4"
+                    onChange={(e: any) => handleChange(e)}
+                    className="hidden"
+                  />
+                  {images.image4 && (
+                    <div className="group absolute left-0 top-0 h-full w-full">
+                      <Image
+                        src={images.image4}
+                        alt="image"
+                        width={100}
+                        height={100}
+                        className="h-full w-full object-cover"
+                      />
+                      <div className="absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center gap-3 bg-black bg-opacity-50 opacity-0 duration-300 hover:opacity-100">
+                        <label
+                          htmlFor="image4"
+                          className="inline-block cursor-pointer rounded-md bg-white px-6 py-2"
+                        >
+                          Replace
+                        </label>
+                        <button
+                          className="cursor-pointer rounded-md bg-main px-6 py-2"
+                          onClick={() => handleRemove(4)}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className="mt-10">
+              <h1 className="mb-3 font-bold">Product Pricing</h1>
+              <div className="flex h-full w-full gap-4 rounded-md border border-neutral-300 p-4">
+                <label htmlFor="priceFrom" className="block flex-grow">
+                  <span className="mb-1 inline-block after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+                    Price From
+                  </span>
+                  <div className="relative overflow-hidden rounded-md border bg-gray-100 focus-within:border-black">
+                    <span className="absolute left-0 top-0 flex h-full w-10 items-center justify-center rounded-sm bg-white font-bold">
+                      &euro;
+                    </span>
+                    <input
+                      name="priceFrom"
+                      type="number"
+                      autoComplete="off"
+                      id="priceFrom"
+                      placeholder="Price ranges from"
+                      className="w-full border-none bg-transparent pl-12 focus:border-0 focus:ring-0"
+                    />
                   </div>
-                )}
+                </label>
+                <label htmlFor="priceTo" className="block flex-grow">
+                  <span className="mb-1 inline-block after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+                    Price To
+                  </span>
+                  <div className="relative overflow-hidden rounded-md border bg-gray-100 focus-within:border-black">
+                    <span className="absolute left-0 top-0 flex h-full w-10 items-center justify-center rounded-sm bg-white font-bold">
+                      &euro;
+                    </span>
+                    <input
+                      name="priceTo"
+                      type="number"
+                      autoComplete="off"
+                      id="priceTo"
+                      placeholder="Price ranges to"
+                      className="w-full border-none bg-transparent pl-12 focus:border-0 focus:ring-0"
+                    />
+                  </div>
+                </label>
+              </div>
+            </div>
+            <div className="mt-10">
+              <h2 className="mb-3 font-bold">Product Variant</h2>
+              <div className="grid h-full grid-cols-2 gap-2 rounded-md border border-neutral-300 p-4">
+                <label htmlFor="ProductShapes" className="block">
+                  <span className="mb-1 inline-block after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+                    Product Shapes
+                  </span>
+                  <MultiSelect
+                    options={cakeShapes}
+                    value={shapes}
+                    onChange={setShapes}
+                    labelledBy="Select shapes"
+                  />
+                </label>
+                <label htmlFor="ProductSizes" className="block">
+                  <span className="mb-1 inline-block after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+                    Product Sizes
+                  </span>
+                  <MultiSelect
+                    options={cakeSizes}
+                    value={sizes}
+                    onChange={setSizes}
+                    labelledBy="Select sizes"
+                  />
+                </label>
+                <label htmlFor="ProductFillings" className="block">
+                  <span className="mb-1 inline-block after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+                    Product Fillings
+                  </span>
+                  <MultiSelect
+                    options={fillingsList}
+                    value={fillings}
+                    onChange={setFillings}
+                    labelledBy="Select fillings"
+                  />
+                </label>
+                <label htmlFor="ProductToppings" className="block">
+                  <span className="mb-1 inline-block after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+                    Toppings/Add-ons
+                  </span>
+                  <MultiSelect
+                    options={toppings}
+                    value={addOn}
+                    onChange={setAddOn}
+                    labelledBy="Select toppings/add-ons"
+                  />
+                </label>
               </div>
             </div>
           </div>
-          <div className="mt-10">
-            <h1 className="mb-3 font-bold">Product Pricing</h1>
-            <div className="flex h-full w-full gap-4 rounded-md border border-neutral-300 p-4">
-              <label htmlFor="priceFrom" className="block flex-grow">
-                <span className="mb-1 inline-block after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
-                  Price From
-                </span>
-                <div className="relative overflow-hidden rounded-md border bg-gray-100 focus-within:border-black">
-                  <span className="absolute left-0 top-0 flex h-full w-10 items-center justify-center rounded-sm bg-white font-bold">
-                    &euro;
-                  </span>
-                  <input
-                    name="priceFrom"
-                    type="text"
-                    autoComplete="off"
-                    id="priceFrom"
-                    placeholder="Price ranges from"
-                    className="w-full border-none bg-transparent pl-12 focus:border-0 focus:ring-0"
-                  />
-                </div>
-              </label>
-              <label htmlFor="priceTo" className="block flex-grow">
-                <span className="mb-1 inline-block after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
-                  Price To
-                </span>
-                <div className="relative overflow-hidden rounded-md border bg-gray-100 focus-within:border-black">
-                  <span className="absolute left-0 top-0 flex h-full w-10 items-center justify-center rounded-sm bg-white font-bold">
-                    &euro;
-                  </span>
-                  <input
-                    name="priceTo"
-                    type="text"
-                    autoComplete="off"
-                    id="priceTo"
-                    placeholder="Price ranges to"
-                    className="w-full border-none bg-transparent pl-12 focus:border-0 focus:ring-0"
-                  />
-                </div>
-              </label>
-            </div>
-          </div>
-          <div className="mt-10">
-            <h2 className="mb-3 font-bold">Product Variant</h2>
-            <div className="grid h-full grid-cols-2 gap-2 rounded-md border border-neutral-300 p-4">
-              <label htmlFor="ProductShapes" className="block">
-                <span className="mb-1 inline-block after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
-                  Product Shapes
-                </span>
-                <MultiSelect
-                  options={cakeShapes}
-                  value={subCategory}
-                  onChange={setSubCategory}
-                  labelledBy="Select shapes"
-                />
-              </label>
-              <label htmlFor="ProductSizes" className="block">
-                <span className="mb-1 inline-block after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
-                  Product Sizes
-                </span>
-                <MultiSelect
-                  options={cakeSizes}
-                  value={subCategory}
-                  onChange={setSubCategory}
-                  labelledBy="Select sizes"
-                />
-              </label>
-              <label htmlFor="ProductFillings" className="block">
-                <span className="mb-1 inline-block after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
-                  Product Fillings
-                </span>
-                <MultiSelect
-                  options={fillingsList}
-                  value={subCategory}
-                  onChange={setSubCategory}
-                  labelledBy="Select fillings"
-                />
-              </label>
-              <label htmlFor="ProductToppings" className="block">
-                <span className="mb-1 inline-block after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
-                  Toppings/Add-ons
-                </span>
-                <MultiSelect
-                  options={toppings}
-                  value={subCategory}
-                  onChange={setSubCategory}
-                  labelledBy="Select toppings/add-ons"
-                />
-              </label>
-            </div>
-          </div>
-        </div>
+        </form>
       </div>
 
       <div className="block md:hidden">

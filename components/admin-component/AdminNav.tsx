@@ -44,6 +44,7 @@ export default function AdminNav() {
                 width={175}
                 height={92}
                 alt="Goldis Logo"
+                priority
               />
             </Link>
           </div>

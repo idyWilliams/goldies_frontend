@@ -37,8 +37,7 @@ export default function ProductImages() {
   return (
     <section>
       <div>
-        <h1 className="mb-6 font-bold">Product Images</h1>
-        <div className="grid h-full grid-cols-2 grid-rows-[repeat(2,200px)] gap-4">
+        <div className="mt-6 grid h-full grid-cols-2 grid-rows-[repeat(2,200px)] gap-4">
           <div className="relative flex flex-col items-center justify-center overflow-hidden rounded-md border border-dashed border-neutral-300 bg-[#F8F8F8]">
             {!images.image1 && (
               <div className="text-balance px-3 text-center text-neutral-400">
