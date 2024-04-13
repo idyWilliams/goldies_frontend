@@ -8,7 +8,7 @@ type Data = {
   age: number;
 };
 
-export default function page({ params }: any) {
+export default function Page({ params }: any) {
   console.log(params);
   return (
     <section className="h-screen bg-gray-100">

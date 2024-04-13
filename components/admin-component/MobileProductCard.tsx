@@ -22,14 +22,12 @@ const statusColor = (status: string) => {
     case "active":
       return (
         <div className="inline-flex items-center gap-1 rounded-md bg-green-700 px-3 py-1 text-[8px] uppercase tracking-wider text-white">
-          {/* <span className="h-1 w-1 rounded-full bg-green-700"></span> */}
           Active
         </div>
       );
     case "inactive":
       return (
         <div className="inline-flex items-center gap-1 rounded-md bg-red-700 px-3 py-1 text-[8px] uppercase tracking-wider text-white">
-          {/* <span className="h-1 w-1 rounded-full bg-red-700"></span> */}
           Inactive
         </div>
       );

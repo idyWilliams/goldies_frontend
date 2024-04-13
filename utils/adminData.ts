@@ -8,7 +8,6 @@ import Strawberry from "../public/assets/Fresh-Strawberry-Cake-with-Strawberry-F
 import Lemon from "../public/assets/lemon-cake.webp";
 import Banana from "../public/assets/banana-cake-with-cinnamon-cream-102945-1.webp";
 
-
 export const Overview = [
   {
     id: 1,
@@ -164,5 +163,102 @@ export const productList = [
     priceTo: 200,
     quantity: 20,
     status: "active",
+  },
+];
+export const orderList = [
+  {
+    id: generateID(),
+    image: Chocolate,
+    productName: "Chocolate Fudge Cake",
+    orderDate: "2024/02/12",
+    billingName: "John Doe",
+    totalPrice: 420,
+    priceTo: 215,
+    quantity: 20,
+    status: "success",
+  },
+
+  {
+    id: generateID(),
+    image: RedVelvet,
+    productName: "Red Velvet Cake",
+    orderDate: "2024/02/12",
+    billingName: "John Doe",
+    totalPrice: 451,
+    priceTo: 292,
+    quantity: 20,
+    status: "pending",
+  },
+
+  {
+    id: generateID(),
+    image: Vanilla,
+    productName: "Vanilla Bean Cake",
+    orderDate: "2024/02/12",
+    billingName: "John Doe",
+    totalPrice: 407,
+    priceTo: 200,
+    quantity: 20,
+    status: "failed",
+  },
+
+  {
+    id: generateID(),
+    image: Coconut,
+    productName: "Coconut Cream Cake",
+    orderDate: "2024/02/12",
+    billingName: "John Doe",
+    totalPrice: 407,
+    priceTo: 200,
+    quantity: 20,
+    status: "success",
+  },
+
+  {
+    id: generateID(),
+    image: Carrot,
+    productName: "Carrot Cake",
+    orderDate: "2024/02/12",
+    billingName: "John Doe",
+    totalPrice: 407,
+    priceTo: 200,
+    quantity: 20,
+    status: "pending",
+  },
+
+  {
+    id: generateID(),
+    image: Strawberry,
+    productName: "Strawberry Short Cake",
+    orderDate: "2024/02/12",
+    billingName: "John Doe",
+    totalPrice: 407,
+    priceTo: 200,
+    quantity: 20,
+    status: "failed",
+  },
+
+  {
+    id: generateID(),
+    image: Lemon,
+    productName: "Lemon Drizzle Cake",
+    orderDate: "2024/02/12",
+    billingName: "John Doe",
+    totalPrice: 407,
+    priceTo: 200,
+    quantity: 20,
+    status: "success",
+  },
+
+  {
+    id: generateID(),
+    image: Banana,
+    productName: "Banana Cake",
+    orderDate: "2024/02/12",
+    billingName: "John Doe",
+    totalPrice: 407,
+    priceTo: 200,
+    quantity: 20,
+    status: "pending",
   },
 ];
