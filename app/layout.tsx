@@ -34,6 +34,7 @@ export default function RootLayout({
       <ShoppingCartProvider>
         <Provider store={store}>
           <ProductProvider>
+            
             <body className="overflow-x-hidden">{children}</body>
           </ProductProvider>
         </Provider>

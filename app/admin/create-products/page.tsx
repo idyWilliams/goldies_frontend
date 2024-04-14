@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { MultiSelect } from "react-multi-select-component";
 import CreateProductLayout from "@/components/admin-component/create-product/CreateProductLayout";
 import StepperController from "@/components/admin-component/create-product/StepperController";
+import AnimatedMulti from "@/components/admin-component/CustomSelect";
+import { MultiValue } from "react-select";
 
 const fillingsList = [
   {
@@ -209,6 +211,7 @@ export default function Page() {
   const [fillings, setFillings] = useState([]);
   const [sizes, setSizes] = useState([]);
   const [addOn, setAddOn] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState<MultiValue<any>>();
 
   const [images, setImages] = useState<any>({
     image1: "",
@@ -224,6 +227,10 @@ export default function Page() {
     // setImage1(null);
     console.log("hello");
   };
+
+   const handleOptionsChange = (newOptions: MultiValue<any>) => {
+     setSelectedOptions(newOptions);
+   };
 
   const handleChange = (e: any) => {
     const file = e.target.files && e.target.files[0];
@@ -245,13 +252,15 @@ export default function Page() {
   switch (category && category) {
     case "milestone cakes":
       sub = (
-        <MultiSelect
-          disabled={category == null}
-          options={milestoneSub}
-          value={subCategory}
-          onChange={setSubCategory}
-          labelledBy="Select subcategory"
-        />
+        // <MultiSelect
+        //   disabled={category == null}
+        //   options={milestoneSub}
+        //   value={subCategory}
+        //   onChange={setSubCategory}
+        //   labelledBy="Select subcategory"
+        // />
+
+        <AnimatedMulti options={milestoneSub} onChange={handleOptionsChange} />
       );
       break;
 
@@ -329,6 +338,11 @@ export default function Page() {
     // Now you can log the FormData and productName
     console.log(data, "productName");
   };
+
+
+
+
+
 
   return (
     <section className="p-6">
@@ -701,9 +715,7 @@ export default function Page() {
         <CreateProductLayout />
       </div>
 
-      <div className="block md:hidden">
-        <StepperController />
-      </div>
+    
     </section>
   );
 }
