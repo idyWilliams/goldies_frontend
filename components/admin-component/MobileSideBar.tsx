@@ -12,7 +12,7 @@ export default function MobileSideBar() {
   const pathname = usePathname();
   return (
     <>
-      <section className="flex h-screen w-full flex-col bg-black py-4 pt-24 lg:hidden">
+      <section className="z-50 flex h-screen w-full flex-col bg-black py-4 pt-24 lg:hidden">
         {/* <div className="my-2 mb-7 border-b border-main border-opacity-50"></div> */}
         <div className="flex flex-col items-start gap-6 px-4">
           <Link

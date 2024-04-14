@@ -78,7 +78,7 @@ export const productList = [
     priceFrom: 220,
     priceTo: 215,
     quantity: 20,
-    status: "active",
+    status: "available",
   },
 
   {
@@ -90,7 +90,7 @@ export const productList = [
     priceFrom: 251,
     priceTo: 292,
     quantity: 20,
-    status: "inactive",
+    status: "unavailable",
   },
 
   {
@@ -102,7 +102,7 @@ export const productList = [
     priceFrom: 107,
     priceTo: 200,
     quantity: 20,
-    status: "active",
+    status: "available",
   },
 
   {
@@ -114,7 +114,7 @@ export const productList = [
     priceFrom: 107,
     priceTo: 200,
     quantity: 20,
-    status: "active",
+    status: "available",
   },
 
   {
@@ -126,7 +126,7 @@ export const productList = [
     priceFrom: 107,
     priceTo: 200,
     quantity: 20,
-    status: "active",
+    status: "available",
   },
 
   {
@@ -138,7 +138,7 @@ export const productList = [
     priceFrom: 107,
     priceTo: 200,
     quantity: 20,
-    status: "active",
+    status: "available",
   },
 
   {
@@ -150,7 +150,7 @@ export const productList = [
     priceFrom: 107,
     priceTo: 200,
     quantity: 20,
-    status: "active",
+    status: "available",
   },
 
   {
@@ -162,9 +162,16 @@ export const productList = [
     priceFrom: 107,
     priceTo: 200,
     quantity: 20,
-    status: "active",
+    status: "available",
   },
 ];
+
+export const options = [
+  { label: "Grapes 🍇", value: "grapes" },
+  { label: "Mango 🥭", value: "mango" },
+  { label: "Strawberry 🍓", value: "strawberry", disabled: true },
+];
+
 export const orderList = [
   {
     id: generateID(),
