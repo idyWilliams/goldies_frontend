@@ -19,8 +19,18 @@ export default function Page({ params }: any) {
         </span>
       </div>
       <div className="bg-white p-3">
+        <div className="mb-4 grid gap-2">
+          <span>Product ID: #GCF4972</span>
+          <span>Billing Name: John Doe</span>
+          <span>
+            Status:{" "}
+            <span className="items-center rounded-sm bg-green-700 px-3 text-white">
+              Success
+            </span>
+          </span>
+        </div>
         <h3 className="mb-2 border-b border-zinc-700 pb-2 font-bold">
-          Order Item
+          Ordered Items
         </h3>
         <div className="table w-full">
           <div className="hidden lg:table-header-group">

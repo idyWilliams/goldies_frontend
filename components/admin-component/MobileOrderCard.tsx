@@ -51,7 +51,7 @@ export default function MobileOrderCard() {
       <div className="mt-5 grid grid-cols-1 gap-4">
         {orderList.map((data: any, index: number) => {
           return (
-            <div>
+            <>
               <Card key={index} className="bg-white p-4 shadow-xl">
                 <div>
                   <div>
@@ -94,7 +94,7 @@ export default function MobileOrderCard() {
                   </div>
                 </div>
               </Card>
-            </div>
+            </>
           );
         })}
       </div>

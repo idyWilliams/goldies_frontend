@@ -2,7 +2,7 @@
 import AdminTable from "@/components/admin-component/AdminTable";
 import { productList } from "@/utils/adminData";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { Column } from "react-table";
 import {
@@ -22,6 +22,9 @@ import {
 } from "iconsax-react";
 import MobileProductCard from "@/components/admin-component/MobileProductCard";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import ProductOptionModal from "@/components/admin-component/ProductOptionModal";
+import { setProducts } from "@/redux/features/product/productSlice";
 
 type Product = {
   id: string;
@@ -56,82 +59,111 @@ const statusColor = (status: string) => {
 };
 
 const columnHelper = createColumnHelper<Product>();
-const columns = [
-  columnHelper.accessor((row) => row, {
-    id: "productName",
-    cell: (info) => {
-      console.log(info, "column");
-      return (
-        <div className="grid grid-cols-[50px_1fr] gap-2">
-          <Image
-            src={info.cell.row.original?.image}
-            alt={info.cell.row.original.productName}
-          />
-          <div className="flex flex-col">
-            <h3 className="font-bold">{info.cell.row.original.productName}</h3>
-            <span>ID: &nbsp; {info.cell.row.original.id}</span>
-          </div>
-        </div>
-      );
-    },
-    header: () => <span>Product</span>,
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor((row) => row.category, {
-    id: "category",
-    cell: (info) => <span className="capitalize">{info.getValue()}</span>,
-    header: () => <span>Category</span>,
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor((row) => row, {
-    id: "price",
-    cell: (info) => (
-      <span>
-        &euro;{info.cell.row.original.priceFrom} - &euro;
-        {info.cell.row.original.priceTo}
-      </span>
-    ),
-    header: () => <span>Product</span>,
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor("addedDate", {
-    header: () => <span>AddedDate</span>,
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor("quantity", {
-    header: () => <span>Qnty</span>,
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor((row) => row, {
-    id: "status",
-    cell: (info) => statusColor(info.cell.row.original.status),
-    header: () => <span>Status</span>,
-    footer: (info) => info.column.id,
-  }),
-  columnHelper.accessor((row) => row, {
-    id: "actions",
-    cell: (info) => (
-      <div className="inline-flex items-center gap-3">
-        <Link
-          href={`/admin/products/${info.cell.row.original.id}`}
-          className="cursor-pointer text-blue-700"
-        >
-          <Eye size={20} />
-        </Link>
-        <span className="cursor-pointer text-green-700">
-          <Edit size={20} />
-        </span>
-        <span className="cursor-pointer text-red-700">
-          <Trash size={20} />
-        </span>
-      </div>
-    ),
-    header: () => <span>Actions</span>,
-    footer: (info) => info.column.id,
-  }),
-];
 
 export default function Page() {
+  const [showModal, setShowModal] = useState(false);
+  const [action, setAction] = useState("");
+  const [selectedProducts, setSelectedProducts] = useState<any>();
+
+  const router = useRouter();
+  const handleAddNew = () => {
+    router.push(`/admin/create-products`);
+  };
+  const columns = [
+    columnHelper.accessor((row) => row, {
+      id: "productName",
+      cell: (info) => {
+        console.log(info, "column");
+        return (
+          <div className="grid grid-cols-[50px_1fr] gap-2">
+            <Image
+              src={info.cell.row.original?.image}
+              alt={info.cell.row.original.productName}
+            />
+            <div className="flex flex-col">
+              <h3 className="whitespace-nowrap font-bold">
+                {info.cell.row.original.productName}
+              </h3>
+              <span>ID:&nbsp;{info.cell.row.original.id}</span>
+            </div>
+          </div>
+        );
+      },
+      header: () => <span>Product</span>,
+      footer: (info) => info.column.id,
+    }),
+    columnHelper.accessor((row) => row.category, {
+      id: "category",
+      cell: (info) => (
+        <span className="whitespace-nowrap capitalize">{info.getValue()}</span>
+      ),
+      header: () => <span>Category</span>,
+      footer: (info) => info.column.id,
+    }),
+    columnHelper.accessor((row) => row, {
+      id: "price",
+      cell: (info) => (
+        <span className="whitespace-nowrap">
+          &euro;{info.cell.row.original.priceFrom} - &euro;
+          {info.cell.row.original.priceTo}
+        </span>
+      ),
+      header: () => <span>Product</span>,
+      footer: (info) => info.column.id,
+    }),
+    columnHelper.accessor("addedDate", {
+      header: () => <span>AddedDate</span>,
+      footer: (info) => info.column.id,
+    }),
+    columnHelper.accessor("quantity", {
+      header: () => <span>Qnty</span>,
+      footer: (info) => info.column.id,
+    }),
+    columnHelper.accessor((row) => row, {
+      id: "status",
+      cell: (info) => statusColor(info.cell.row.original.status),
+      header: () => <span>Status</span>,
+      footer: (info) => info.column.id,
+    }),
+    columnHelper.accessor((row) => row, {
+      id: "actions",
+      cell: (info) => {
+        console.log(info, "info");
+        return (
+          <div className="inline-flex items-center gap-3">
+            <Link
+              href={`/admin/products/${info.cell.row.original.id}`}
+              className="cursor-pointer text-blue-700"
+            >
+              <Eye size={20} />
+            </Link>
+            <span
+              onClick={() => {
+                setShowModal(true);
+                setAction("edit");
+                setSelectedProducts(info.cell.row.original);
+              }}
+              className="cursor-pointer text-green-700"
+            >
+              <Edit size={20} />
+            </span>
+            <span
+              className="cursor-pointer text-red-700"
+              onClick={() => {
+                setShowModal(true);
+                setAction("delete");
+                setSelectedProducts(info.cell.row.original);
+              }}
+            >
+              <Trash size={20} />
+            </span>
+          </div>
+        );
+      },
+      header: () => <span>Actions</span>,
+      footer: (info) => info.column.id,
+    }),
+  ];
   return (
     <>
       <section className="w-full px-4 pt-6">
@@ -140,12 +172,15 @@ export default function Page() {
             <h1 className="text-lg font-extrabold">Products</h1>
             <p className="text-xs">List of all available products created</p>
           </div>
-          <button className="flex cursor-pointer items-center rounded-md bg-black px-5 py-2 text-[10px] text-main md:hidden">
+          <button
+            className="flex cursor-pointer items-center rounded-md bg-black px-5 py-2 text-[10px] text-main"
+            onClick={handleAddNew}
+          >
             <Add size={15} /> ADD NEW
           </button>
         </div>
 
-        <div className="my-6 flex items-center justify-between gap-2">
+        <div className="my-6 flex items-center justify-between gap-2 md:hidden">
           <label htmlFor="search" className="relative block w-[500px] ">
             <input
               type="text"
@@ -158,16 +193,21 @@ export default function Page() {
               <CiSearch />
             </span>
           </label>
-          <button className="hidden cursor-pointer items-center rounded-md bg-black px-5 py-4 text-[10px] text-main md:flex">
+
+          {/* <button className="hidden cursor-pointer items-center rounded-md bg-black px-5 py-4 text-[10px] text-main md:flex">
             <Add size={15} /> ADD NEW
-          </button>
+          </button> */}
           <button className="flex min-w-[83px] cursor-pointer items-center justify-between rounded-md bg-black px-3 py-2 text-[10px] text-main md:hidden">
             Sort by <ArrowDown2 size={15} />
           </button>
         </div>
 
-        <div className="hidden md:block">
-          <ProductTable columns={columns} data={productList} />
+        <div className="hidden md:block md:overflow-x-scroll">
+          <ProductTable
+            columns={columns}
+            data={productList}
+            filteredTabs={["All", "Available", "Unavailable", "Disabled"]}
+          />
         </div>
         <div className="block space-y-5 md:hidden">
           {productList.map((product: any, index: number) => (
@@ -175,6 +215,13 @@ export default function Page() {
           ))}
         </div>
       </section>
+      {showModal && (
+        <ProductOptionModal
+          action={action}
+          product={selectedProducts}
+          setShowModal={setShowModal}
+        />
+      )}
     </>
   );
 }

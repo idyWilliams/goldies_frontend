@@ -34,7 +34,7 @@ export default function ProductTable({
             filteredTabs.map((tabs: string, index: number) => (
               <button
                 key={index}
-                className="h-[21px] w-fit rounded-sm bg-white px-2"
+                className="h-[21px] w-fit rounded-sm border border-neutral-200 bg-white px-2"
               >
                 {tabs}
               </button>

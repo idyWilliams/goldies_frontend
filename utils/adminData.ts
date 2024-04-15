@@ -70,11 +70,18 @@ const generateID = () => {
 
 export const productList = [
   {
-    id: generateID(),
+    id: 1,
     image: Chocolate,
     productName: "Chocolate Fudge Cake",
     addedDate: "2024/02/12",
-    category: "fruit cake",
+    category: "Kids' Cakes",
+    subcategories: [
+      { label: "Birthday Cakes", value: "birthday_cakes" },
+      { label: "Anniversary Cakes", value: "anniversary_cakes" },
+      { label: "Graduation Cakes", value: "graduation_cakes" },
+      { label: "Baby Shower Cakes", value: "baby_shower_cakes" },
+      { label: "Retirement Cakes", value: "retirement_cakes" },
+    ],
     priceFrom: 220,
     priceTo: 215,
     quantity: 20,
@@ -82,7 +89,7 @@ export const productList = [
   },
 
   {
-    id: generateID(),
+    id: 2,
     image: RedVelvet,
     productName: "Red Velvet Cake",
     addedDate: "2024/02/12",
@@ -94,7 +101,7 @@ export const productList = [
   },
 
   {
-    id: generateID(),
+    id: 3,
     image: Vanilla,
     productName: "Vanilla Bean Cake",
     addedDate: "2024/02/12",
@@ -106,7 +113,7 @@ export const productList = [
   },
 
   {
-    id: generateID(),
+    id: 4,
     image: Coconut,
     productName: "Coconut Cream Cake",
     addedDate: "2024/02/12",
@@ -118,7 +125,7 @@ export const productList = [
   },
 
   {
-    id: generateID(),
+    id: 5,
     image: Carrot,
     productName: "Carrot Cake",
     addedDate: "2024/02/12",
@@ -130,7 +137,7 @@ export const productList = [
   },
 
   {
-    id: generateID(),
+    id: 6,
     image: Strawberry,
     productName: "Strawberry Short Cake",
     addedDate: "2024/02/12",
@@ -142,7 +149,7 @@ export const productList = [
   },
 
   {
-    id: generateID(),
+    id: 7,
     image: Lemon,
     productName: "Lemon Drizzle Cake",
     addedDate: "2024/02/12",
@@ -154,7 +161,7 @@ export const productList = [
   },
 
   {
-    id: generateID(),
+    id: 8,
     image: Banana,
     productName: "Banana Cake",
     addedDate: "2024/02/12",
@@ -174,7 +181,7 @@ export const options = [
 
 export const orderList = [
   {
-    id: generateID(),
+    id: 1,
     image: Chocolate,
     productName: "Chocolate Fudge Cake",
     orderDate: "2024/02/12",
@@ -186,7 +193,7 @@ export const orderList = [
   },
 
   {
-    id: generateID(),
+    id: 2,
     image: RedVelvet,
     productName: "Red Velvet Cake",
     orderDate: "2024/02/12",
@@ -198,7 +205,7 @@ export const orderList = [
   },
 
   {
-    id: generateID(),
+    id: 3,
     image: Vanilla,
     productName: "Vanilla Bean Cake",
     orderDate: "2024/02/12",
@@ -210,7 +217,7 @@ export const orderList = [
   },
 
   {
-    id: generateID(),
+    id: 4,
     image: Coconut,
     productName: "Coconut Cream Cake",
     orderDate: "2024/02/12",
@@ -222,7 +229,7 @@ export const orderList = [
   },
 
   {
-    id: generateID(),
+    id: 5,
     image: Carrot,
     productName: "Carrot Cake",
     orderDate: "2024/02/12",
@@ -234,7 +241,7 @@ export const orderList = [
   },
 
   {
-    id: generateID(),
+    id: 6,
     image: Strawberry,
     productName: "Strawberry Short Cake",
     orderDate: "2024/02/12",
@@ -246,7 +253,7 @@ export const orderList = [
   },
 
   {
-    id: generateID(),
+    id: 7,
     image: Lemon,
     productName: "Lemon Drizzle Cake",
     orderDate: "2024/02/12",
@@ -258,7 +265,7 @@ export const orderList = [
   },
 
   {
-    id: generateID(),
+    id: 8,
     image: Banana,
     productName: "Banana Cake",
     orderDate: "2024/02/12",

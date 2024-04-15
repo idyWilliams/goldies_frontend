@@ -1,11 +1,13 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { MultiSelect } from "react-multi-select-component";
 import CreateProductLayout from "@/components/admin-component/create-product/CreateProductLayout";
 import StepperController from "@/components/admin-component/create-product/StepperController";
 import AnimatedMulti from "@/components/admin-component/CustomSelect";
 import { MultiValue } from "react-select";
+import { useSearchParams } from "next/navigation";
+import { productList } from "@/utils/adminData";
 
 const fillingsList = [
   {
@@ -212,6 +214,17 @@ export default function Page() {
   const [sizes, setSizes] = useState([]);
   const [addOn, setAddOn] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState<MultiValue<any>>();
+  const searchParams = useSearchParams();
+  const search = searchParams.get("edit");
+  console.log(search, "search");
+  const [product, setProduct] = useState<any>();
+  useEffect(() => {
+    const [filter] = productList.filter(
+      (product: any) => String(product.id) === search,
+    );
+    setProduct(filter);
+    console.log(filter, "filter");
+  }, []);
 
   const [images, setImages] = useState<any>({
     image1: "",
@@ -228,9 +241,9 @@ export default function Page() {
     console.log("hello");
   };
 
-   const handleOptionsChange = (newOptions: MultiValue<any>) => {
-     setSelectedOptions(newOptions);
-   };
+  const handleOptionsChange = (newOptions: MultiValue<any>) => {
+    setSelectedOptions(newOptions);
+  };
 
   const handleChange = (e: any) => {
     const file = e.target.files && e.target.files[0];
@@ -338,12 +351,12 @@ export default function Page() {
     // Now you can log the FormData and productName
     console.log(data, "productName");
   };
-
-
-
-
-
-
+  useEffect(() => {
+    if (search !== null && search) {
+      // setCategory(product?.category);
+      // setSubCategory(product?.subcategories);
+    }
+  }, []);
   return (
     <section className="p-6">
       <div className="hidden md:block">
@@ -714,8 +727,6 @@ export default function Page() {
       <div className="block md:hidden">
         <CreateProductLayout />
       </div>
-
-    
     </section>
   );
 }
