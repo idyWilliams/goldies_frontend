@@ -18,7 +18,7 @@ export default function ProductTable({
 }: {
   columns: any;
   data: any;
-  filteredTabs: any;
+  filteredTabs?: any;
 }) {
   const table = useReactTable({
     data,

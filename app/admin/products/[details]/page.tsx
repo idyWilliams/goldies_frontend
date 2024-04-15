@@ -9,7 +9,7 @@ type Data = {
 };
 
 export default function Page({ params }: any) {
-  console.log(params);
+  console.log(params, "product details");
   return (
     <section className="h-screen bg-gray-100">
       <div className="p-5">
@@ -69,7 +69,7 @@ export default function Page({ params }: any) {
             <h1 className="px-6 pb-4 pt-6 font-semibold text-main">
               Product Images
             </h1>
-            <div className="bg-white px-6 py-3">
+            {/* <div className="bg-white px-6 py-3">
               <div className="">
                 <div className="">
                   <Image
@@ -110,7 +110,7 @@ export default function Page({ params }: any) {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

@@ -3,7 +3,8 @@ import Stepper from "./Stepper";
 import InformationAndPricing from "../InformationAndPricing";
 import ProductVariants from "../ProductVariants";
 import ProductImages from "../ProductImages";
-import { createProductContext } from "../../../context/CreateProduct";
+import { createProductContext } from "../../../context/CreateProductContext";
+import StepperController from "./StepperController";
 
 const productStep = ["information", "variants", "images"];
 
@@ -32,6 +33,8 @@ export default function CreateProductLayout() {
     direction === "next" ? newStep++ : newStep--;
     newStep > 0 && newStep <= checkoutStep?.length && setCurrentStep(newStep);
   };
+
+  // console.log(checkoutStep, currentStep);
   return (
     <section>
       <div className="">
@@ -39,18 +42,16 @@ export default function CreateProductLayout() {
         <hr className="border-1 mb-3 border-black" />
       </div>
       <Stepper checkoutStep={checkoutStep} currentStep={currentStep} />
-      <div>
-        <createProductContext.Provider
-          value={{
-            checkoutStep,
-            currentStep,
-            // displayStep,
-            handleClick,
-          }}
-        >
-          {stepDisplay(currentStep)}
-        </createProductContext.Provider>
-      </div>
+      <createProductContext.Provider
+        value={{
+          checkoutStep,
+          currentStep,
+          handleClick,
+        }}
+      >
+        {stepDisplay(currentStep)}
+        <StepperController />
+      </createProductContext.Provider>
     </section>
   );
 }
