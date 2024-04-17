@@ -43,11 +43,53 @@ export default function Page({ params }: any) {
           <div className="table-row-group">
             <div className="table-row">
               <div className="table-cell">
-                <div className="grid grid-cols-[50px_1fr] items-center gap-1">
+                <div className="mb-3 grid grid-cols-[50px_1fr] items-center gap-1">
                   <Image src={img} alt="" />
                   <div>
                     <h3>Chocolate Fudge Cake</h3>
                     <span>&euro;200 X 2</span>
+                  </div>
+                </div>
+              </div>
+              <div className="table-cell align-top">&euro;400</div>
+            </div>
+            <div className="table-row">
+              <div className="table-cell">
+                <div className="mb-3 grid grid-cols-[50px_1fr] items-center gap-1">
+                  <Image src={img} alt="" />
+                  <div>
+                    <h3>Coconut Cream Cake</h3>
+                    <span>&euro;290 X 1</span>
+                  </div>
+                </div>
+              </div>
+              <div className="table-cell align-top">&euro;290</div>
+            </div>
+            <div className="table-row">
+              <div className="table-cell">
+                <div className="mb-3 grid grid-cols-1">
+                  <div>
+                    <h3>Sub Total</h3>
+                  </div>
+                </div>
+              </div>
+              <div className="table-cell align-top">&euro;400</div>
+            </div>
+            <div className="table-row">
+              <div className="table-cell">
+                <div className="mb-3 grid grid-cols-1">
+                  <div>
+                    <h3>Shipping</h3>
+                  </div>
+                </div>
+              </div>
+              <div className="table-cell align-top">&euro;400</div>
+            </div>
+            <div className="table-row">
+              <div className="table-cell">
+                <div className="mb-3 grid grid-cols-1">
+                  <div>
+                    <h3>Total</h3>
                   </div>
                 </div>
               </div>

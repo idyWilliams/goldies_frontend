@@ -25,6 +25,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import ProductOptionModal from "@/components/admin-component/ProductOptionModal";
 import { setProducts } from "@/redux/features/product/productSlice";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import MenuPopup from "@/components/MenuPopup";
 
 type Product = {
   id: string;
@@ -64,6 +66,8 @@ export default function Page() {
   const [showModal, setShowModal] = useState(false);
   const [action, setAction] = useState("");
   const [selectedProducts, setSelectedProducts] = useState<any>();
+  const [open, setIsOpen] = useState(false);
+  const [isOpen, setOpen] = useState(false);
 
   const router = useRouter();
   const handleAddNew = () => {
@@ -197,9 +201,22 @@ export default function Page() {
           {/* <button className="hidden cursor-pointer items-center rounded-md bg-black px-5 py-4 text-[10px] text-main md:flex">
             <Add size={15} /> ADD NEW
           </button> */}
-          <button className="flex min-w-[83px] cursor-pointer items-center justify-between rounded-md bg-black px-3 py-2 text-[10px] text-main md:hidden">
-            Sort by <ArrowDown2 size={15} />
+          <button
+            className="flex min-w-[83px] cursor-pointer items-center justify-between rounded-md bg-black px-3 py-2 text-[10px] text-main md:hidden"
+            onClick={() => setOpen((prev) => !prev)}
+          >
+            Sort by {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
           </button>
+          {isOpen && (
+            <MenuPopup className="">
+              <span>Recently Added</span>
+              <span>High To Low Price</span>
+              <span>Low To High Price</span>
+              <span>
+                status: <span>Active</span>
+              </span>
+            </MenuPopup>
+          )}
         </div>
 
         <div className="hidden md:block md:overflow-x-scroll">
