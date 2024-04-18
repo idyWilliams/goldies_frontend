@@ -17,7 +17,7 @@ export default function ProductOptionModal({
     }
   };
   return (
-    <section className="fixed left-0 top-0 flex h-screen w-full items-center justify-center bg-black bg-opacity-50">
+    <section className="fixed left-0 top-0 z-50 flex h-screen w-full items-center justify-center bg-black bg-opacity-50">
       <div className="w-[300px] rounded-md bg-white p-6">
         <h3>
           Are you sure you want to {action}{" "}

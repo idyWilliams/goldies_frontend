@@ -46,7 +46,7 @@ export default function MobileProductCard({ data }: { data: any }) {
   const [isActive, setIsActive] = useState(false);
   const router = useRouter();
   const handleView = () => {
-    router.push(`/products/${data.id}`);
+    router.push(`/admin/products/${data.id}`);
   };
   const accordionData = {
     title: (
@@ -99,7 +99,7 @@ export default function MobileProductCard({ data }: { data: any }) {
               onClick={() => {
                 setShowModal(true);
                 setAction("edit");
-                setSelectedProducts("productName");
+                // setSelectedProducts("productName");
               }}
             >
               <Edit size={20} />
@@ -109,7 +109,7 @@ export default function MobileProductCard({ data }: { data: any }) {
               onClick={() => {
                 setShowModal(true);
                 setAction("delete");
-                setSelectedProducts("productName");
+                // setSelectedProducts("productName");
               }}
             >
               <Trash size={20} />
@@ -135,7 +135,7 @@ export default function MobileProductCard({ data }: { data: any }) {
       {showModal && (
         <ProductOptionModal
           action={action}
-          product={selectedProducts}
+          product={data}
           setShowModal={setShowModal}
         />
       )}

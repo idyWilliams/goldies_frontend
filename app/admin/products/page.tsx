@@ -202,20 +202,23 @@ export default function Page() {
             <Add size={15} /> ADD NEW
           </button> */}
           <button
-            className="flex min-w-[83px] cursor-pointer items-center justify-between rounded-md bg-black px-3 py-2 text-[10px] text-main md:hidden"
+            className="relative flex min-w-[83px] cursor-pointer items-center justify-between rounded-md bg-black px-3 py-2 text-[10px] text-main md:hidden"
             onClick={() => setOpen((prev) => !prev)}
           >
             Sort by {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
           </button>
           {isOpen && (
-            <MenuPopup className="">
-              <span>Recently Added</span>
-              <span>High To Low Price</span>
-              <span>Low To High Price</span>
-              <span>
-                status: <span>Active</span>
+            <div className="absolute right-5 top-[180px] z-40 w-[180px] rounded-md bg-black p-4 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
+              <span className="mb-2 whitespace-nowrap rounded-[3px] bg-[#E4D064] bg-opacity-20 py-1 pl-1 pr-7 text-sm text-main">
+                Recently Added
               </span>
-            </MenuPopup>
+              <span className="mb-2 block text-main">High To Low Price</span>
+              <span className="mb-2 block text-main">Low To High Price</span>
+              <div className="my-1 border-b border-main border-opacity-50"></div>
+              <span className="text-main">
+                status: <span className="text-main">Active</span>
+              </span>
+            </div>
           )}
         </div>
 
