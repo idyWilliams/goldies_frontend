@@ -1,32 +1,32 @@
-/* CUSTOM FONT FAMILY */
+
 @font-face {
-  font-family: "Tomato Grotesk";
+  font-family: "Space Grotesk";
   src:
-    url("/fonts/tomatogrotesk-light-webfont.woff2") format("woff2"),
-    url("/fonts/tomatogrotesk-light-webfont.woff") format("woff");
+    url("/SpaceGroteskFont/SpaceGrotesk-Light.woff2") format("woff2"),
+    url("/SpaceGroteskFont/SpaceGrotesk-Light.woff") format("woff");
   font-weight: light;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "Tomato Grotesk";
+  font-family: "Space Grotesk";
   src:
-    url("/fonts/tomatogrotesk-regular-webfont.woff2") format("woff2"),
-    url("/fonts/tomatogrotesk-regular-webfont.woff") format("woff");
+    url("/SpaceGroteskFont/SpaceGrotesk-Regular.woff2") format("woff2"),
+    url("/SpaceGroteskFont/SpaceGrotesk-Regular.woff") format("woff");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
-  font-family: "Tomato Grotesk";
+  font-family: "Space Grotesk";
   src:
-    url("/fonts/tomatogrotesk-bold-webfont.woff2") format("woff2"),
-    url("/fonts/tomatogrotesk-bold-webfont.woff") format("woff");
+    url("/SpaceGroteskFont/SpaceGrotesk-Bold.woff2") format("woff2"),
+    url("/SpaceGroteskFont/SpaceGrotesk-Bold.woff") format("woff");
   font-weight: bold;
   font-style: normal;
 }
 
-/* TAILWIND CSS DIRECTIVES */
+
 
 @tailwind base;
 @tailwind components;
@@ -52,7 +52,7 @@ html {
 }
 
 body {
-  font-family: "Tomato Grotesk", sans-serif;
+  font-family: "Space Grotesk", sans-serif;
   font-weight: normal;
 }
 

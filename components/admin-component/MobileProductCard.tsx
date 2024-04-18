@@ -4,6 +4,7 @@ import { ArrowDown2, ArrowUp2, Edit, Eye, Trash } from "iconsax-react";
 import ProductCard from "../ProductCard";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import ProductOptionModal from "./ProductOptionModal";
 
 type Product = {
   id: string;
@@ -39,10 +40,13 @@ const statusColor = (status: string) => {
 };
 
 export default function MobileProductCard({ data }: { data: any }) {
+  const [showModal, setShowModal] = useState(false);
+  const [action, setAction] = useState("");
+  const [selectedProducts, setSelectedProducts] = useState<any>();
   const [isActive, setIsActive] = useState(false);
   const router = useRouter();
   const handleView = () => {
-    router.push(`/products/${data.id}`);
+    router.push(`/admin/products/${data.id}`);
   };
   const accordionData = {
     title: (
@@ -90,10 +94,24 @@ export default function MobileProductCard({ data }: { data: any }) {
             <span className="text-blue-700" onClick={handleView}>
               <Eye size={20} />
             </span>
-            <span className="text-green-700">
+            <span
+              className="text-green-700"
+              onClick={() => {
+                setShowModal(true);
+                setAction("edit");
+                // setSelectedProducts("productName");
+              }}
+            >
               <Edit size={20} />
             </span>
-            <span className="text-red-700">
+            <span
+              className="text-red-700"
+              onClick={() => {
+                setShowModal(true);
+                setAction("delete");
+                // setSelectedProducts("productName");
+              }}
+            >
               <Trash size={20} />
             </span>
           </li>
@@ -114,6 +132,13 @@ export default function MobileProductCard({ data }: { data: any }) {
           </div>
         </div>
       </div>
+      {showModal && (
+        <ProductOptionModal
+          action={action}
+          product={data}
+          setShowModal={setShowModal}
+        />
+      )}
     </>
   );
 }
