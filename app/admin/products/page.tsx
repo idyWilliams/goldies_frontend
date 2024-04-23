@@ -66,12 +66,36 @@ export default function Page() {
   const [showModal, setShowModal] = useState(false);
   const [action, setAction] = useState("");
   const [selectedProducts, setSelectedProducts] = useState<any>();
-  const [open, setIsOpen] = useState(false);
   const [isOpen, setOpen] = useState(false);
+  const [sortType, setSortType] = useState("recentlyAdded");
 
   const router = useRouter();
   const handleAddNew = () => {
     router.push(`/admin/create-products`);
+  };
+  const sortProducts = (type: string) => {
+    switch (type) {
+      case "recentlyAdded":
+        return productList
+          .slice()
+          .sort(
+            (a: any, b: any) =>
+              new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime(),
+          );
+      case "highToLow":
+        return productList
+          .slice()
+          .sort((a: any, b: any) => b.priceFrom - a.priceFrom);
+      case "lowToHigh":
+        return productList
+          .slice()
+          .sort((a: any, b: any) => a.priceFrom - b.priceFrom);
+      case "available":
+        return productList.filter((a: any) => a.status === "available");
+      default:
+        return productList;
+        break;
+    }
   };
   const columns = [
     columnHelper.accessor((row) => row, {
@@ -209,14 +233,30 @@ export default function Page() {
           </button>
           {isOpen && (
             <div className="absolute right-5 top-[180px] z-40 w-[180px] rounded-md bg-black p-4 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
-              <span className="mb-2 whitespace-nowrap rounded-[3px] bg-[#E4D064] bg-opacity-20 py-1 pl-1 pr-7 text-sm text-main">
+              <span
+                className="mb-2 whitespace-nowrap rounded-[3px] bg-[#E4D064] bg-opacity-20 py-1 pl-1 pr-7 text-sm text-main"
+                onClick={() => setSortType("recentlyAdded")}
+              >
                 Recently Added
               </span>
-              <span className="mb-2 block text-main">High To Low Price</span>
-              <span className="mb-2 block text-main">Low To High Price</span>
+              <span
+                className="mb-2 block text-main"
+                onClick={() => setSortType("highToLow")}
+              >
+                High To Low Price
+              </span>
+              <span
+                className="mb-2 block text-main"
+                onClick={() => setSortType("lowToHigh")}
+              >
+                Low To High Price
+              </span>
               <div className="my-1 border-b border-main border-opacity-50"></div>
-              <span className="text-main">
-                status: <span className="text-main">Active</span>
+              <span
+                className="text-main"
+                onClick={() => setSortType("available")}
+              >
+                status: <span className="text-main">Available</span>
               </span>
             </div>
           )}
@@ -230,7 +270,7 @@ export default function Page() {
           />
         </div>
         <div className="block space-y-5 md:hidden">
-          {productList.map((product: any, index: number) => (
+          {sortProducts(sortType).map((product: any, index: number) => (
             <MobileProductCard data={product} key={index} />
           ))}
         </div>

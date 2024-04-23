@@ -23,6 +23,7 @@ import {
 import MobileProductCard from "@/components/admin-component/MobileProductCard";
 import MobileOrderCard from "@/components/admin-component/MobileOrderCard";
 import OrderDetailsModal from "@/components/admin-component/OrderDetailsModal";
+import { useRouter } from "next/navigation";
 
 type Product = {
   id: string;
@@ -58,7 +59,7 @@ interface ITableProps {
   filteredTabs: any;
 }
 export default function Page() {
-  const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
   const columns = [
     columnHelper.accessor((row) => row, {
       id: "productName",
@@ -109,7 +110,9 @@ export default function Page() {
       cell: (info) => (
         <button
           className="rounded-[50px] bg-main px-4 py-1 text-black"
-          onClick={() => setIsOpen(true)}
+          onClick={() =>
+            router.push(`/admin/orders/${info.cell.row.original.id}`)
+          }
         >
           View Details
         </button>
@@ -135,7 +138,7 @@ export default function Page() {
           <MobileOrderCard />
         </div>
       </section>
-      <OrderDetailsModal isOpen={isOpen} setIsOpen={setIsOpen} />
+      {/* <OrderDetailsModal isOpen={isOpen} setIsOpen={setIsOpen} /> */}
     </>
   );
 }

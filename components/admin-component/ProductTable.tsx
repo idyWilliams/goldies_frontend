@@ -20,6 +20,7 @@ export default function ProductTable({
   data: any;
   filteredTabs?: any;
 }) {
+  const [selectedTabs, setSelectedTabs] = React.useState(0);
   const table = useReactTable({
     data,
     columns,
@@ -34,20 +35,14 @@ export default function ProductTable({
             filteredTabs.map((tabs: string, index: number) => (
               <button
                 key={index}
-                className="h-[21px] w-fit rounded-sm border border-neutral-200 bg-white px-2"
+                className={`w-fit rounded-sm border px-2 ${selectedTabs === index ? "bg-black text-main" : "border-neutral-200 bg-white"}`}
+                onClick={() => {
+                  setSelectedTabs(index);
+                }}
               >
                 {tabs}
               </button>
             ))}
-          {/* <button className="h-[21px] w-[69px] rounded-sm bg-white">
-              Pending
-            </button>
-            <button className="h-[21px] w-[69px] rounded-sm bg-white">
-              Success
-            </button>
-            <button className="h-[21px] w-[69px] rounded-sm bg-white">
-              Failed
-            </button> */}
         </div>
         <label htmlFor="search" className="relative block w-[500px] ">
           <input

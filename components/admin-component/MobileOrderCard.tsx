@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Card from "../Card";
 import { orderList } from "@/utils/adminData";
 import Image from "next/image";
@@ -33,6 +33,7 @@ const statusColor = (status: string) => {
 };
 
 export default function MobileOrderCard() {
+  const [selectedTabs, setSelectedTabs] = useState(0);
   const router = useRouter();
   return (
     <div className="">
@@ -41,7 +42,10 @@ export default function MobileOrderCard() {
           (tabs: string, index: number) => (
             <button
               key={index}
-              className="w-fit rounded-sm bg-white  px-2 py-1"
+              className={`w-fit rounded-sm border px-2 ${selectedTabs === index ? "bg-black text-main" : "border-neutral-200 bg-white"}`}
+              onClick={() => {
+                setSelectedTabs(index);
+              }}
             >
               {tabs}
             </button>
