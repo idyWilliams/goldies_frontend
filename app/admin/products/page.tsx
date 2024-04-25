@@ -222,9 +222,6 @@ export default function Page() {
             </span>
           </label>
 
-          {/* <button className="hidden cursor-pointer items-center rounded-md bg-black px-5 py-4 text-[10px] text-main md:flex">
-            <Add size={15} /> ADD NEW
-          </button> */}
           <button
             className="relative flex min-w-[83px] cursor-pointer items-center justify-between rounded-md bg-black px-3 py-2 text-[10px] text-main md:hidden"
             onClick={() => setOpen((prev) => !prev)}
@@ -265,7 +262,8 @@ export default function Page() {
         <div className="hidden md:block md:overflow-x-scroll">
           <ProductTable
             columns={columns}
-            data={productList}
+            Tdata={productList}
+            statusType="product"
             filteredTabs={["All", "Available", "Unavailable", "Disabled"]}
           />
         </div>

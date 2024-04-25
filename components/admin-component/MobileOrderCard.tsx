@@ -33,8 +33,22 @@ const statusColor = (status: string) => {
 };
 
 export default function MobileOrderCard() {
-  const [selectedTabs, setSelectedTabs] = useState(0);
+  const [selectedTabs, setSelectedTabs] = useState("All");
+  const [filteredData, setFilteredData] = useState(orderList);
+
   const router = useRouter();
+  const handleTabClick = (status: string) => {
+    setSelectedTabs(status);
+    if (status === "All") {
+      setFilteredData(orderList);
+    } else {
+      setFilteredData(
+        orderList.filter(
+          (item) => item?.status.toLowerCase() === status.toLowerCase(),
+        ),
+      );
+    }
+  };
   return (
     <div className="">
       <div className="mt-3 flex items-center gap-1">
@@ -42,9 +56,9 @@ export default function MobileOrderCard() {
           (tabs: string, index: number) => (
             <button
               key={index}
-              className={`w-fit rounded-sm border px-2 ${selectedTabs === index ? "bg-black text-main" : "border-neutral-200 bg-white"}`}
+              className={`w-fit rounded-sm border px-2 ${selectedTabs === tabs ? "bg-black text-main" : "border-neutral-200 bg-white"}`}
               onClick={() => {
-                setSelectedTabs(index);
+                handleTabClick(tabs);
               }}
             >
               {tabs}
@@ -53,7 +67,7 @@ export default function MobileOrderCard() {
         )}
       </div>
       <div className="mt-5 grid grid-cols-1 gap-4">
-        {orderList.map((data: any, index: number) => {
+        {filteredData.map((data: any, index: number) => {
           return (
             <>
               <Card key={index} className="bg-white p-4 shadow-xl">

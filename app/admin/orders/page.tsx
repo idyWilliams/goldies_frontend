@@ -40,13 +40,22 @@ const statusColor = (status: string) => {
   switch (status.toLowerCase()) {
     case "success":
       return (
-        <div className="text-sm font-semibold text-green-700">Success</div>
+        <div className="inline-flex items-center gap-2 rounded-[50px] border border-green-700 bg-green-700 bg-opacity-10 px-3 py-[2px] text-sm text-green-700">
+          <span className="h-2 w-2 rounded-full bg-green-700"></span>
+          Success
+        </div>
       );
     case "failed":
-      return <div className="text-sm font-semibold text-red-700">Failed</div>;
+      return (
+        <div className="inline-flex items-center gap-2 rounded-[50px] border border-red-700 bg-red-700 bg-opacity-10 px-3 py-[2px] text-sm text-red-700">
+          <span className="h-2 w-2 rounded-full bg-red-700"></span> Failed
+        </div>
+      );
     case "pending":
       return (
-        <div className="text-sm font-semibold text-orange-600">Pending</div>
+        <div className="inline-flex items-center gap-2 rounded-[50px] border border-orange-600 bg-orange-600 bg-opacity-10 px-3 py-[2px] text-sm text-orange-600">
+          <span className="h-2 w-2 rounded-full bg-orange-600"></span> Pending
+        </div>
       );
     default:
       return;
@@ -130,7 +139,8 @@ export default function Page() {
         <div className="hidden  md:block">
           <ProductTable
             columns={columns}
-            data={orderList}
+            Tdata={orderList}
+            statusType="order"
             filteredTabs={["All", "Pending", "Success", "Failed"]}
           />
         </div>

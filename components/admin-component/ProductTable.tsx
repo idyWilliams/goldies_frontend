@@ -1,5 +1,4 @@
 "use client";
-import * as React from "react";
 
 import {
   Column,
@@ -9,24 +8,43 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useEffect, useMemo, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 
 export default function ProductTable({
   columns,
-  data,
+  Tdata,
   filteredTabs,
+  statusType,
 }: {
   columns: any;
-  data: any;
+  Tdata: any;
   filteredTabs?: any;
+  statusType: string;
 }) {
-  const [selectedTabs, setSelectedTabs] = React.useState(0);
+  const [selectedTabs, setSelectedTabs] = useState(filteredTabs[0]);
+  const [chosenTab, setChosenTab] = useState(filteredTabs[0]);
+  const [TData, setTData] = useState(Tdata);
+  const data = useMemo(() => TData, [TData]);
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-
+  useEffect(() => {
+    if (chosenTab === filteredTabs[0]) {
+      setTData(Tdata);
+    } else {
+      if (statusType === "order" || statusType === "product") {
+        setTData(
+          Tdata?.filter(
+            (item: any) =>
+              item?.status.toLowerCase() === chosenTab.toLowerCase(),
+          ),
+        );
+      }
+    }
+  });
   return (
     <div>
       <div className="my-6 flex items-center justify-between gap-2">
@@ -35,9 +53,10 @@ export default function ProductTable({
             filteredTabs.map((tabs: string, index: number) => (
               <button
                 key={index}
-                className={`w-fit rounded-sm border px-2 ${selectedTabs === index ? "bg-black text-main" : "border-neutral-200 bg-white"}`}
+                className={`w-fit rounded-sm border px-2 ${selectedTabs === tabs ? "bg-black text-main" : "border-neutral-200 bg-white"}`}
                 onClick={() => {
-                  setSelectedTabs(index);
+                  setSelectedTabs(tabs);
+                  setChosenTab(tabs);
                 }}
               >
                 {tabs}
