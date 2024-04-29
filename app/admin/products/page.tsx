@@ -2,7 +2,7 @@
 import AdminTable from "@/components/admin-component/AdminTable";
 import { productList } from "@/utils/adminData";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { Column } from "react-table";
 import {
@@ -27,6 +27,7 @@ import ProductOptionModal from "@/components/admin-component/ProductOptionModal"
 import { setProducts } from "@/redux/features/product/productSlice";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import MenuPopup from "@/components/MenuPopup";
+import ProductSortBy from "@/components/admin-component/ProductSortBy";
 
 type Product = {
   id: string;
@@ -68,40 +69,72 @@ export default function Page() {
   const [selectedProducts, setSelectedProducts] = useState<any>();
   const [isOpen, setOpen] = useState(false);
   const [sortType, setSortType] = useState("recentlyAdded");
+  const [searchValue, setSearchValue] = useState("");
+  const [data, setData] = useState(productList);
 
   const router = useRouter();
   const handleAddNew = () => {
     router.push(`/admin/create-products`);
   };
-  const sortProducts = (type: string) => {
-    switch (type) {
-      case "recentlyAdded":
-        return productList
-          .slice()
-          .sort(
-            (a: any, b: any) =>
-              new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime(),
+
+  useEffect(() => {
+    const sortProducts = (type: string) => {
+      switch (type) {
+        case "recentlyAdded":
+          setData(
+            productList
+              .slice()
+              .sort(
+                (a: any, b: any) =>
+                  new Date(b.addedDate).getTime() -
+                  new Date(a.addedDate).getTime(),
+              ),
           );
-      case "highToLow":
-        return productList
-          .slice()
-          .sort((a: any, b: any) => b.priceFrom - a.priceFrom);
-      case "lowToHigh":
-        return productList
-          .slice()
-          .sort((a: any, b: any) => a.priceFrom - b.priceFrom);
-      case "available":
-        return productList.filter((a: any) => a.status === "available");
-      default:
-        return productList;
-        break;
-    }
+          return;
+        case "highToLow":
+          setData(
+            productList
+              .slice()
+              .sort((a: any, b: any) => b.priceFrom - a.priceFrom),
+          );
+          return;
+        case "lowToHigh":
+          setData(
+            productList
+              .slice()
+              .sort((a: any, b: any) => a.priceFrom - b.priceFrom),
+          );
+          return;
+        case "available":
+          setData(productList.filter((a: any) => a.status === "available"));
+          return;
+        default:
+          setData(productList);
+          return;
+      }
+    };
+
+    sortProducts(sortType);
+  }, [sortType]);
+  useEffect(() => {
+    const filteredProducts = productList?.filter(
+      (item: any) =>
+        item?.productName.toLowerCase().includes(searchValue) ||
+        item?.id.toString().toLowerCase().includes(searchValue),
+    );
+    setData(filteredProducts);
+  }, [searchValue]);
+
+  const handleChange = (e: any) => {
+    const value = e.target.value;
+    setSearchValue(value);
+    console.log(value, "value");
   };
   const columns = [
     columnHelper.accessor((row) => row, {
       id: "productName",
       cell: (info) => {
-        console.log(info, "column");
+        // console.log(info, "column");
         return (
           <div className="grid grid-cols-[50px_1fr] gap-2">
             <Image
@@ -156,7 +189,7 @@ export default function Page() {
     columnHelper.accessor((row) => row, {
       id: "actions",
       cell: (info) => {
-        console.log(info, "info");
+        // console.log(info, "info");
         return (
           <div className="inline-flex items-center gap-3">
             <Link
@@ -211,11 +244,13 @@ export default function Page() {
         <div className="my-6 flex items-center justify-between gap-2 md:hidden">
           <label htmlFor="search" className="relative block w-[500px] ">
             <input
+              value={searchValue}
               type="text"
               name="search"
               autoComplete="search"
               placeholder="search for product name, product ID..."
-              className="w-full rounded-[50px] px-4 py-1 placeholder:text-xs lg:py-2"
+              className="w-full rounded-[50px] px-4 py-1 placeholder:text-xs focus:border-black focus:ring-black lg:py-2"
+              onChange={(e) => handleChange(e)}
             />
             <span className="absolute right-3 top-1/2 -translate-y-1/2">
               <CiSearch />
@@ -229,33 +264,7 @@ export default function Page() {
             Sort by {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
           </button>
           {isOpen && (
-            <div className="absolute right-5 top-[180px] z-40 w-[180px] rounded-md bg-black p-4 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
-              <span
-                className="mb-2 whitespace-nowrap rounded-[3px] bg-[#E4D064] bg-opacity-20 py-1 pl-1 pr-7 text-sm text-main"
-                onClick={() => setSortType("recentlyAdded")}
-              >
-                Recently Added
-              </span>
-              <span
-                className="mb-2 block text-main"
-                onClick={() => setSortType("highToLow")}
-              >
-                High To Low Price
-              </span>
-              <span
-                className="mb-2 block text-main"
-                onClick={() => setSortType("lowToHigh")}
-              >
-                Low To High Price
-              </span>
-              <div className="my-1 border-b border-main border-opacity-50"></div>
-              <span
-                className="text-main"
-                onClick={() => setSortType("available")}
-              >
-                status: <span className="text-main">Available</span>
-              </span>
-            </div>
+            <ProductSortBy setSortType={setSortType} sortType={sortType} />
           )}
         </div>
 
@@ -268,7 +277,7 @@ export default function Page() {
           />
         </div>
         <div className="block space-y-5 md:hidden">
-          {sortProducts(sortType).map((product: any, index: number) => (
+          {data.map((product: any, index: number) => (
             <MobileProductCard data={product} key={index} />
           ))}
         </div>

@@ -15,7 +15,7 @@ export default function Page({ params }: any) {
       (item: any) => item.id === Number(params.details),
     );
     setOrder(item);
-  }, []);
+  }, [params.details]);
 
   const subTotal = order?.products
     ?.map((item: any) => item?.priceTo * item?.quantity)
@@ -76,10 +76,10 @@ export default function Page({ params }: any) {
             <div className="">
               <h3 className="mb-3 text-[15px] font-semibold">Order Note</h3>
               <p className="text-[13.69px]">
-                I'd love to order some of your delicious cakes for an upcoming
-                celebration! Here's what I'd like: Chocolate Fudge Cake - 8",
-                Red Velvet Cupcakes - Dozen. Could you please let me know the
-                total cost and earliest delivery date?
+                I&apos;d love to order some of your delicious cakes for an
+                upcoming celebration! Here&apos;s what I&apos;d like: Chocolate
+                Fudge Cake - 8", Red Velvet Cupcakes - Dozen. Could you please
+                let me know the total cost and earliest delivery date?
               </p>
             </div>
 
@@ -181,7 +181,7 @@ export default function Page({ params }: any) {
                 const productPrice = item?.priceTo * item?.quantity;
                 console.log(item, "orderItem");
                 return (
-                  <div className="table-row">
+                  <div className="table-row" key={index}>
                     <div className="table-cell border-b border-neutral-300 py-3">
                       <div className="grid grid-cols-[50px_1fr] items-center gap-1">
                         <Image

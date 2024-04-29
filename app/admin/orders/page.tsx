@@ -79,6 +79,7 @@ export default function Page() {
             <Image
               src={info.cell.row.original?.image}
               alt={info.cell.row.original.productName}
+              className="h-[40px] w-full object-cover"
             />
             <h3 className="font-bold">{info.cell.row.original.productName}</h3>
           </div>

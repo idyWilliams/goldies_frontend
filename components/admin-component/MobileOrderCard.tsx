@@ -70,7 +70,10 @@ export default function MobileOrderCard() {
         {filteredData.map((data: any, index: number) => {
           return (
             <>
-              <Card key={index} className="bg-white p-4 shadow-xl">
+              <Card
+                key={`${data.productName}-${index}`}
+                className="bg-white p-4 shadow-xl"
+              >
                 <div>
                   <div>
                     <div className="grid grid-cols-[50px_1fr] items-center gap-2">
