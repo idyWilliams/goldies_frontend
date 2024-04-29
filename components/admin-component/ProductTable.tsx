@@ -54,7 +54,7 @@ export default function ProductTable({
         item?.id.toString().toLowerCase().includes(searchValue),
     );
     setTData(filteredProducts);
-  }, [searchValue]);
+  }, [searchValue, Tdata]);
 
   const handleChange = (e: any) => {
     const value = e.target.value;

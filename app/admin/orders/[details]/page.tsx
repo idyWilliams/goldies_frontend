@@ -78,8 +78,8 @@ export default function Page({ params }: any) {
               <p className="text-[13.69px]">
                 I&apos;d love to order some of your delicious cakes for an
                 upcoming celebration! Here&apos;s what I&apos;d like: Chocolate
-                Fudge Cake - 8", Red Velvet Cupcakes - Dozen. Could you please
-                let me know the total cost and earliest delivery date?
+                Fudge Cake - 8&quot;, Red Velvet Cupcakes - Dozen. Could you
+                please let me know the total cost and earliest delivery date?
               </p>
             </div>
 
