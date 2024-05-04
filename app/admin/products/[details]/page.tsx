@@ -20,19 +20,22 @@ export default function Page({ params }: any) {
   return (
     <section className="h-screen bg-gray-100">
       <div className="p-5">
-        <div className="">
-          <span
-            className="inline-flex cursor-pointer gap-2"
-            onClick={() => router.push("/admin/products")}
-          >
-            <ArrowLeft />
-            <h1 className="font-semibold uppercase">Product Details</h1>
-          </span>
-        </div>
         <div className="flex justify-between">
-          <p>
-            Product - <span className="text-neutral-500">Product Details</span>
-          </p>
+          <div className="flex items-start gap-2">
+            <span
+              className="inline-flex cursor-pointer gap-2"
+              onClick={() => router.push("/admin/products")}
+            >
+              <ArrowLeft />
+            </span>
+            <div className="">
+              <h1 className="font-semibold uppercase">Product Details</h1>
+              <p>
+                Product -
+                <span className="text-neutral-500">Product Details</span>
+              </p>
+            </div>
+          </div>
           <div className="mb-2 flex cursor-pointer items-center gap-2">
             <Edit size={20} />
             <p className="border-b border-black">Edit Product</p>
