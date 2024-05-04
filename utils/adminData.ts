@@ -73,7 +73,7 @@ export const productList = [
     id: 1,
     image: Chocolate,
     productName: "Chocolate Fudge Cake",
-    addedDate: "2024/02/12",
+    addedDate: "2024/04/22",
     category: "Kids' Cakes",
     subcategories: [
       { label: "Birthday Cakes", value: "birthday_cakes" },
@@ -82,7 +82,7 @@ export const productList = [
       { label: "Baby Shower Cakes", value: "baby_shower_cakes" },
       { label: "Retirement Cakes", value: "retirement_cakes" },
     ],
-    priceFrom: 220,
+    priceFrom: 200,
     priceTo: 215,
     quantity: 20,
     status: "available",
@@ -92,7 +92,7 @@ export const productList = [
     id: 2,
     image: RedVelvet,
     productName: "Red Velvet Cake",
-    addedDate: "2024/02/12",
+    addedDate: "2023/04/02",
     category: "fruit cake",
     priceFrom: 251,
     priceTo: 292,
@@ -116,7 +116,7 @@ export const productList = [
     id: 4,
     image: Coconut,
     productName: "Coconut Cream Cake",
-    addedDate: "2024/02/12",
+    addedDate: "2023/07/25",
     category: "fruit cake",
     priceFrom: 107,
     priceTo: 200,
@@ -183,6 +183,9 @@ export const orderList = [
   {
     id: 1,
     image: Chocolate,
+    email: "johndoe@gmail.com",
+    billingAddress: "37 Wallenger Avenue, Romford, Essex, England, RM2 6EP",
+    mobile: +447488855300,
     productName: "Chocolate Fudge Cake",
     orderDate: "2024/02/12",
     billingName: "John Doe",
@@ -190,6 +193,34 @@ export const orderList = [
     priceTo: 215,
     quantity: 20,
     status: "success",
+    shipping: 10,
+    tax: 5,
+    products: [
+      {
+        image: RedVelvet,
+        productName: "Red Velvet Cake",
+        priceTo: 150,
+        quantity: 2,
+      },
+      {
+        image: Chocolate,
+        productName: "Chocolate Fudge Cake",
+        priceTo: 215,
+        quantity: 1,
+      },
+      {
+        image: Coconut,
+        productName: "Coconut Cream Cake",
+        priceTo: 205,
+        quantity: 1,
+      },
+      {
+        image: Strawberry,
+        productName: "Strawberry Short Cake",
+        priceTo: 200,
+        quantity: 2,
+      },
+    ],
   },
 
   {
@@ -202,6 +233,7 @@ export const orderList = [
     priceTo: 292,
     quantity: 20,
     status: "pending",
+    products: [],
   },
 
   {
@@ -213,6 +245,7 @@ export const orderList = [
     totalPrice: 407,
     priceTo: 200,
     quantity: 20,
+    products: [],
     status: "failed",
   },
 
@@ -225,6 +258,7 @@ export const orderList = [
     totalPrice: 407,
     priceTo: 200,
     quantity: 20,
+    products: [],
     status: "success",
   },
 
@@ -237,6 +271,7 @@ export const orderList = [
     totalPrice: 407,
     priceTo: 200,
     quantity: 20,
+    products: [],
     status: "pending",
   },
 
@@ -249,6 +284,7 @@ export const orderList = [
     totalPrice: 407,
     priceTo: 200,
     quantity: 20,
+    products: [],
     status: "failed",
   },
 
@@ -261,6 +297,7 @@ export const orderList = [
     totalPrice: 407,
     priceTo: 200,
     quantity: 20,
+    products: [],
     status: "success",
   },
 
@@ -273,6 +310,7 @@ export const orderList = [
     totalPrice: 407,
     priceTo: 200,
     quantity: 20,
+    products: [],
     status: "pending",
   },
 ];
