@@ -43,7 +43,40 @@ export default function ProductTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onPaginationChange: setPagination,
+    //no need to pass pageCount or rowCount with client-side pagination as it is calculated automatically
+    state: {
+      pagination,
+    },
+    // autoResetPageIndex: false, // turn off page index reset when sorting or filtering
   });
+  useEffect(() => {
+    if (chosenTab === filteredTabs[0]) {
+      setTData(Tdata);
+    } else {
+      if (statusType === "order" || statusType === "product") {
+        setTData(
+          Tdata?.filter(
+            (item: any) =>
+              item?.status.toLowerCase() === chosenTab.toLowerCase(),
+          ),
+        );
+      }
+    }
+  }, [chosenTab, filteredTabs, Tdata, statusType]);
+
+  useEffect(() => {
+    const filteredProducts = Tdata?.filter(
+      (item: any) =>
+        item?.productName.toLowerCase().includes(searchValue) ||
+        item?.id.toString().toLowerCase().includes(searchValue),
+    );
+    setTData(filteredProducts);
+  }, [searchValue, Tdata]);
+
   const handleChange = (e: any) => {
     const value = e.target.value;
     setSearchValue(value);
@@ -115,6 +148,9 @@ export default function ProductTable({
           ))}
         </tbody>
       </table>
+      {TData?.length < 1 && (
+        <div className="p-8 text-center">No Product Found!</div>
+      )}
       <div className="mt-8 flex w-full items-center justify-between gap-2">
         <div>
           Showing {table.getRowModel().rows.length.toLocaleString()} of{" "}

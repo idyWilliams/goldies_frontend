@@ -24,7 +24,7 @@ export default function Page({ params }: any) {
   );
   console.log(params, "product details", product);
   return (
-    <section className="h-screen bg-gray-100">
+    <section className="min-h-screen bg-gray-100 pb-8">
       <div className="p-5">
         <div className="flex justify-between">
           <div className="flex items-start gap-2">
@@ -62,7 +62,7 @@ export default function Page({ params }: any) {
                 <p className="font-semibold">Product Description:</p>
                 <p>{product?.description}</p>
               </div>
-              <div className="mb-5 flex items-center justify-between">
+              <div className="mb-5 grid grid-cols-2 flex-wrap items-start justify-between md:flex md:gap-4">
                 <div className="mb-5">
                   <p className="font-semibold">Product Price:</p>
                   <p>
@@ -117,7 +117,7 @@ export default function Page({ params }: any) {
             </h1>
             <div className="bg-white px-6 py-6">
               <div className="">
-                <div className="mb-6 h-[300px]">
+                <div className="mb-6 hidden h-[300px] md:block">
                   <Image
                     src={product?.image[selectedImage] || coconut}
                     alt="Coconut Cake"
@@ -126,7 +126,7 @@ export default function Page({ params }: any) {
                     className="h-full w-full object-cover"
                   />
                 </div>
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                   {product?.image.map((item: any, index: number) => (
                     <div
                       key={index}
