@@ -1,5 +1,4 @@
 "use client";
-import * as React from "react";
 
 import {
   Column,
@@ -9,23 +8,60 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useEffect, useMemo, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 
 export default function ProductTable({
   columns,
-  data,
+  Tdata,
   filteredTabs,
+  statusType,
 }: {
   columns: any;
-  data: any;
+  Tdata: any;
   filteredTabs?: any;
+  statusType: string;
 }) {
+  const [selectedTabs, setSelectedTabs] = useState(filteredTabs[0]);
+  const [chosenTab, setChosenTab] = useState(filteredTabs[0]);
+  const [TData, setTData] = useState(Tdata);
+  const data = useMemo(() => TData, [TData]);
+  const [searchValue, setSearchValue] = useState("");
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+  useEffect(() => {
+    if (chosenTab === filteredTabs[0]) {
+      setTData(Tdata);
+    } else {
+      if (statusType === "order" || statusType === "product") {
+        setTData(
+          Tdata?.filter(
+            (item: any) =>
+              item?.status.toLowerCase() === chosenTab.toLowerCase(),
+          ),
+        );
+      }
+    }
+  }, [chosenTab, filteredTabs, Tdata, statusType]);
 
+  useEffect(() => {
+    const filteredProducts = Tdata?.filter(
+      (item: any) =>
+        item?.productName.toLowerCase().includes(searchValue) ||
+        item?.id.toString().toLowerCase().includes(searchValue),
+    );
+    setTData(filteredProducts);
+  }, [searchValue, Tdata]);
+
+  const handleChange = (e: any) => {
+    const value = e.target.value;
+    setSearchValue(value);
+    console.log(value, "value");
+  };
+  console.log(searchValue, "searchValue");
   return (
     <div>
       <div className="my-6 flex items-center justify-between gap-2">
@@ -34,28 +70,25 @@ export default function ProductTable({
             filteredTabs.map((tabs: string, index: number) => (
               <button
                 key={index}
-                className="h-[21px] w-fit rounded-sm border border-neutral-200 bg-white px-2"
+                className={`w-fit rounded-sm border px-2 ${selectedTabs === tabs ? "bg-black text-main" : "border-neutral-200 bg-white"}`}
+                onClick={() => {
+                  setSelectedTabs(tabs);
+                  setChosenTab(tabs);
+                }}
               >
                 {tabs}
               </button>
             ))}
-          {/* <button className="h-[21px] w-[69px] rounded-sm bg-white">
-              Pending
-            </button>
-            <button className="h-[21px] w-[69px] rounded-sm bg-white">
-              Success
-            </button>
-            <button className="h-[21px] w-[69px] rounded-sm bg-white">
-              Failed
-            </button> */}
         </div>
         <label htmlFor="search" className="relative block w-[500px] ">
           <input
+            value={searchValue}
             type="text"
             name="search"
             autoComplete="search"
             placeholder="search for product name, product ID..."
-            className="w-full rounded-[50px] px-4 py-1 placeholder:text-xs"
+            className="w-full rounded-[50px] px-4 py-1 placeholder:text-xs focus:border-black focus:ring-black"
+            onChange={(e) => handleChange(e)}
           />
           <span className="absolute right-3 top-1/2 -translate-y-1/2">
             <CiSearch />
@@ -94,22 +127,6 @@ export default function ProductTable({
             </tr>
           ))}
         </tbody>
-        {/* <tfoot>
-          {table.getFooterGroups().map((footerGroup) => (
-            <tr key={footerGroup.id}>
-              {footerGroup.headers.map((header) => (
-                <th key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.footer,
-                        header.getContext(),
-                      )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </tfoot> */}
       </table>
     </div>
   );
