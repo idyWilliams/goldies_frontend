@@ -8,18 +8,20 @@ import {
   IoIosArrowUp,
   IoMdNotificationsOutline,
 } from "react-icons/io";
-import { BsList, BsX } from "react-icons/bs";
+import { BsList, BsSearch, BsX } from "react-icons/bs";
 import AdminSideBar from "./AdminSideBar";
 import MobileSideBar from "./MobileSideBar";
 import MenuPopup from "../MenuPopup";
 import { BiHeart, BiStore } from "react-icons/bi";
-import { Setting2, User } from "iconsax-react";
+import { SearchNormal1, Setting2, User } from "iconsax-react";
 import moment from "moment";
+import { CiSearch } from "react-icons/ci";
 
 export default function AdminNav() {
   const [sticky, setSticky] = useState(false);
   const [open, setIsOpen] = useState(false);
   const [isOpen, setOpen] = useState(false);
+  const [openSearch, setOpenSearch] = useState(false);
   const [currentTime, setCurrentTime] = useState(moment().format("H:mm"));
 
   useEffect(() => {
@@ -63,20 +65,32 @@ export default function AdminNav() {
             </Link>
           </div>
 
-          <div className="hidden">
-            <label htmlFor="search" className="mr-[400px]">
-              <input
-                type="text"
-                name="search"
-                autoComplete="off"
-                id="search"
-                placeholder="Search..."
-                className="w-[400px] rounded-lg border-none bg-[#1E1E1E] text-[13px] placeholder:text-[#424141]"
-              />
-            </label>
-          </div>
-
-          <div className="relative inline-flex items-center gap-4">
+          <div className="relative inline-flex items-center justify-end gap-4">
+            <div className="inline-flex items-center justify-end">
+              <label
+                htmlFor="search"
+                className={`inline-block w-min rounded-l-md bg-main duration-300 ${openSearch ? "bg-opacity-20 opacity-100" : "opacity-0"}`}
+              >
+                <input
+                  type="text"
+                  name="search"
+                  autoComplete="off"
+                  id="search"
+                  placeholder="Search..."
+                  className={`${openSearch ? "w-[400px] px-4" : "w-0 px-0"} border-none bg-transparent text-[13px] text-main duration-300 placeholder:text-main placeholder:text-opacity-50 focus:border-0 focus:outline-none focus:ring-0`}
+                />
+              </label>
+              <span
+                className={`${openSearch ? "rounded-l-none bg-opacity-20" : "rounded-l-md bg-opacity-0"} inline-flex h-10 w-10 items-center justify-center rounded-r-md bg-main  duration-300`}
+                onClick={() => setOpenSearch((prev) => !prev)}
+              >
+                {openSearch ? (
+                  <BsX size={18} className="inline-block text-main" />
+                ) : (
+                  <BsSearch size={18} className="inline-block text-main" />
+                )}
+              </span>
+            </div>
             <span className="relative inline-block cursor-pointer text-main">
               <IoMdNotificationsOutline size={24} />
               <span className="absolute right-0.5 top-1 inline-block h-1.5 w-1.5 rounded-full bg-red-600 text-sm outline outline-2 outline-black"></span>
