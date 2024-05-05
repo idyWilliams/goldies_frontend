@@ -138,7 +138,7 @@ export default function Page() {
         return (
           <div className="grid grid-cols-[50px_1fr] gap-2">
             <Image
-              src={info.cell.row.original?.image}
+              src={info.cell.row.original?.image[0]}
               alt={info.cell.row.original.productName}
             />
             <div className="flex flex-col">

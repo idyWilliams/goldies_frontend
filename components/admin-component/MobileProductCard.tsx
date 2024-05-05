@@ -55,7 +55,7 @@ export default function MobileProductCard({ data }: { data: any }) {
           <div className="grid grid-cols-[70px_1fr] items-center gap-2">
             <>
               <Image
-                src={data.image}
+                src={data.image[0]}
                 alt={data.productName}
                 width={50}
                 height={50}
