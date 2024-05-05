@@ -2,7 +2,7 @@
 import AdminTable from "@/components/admin-component/AdminTable";
 import { productList } from "@/utils/adminData";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { Column } from "react-table";
 import {
@@ -27,6 +27,7 @@ import ProductOptionModal from "@/components/admin-component/ProductOptionModal"
 import { setProducts } from "@/redux/features/product/productSlice";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import MenuPopup from "@/components/MenuPopup";
+import ProductSortBy from "@/components/admin-component/ProductSortBy";
 
 type Product = {
   id: string;
@@ -66,22 +67,78 @@ export default function Page() {
   const [showModal, setShowModal] = useState(false);
   const [action, setAction] = useState("");
   const [selectedProducts, setSelectedProducts] = useState<any>();
-  const [open, setIsOpen] = useState(false);
   const [isOpen, setOpen] = useState(false);
+  const [sortType, setSortType] = useState("recentlyAdded");
+  const [searchValue, setSearchValue] = useState("");
+  const [data, setData] = useState(productList);
 
   const router = useRouter();
   const handleAddNew = () => {
     router.push(`/admin/create-products`);
   };
+
+  useEffect(() => {
+    const sortProducts = (type: string) => {
+      switch (type) {
+        case "recentlyAdded":
+          setData(
+            productList
+              .slice()
+              .sort(
+                (a: any, b: any) =>
+                  new Date(b.addedDate).getTime() -
+                  new Date(a.addedDate).getTime(),
+              ),
+          );
+          return;
+        case "highToLow":
+          setData(
+            productList
+              .slice()
+              .sort((a: any, b: any) => b.priceFrom - a.priceFrom),
+          );
+          return;
+        case "lowToHigh":
+          setData(
+            productList
+              .slice()
+              .sort((a: any, b: any) => a.priceFrom - b.priceFrom),
+          );
+          return;
+        case "available":
+          setData(productList.filter((a: any) => a.status === "available"));
+          return;
+        default:
+          setData(productList);
+          return;
+      }
+    };
+
+    sortProducts(sortType);
+  }, [sortType]);
+  useEffect(() => {
+    const filteredProducts = productList?.filter(
+      (item: any) =>
+        item?.productName.toLowerCase().includes(searchValue) ||
+        item?.id.toString().toLowerCase().includes(searchValue),
+    );
+    setData(filteredProducts);
+  }, [searchValue]);
+
+  const handleChange = (e: any) => {
+    const value = e.target.value;
+    setSearchValue(value);
+    console.log(value, "value");
+  };
   const columns = [
     columnHelper.accessor((row) => row, {
       id: "productName",
       cell: (info) => {
-        console.log(info, "column");
+        // console.log(info, "column");
         return (
           <div className="grid grid-cols-[50px_1fr] gap-2">
             <Image
-              src={info.cell.row.original?.image}
+              src={info.cell.row.original?.image[0]}
               alt={info.cell.row.original.productName}
             />
             <div className="flex flex-col">
@@ -132,7 +189,7 @@ export default function Page() {
     columnHelper.accessor((row) => row, {
       id: "actions",
       cell: (info) => {
-        console.log(info, "info");
+        // console.log(info, "info");
         return (
           <div className="inline-flex items-center gap-3">
             <Link
@@ -187,20 +244,19 @@ export default function Page() {
         <div className="my-6 flex items-center justify-between gap-2 md:hidden">
           <label htmlFor="search" className="relative block w-[500px] ">
             <input
+              value={searchValue}
               type="text"
               name="search"
               autoComplete="search"
               placeholder="search for product name, product ID..."
-              className="w-full rounded-[50px] px-4 py-1 placeholder:text-xs lg:py-2"
+              className="w-full rounded-[50px] px-4 py-1 placeholder:text-xs focus:border-black focus:ring-black lg:py-2"
+              onChange={(e) => handleChange(e)}
             />
             <span className="absolute right-3 top-1/2 -translate-y-1/2">
               <CiSearch />
             </span>
           </label>
 
-          {/* <button className="hidden cursor-pointer items-center rounded-md bg-black px-5 py-4 text-[10px] text-main md:flex">
-            <Add size={15} /> ADD NEW
-          </button> */}
           <button
             className="relative flex min-w-[83px] cursor-pointer items-center justify-between rounded-md bg-black px-3 py-2 text-[10px] text-main md:hidden"
             onClick={() => setOpen((prev) => !prev)}
@@ -208,29 +264,20 @@ export default function Page() {
             Sort by {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
           </button>
           {isOpen && (
-            <div className="absolute right-5 top-[180px] z-40 w-[180px] rounded-md bg-black p-4 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
-              <span className="mb-2 whitespace-nowrap rounded-[3px] bg-[#E4D064] bg-opacity-20 py-1 pl-1 pr-7 text-sm text-main">
-                Recently Added
-              </span>
-              <span className="mb-2 block text-main">High To Low Price</span>
-              <span className="mb-2 block text-main">Low To High Price</span>
-              <div className="my-1 border-b border-main border-opacity-50"></div>
-              <span className="text-main">
-                status: <span className="text-main">Active</span>
-              </span>
-            </div>
+            <ProductSortBy setSortType={setSortType} sortType={sortType} />
           )}
         </div>
 
         <div className="hidden md:block md:overflow-x-scroll">
           <ProductTable
             columns={columns}
-            data={productList}
+            Tdata={productList}
+            statusType="product"
             filteredTabs={["All", "Available", "Unavailable", "Disabled"]}
           />
         </div>
         <div className="block space-y-5 md:hidden">
-          {productList.map((product: any, index: number) => (
+          {data.map((product: any, index: number) => (
             <MobileProductCard data={product} key={index} />
           ))}
         </div>

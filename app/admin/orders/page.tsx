@@ -23,6 +23,7 @@ import {
 import MobileProductCard from "@/components/admin-component/MobileProductCard";
 import MobileOrderCard from "@/components/admin-component/MobileOrderCard";
 import OrderDetailsModal from "@/components/admin-component/OrderDetailsModal";
+import { useRouter } from "next/navigation";
 
 type Product = {
   id: string;
@@ -39,13 +40,22 @@ const statusColor = (status: string) => {
   switch (status.toLowerCase()) {
     case "success":
       return (
-        <div className="text-sm font-semibold text-green-700">Success</div>
+        <div className="inline-flex items-center gap-2 rounded-[50px] border border-green-700 bg-green-700 bg-opacity-10 px-3 py-[2px] text-sm text-green-700">
+          <span className="h-2 w-2 rounded-full bg-green-700"></span>
+          Success
+        </div>
       );
     case "failed":
-      return <div className="text-sm font-semibold text-red-700">Failed</div>;
+      return (
+        <div className="inline-flex items-center gap-2 rounded-[50px] border border-red-700 bg-red-700 bg-opacity-10 px-3 py-[2px] text-sm text-red-700">
+          <span className="h-2 w-2 rounded-full bg-red-700"></span> Failed
+        </div>
+      );
     case "pending":
       return (
-        <div className="text-sm font-semibold text-orange-600">Pending</div>
+        <div className="inline-flex items-center gap-2 rounded-[50px] border border-orange-600 bg-orange-600 bg-opacity-10 px-3 py-[2px] text-sm text-orange-600">
+          <span className="h-2 w-2 rounded-full bg-orange-600"></span> Pending
+        </div>
       );
     default:
       return;
@@ -58,7 +68,7 @@ interface ITableProps {
   filteredTabs: any;
 }
 export default function Page() {
-  const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
   const columns = [
     columnHelper.accessor((row) => row, {
       id: "productName",
@@ -69,6 +79,7 @@ export default function Page() {
             <Image
               src={info.cell.row.original?.image}
               alt={info.cell.row.original.productName}
+              className="h-[40px] w-full object-cover"
             />
             <h3 className="font-bold">{info.cell.row.original.productName}</h3>
           </div>
@@ -109,7 +120,9 @@ export default function Page() {
       cell: (info) => (
         <button
           className="rounded-[50px] bg-main px-4 py-1 text-black"
-          onClick={() => setIsOpen(true)}
+          onClick={() =>
+            router.push(`/admin/orders/${info.cell.row.original.id}`)
+          }
         >
           View Details
         </button>
@@ -127,7 +140,8 @@ export default function Page() {
         <div className="hidden  md:block">
           <ProductTable
             columns={columns}
-            data={orderList}
+            Tdata={orderList}
+            statusType="order"
             filteredTabs={["All", "Pending", "Success", "Failed"]}
           />
         </div>
@@ -135,7 +149,7 @@ export default function Page() {
           <MobileOrderCard />
         </div>
       </section>
-      <OrderDetailsModal isOpen={isOpen} setIsOpen={setIsOpen} />
+      {/* <OrderDetailsModal isOpen={isOpen} setIsOpen={setIsOpen} /> */}
     </>
   );
 }
