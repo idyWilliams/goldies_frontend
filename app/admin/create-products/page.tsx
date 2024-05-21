@@ -5,8 +5,8 @@ import { MultiSelect } from "react-multi-select-component";
 import CreateProductLayout from "@/components/admin-component/create-product/CreateProductLayout";
 import AnimatedMulti from "@/components/admin-component/CustomSelect";
 import { MultiValue } from "react-select";
-import { useSearchParams } from "next/navigation";
-import { productList } from "@/utils/adminData";
+// import { useSearchParams } from "next/navigation";
+// import { productList } from "@/utils/adminData";
 
 const fillingsList = [
   {
@@ -211,17 +211,17 @@ export default function Page() {
   const [sizes, setSizes] = useState([]);
   const [addOn, setAddOn] = useState([]);
   const [selectedOptions, setSelectedOptions] = useState<MultiValue<any>>();
-  const searchParams = useSearchParams();
-  const search = searchParams.get("edit");
+  // const searchParams = useSearchParams();
+  // const search = searchParams.get("edit");
   // console.log(search, "search");
   const [product, setProduct] = useState<any>();
-  useEffect(() => {
-    const [filter] = productList.filter(
-      (product: any) => String(product.id) === search,
-    );
-    setProduct(filter);
-    // console.log(filter, "filter");
-  }, [search]);
+  // useEffect(() => {
+  //   const [filter] = productList.filter(
+  //     (product: any) => String(product.id) === search,
+  //   );
+  //   setProduct(filter);
+  //   // console.log(filter, "filter");
+  // }, [search]);
 
   const [images, setImages] = useState<any>({
     image1: "",
@@ -729,8 +729,3 @@ export default function Page() {
     </section>
   );
 }
-// import React from "react";
-
-// export default function page() {
-//   return <div>page</div>;
-// }
