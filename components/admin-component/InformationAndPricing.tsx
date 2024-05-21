@@ -120,7 +120,7 @@ export default function InformationAndPricing() {
     <section>
       <div>
         <div>
-          <label htmlFor="ProductName" className="">
+          <label htmlFor="productName" className="">
             <span className="mb-1 mt-6 block text-[12px] after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
               Product Name
             </span>
@@ -153,6 +153,8 @@ export default function InformationAndPricing() {
               </h2>
 
               <select
+                name="category-m"
+                id="category-m"
                 className="form-select w-full rounded-md border-neutral-300 text-[10px] text-neutral-400"
                 onChange={(e: any) => setCategory(e.target.value)}
                 value={category}
