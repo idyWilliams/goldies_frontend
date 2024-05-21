@@ -3,7 +3,6 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { MultiSelect } from "react-multi-select-component";
 import CreateProductLayout from "@/components/admin-component/create-product/CreateProductLayout";
-import StepperController from "@/components/admin-component/create-product/StepperController";
 import AnimatedMulti from "@/components/admin-component/CustomSelect";
 import { MultiValue } from "react-select";
 import { useSearchParams } from "next/navigation";
@@ -191,8 +190,6 @@ const weddingCakeSub = [
   { label: "Themed Wedding Cakes", value: "themed_wedding_cakes" },
 ];
 
-const selectedSubCategory = (key: any) => {};
-
 const options = [
   { label: "Milestone Cakes", value: "milestone cakes", disabled: false },
   { label: "Kids' Cakes", value: "kids cakes" },
@@ -224,7 +221,7 @@ export default function Page() {
     );
     setProduct(filter);
     // console.log(filter, "filter");
-  }, []);
+  }, [search]);
 
   const [images, setImages] = useState<any>({
     image1: "",
@@ -351,12 +348,12 @@ export default function Page() {
     // Now you can log the FormData and productName
     console.log(data, "productName");
   };
-  useEffect(() => {
-    if (search !== null && search) {
-      // setCategory(product?.category);
-      // setSubCategory(product?.subcategories);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (search !== null && search) {
+  //     // setCategory(product?.category);
+  //     // setSubCategory(product?.subcategories);
+  //   }
+  // }, []);
   return (
     <section className="p-6">
       <div className="hidden md:block">
