@@ -18,6 +18,7 @@ import FilterSidebar from "@/components/custom-filter/FilterSideBar";
 import { chunkArray } from "@/utils/helpers/chunkArray";
 import { RxCaretLeft, RxCaretRight } from "react-icons/rx";
 import { twMerge } from "tailwind-merge";
+import Pagination from "@/components/custom-filter/Pagination";
 
 let itemsPerPage = 6;
 
@@ -172,48 +173,14 @@ const ShopPage = ({ params }: any) => {
                     },
                   )}
                 </div>
-                <div className="mt-10 flex items-center justify-center gap-2 bg-white px-4 py-3 sm:px-6">
-                  <button
-                    onClick={handlePrev}
-                    className={twMerge(
-                      "inline-flex h-10 w-10 items-center justify-center rounded-full bg-neutral-100 text-neutral-800",
-                      currentPageIndex === 1 ? "text-neutral-400" : "",
-                    )}
-                  >
-                    <RxCaretLeft size={32} />
-                  </button>
-                  <div className="pagination flex items-center gap-1">
-                    {chunkArray(cakes, itemsPerPage).map((_, index) => {
-                      return (
-                        <button
-                          key={index}
-                          onClick={() => handlePaginateClick(index)}
-                          className={twMerge(
-                            "inline-flex h-10 w-10 items-center justify-center rounded-full bg-neutral-100 text-neutral-800",
-                            currentPageIndex === index + 1 &&
-                              "bg-main text-black",
-                          )}
-                        >
-                          <span className="px-1.5 text-sm">{index + 1}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-
-                  <button
-                    onClick={handleNext}
-                    className={twMerge(
-                      "inline-flex h-10 w-10 items-center justify-center rounded-full bg-neutral-100 text-neutral-800",
-                      currentPageIndex ===
-                        chunkArray(cakes, itemsPerPage).length &&
-                        "text-neutral-400",
-                    )}
-                  >
-                    <span className="">
-                      <RxCaretRight size={32} />
-                    </span>
-                  </button>
-                </div>
+                <Pagination
+                  onNext={handleNext}
+                  onPrev={handlePrev}
+                  onPaginateClick={handlePaginateClick}
+                  itemsPerPage={itemsPerPage}
+                  currentPageIndex={currentPageIndex}
+                  arr={cakes}
+                />
               </div>
             </div>
 
