@@ -17,6 +17,7 @@ import { IoList } from "react-icons/io5";
 import FilterSidebar from "@/components/custom-filter/FilterSideBar";
 import { chunkArray } from "@/utils/helpers/chunkArray";
 import { RxCaretLeft, RxCaretRight } from "react-icons/rx";
+import { twMerge } from "tailwind-merge";
 
 let itemsPerPage = 6;
 
@@ -25,6 +26,29 @@ const ShopPage = ({ params }: any) => {
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
   const [showFilter, setShowFilter] = useState(false);
   // const cakes = addSlugToCakes(cakeProducts1);
+
+  const handleNext = () => {
+    if (currentPageIndex !== chunkArray(cakes, itemsPerPage).length) {
+      setCurrentPageIndex(currentPageIndex + 1);
+      window.scroll(0, 0);
+    } else {
+      return;
+    }
+  };
+
+  const handlePaginateClick = (index: number) => {
+    setCurrentPageIndex(index + 1);
+    window.scroll(0, 0);
+  };
+
+  const handlePrev = () => {
+    if (currentPageIndex !== 1) {
+      setCurrentPageIndex(currentPageIndex - 1);
+      window.scroll(0, 0);
+    } else {
+      return;
+    }
+  };
 
   useEffect(() => {
     AOS.init({
@@ -148,31 +172,27 @@ const ShopPage = ({ params }: any) => {
                     },
                   )}
                 </div>
-                <div className="mt-10 flex items-center justify-center    gap-1 bg-white px-4 py-3 sm:px-6">
+                <div className="mt-10 flex items-center justify-center gap-2 bg-white px-4 py-3 sm:px-6">
                   <button
-                    onClick={() =>
-                      currentPageIndex !== 1
-                        ? setCurrentPageIndex(currentPageIndex - 1)
-                        : null
-                    }
-                    className={
-                      (currentPageIndex === 1 ? "no-item" : "") +
-                      " rounded-l-lg border  border-[#A2A2A2] hover:bg-[#A2A2A2]  hover:text-white "
-                    }
+                    onClick={handlePrev}
+                    className={twMerge(
+                      "inline-flex h-10 w-10 items-center justify-center rounded-full bg-neutral-100 text-neutral-800",
+                      currentPageIndex === 1 ? "text-neutral-400" : "",
+                    )}
                   >
-                    <RxCaretLeft size={22} />
+                    <RxCaretLeft size={32} />
                   </button>
                   <div className="pagination flex items-center gap-1">
                     {chunkArray(cakes, itemsPerPage).map((_, index) => {
                       return (
                         <button
                           key={index}
-                          onClick={() => setCurrentPageIndex(index + 1)}
-                          className={` border   border-[#A2A2A2]  ${
-                            currentPageIndex === index + 1
-                              ? "active-page-index    rounded-lg border-[#197B30] bg-[#3b554115] text-[#197B30]"
-                              : "rounded-lg border-[#A2A2A2]  text-[#A2A2A2] hover:bg-slate-100"
-                          }`}
+                          onClick={() => handlePaginateClick(index)}
+                          className={twMerge(
+                            "inline-flex h-10 w-10 items-center justify-center rounded-full bg-neutral-100 text-neutral-800",
+                            currentPageIndex === index + 1 &&
+                              "bg-main text-black",
+                          )}
                         >
                           <span className="px-1.5 text-sm">{index + 1}</span>
                         </button>
@@ -181,21 +201,16 @@ const ShopPage = ({ params }: any) => {
                   </div>
 
                   <button
-                    onClick={() =>
-                      currentPageIndex !== chunkArray(cakes, itemsPerPage).length
-                        ? setCurrentPageIndex(currentPageIndex + 1)
-                        : null
-                    }
-                    className={
-                      (currentPageIndex ===
-                      chunkArray(cakes, itemsPerPage).length
-                        ? "no-items"
-                        : "") +
-                      " rounded-r-lg border  border-[#A2A2A2] hover:bg-[#A2A2A2]  hover:text-white"
-                    }
+                    onClick={handleNext}
+                    className={twMerge(
+                      "inline-flex h-10 w-10 items-center justify-center rounded-full bg-neutral-100 text-neutral-800",
+                      currentPageIndex ===
+                        chunkArray(cakes, itemsPerPage).length &&
+                        "text-neutral-400",
+                    )}
                   >
                     <span className="">
-                      <RxCaretRight size={22} />
+                      <RxCaretRight size={32} />
                     </span>
                   </button>
                 </div>
