@@ -19,6 +19,7 @@ import { chunkArray } from "@/utils/helpers/chunkArray";
 import { RxCaretLeft, RxCaretRight } from "react-icons/rx";
 import { twMerge } from "tailwind-merge";
 import Pagination from "@/components/custom-filter/Pagination";
+import ProductCard from "@/components/ProductCard";
 
 let itemsPerPage = 6;
 
@@ -101,7 +102,7 @@ const ShopPage = ({ params }: any) => {
             </div>
 
             {/* DESKTOP PRODUCT DISPLAY */}
-            <div className="hidden xl:grid xl:grid-cols-[300px_1fr] xl:items-start xl:gap-2">
+            <div className="hidden xl:grid xl:grid-cols-[300px_1fr] xl:items-start xl:gap-5">
               <div className="w-full bg-white p-4">
                 <div className="mb-3 flex items-center justify-between gap-2 text-neutral-500">
                   <span className="inline-flex items-center gap-2 font-semibold">
@@ -138,38 +139,10 @@ const ShopPage = ({ params }: any) => {
                     </span>
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-3 gap-5">
                   {chunkArray(cakes, itemsPerPage)[currentPageIndex - 1]?.map(
                     (cake: any, index: any) => {
-                      return (
-                        <div
-                          data-aos="fade-down"
-                          data-aos-delay={index * 200}
-                          key={index}
-                          className="flex w-full flex-col items-center"
-                        >
-                          <figure className="h-[200px] w-full overflow-hidden md:h-[250px]">
-                            <Image
-                              src={cake.imageUrl}
-                              alt={cake.name}
-                              className="mx-auto h-full w-full object-cover"
-                            />
-                          </figure>
-
-                          <h3 className="mt-3 text-xl font-bold capitalize">
-                            {cake.name}
-                          </h3>
-                          <span className="text-lg">
-                            &euro;{cake.minPrice} - &euro;{cake.maxPrice}
-                          </span>
-                          <Link
-                            href={`/shop/${cake.slug}`}
-                            className="mt-4 w-[200px] rounded-[50px] bg-black px-8 py-3 font-bold uppercase text-main"
-                          >
-                            Select Option
-                          </Link>
-                        </div>
-                      );
+                      return <ProductCard data={cake} />;
                     },
                   )}
                 </div>
@@ -184,37 +157,21 @@ const ShopPage = ({ params }: any) => {
               </div>
             </div>
 
-            <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-2 md:gap-0 md:gap-y-8 lg:grid-cols-3 xl:hidden">
-              {cakes.map((cake: any, index: number) => (
-                <div
-                  data-aos="fade-down"
-                  data-aos-delay={index * 200}
-                  key={index}
-                  className="flex w-full flex-col items-center md:px-4"
-                >
-                  <figure className="h-[200px] w-full overflow-hidden md:h-[250px]">
-                    <Image
-                      src={cake.imageUrl}
-                      alt={cake.name}
-                      className="mx-auto h-full w-full object-cover"
-                    />
-                  </figure>
-
-                  <h3 className="mt-3 text-xl font-bold capitalize">
-                    {cake.name}
-                  </h3>
-                  <span className="text-lg">
-                    &euro;{cake.minPrice} - &euro;{cake.maxPrice}
-                  </span>
-                  <Link
-                    href={`/shop/${cake.slug}`}
-                    className="mt-4 w-[200px] rounded-[50px] bg-black px-8 py-3 font-bold uppercase text-main"
-                  >
-                    Select Option
-                  </Link>
-                </div>
-              ))}
+            <div className="grid gap-8 sm:grid-cols-2 md:gap-5 lg:grid-cols-3 xl:hidden">
+              {chunkArray(cakes, itemsPerPage)[currentPageIndex - 1]?.map(
+                (cake: any, index: any) => {
+                  return <ProductCard data={cake} />;
+                },
+              )}
             </div>
+            <Pagination
+              onNext={handleNext}
+              onPrev={handlePrev}
+              onPaginateClick={handlePaginateClick}
+              itemsPerPage={itemsPerPage}
+              currentPageIndex={currentPageIndex}
+              arr={cakes}
+            />
           </div>
 
           {/* FILTER SIDEBAR COMP */}
