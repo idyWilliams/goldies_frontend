@@ -20,6 +20,7 @@ import { RxCaretLeft, RxCaretRight } from "react-icons/rx";
 import { twMerge } from "tailwind-merge";
 import Pagination from "@/components/custom-filter/Pagination";
 import ProductCard from "@/components/ProductCard";
+import RangeInput from "@/components/custom-filter/RangeInput";
 
 let itemsPerPage = 6;
 
@@ -50,6 +51,22 @@ const ShopPage = ({ params }: any) => {
     } else {
       return;
     }
+  };
+
+  const min = () => {
+    if (Array.isArray(cakes)) {
+      const cakeMinPrices = cakes?.map((s: any) => s?.minPrice);
+      return Math.trunc(Math?.min(...cakeMinPrices));
+    }
+    return 0; // or any default value
+  };
+
+  const max = () => {
+    if (Array.isArray(cakes)) {
+      const cakeMaxPrices = cakes?.map((s: any) => s?.maxPrice);
+      return Math.trunc(Math?.max(...cakeMaxPrices));
+    }
+    return 100; // or any default value
   };
 
   useEffect(() => {
@@ -88,8 +105,6 @@ const ShopPage = ({ params }: any) => {
                   Showing 1 - 20 of 2 results
                 </span>
               </div>
-
-              {/* MOBILE FILTER BUTTON FOR FILTER OVERLAY */}
               <div
                 onClick={() => setShowFilter(true)}
                 className="inline-flex cursor-pointer items-center gap-3 border border-black p-2 xl:hidden"
@@ -100,6 +115,23 @@ const ShopPage = ({ params }: any) => {
                 </span>
               </div>
             </div>
+
+            <div className="grid gap-8 sm:grid-cols-2 md:gap-5 lg:grid-cols-3 xl:hidden">
+              {chunkArray(cakes, itemsPerPage)[currentPageIndex - 1]?.map(
+                (cake: any, index: any) => {
+                  return <ProductCard data={cake} />;
+                },
+              )}
+            </div>
+            <Pagination
+              className="lg:hidden"
+              onNext={handleNext}
+              onPrev={handlePrev}
+              onPaginateClick={handlePaginateClick}
+              itemsPerPage={itemsPerPage}
+              currentPageIndex={currentPageIndex}
+              arr={cakes}
+            />
 
             {/* DESKTOP PRODUCT DISPLAY */}
             <div className="hidden xl:grid xl:grid-cols-[300px_1fr] xl:items-start xl:gap-5">
@@ -119,7 +151,7 @@ const ShopPage = ({ params }: any) => {
                     <BsX size={24} />
                   </span>
                 </div>
-                <FilterComp />
+                <FilterComp min={min()} max={max()} />
               </div>
               <div className="w-full bg-white p-4">
                 <div className="mb-4 flex items-center justify-between border-b border-neutral-400 pb-4 lg:grid lg:grid-cols-[85%_10%]">
@@ -156,29 +188,16 @@ const ShopPage = ({ params }: any) => {
                 />
               </div>
             </div>
-
-            <div className="grid gap-8 sm:grid-cols-2 md:gap-5 lg:grid-cols-3 xl:hidden">
-              {chunkArray(cakes, itemsPerPage)[currentPageIndex - 1]?.map(
-                (cake: any, index: any) => {
-                  return <ProductCard data={cake} />;
-                },
-              )}
-            </div>
-            <Pagination
-              onNext={handleNext}
-              onPrev={handlePrev}
-              onPaginateClick={handlePaginateClick}
-              itemsPerPage={itemsPerPage}
-              currentPageIndex={currentPageIndex}
-              arr={cakes}
-            />
           </div>
 
           {/* FILTER SIDEBAR COMP */}
           <FilterSidebar
+            data={cakes}
             className="xl:hidden"
             showFilter={showFilter}
             setShowFilter={setShowFilter}
+            min={min()}
+            max={max()}
           />
         </section>
 

@@ -25,7 +25,7 @@ export default function ProductCard({ data }: { data: any }) {
   };
 
   return (
-    <div className="w-full rounded-[10px] bg-white p-2 shadow-[0_0_30px_rgba(0,0,0,0.1)]">
+    <div className="w-full rounded-[10px] border border-neutral-100 bg-white p-2 shadow-[0_0_30px_-10px_rgba(0,0,0,0.1)]">
       <figure className="relative mb-3 h-[230px] w-full overflow-hidden rounded-[5px]">
         <Link href={`/shop/${data?.slug}`}>
           <Image
@@ -58,7 +58,7 @@ export default function ProductCard({ data }: { data: any }) {
       <div className="mt-2 flex items-center gap-2">
         <button
           onClick={handleAddToCart}
-          className="inline-flex flex-grow items-center justify-center gap-2 rounded-md border border-neutral-900 bg-neutral-900 px-4 py-2.5 text-main"
+          className="inline-flex flex-grow items-center justify-center gap-2 rounded-md border border-neutral-900 bg-neutral-900 px-0 py-2.5 text-main"
         >
           <span className="border-r border-main border-opacity-40 pr-2">
             <ShoppingCart size={20} />
@@ -67,7 +67,7 @@ export default function ProductCard({ data }: { data: any }) {
         </button>
         <button
           onClick={handleBuyNow}
-          className="rounded-md border border-neutral-900 px-8 py-2 text-neutral-900"
+          className="rounded-md border border-neutral-900 px-4 py-2.5 text-neutral-900"
         >
           Buy now
         </button>

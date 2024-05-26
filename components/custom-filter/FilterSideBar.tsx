@@ -7,10 +7,16 @@ const FilterSidebar = ({
   className,
   showFilter,
   setShowFilter,
+  data,
+  min,
+  max,
 }: {
   className?: string;
   showFilter: boolean;
   setShowFilter: any;
+  data: any[];
+  min: number;
+  max: number;
 }) => {
   return (
     <div
@@ -37,7 +43,7 @@ const FilterSidebar = ({
             <BsX size={24} />
           </span>
         </div>
-        <FilterComp />
+        <FilterComp min={min} max={max} />
       </div>
     </div>
   );

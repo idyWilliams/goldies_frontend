@@ -3,11 +3,11 @@ import { Add, ArrowRotateRight, Minus } from "iconsax-react";
 import React, { useState } from "react";
 import RangeInput from "./RangeInput";
 
-const FilterComp = () => {
+const FilterComp = ({ min, max }: { min: number; max: number }) => {
   const [openIndex, setOpenIndex] = useState(null);
   const [selectedOptions, setSelectedOptions] = useState([]);
-  const [minValue, set_minValue] = useState(25);
-  const [maxValue, set_maxValue] = useState(75);
+  const [minValue, set_minValue] = useState(min);
+  const [maxValue, set_maxValue] = useState(max);
   const handleInput = (e: any) => {
     set_minValue(e.minValue);
     set_maxValue(e.maxValue);
@@ -17,12 +17,19 @@ const FilterComp = () => {
     setOpenIndex(index === openIndex ? null : index);
   };
 
-  const handleChange = (e: any) => {
-    e.preventDefault();
+  const handleReset = () => {
+    set_minValue(min);
+    set_maxValue(max);
 
-    console.log(e.target, e);
+    console.log("clicked");
   };
 
+  const handleChage = (e: any) => {
+    set_minValue(e.min);
+    set_maxValue(e.max);
+  };
+
+  // console.log(min(), "min", max());
   return (
     <div className="w-full">
       <div className="space-y-3">
@@ -73,22 +80,21 @@ const FilterComp = () => {
           >
             Price
           </label>
-          <input
-            type="range"
-            name="priceRange"
-            id="priceRange"
-            step={1}
-            min={0}
-            max={10}
-            className="form-input block w-full appearance-auto border-0 accent-main"
+          <RangeInput
+            min={minValue}
+            max={maxValue}
+            // onChange={(e: any) => handleChage(e)}
           />
           {/* <RangeInput min={0} max={10} onChange={() => {}} /> */}
         </div>
-        <div className="flex cursor-pointer items-center gap-2 border-t border-neutral-200 pt-3 text-neutral-600">
-          <span className="inline-block font-medium capitalize">
+        <div
+          onClick={handleReset}
+          className="group flex cursor-pointer items-center gap-2 border-t border-neutral-200 pt-3 text-neutral-600"
+        >
+          <span className="inline-block font-medium capitalize group-hover:text-neutral-900">
             Reset Filter
           </span>
-          <span>
+          <span className="group-hover:text-neutral-900">
             <ArrowRotateRight size={20} />
           </span>
         </div>

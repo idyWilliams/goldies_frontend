@@ -303,8 +303,8 @@ export const cakeProducts1 = [
     name: "Chocolate Fudge Cake",
     description:
       "Rich and moist chocolate cake layered with creamy fudge frosting.",
-    minPrice: "220.99",
-    maxPrice: "215.99",
+    minPrice: 220.99,
+    maxPrice: 215.99,
     imageUrl: Chocolate,
     ingredients: ["Chocolate", "Flour", "Sugar", "Eggs", "Butter"],
     allergens: ["Gluten", "Dairy", "Eggs"],
@@ -317,8 +317,8 @@ export const cakeProducts1 = [
     name: "Red Velvet Cake",
     description:
       "Classic red velvet cake with layers of smooth cream cheese frosting.",
-    minPrice: "251.99",
-    maxPrice: "292.99",
+    minPrice: 251.99,
+    maxPrice: 292.99,
     imageUrl: RedVelvet,
     ingredients: ["Cocoa Powder", "Buttermilk", "Vinegar", "Flour", "Sugar"],
     allergens: ["Gluten", "Dairy", "Eggs"],
@@ -331,8 +331,8 @@ export const cakeProducts1 = [
     name: "Vanilla Bean Cake",
     description:
       "Delicate vanilla sponge cake infused with real vanilla beans.",
-    minPrice: "108.99",
-    maxPrice: "221.99",
+    minPrice: 108.99,
+    maxPrice: 221.99,
     imageUrl: LemonCake,
     ingredients: ["Flour", "Sugar", "Butter", "Eggs", "Vanilla Beans"],
     allergens: ["Gluten", "Dairy", "Eggs"],
@@ -345,8 +345,8 @@ export const cakeProducts1 = [
     name: "Strawberry Shortcake",
     description:
       "Light and fluffy sponge cake layered with fresh strawberries and whipped cream.",
-    minPrice: "102.99",
-    maxPrice: "107.99",
+    minPrice: 102.99,
+    maxPrice: 107.99,
     imageUrl: berry,
     ingredients: [
       "Flour",
@@ -366,8 +366,8 @@ export const cakeProducts1 = [
     name: "Lemon Drizzle Cake",
     description:
       "Zesty lemon cake drizzled with tangy lemon syrup and topped with lemon zest.",
-    minPrice: "190.99",
-    maxPrice: "203.99",
+    minPrice: 190.99,
+    maxPrice: 203.99,
     imageUrl: LemonCake,
     ingredients: ["Flour", "Sugar", "Butter", "Eggs", "Lemons"],
     allergens: ["Gluten", "Dairy", "Eggs"],
@@ -380,8 +380,8 @@ export const cakeProducts1 = [
     name: "Carrot Cake",
     description:
       "Moist carrot cake with a hint of cinnamon, topped with cream cheese frosting and walnuts.",
-    minPrice: "214.99",
-    maxPrice: "290.99",
+    minPrice: 214.99,
+    maxPrice: 290.99,
     imageUrl: carrot,
     ingredients: [
       "Flour",
@@ -402,8 +402,8 @@ export const cakeProducts1 = [
     name: "Coconut Cream Cake",
     description:
       "Decadent coconut cake with layers of creamy coconut filling and topped with shredded coconut.",
-    minPrice: "213.99",
-    maxPrice: "270.99",
+    minPrice: 213.99,
+    maxPrice: 270.99,
     imageUrl: coconut,
     ingredients: [
       "Flour",
@@ -423,8 +423,8 @@ export const cakeProducts1 = [
     name: "Banana cake",
     description:
       "Moist and flavorful banana cake with a hint of cinnamon and walnuts.",
-    minPrice: "160.99",
-    maxPrice: "230.99",
+    minPrice: 160.99,
+    maxPrice: 230.99,
     imageUrl: banana,
     ingredients: [
       "Flour",
