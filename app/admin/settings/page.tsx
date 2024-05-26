@@ -26,7 +26,7 @@ const items = [
     content: <ChangePassword />,
   },
 ];
-export default function page() {
+export default function Page() {
   const [selectedTab, setSelectedTab] = useState(0);
   return (
     <section>

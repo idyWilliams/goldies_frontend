@@ -11,11 +11,9 @@ export default function Accordion({ arr }: AccordionProp) {
   return (
     <div className="mt-4 space-y-3">
       {arr.map((item: any, i: number) => (
-        <AccordionItem
-          title={item.title}
-          children={item.content}
-          key={item.title}
-        />
+        <AccordionItem title={item.title} key={item.title}>
+          {item.content}
+        </AccordionItem>
       ))}
     </div>
   );
