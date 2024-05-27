@@ -2,12 +2,6 @@ import { categories } from "@/utils/cakeCategories";
 import { Add, ArrowRotateRight, Minus } from "iconsax-react";
 import React, { useState } from "react";
 import RangeInput from "./RangeInput";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionContent,
-  AccordionTrigger,
-} from "../ui/Accordion";
 
 const FilterComp = ({ min, max }: { min: number; max: number }) => {
   const [openIndex, setOpenIndex] = useState(null);
