@@ -34,11 +34,19 @@ export default function Page({ params }: any) {
 
   const handleRoute = () => {};
 
-  console.log("params", params);
+  console.log(
+    "params",
+    params,
+    params.authentication !== "login",
+    "s",
+    params.authentication !== "signup",
+    typeof params.authentication,
+  );
   console.log("rerender");
+  if (params.authentication !== "login" && params.authentication !== "signup") {
+    return <div>Invalid Page {params.authentication}</div>;
+  }
 
-  if (params.authentication !== "login" || params.authentication !== "signup")
-    return;
   return (
     <>
       <Header />
