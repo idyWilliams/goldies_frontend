@@ -15,7 +15,7 @@ import FilterComp from "@/components/custom-filter/FilterComp";
 import { MdOutlineList } from "react-icons/md";
 import { IoList } from "react-icons/io5";
 import FilterSidebar from "@/components/custom-filter/FilterSideBar";
-import { chunkArray } from "@/utils/helpers/chunkArray";
+import { chunkArray } from "@/helper/chunkArray";
 import { RxCaretLeft, RxCaretRight } from "react-icons/rx";
 import { twMerge } from "tailwind-merge";
 import Pagination from "@/components/custom-filter/Pagination";
@@ -163,7 +163,7 @@ const ShopPage = ({ params }: any) => {
                   </div>
                   <div
                     // onClick={() => setShowFilter(true)}
-                    className="hidden cursor-pointer items-center justify-center gap-3 border border-black p-2 xl:inline-flex"
+                    className="hidden cursor-pointer items-center justify-center gap-3 border border-black border-opacity-10 bg-neutral-50 p-2 xl:inline-flex"
                   >
                     <span>Sort</span>
                     <span>
@@ -199,54 +199,6 @@ const ShopPage = ({ params }: any) => {
             min={min()}
             max={max()}
           />
-        </section>
-
-        {/* CAKE PRODUCT LIST 1 */}
-        <section className="hidden py-16 pt-3">
-          <div className="wrapper">
-            <h3
-              data-aos="fade-down"
-              className="mb-6 mt-4 text-2xl font-bold text-black "
-            >
-              All Cakes
-            </h3>
-            <div className="flex">
-              <h3>All Cakes</h3>
-              <span>Showing 1-20 of 2 results</span>
-              <span>Sort by:</span>
-            </div>
-            <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-2 md:gap-0 md:gap-y-8 lg:grid-cols-3">
-              {cakes.map((cake: any, index: number) => (
-                <div
-                  data-aos="fade-down"
-                  data-aos-delay={index * 200}
-                  key={index}
-                  className="flex w-full flex-col items-center md:px-4"
-                >
-                  <figure className="h-[200px] w-full overflow-hidden md:h-[250px]">
-                    <Image
-                      src={cake.imageUrl}
-                      alt={cake.name}
-                      className="mx-auto h-full w-full object-cover"
-                    />
-                  </figure>
-
-                  <h3 className="mt-3 text-xl font-bold capitalize">
-                    {cake.name}
-                  </h3>
-                  <span className="text-lg">
-                    &euro;{cake.minPrice} - &euro;{cake.maxPrice}
-                  </span>
-                  <Link
-                    href={`/shop/${cake.slug}`}
-                    className="mt-4 w-[200px] rounded-[50px] bg-black px-8 py-3 font-bold uppercase text-main"
-                  >
-                    Select Option
-                  </Link>
-                </div>
-              ))}
-            </div>
-          </div>
         </section>
       </Layout>
     </>

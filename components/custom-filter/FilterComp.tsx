@@ -2,6 +2,12 @@ import { categories } from "@/utils/cakeCategories";
 import { Add, ArrowRotateRight, Minus } from "iconsax-react";
 import React, { useState } from "react";
 import RangeInput from "./RangeInput";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionContent,
+  AccordionTrigger,
+} from "../ui/Accordion";
 
 const FilterComp = ({ min, max }: { min: number; max: number }) => {
   const [openIndex, setOpenIndex] = useState(null);
@@ -73,6 +79,7 @@ const FilterComp = ({ min, max }: { min: number; max: number }) => {
             </div>
           );
         })}
+
         <div className="flex cursor-pointer flex-col border-t border-neutral-200 pt-3">
           <label
             htmlFor="priceRange"
@@ -87,16 +94,21 @@ const FilterComp = ({ min, max }: { min: number; max: number }) => {
           />
           {/* <RangeInput min={0} max={10} onChange={() => {}} /> */}
         </div>
-        <div
-          onClick={handleReset}
-          className="group flex cursor-pointer items-center gap-2 border-t border-neutral-200 pt-3 text-neutral-600"
-        >
-          <span className="inline-block font-medium capitalize group-hover:text-neutral-900">
-            Reset Filter
-          </span>
-          <span className="group-hover:text-neutral-900">
-            <ArrowRotateRight size={20} />
-          </span>
+        <div className="grid grid-cols-2 justify-center gap-2 pt-7">
+          <button className="group flex cursor-pointer items-center justify-center gap-2 rounded-md bg-neutral-900 p-3 px-8 text-white">
+            <span className="inline-block font-medium capitalize ">Filter</span>
+          </button>
+          <button
+            onClick={handleReset}
+            className="group flex cursor-pointer items-center justify-center gap-2 rounded-md border border-red-600 p-3 text-red-600"
+          >
+            <span className="inline-block font-medium capitalize">
+              Reset Filter
+            </span>
+            {/* <span className="group-hover:text-neutral-900">
+              <ArrowRotateRight size={20} />
+            </span> */}
+          </button>
         </div>
         {/* <div className="border-t border-neutral-200 pt-3" key={index}>
           <div

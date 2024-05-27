@@ -1,5 +1,5 @@
 "use client";
-import Accordion from "@/components/admin-component/Accordion";
+import Accordion from "@/components/Accordion";
 import ChangePassword from "@/components/admin-component/ChangePassword";
 import ProfileInfo from "@/components/admin-component/ProfileInfo";
 import { ArrowLeft, Lock1, Profile } from "iconsax-react";

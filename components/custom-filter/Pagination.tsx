@@ -1,4 +1,4 @@
-import { chunkArray } from "@/utils/helpers/chunkArray";
+import { chunkArray } from "@/helper/chunkArray";
 import React from "react";
 import { RxCaretLeft, RxCaretRight } from "react-icons/rx";
 import { twMerge } from "tailwind-merge";

@@ -31,7 +31,7 @@ export default function ProductCard({ data }: { data: any }) {
           <Image
             src={data?.imageUrl}
             alt={data?.name}
-            className="h-full w-full"
+            className="h-full w-full object-cover object-center"
           />
         </Link>
         <span

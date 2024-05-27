@@ -8,31 +8,47 @@ type AccordionProp = {
   arr: any[];
 };
 export default function Accordion({ arr }: AccordionProp) {
+  const [openIndex, setOpenIndex] = useState(null);
+  const handleClick = (index: any) => {
+    setOpenIndex(index === openIndex ? null : index);
+  };
   return (
     <div className="mt-4 space-y-3">
       {arr.map((item: any, i: number) => (
-        <AccordionItem title={item.title} key={item.title}>
+        <AccordionItem
+          title={item.title}
+          index={i}
+          openIndex={openIndex}
+          handleClick={handleClick}
+          key={item.title}
+        >
           {item.content}
         </AccordionItem>
       ))}
     </div>
   );
 }
+
 type AccordionItemProp = {
   children: React.ReactNode;
   title: string;
+  index: number;
+  openIndex: number | null;
+  handleClick: (index: number) => void;
 };
-function AccordionItem({ children, title }: AccordionItemProp) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  function handleToggle() {
-    setIsOpen((isOpen) => !isOpen);
-  }
+function AccordionItem({
+  children,
+  title,
+  index,
+  openIndex,
+  handleClick,
+}: AccordionItemProp) {
+  const isOpen = index === openIndex;
 
   return (
     <div
       className={`w-full shadow-lg ${isOpen ? "pb-6" : ""}`}
-      onClick={handleToggle}
+      onClick={() => handleClick(index)}
     >
       <div
         className={twMerge(
