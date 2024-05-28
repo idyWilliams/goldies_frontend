@@ -61,7 +61,7 @@ function AccordionItem({
           {isOpen ? <BiChevronDown size={24} /> : <CgChevronRight size={24} />}
         </span>
       </div>
-      {isOpen && <>{children}</>}
+      {isOpen && <div onClick={(e) => e.stopPropagation()}>{children}</div>}
     </div>
   );
 }
