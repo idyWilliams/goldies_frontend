@@ -1,7 +1,13 @@
+import MilestoneCakes from "../public/assets/milestone-cake.webp";
+import KidsCakes from "../public/assets/kid-cake.webp";
+import CupCakes from "../public/assets/cupcake.webp";
+import WeddingCakes from "../public/assets/wedding-cake.webp";
+
 export const categories = [
   {
     label: "Milestone Cakes",
     value: "milestone_cakes",
+    image: MilestoneCakes,
     description:
       "Milestone cakes commemorate significant life events and achievements.",
     subcategories: [
@@ -15,6 +21,7 @@ export const categories = [
   {
     label: "Kids' Cakes",
     value: "kids_cakes",
+    image: KidsCakes,
     description:
       "Kids' cakes feature fun and colorful designs that appeal to children.",
     subcategories: [
@@ -28,6 +35,7 @@ export const categories = [
   {
     label: "Cupcakes",
     value: "cupcakes",
+    image: CupCakes,
     description:
       "Cupcakes are versatile treats available in a variety of flavors and styles.",
     subcategories: [
@@ -41,6 +49,7 @@ export const categories = [
   {
     label: "Wedding Cakes",
     value: "wedding_cakes",
+    image: WeddingCakes,
     description:
       "Wedding cakes are a centerpiece of the celebration, reflecting the couple's style and theme.",
     subcategories: [
