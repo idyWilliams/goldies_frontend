@@ -5,25 +5,39 @@ import KidCake from "../public/assets/kid-cake.webp";
 import Cupcakes from "../public/assets/cupcake.webp";
 import WeddingCake from "../public/assets/wedding-cake.webp";
 import Link from "next/link";
+import EachElement from "@/helper/EachElement";
+import { categories } from "@/utils/cakeCategories";
 
 const CakeCategory = () => {
   return (
     <section className="relative overflow-hidden bg-main py-16">
       <div className="wrapper relative z-20">
         <div className="grid grid-cols-2 items-start justify-between gap-4 gap-y-8 md:grid-cols-4">
-          <figure className="w-full" data-aos="fade-down">
-            <div className="h-[200px] w-full overflow-hidden rounded-lg md:h-[250px]">
-              <Image
-                src={MilestoneCake}
-                alt="MileStone Cake"
-                className="mx-auto h-full w-full rounded-md object-cover"
-              />
-            </div>
+          <EachElement
+            of={categories}
+            render={(item: any, index: number) => (
+              <figure
+                className="w-full"
+                data-aos="fade-down"
+                data-aos-delay={`${index * 200}`}
+              >
+                <div className="h-[200px] w-full overflow-hidden rounded-lg md:h-[250px]">
+                  <Image
+                    src={item.image}
+                    alt={item.value}
+                    className="mx-auto h-full w-full rounded-md object-cover"
+                  />
+                </div>
 
-            <figcaption className="mt-2 text-center text-lg font-bold text-neutral-800">
-              <Link href="/shop">Milestone cakes</Link>
-            </figcaption>
-          </figure>
+                <figcaption className="mt-2 text-center text-lg font-bold text-neutral-800">
+                  <Link href={`/shop/categories/${item.value}`}>
+                    {item.label}
+                  </Link>
+                </figcaption>
+              </figure>
+            )}
+          />
+          {/* 
           <figure className="w-full" data-aos="fade-down" data-aos-delay="200">
             <div className="h-[200px] w-full overflow-hidden rounded-lg md:h-[250px]">
               <Image
@@ -59,7 +73,7 @@ const CakeCategory = () => {
             <figcaption className="mt-3 text-center text-lg font-bold text-neutral-800">
               <Link href="/shop">Wedding Cakes</Link>
             </figcaption>
-          </figure>
+          </figure> */}
         </div>
         <div className="mt-12 md:mx-auto md:w-11/12 md:text-center lg:mx-0 lg:w-8/12 lg:text-left">
           <h2 className="mb-3 text-[28px] font-bold" data-aos="fade">
