@@ -47,7 +47,9 @@ const RangeInput = ({ min, max, onChange }: RangeInputProps) => {
   //   onChange({ min: minVal, max: maxVal });
   // }, [minVal, maxVal, onChange]);
 
-  const handleChange = () => {};
+  const handleChange = () => {
+    onChange({ min: minVal, max: maxVal });
+  };
 
   return (
     <div className={twMerge("mb-10 flex h-[5vh] items-center justify-center")}>
@@ -62,6 +64,7 @@ const RangeInput = ({ min, max, onChange }: RangeInputProps) => {
           const value = Math.min(Number(event.target.value), maxVal - 1);
           setMinVal(value);
           minValRef.current = value;
+          handleChange();
         }}
         className={twMerge(
           "thumb pointer-events-none absolute z-[3] h-0 w-[260px] outline-0",
@@ -79,6 +82,7 @@ const RangeInput = ({ min, max, onChange }: RangeInputProps) => {
           const value = Math.max(Number(event.target.value), minVal + 1);
           setMaxVal(value);
           maxValRef.current = value;
+          handleChange();
         }}
         className={twMerge(
           "thumb pointer-events-none absolute z-[4] h-0 w-[260px] outline-0",

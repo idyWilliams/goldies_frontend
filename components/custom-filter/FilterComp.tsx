@@ -5,7 +5,7 @@ import RangeInput from "./RangeInput";
 
 const FilterComp = ({ min, max }: { min: number; max: number }) => {
   const [openIndex, setOpenIndex] = useState(null);
-  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState<any>([]);
   const [minValue, set_minValue] = useState(min);
   const [maxValue, set_maxValue] = useState(max);
   const handleInput = (e: any) => {
@@ -20,16 +20,31 @@ const FilterComp = ({ min, max }: { min: number; max: number }) => {
   const handleReset = () => {
     set_minValue(min);
     set_maxValue(max);
-
+    setSelectedOptions(null);
     console.log("clicked");
   };
 
-  const handleChage = (e: any) => {
-    set_minValue(e.min);
-    set_maxValue(e.max);
+  const handleRangeChange = (values: { min: number; max: number }) => {
+    set_minValue(values.min);
+    set_maxValue(values.max);
   };
 
-  // console.log(min(), "min", max());
+  const handleSelectedItem = (e: any) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    const isChecked = e.target.checked;
+    // setSelectedOptions(value);
+    setSelectedOptions((value: any) => {
+      return {
+        ...value,
+        [name]: isChecked,
+        value: name,
+      };
+    });
+    console.log(name, value, isChecked, "value");
+  };
+
+  console.log(selectedOptions);
   return (
     <div className="w-full">
       <div className="space-y-3">
@@ -61,7 +76,10 @@ const FilterComp = ({ min, max }: { min: number; max: number }) => {
                     <input
                       type="checkbox"
                       name={sub?.value}
+                      onChange={(event: any) => handleSelectedItem(event)}
                       id={sub?.value}
+                      value={selectedOptions[sub?.value]}
+                      checked={selectedOptions[sub?.value]}
                       className="rounded-sm checked:bg-black checked:hover:bg-black focus:border-black focus:ring-black checked:focus:bg-black"
                     />
                     <span className="whitespace-nowrap text-neutral-500">
@@ -84,9 +102,8 @@ const FilterComp = ({ min, max }: { min: number; max: number }) => {
           <RangeInput
             min={minValue}
             max={maxValue}
-            // onChange={(e: any) => handleChage(e)}
+            onChange={handleRangeChange}
           />
-          {/* <RangeInput min={0} max={10} onChange={() => {}} /> */}
         </div>
         <div className="grid grid-cols-2 justify-center gap-2 pt-7">
           <button className="group flex cursor-pointer items-center justify-center gap-2 rounded-md bg-neutral-900 p-3 px-8 text-white">

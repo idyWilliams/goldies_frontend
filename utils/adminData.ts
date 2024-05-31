@@ -76,9 +76,9 @@ export const productList = [
     productName: "Chocolate Fudge Cake",
     addedDate: "2024/04/22",
     category: "Kids' Cakes",
+    subcategory: "Princess Cakes",
     description:
       "Decadent coconut cake with layers of creamy coconut filling and topped with shredded coconut",
-    subcategory: { label: "Princess Cakes", value: "princess_cakes" },
     shapes: cakeShapes,
     sizes: cakeSizes,
     fillings: fillingsList,
@@ -94,7 +94,8 @@ export const productList = [
     image: [RedVelvet],
     productName: "Red Velvet Cake",
     addedDate: "2023/04/02",
-    category: "fruit cake",
+    category: "Milestone cake",
+    subcategory: "Birthday Cakes",
     description:
       "Decadent coconut cake with layers of creamy coconut filling and topped with shredded coconut",
     priceFrom: 251,
@@ -108,7 +109,8 @@ export const productList = [
     image: [Vanilla],
     productName: "Vanilla Bean Cake",
     addedDate: "2024/02/12",
-    category: "fruit cake",
+    category: "Milestone cake",
+    subcategory: "Birthday Cakes",
     description:
       "Decadent coconut cake with layers of creamy coconut filling and topped with shredded coconut",
     priceFrom: 107,
@@ -122,7 +124,8 @@ export const productList = [
     image: [Coconut],
     productName: "Coconut Cream Cake",
     addedDate: "2023/07/25",
-    category: "fruit cake",
+    category: "Cupcake",
+    subcategory: "Vegan cakes",
     description:
       "Decadent coconut cake with layers of creamy coconut filling and topped with shredded coconut",
     priceFrom: 107,

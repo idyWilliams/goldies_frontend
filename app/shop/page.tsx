@@ -21,14 +21,19 @@ import { twMerge } from "tailwind-merge";
 import Pagination from "@/components/custom-filter/Pagination";
 import ProductCard from "@/components/ProductCard";
 import RangeInput from "@/components/custom-filter/RangeInput";
+import { useSearchParams } from "next/navigation";
 
 let itemsPerPage = 6;
 
-const ShopPage = ({ params }: any) => {
+const ShopPage = () => {
   const [cakes, setCakes] = useState(addSlugToCakes(cakeProducts1));
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
   const [showFilter, setShowFilter] = useState(false);
+  const searchParams = useSearchParams();
+  const category = searchParams.get("cat");
+  const subcategory = searchParams.get("sub");
   // const cakes = addSlugToCakes(cakeProducts1);
+  console.log(category, subcategory, "currentPage");
 
   const handleNext = () => {
     if (currentPageIndex !== chunkArray(cakes, itemsPerPage).length) {
@@ -119,7 +124,7 @@ const ShopPage = ({ params }: any) => {
             <div className="grid gap-8 sm:grid-cols-2 md:gap-5 lg:grid-cols-3 xl:hidden">
               {chunkArray(cakes, itemsPerPage)[currentPageIndex - 1]?.map(
                 (cake: any, index: any) => {
-                  return <ProductCard data={cake} key={index}/>;
+                  return <ProductCard data={cake} key={index} />;
                 },
               )}
             </div>
