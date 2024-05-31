@@ -60,7 +60,7 @@ const Page = ({ params }: any) => {
       </div>
       <div className="wrapper relative mx-auto h-[200px] w-full py-6 md:my-[16px] md:w-[calc(100%_-_30px)]">
         <div className="absolute left-0 top-0 z-20 flex h-full w-full flex-col justify-center bg-gradient-to-r from-[#221b0fee] to-[rgba(17,17,17,0.8)] px-4 ">
-          <h1 className="text-goldie-300 text-2xl font-semibold">
+          <h1 className="text-goldie-300 text-2xl font-semibold md:text-3xl lg:text-5xl">
             {category?.label}
           </h1>
           <p className="text-[#f8eeb9]">{category?.description}</p>

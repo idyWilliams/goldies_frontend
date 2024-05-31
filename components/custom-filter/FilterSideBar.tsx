@@ -8,15 +8,13 @@ const FilterSidebar = ({
   showFilter,
   setShowFilter,
   data,
-  min,
-  max,
+  children,
 }: {
   className?: string;
   showFilter: boolean;
   setShowFilter: any;
   data: any[];
-  min: number;
-  max: number;
+  children?: React.ReactNode;
 }) => {
   return (
     <div
@@ -43,7 +41,7 @@ const FilterSidebar = ({
             <BsX size={24} />
           </span>
         </div>
-        <FilterComp min={min} max={max} />
+        {children}
       </div>
     </div>
   );

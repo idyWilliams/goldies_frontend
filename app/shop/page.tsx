@@ -23,6 +23,7 @@ import ProductCard from "@/components/ProductCard";
 import RangeInput from "@/components/custom-filter/RangeInput";
 import { useSearchParams } from "next/navigation";
 import { initials } from "@/helper/initials";
+import { captalizedName } from "@/helper/nameFormat";
 
 let itemsPerPage = 6;
 
@@ -34,6 +35,7 @@ const ShopPage = () => {
   const category = searchParams.get("cat");
   const subcategory = searchParams.get("sub");
   const cakesProducts = addSlugToCakes(cakeProducts1);
+  const [selectedOptions, setSelectedOptions] = useState<any>([]);
 
   const handleNext = () => {
     if (currentPageIndex !== chunkArray(cakes, itemsPerPage).length) {
@@ -75,19 +77,18 @@ const ShopPage = () => {
   };
 
   useEffect(() => {
-    setCakes(cakesProducts);
-  }, []);
-
-  useEffect(() => {
-    if (category && subcategory) {
+    if ((category && subcategory)) {
       const cat = addSlugToCakes(cakeProducts1).filter(
         (product: any) =>
           product?.category?.toLowerCase() === category &&
           product?.subcategory?.toLowerCase() === subcategory,
       );
       setCakes(cat);
+    } else {
+      setCakes(cakesProducts);
     }
-  }, []);
+    console.log("updated");
+  }, [category, subcategory, selectedOptions]);
 
   useEffect(() => {
     AOS.init({
@@ -124,7 +125,7 @@ const ShopPage = () => {
             <div className="mb-4 flex items-center justify-between border-b border-neutral-400 pb-4 lg:grid lg:grid-cols-[85%_10%] xl:hidden">
               <div className="items-center justify-between lg:flex">
                 <h3 className="text-2xl font-bold text-black">
-                  {category ? initials(category) : "All Cakes"}
+                  {category !== null ? captalizedName(category) : "All Cakes"}
                 </h3>
                 <span className="text-sm text-neutral-500 lg:text-base">
                   Showing 1 - 20 of 2 results
@@ -176,12 +177,24 @@ const ShopPage = () => {
                     <BsX size={24} />
                   </span>
                 </div>
-                <FilterComp min={min()} max={max()} />
+                <FilterComp
+                  min={min()}
+                  max={max()}
+                  category={category}
+                  subcategory={subcategory}
+                  setSelectedOptions={setSelectedOptions}
+                  selectedOptions={selectedOptions}
+                />
               </div>
               <div className="w-full bg-white p-4">
                 <div className="mb-4 flex items-center justify-between border-b border-neutral-400 pb-4 lg:grid lg:grid-cols-[85%_10%]">
                   <div className="items-center justify-between lg:flex">
-                    <h3 className="text-2xl font-bold text-black">All Cakes</h3>
+                    <h3 className="text-2xl font-bold text-black">
+                      {" "}
+                      {category !== null
+                        ? captalizedName(category)
+                        : "All Cakes"}
+                    </h3>
                     <span className="text-sm text-neutral-500 lg:text-base">
                       Showing 1 - 20 of 2 results
                     </span>
@@ -227,9 +240,16 @@ const ShopPage = () => {
             className="xl:hidden"
             showFilter={showFilter}
             setShowFilter={setShowFilter}
-            min={min()}
-            max={max()}
-          />
+          >
+            <FilterComp
+              min={min()}
+              max={max()}
+              category={category}
+              subcategory={subcategory}
+              setSelectedOptions={setSelectedOptions}
+              selectedOptions={selectedOptions}
+            />
+          </FilterSidebar>
         </section>
       </Layout>
     </>
