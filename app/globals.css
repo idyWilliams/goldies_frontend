@@ -76,7 +76,7 @@ body {
 }
 
 .wrapper {
-  @apply mx-auto w-full px-4 lg:container;
+  @apply mx-auto w-full px-4 xl:container;
 }
 
 @layer utilities {

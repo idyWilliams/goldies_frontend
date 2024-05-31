@@ -311,6 +311,8 @@ export const cakeProducts1 = [
     weight: "1.5kg",
     available: true,
     bestSeller: true,
+    category: "Milestone Cakes",
+    subcategory: "Birthday Cakes",
   },
   {
     id: 2,
@@ -325,6 +327,8 @@ export const cakeProducts1 = [
     weight: "1.8kg",
     available: true,
     bestSeller: false,
+    category: "Kids' Cakes",
+    subcatergory: "Princess Cakes",
   },
   {
     id: 3,

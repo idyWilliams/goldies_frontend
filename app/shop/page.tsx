@@ -22,18 +22,18 @@ import Pagination from "@/components/custom-filter/Pagination";
 import ProductCard from "@/components/ProductCard";
 import RangeInput from "@/components/custom-filter/RangeInput";
 import { useSearchParams } from "next/navigation";
+import { initials } from "@/helper/initials";
 
 let itemsPerPage = 6;
 
 const ShopPage = () => {
-  const [cakes, setCakes] = useState(addSlugToCakes(cakeProducts1));
+  const [cakes, setCakes] = useState<any[]>([]);
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
   const [showFilter, setShowFilter] = useState(false);
   const searchParams = useSearchParams();
   const category = searchParams.get("cat");
   const subcategory = searchParams.get("sub");
-  // const cakes = addSlugToCakes(cakeProducts1);
-  console.log(category, subcategory, "currentPage");
+  const cakesProducts = addSlugToCakes(cakeProducts1);
 
   const handleNext = () => {
     if (currentPageIndex !== chunkArray(cakes, itemsPerPage).length) {
@@ -75,12 +75,30 @@ const ShopPage = () => {
   };
 
   useEffect(() => {
+    setCakes(cakesProducts);
+  }, []);
+
+  useEffect(() => {
+    if (category && subcategory) {
+      const cat = addSlugToCakes(cakeProducts1).filter(
+        (product: any) =>
+          product?.category?.toLowerCase() === category &&
+          product?.subcategory?.toLowerCase() === subcategory,
+      );
+      setCakes(cat);
+    }
+  }, []);
+
+  useEffect(() => {
     AOS.init({
       duration: 1000,
       easing: "ease",
       once: true,
     });
   }, []);
+
+  console.log(category, subcategory, "currentPage");
+
   return (
     <>
       <Layout>
@@ -102,10 +120,12 @@ const ShopPage = () => {
           </div>
         </div>
         <section className="relative px-4 py-6 xl:bg-neutral-100">
-          <div className="container mx-auto">
+          <div className="mx-auto w-full">
             <div className="mb-4 flex items-center justify-between border-b border-neutral-400 pb-4 lg:grid lg:grid-cols-[85%_10%] xl:hidden">
               <div className="items-center justify-between lg:flex">
-                <h3 className="text-2xl font-bold text-black">All Cakes</h3>
+                <h3 className="text-2xl font-bold text-black">
+                  {category ? initials(category) : "All Cakes"}
+                </h3>
                 <span className="text-sm text-neutral-500 lg:text-base">
                   Showing 1 - 20 of 2 results
                 </span>
@@ -183,14 +203,20 @@ const ShopPage = () => {
                     },
                   )}
                 </div>
-                <Pagination
-                  onNext={handleNext}
-                  onPrev={handlePrev}
-                  onPaginateClick={handlePaginateClick}
-                  itemsPerPage={itemsPerPage}
-                  currentPageIndex={currentPageIndex}
-                  arr={cakes}
-                />
+
+                {cakes?.length < 1 && (
+                  <div className="">No cake products found</div>
+                )}
+                {cakes?.length >= 1 && (
+                  <Pagination
+                    onNext={handleNext}
+                    onPrev={handlePrev}
+                    onPaginateClick={handlePaginateClick}
+                    itemsPerPage={itemsPerPage}
+                    currentPageIndex={currentPageIndex}
+                    arr={cakes}
+                  />
+                )}
               </div>
             </div>
           </div>

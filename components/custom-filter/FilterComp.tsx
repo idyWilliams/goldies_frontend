@@ -1,13 +1,18 @@
-import { categories } from "@/utils/cakeCategories";
+import { categories as CategoriesList } from "@/utils/cakeCategories";
 import { Add, ArrowRotateRight, Minus } from "iconsax-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RangeInput from "./RangeInput";
+import { useSearchParams } from "next/navigation";
 
 const FilterComp = ({ min, max }: { min: number; max: number }) => {
   const [openIndex, setOpenIndex] = useState(null);
+  const [categories, setCategories] = useState<any[]>(CategoriesList);
   const [selectedOptions, setSelectedOptions] = useState<any>([]);
   const [minValue, set_minValue] = useState(min);
   const [maxValue, set_maxValue] = useState(max);
+  const searchParams = useSearchParams();
+  const category = searchParams.get("cat");
+  const subcategory = searchParams.get("sub");
   const handleInput = (e: any) => {
     set_minValue(e.minValue);
     set_maxValue(e.maxValue);
@@ -43,6 +48,15 @@ const FilterComp = ({ min, max }: { min: number; max: number }) => {
     });
     console.log(name, value, isChecked, "value");
   };
+
+  useEffect(() => {
+    if(category) 
+      {setCategories(
+        CategoriesList?.filter((cat) => cat.label.toLowerCase() === category),
+    )
+      ;
+    setOpenIndex(0)}
+  }, []);
 
   console.log(selectedOptions);
   return (
@@ -99,11 +113,7 @@ const FilterComp = ({ min, max }: { min: number; max: number }) => {
           >
             Price
           </label>
-          <RangeInput
-            min={minValue}
-            max={maxValue}
-            onChange={handleRangeChange}
-          />
+          <RangeInput min={100} max={238} onChange={handleRangeChange} />
         </div>
         <div className="grid grid-cols-2 justify-center gap-2 pt-7">
           <button className="group flex cursor-pointer items-center justify-center gap-2 rounded-md bg-neutral-900 p-3 px-8 text-white">
