@@ -1,7 +1,7 @@
 import Link from "next/link";
 const Hero = () => {
   return (
-    <section className="bg-main py-16">
+    <section className="bg-goldie-300 py-16">
       <div className="wrapper">
         <div className="relative h-[350px] w-full md:h-[400px] lg:h-[500px]">
           <video
@@ -18,7 +18,7 @@ const Hero = () => {
             Your browser does not support the video tag.
           </video>
 
-          <div className="relative z-20 mt-6 flex h-full w-full flex-col items-center justify-center bg-main bg-opacity-40 p-8 backdrop-blur-sm md:items-start">
+          <div className="bg-goldie-300 relative z-20 mt-6 flex h-full w-full flex-col items-center justify-center bg-opacity-40 p-8 backdrop-blur-sm md:items-start">
             <div className="flex w-full flex-wrap justify-center md:w-9/12 md:justify-start">
               <h1
                 data-aos="fade-down"
@@ -30,7 +30,7 @@ const Hero = () => {
               <Link
                 href="/shop"
                 data-aos="fade-down"
-                className="mt-8 inline-block border-2 border-black px-6 py-3 font-bold shadow-[0_3px_30px_rgba(0,0,0,0.8)] duration-300 hover:border-main hover:bg-main"
+                className="hover:border-goldie-300 hover:bg-goldie-300 mt-8 inline-block border-2 border-black px-6 py-3 font-bold shadow-[0_3px_30px_rgba(0,0,0,0.8)] duration-300"
               >
                 Shop Cakes
               </Link>

@@ -10,7 +10,7 @@ import { categories } from "@/utils/cakeCategories";
 
 const CakeCategory = () => {
   return (
-    <section className="relative overflow-hidden bg-main py-16">
+    <section className="bg-goldie-300 relative overflow-hidden py-16">
       <div className="wrapper relative z-20">
         <div className="grid grid-cols-2 items-start justify-between gap-4 gap-y-8 md:grid-cols-4">
           <EachElement
@@ -92,7 +92,7 @@ const CakeCategory = () => {
       </div>
 
       {/* VIDEO BACKGROUND */}
-      <div className="absolute right-0 top-0 h-full w-full before:absolute before:left-0 before:top-0 before:z-10 before:block before:h-full before:w-full before:bg-main before:bg-opacity-75 md:w-5/12">
+      <div className="before:bg-goldie-300 absolute right-0 top-0 h-full w-full before:absolute before:left-0 before:top-0 before:z-10 before:block before:h-full before:w-full before:bg-opacity-75 md:w-5/12">
         <video
           width="320"
           height="350"

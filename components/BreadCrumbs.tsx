@@ -19,7 +19,7 @@ const BreadCrumbs = ({ items }: BreadCrumbType) => {
               className="flex items-center gap-x-2 rounded-none text-[#fcfaf0]"
             >
               <Link href={item.link} onClick={item.fnx}>
-                <button className="rounded-none text-sm font-normal capitalize leading-[24px] hover:text-main sm:text-base">
+                <button className="hover:text-goldie-300 rounded-none text-sm font-normal capitalize leading-[24px] sm:text-base">
                   {item.name}
                 </button>
               </Link>
@@ -29,7 +29,7 @@ const BreadCrumbs = ({ items }: BreadCrumbType) => {
         ) : (
           <button
             key={index}
-            className="rounded-md text-sm capitalize leading-[24px] text-main hover:text-main sm:text-base "
+            className="text-goldie-300 hover:text-goldie-300 rounded-md text-sm capitalize leading-[24px] sm:text-base "
           >
             {item.name}
           </button>

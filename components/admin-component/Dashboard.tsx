@@ -66,26 +66,26 @@ const data = [
 export default function Dashboard() {
   return (
     <>
-      <section className="w-full bg-main px-4 py-6 pt-[24px] lg:bg-white lg:p-8 lg:pt-6">
-        <div className="bg-main lg:p-8">
+      <section className="bg-goldie-300 w-full px-4 py-6 pt-[24px] lg:bg-white lg:p-8 lg:pt-6">
+        <div className="bg-goldie-300 lg:p-8">
           <p className="font-bold">Today&apos;s Sales</p>
           <p className="mb-4 text-[13px]">Sales summary</p>
 
-          <div className="grid grid-cols-2 gap-4 text-main md:grid-cols-4 xl:gap-6">
+          <div className="text-goldie-300 grid grid-cols-2 gap-4 md:grid-cols-4 xl:gap-6">
             {Overview.map((data: any, index: number) => {
               return (
                 <Card key={index} className="bg-black p-4">
                   <data.icon size={30} className="font-bold" />
                   <p className="mt-2 text-lg font-bold">{data.value}</p>
                   <p className="text-xs">{data.title}</p>
-                  <div className="my-2 mb-4 border-b border-main border-opacity-50"></div>
+                  <div className="border-goldie-300 my-2 mb-4 border-b border-opacity-50"></div>
                   <p className="text-xs">{data.info}</p>
                 </Card>
               );
             })}
           </div>
         </div>
-        <div className="mt-6 hidden h-[330px] bg-main md:block lg:p-8 ">
+        <div className="bg-goldie-300 mt-6 hidden h-[330px] md:block lg:p-8 ">
           <h3 className="font-bold">Top Products</h3>
           <Table columns={columns} data={topProduct} />
         </div>

@@ -53,7 +53,7 @@ function AccordionItem({
       <div
         className={twMerge(
           "mb-3 flex items-center justify-between p-4",
-          isOpen && "bg-black text-main",
+          isOpen && "text-goldie-300 bg-black",
         )}
       >
         <span className="capitalize">{title}</span>

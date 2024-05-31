@@ -77,7 +77,7 @@ const Testimonials = () => {
                 onMouseLeave={() => setHoveredIndex(null)}
               >
                 <div className="flex items-center gap-3">
-                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-[#b6a650] to-main font-bold">
+                  <span className="to-goldie-300 inline-flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-[#b6a650] font-bold">
                     {clientInitails(review.client)}
                   </span>
                   <div>

@@ -361,7 +361,7 @@ export default function Page() {
           <div className="flex items-center justify-between">
             <h1 className="font-bold">Create New Products</h1>
             <button
-              className="rounded-md bg-black px-10 py-2 text-[12px] text-main"
+              className="text-goldie-300 rounded-md bg-black px-10 py-2 text-[12px]"
               type="submit"
             >
               Save Changes
@@ -480,7 +480,7 @@ export default function Page() {
                           Replace
                         </label>
                         <button
-                          className="cursor-pointer rounded-md bg-main px-6 py-2"
+                          className="bg-goldie-300 cursor-pointer rounded-md px-6 py-2"
                           onClick={() => handleRemove(1)}
                         >
                           Remove
@@ -526,7 +526,7 @@ export default function Page() {
                           Replace
                         </label>
                         <button
-                          className="cursor-pointer rounded-md bg-main px-6 py-2"
+                          className="bg-goldie-300 cursor-pointer rounded-md px-6 py-2"
                           onClick={() => handleRemove(2)}
                         >
                           Remove
@@ -572,7 +572,7 @@ export default function Page() {
                           Replace
                         </label>
                         <button
-                          className="cursor-pointer rounded-md bg-main px-6 py-2"
+                          className="bg-goldie-300 cursor-pointer rounded-md px-6 py-2"
                           onClick={() => handleRemove(3)}
                         >
                           Remove
@@ -618,7 +618,7 @@ export default function Page() {
                           Replace
                         </label>
                         <button
-                          className="cursor-pointer rounded-md bg-main px-6 py-2"
+                          className="bg-goldie-300 cursor-pointer rounded-md px-6 py-2"
                           onClick={() => handleRemove(4)}
                         >
                           Remove

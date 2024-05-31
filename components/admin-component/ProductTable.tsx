@@ -70,7 +70,7 @@ export default function ProductTable({
             filteredTabs.map((tabs: string, index: number) => (
               <button
                 key={index}
-                className={`w-fit rounded-sm border px-2 ${selectedTabs === tabs ? "bg-black text-main" : "border-neutral-200 bg-white"}`}
+                className={`w-fit rounded-sm border px-2 ${selectedTabs === tabs ? "text-goldie-300 bg-black" : "border-neutral-200 bg-white"}`}
                 onClick={() => {
                   setSelectedTabs(tabs);
                   setChosenTab(tabs);
@@ -103,7 +103,7 @@ export default function ProductTable({
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
-                  className="bg-black p-4 text-left capitalize text-main"
+                  className="text-goldie-300 bg-black p-4 text-left capitalize"
                 >
                   {header.isPlaceholder
                     ? null

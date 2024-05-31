@@ -16,6 +16,19 @@ const config: Config = {
       },
       colors: {
         main: "#E4D064",
+        goldie: {
+          "50": "#fcfaee",
+          "100": "#f7f2ce",
+          "200": "#ede39a",
+          "300": "#e4d064",
+          "400": "#debe41",
+          "500": "#d5a32b",
+          "600": "#bc8123",
+          "700": "#9d6020",
+          "800": "#804b20",
+          "900": "#6a3f1d",
+          "950": "#3c210c",
+        },
       },
       keyframes: {
         "accordion-down": {

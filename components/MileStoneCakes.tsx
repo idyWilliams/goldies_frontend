@@ -7,7 +7,7 @@ import Link from "next/link";
 const MileStoneCakes = () => {
   return (
     <>
-      <section className="bg-main py-16">
+      <section className="bg-goldie-300 py-16">
         <div className="wrapper">
           <h2 className="mb-8 text-center text-[28px] font-bold">
             Milestone Cakes
@@ -28,7 +28,7 @@ const MileStoneCakes = () => {
               <h3 className="mt-3 text-xl font-bold">Birthday Cakes</h3>
               <Link
                 href="/shop"
-                className="mt-4 inline-block w-[200px] rounded-[50px] bg-black px-8 py-3 text-center font-bold tracking-wider text-main"
+                className="text-goldie-300 mt-4 inline-block w-[200px] rounded-[50px] bg-black px-8 py-3 text-center font-bold tracking-wider"
               >
                 Explore
               </Link>
@@ -49,7 +49,7 @@ const MileStoneCakes = () => {
               <h3 className="mt-3 text-xl font-bold">Number Cakes</h3>
               <Link
                 href="/shop"
-                className="mt-4 inline-block w-[200px] rounded-[50px] bg-black px-8 py-3 text-center font-bold tracking-wider text-main"
+                className="text-goldie-300 mt-4 inline-block w-[200px] rounded-[50px] bg-black px-8 py-3 text-center font-bold tracking-wider"
               >
                 Explore
               </Link>
@@ -70,7 +70,7 @@ const MileStoneCakes = () => {
               <h3 className="mt-3 text-xl font-bold">Children Cakes</h3>
               <Link
                 href="/shop"
-                className="mt-4 inline-block w-[200px] rounded-[50px] bg-black px-8 py-3 text-center font-bold tracking-wider text-main"
+                className="text-goldie-300 mt-4 inline-block w-[200px] rounded-[50px] bg-black px-8 py-3 text-center font-bold tracking-wider"
               >
                 Explore
               </Link>

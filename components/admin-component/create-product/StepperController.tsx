@@ -13,7 +13,7 @@ export default function StepperController() {
 
     handleClick("next");
     if (currentStep === checkoutStep?.length) {
-console.log("data")
+      console.log("data");
     }
   };
   return (
@@ -29,7 +29,7 @@ console.log("data")
       </button>
       <button
         onClick={submitDetails}
-        className="h-[24px] w-[57px] rounded-[2.42px] bg-black text-[10px] text-main"
+        className="text-goldie-300 h-[24px] w-[57px] rounded-[2.42px] bg-black text-[10px]"
       >
         {currentStep === checkoutStep?.length ? (
           <span className="inline-flex items-center gap-2">

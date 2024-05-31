@@ -56,7 +56,7 @@ export default function MobileOrderCard() {
           (tabs: string, index: number) => (
             <button
               key={index}
-              className={`w-fit rounded-sm border px-2 ${selectedTabs === tabs ? "bg-black text-main" : "border-neutral-200 bg-white"}`}
+              className={`w-fit rounded-sm border px-2 ${selectedTabs === tabs ? "text-goldie-300 bg-black" : "border-neutral-200 bg-white"}`}
               onClick={() => {
                 handleTabClick(tabs);
               }}
@@ -107,7 +107,7 @@ export default function MobileOrderCard() {
 
                   <div className="mt-6 flex justify-end">
                     <button
-                      className="h-[29px] w-[97px] rounded-sm bg-main text-xs text-black"
+                      className="bg-goldie-300 h-[29px] w-[97px] rounded-sm text-xs text-black"
                       onClick={() => router.push(`/admin/orders/${data.id}`)}
                     >
                       View Details

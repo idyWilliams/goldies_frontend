@@ -12,7 +12,7 @@ export default function ProductSortBy({ setSortType, sortType }: any) {
       {sortOption.map((option: any, index: number) => (
         <span
           key={index}
-          className={`mb-2 inline-flex w-full items-center justify-center whitespace-nowrap rounded-[3px] p-1 px-2 text-main ${sortType === option.value ? "bg-[#E4D064] bg-opacity-20" : "bg-black"}`}
+          className={`text-goldie-300 mb-2 inline-flex w-full items-center justify-center whitespace-nowrap rounded-[3px] p-1 px-2 ${sortType === option.value ? "bg-[#E4D064] bg-opacity-20" : "bg-black"}`}
           onClick={() => setSortType(option.value)}
         >
           {option.label}

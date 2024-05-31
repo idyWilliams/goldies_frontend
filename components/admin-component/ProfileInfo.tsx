@@ -8,7 +8,7 @@ export default function ProfileInfo() {
   return (
     <section className="w-full pl-2 lg:w-[400px]">
       <>
-        <div className="mt-5 inline-flex h-10 w-10 items-center justify-center rounded-full bg-black text-main">
+        <div className="text-goldie-300 mt-5 inline-flex h-10 w-10 items-center justify-center rounded-full bg-black">
           <span className="items-center justify-center">JD</span>
         </div>
         <p className="my-3 font-semibold">John Doe</p>
@@ -65,7 +65,7 @@ export default function ProfileInfo() {
           <button className="items-center justify-center rounded-sm border border-red-500 bg-white px-3 py-2 text-sm text-red-500 lg:text-base">
             Cancel Changes
           </button>
-          <button className="items-center justify-center rounded-sm bg-black px-5 py-2 text-sm text-main lg:text-base">
+          <button className="text-goldie-300 items-center justify-center rounded-sm bg-black px-5 py-2 text-sm lg:text-base">
             Save Changes
           </button>
         </div>

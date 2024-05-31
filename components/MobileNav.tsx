@@ -11,7 +11,7 @@ const MobileNav = ({ pathname, show, setShow, isOpen, setIsOpen }: any) => {
     >
       <div
         onClick={(e: any) => e.stopPropagation()}
-        className="flex h-full w-8/12 flex-col gap-8 bg-main p-9 pl-4 pt-24 sm:w-6/12"
+        className="bg-goldie-300 flex h-full w-8/12 flex-col gap-8 p-9 pl-4 pt-24 sm:w-6/12"
       >
         <div className="relative">
           <button

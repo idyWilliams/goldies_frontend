@@ -24,7 +24,7 @@ const About = () => {
               />
             </div>
             <div data-aos="fade-left" data-aos-delay="500" className="w-full">
-              <p className="leading-[150%] text-main lg:text-xl lg:leading-10">
+              <p className="text-goldie-300 leading-[150%] lg:text-xl lg:leading-10">
                 <strong>
                   Goldis isn&apos;t just a bakery, it&apos;s a haven for
                   happiness.
@@ -35,13 +35,13 @@ const About = () => {
               </p>
               <Link
                 href="/shop"
-                className="mt-4 inline-block rounded-[50px] bg-main px-8 py-3 font-bold"
+                className="bg-goldie-300 mt-4 inline-block rounded-[50px] px-8 py-3 font-bold"
               >
                 Shop Our Cake
               </Link>
             </div>
           </div>
-          <hr className="my-8 border-0 border-t-2 border-main md:my-12 lg:my-16" />
+          <hr className="border-goldie-300 my-8 border-0 border-t-2 md:my-12 lg:my-16" />
           <div className="flex flex-wrap items-start justify-between md:grid md:grid-cols-2 md:gap-9">
             <div
               data-aos="fade-left"
@@ -55,7 +55,7 @@ const About = () => {
               />
             </div>
             <div data-aos="fade-right" className="w-full md:order-1">
-              <p className="leading-[150%] text-main lg:text-xl lg:leading-10">
+              <p className="text-goldie-300 leading-[150%] lg:text-xl lg:leading-10">
                 <strong>This vision is not just about sugar and flour,</strong>{" "}
                 It’s about creating moments of joy and sweetness, fostering
                 connections, and leaving a lasting legacy. Join us in making the
@@ -63,7 +63,7 @@ const About = () => {
               </p>
               <Link
                 href="/bespoke"
-                className="mt-4 inline-block rounded-[50px] bg-main px-8 py-3 font-bold"
+                className="bg-goldie-300 mt-4 inline-block rounded-[50px] px-8 py-3 font-bold"
               >
                 Bespoke Cakes
               </Link>

@@ -32,7 +32,7 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="bg-main py-16">
+    <section id="contact" className="bg-goldie-300 py-16">
       <div className="wrapper grid items-center md:grid-cols-2">
         <div
           data-aos="fade"
@@ -75,7 +75,7 @@ const Contact = () => {
 
             <button
               type="submit"
-              className="mt-4 rounded-md bg-black px-5 py-2.5 text-main"
+              className="text-goldie-300 mt-4 rounded-md bg-black px-5 py-2.5"
             >
               Book Now
             </button>

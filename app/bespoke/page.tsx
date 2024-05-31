@@ -10,12 +10,12 @@ const BespokePage = () => {
       <Header />
       <section className="bg-black py-16 pt-24">
         <div className="wrapper">
-          <h2 className="mb-2 text-2xl font-bold capitalize text-main md:text-center md:text-3xl">
+          <h2 className="text-goldie-300 mb-2 text-2xl font-bold capitalize md:text-center md:text-3xl">
             Let&apos;s Create your cake
           </h2>
 
           <div className="">
-            <p className="mb-8 text-main md:mx-auto md:w-8/12 md:text-center md:text-xl md:leading-[155%]">
+            <p className="text-goldie-300 mb-8 md:mx-auto md:w-8/12 md:text-center md:text-xl md:leading-[155%]">
               <strong>
                 A personalized cake is a unique and special addition to any
                 event.

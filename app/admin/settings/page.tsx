@@ -54,7 +54,7 @@ export default function Page() {
                   key={index}
                   className={twMerge(
                     "mb-3 inline-flex cursor-pointer items-center gap-2 bg-neutral-100 px-3 py-2 text-black duration-300",
-                    selectedTab === index && "bg-black text-main",
+                    selectedTab === index && "text-goldie-300 bg-black",
                   )}
                   onClick={() => setSelectedTab(index)}
                 >

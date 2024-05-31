@@ -119,7 +119,7 @@ export default function Page() {
       id: "actions",
       cell: (info) => (
         <button
-          className="rounded-[50px] bg-main px-4 py-1 text-black"
+          className="bg-goldie-300 rounded-[50px] px-4 py-1 text-black"
           onClick={() =>
             router.push(`/admin/orders/${info.cell.row.original.id}`)
           }

@@ -50,12 +50,12 @@ const FilterComp = ({ min, max }: { min: number; max: number }) => {
   };
 
   useEffect(() => {
-    if(category) 
-      {setCategories(
+    if (category) {
+      setCategories(
         CategoriesList?.filter((cat) => cat.label.toLowerCase() === category),
-    )
-      ;
-    setOpenIndex(0)}
+      );
+      setOpenIndex((prev: any) => (prev === null ? 0 : prev));
+    }
   }, []);
 
   console.log(selectedOptions);

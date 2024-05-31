@@ -55,13 +55,13 @@ export default function Page({ params }: any) {
           <div className="relative mx-auto mb-5 grid w-[75%] grid-cols-2 items-center justify-center overflow-hidden rounded-md bg-gray-50">
             <div
               onClick={() => router.push("/login")}
-              className={`relative z-[1] w-full cursor-pointer rounded-sm px-3 py-2 text-center ${params.authentication === "login" ? "text-main" : "text-black"}`}
+              className={`relative z-[1] w-full cursor-pointer rounded-sm px-3 py-2 text-center ${params.authentication === "login" ? "text-goldie-300" : "text-black"}`}
             >
               Sign In
             </div>
             <div
               onClick={() => router.push("/signup")}
-              className={`relative z-[1] w-full cursor-pointer rounded-sm px-3 py-2 text-center ${params.authentication === "signup" ? "text-main" : "text-black"}`}
+              className={`relative z-[1] w-full cursor-pointer rounded-sm px-3 py-2 text-center ${params.authentication === "signup" ? "text-goldie-300" : "text-black"}`}
             >
               Sign Up
             </div>

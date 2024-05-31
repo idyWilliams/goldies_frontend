@@ -10,11 +10,11 @@ const Footer = () => {
   return (
     <section className="relative flex min-h-[500px] w-full items-center justify-center py-16">
       <div className="wrapper relative z-30">
-        <h2 className="mb-8 text-center text-2xl font-bold capitalize text-main md:text-3xl">
+        <h2 className="text-goldie-300 mb-8 text-center text-2xl font-bold capitalize md:text-3xl">
           Connect with me
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 md:mx-auto md:w-[700px]">
-          <div className="flex items-center gap-5 rounded-lg bg-main p-3">
+          <div className="bg-goldie-300 flex items-center gap-5 rounded-lg p-3">
             <span className="inline-block">
               <Image src={Youtube} alt="Youtube" className="w-[100px]" />
             </span>
@@ -29,7 +29,7 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-5 rounded-lg bg-main p-3">
+          <div className="bg-goldie-300 flex items-center gap-5 rounded-lg p-3">
             <span className="inline-block">
               <Image src={Phone} alt="Phone" className="w-[100px]" />
             </span>
@@ -41,7 +41,7 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-5 rounded-lg bg-main p-3">
+          <div className="bg-goldie-300 flex items-center gap-5 rounded-lg p-3">
             <span className="inline-block">
               <Image src={Instagram} alt="Instagram" className="w-[100px]" />
             </span>
@@ -56,7 +56,7 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="flex items-center gap-5 rounded-lg bg-main p-3">
+          <div className="bg-goldie-300 flex items-center gap-5 rounded-lg p-3">
             <span className="inline-block">
               <Image src={LinkedIn} alt="Linkedin" className="w-[100px]" />
             </span>

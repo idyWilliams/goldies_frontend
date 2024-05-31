@@ -140,7 +140,7 @@ function CakeDetailsPage({ params }: any) {
             />
           </div>
         </section>
-        <section className="bg-main py-16">
+        <section className="bg-goldie-300 py-16">
           <div className="wrapper">
             <div className="grid sm:grid-cols-[1.5fr_2fr] sm:gap-5 md:grid-cols-[1fr_1fr] lg:grid-cols-[1fr_1fr_1fr]">
               <div className="sm:col-span-2 md:col-span-1">
@@ -286,7 +286,7 @@ function CakeDetailsPage({ params }: any) {
                         onClick={() =>
                           dispatch(decrementProductQty({ id: getProduct.id }))
                         }
-                        className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full duration-300 hover:bg-main"
+                        className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full duration-300 hover:bg-goldie-300"
                       >
                         <BsDash size={24} />
                       </span>
@@ -295,20 +295,20 @@ function CakeDetailsPage({ params }: any) {
                         onClick={() =>
                           dispatch(incrementProductQty({ id: getProduct.id }))
                         }
-                        className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full duration-300 hover:bg-main"
+                        className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full duration-300 hover:bg-goldie-300"
                       >
                         <BsPlus size={24} />
                       </span>
                     </div> */}
                     <button
                       onClick={navigateToCart}
-                      className="flex items-center gap-1 rounded-full border border-black bg-main px-5 py-2 text-black shadow-md"
+                      className="bg-goldie-300 flex items-center gap-1 rounded-full border border-black px-5 py-2 text-black shadow-md"
                     >
                       See Cart Item <GiShoppingCart />
                     </button>
                     <button
                       onClick={handleClick}
-                      className="rounded-full bg-black px-5 py-2 text-main shadow-md"
+                      className="text-goldie-300 rounded-full bg-black px-5 py-2 shadow-md"
                     >
                       Add to Cart
                     </button>

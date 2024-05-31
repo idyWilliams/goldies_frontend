@@ -52,17 +52,17 @@ const CartPage = () => {
                   },
                 ]}
               />
-              <h2 className="mb-8 mt-4 text-2xl font-bold capitalize text-main md:text-3xl">
+              <h2 className="text-goldie-300 mb-8 mt-4 text-2xl font-bold capitalize md:text-3xl">
                 Cart({Object.values(cart).length})
               </h2>
 
               {/* CART FOR DESKTOP */}
               <>
                 <div className="hidden sm:block">
-                  <div className="mb-5 border-b border-main pb-2 sm:grid sm:grid-cols-[2fr_1fr_1fr]">
-                    <p className="text-main">Product</p>
-                    <p className="w-[136px] text-main">Quantity</p>
-                    <p className="w-[100px] text-main">Sub Total</p>
+                  <div className="border-goldie-300 mb-5 border-b pb-2 sm:grid sm:grid-cols-[2fr_1fr_1fr]">
+                    <p className="text-goldie-300">Product</p>
+                    <p className="text-goldie-300 w-[136px]">Quantity</p>
+                    <p className="text-goldie-300 w-[100px]">Sub Total</p>
                   </div>
                   {Object.values(cart).length >= 1 &&
                     Object.values(cart).map((item, idx) => {
@@ -79,7 +79,7 @@ const CartPage = () => {
                                 className="h-full w-full object-cover"
                               />
                             </figure>
-                            <h3 className="text-lg font-bold text-main">
+                            <h3 className="text-goldie-300 text-lg font-bold">
                               {item.name}
                             </h3>
                           </div>
@@ -88,7 +88,7 @@ const CartPage = () => {
                               onClick={() =>
                                 dispatch(decrementProductQty({ id: item.id }))
                               }
-                              className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full duration-300 hover:bg-main"
+                              className="hover:bg-goldie-300 inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full duration-300"
                             >
                               <BsDash size={24} />
                             </span>
@@ -97,20 +97,20 @@ const CartPage = () => {
                               onClick={() =>
                                 dispatch(incrementProductQty({ id: item.id }))
                               }
-                              className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full duration-300 hover:bg-main"
+                              className="hover:bg-goldie-300 inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full duration-300"
                             >
                               <BsPlus size={24} />
                             </span>
                           </div>
                           <div className="flex items-center justify-between">
-                            <span className="text-xl text-main">
+                            <span className="text-goldie-300 text-xl">
                               &euro; {item.maxPrice}
                             </span>
                             <span
                               onClick={() =>
                                 dispatch(deleteProductFromCart({ id: item.id }))
                               }
-                              className="cursor-pointer text-main"
+                              className="text-goldie-300 cursor-pointer"
                             >
                               <BsTrash size={20} />
                             </span>
@@ -136,10 +136,10 @@ const CartPage = () => {
                           />
                         </figure>
                         <div className="flex flex-col items-start">
-                          <h3 className="text-lg font-bold text-main">
+                          <h3 className="text-goldie-300 text-lg font-bold">
                             {item.name}
                           </h3>
-                          <span className="inline-block text-lg text-main">
+                          <span className="text-goldie-300 inline-block text-lg">
                             &euro; {item.maxPrice}
                           </span>
                           <div className="mt-3 inline-flex items-center gap-3 rounded-[50px] bg-white px-1.5 py-1">
@@ -147,7 +147,7 @@ const CartPage = () => {
                               onClick={() =>
                                 dispatch(decrementProductQty({ id: item.id }))
                               }
-                              className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full duration-300 hover:bg-main"
+                              className="hover:bg-goldie-300 inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full duration-300"
                             >
                               <BsDash size={24} />
                             </span>
@@ -156,7 +156,7 @@ const CartPage = () => {
                               onClick={() =>
                                 dispatch(incrementProductQty({ id: item.id }))
                               }
-                              className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full duration-300 hover:bg-main"
+                              className="hover:bg-goldie-300 inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full duration-300"
                             >
                               <BsPlus size={24} />
                             </span>
@@ -165,7 +165,7 @@ const CartPage = () => {
                             onClick={() =>
                               dispatch(deleteProductFromCart({ id: item.id }))
                             }
-                            className="mt-3 inline-flex cursor-pointer items-center gap-3 text-main"
+                            className="text-goldie-300 mt-3 inline-flex cursor-pointer items-center gap-3"
                           >
                             <BsTrash size={16} />
                             Delete
@@ -178,41 +178,41 @@ const CartPage = () => {
 
               {/* PAYMENT DETAILS */}
               {Object.values(cart).length >= 1 ? (
-                <div className="my-8 w-full border-t border-main">
-                  <h2 className="mb-8 mt-4 text-xl font-bold capitalize text-main">
+                <div className="border-goldie-300 my-8 w-full border-t">
+                  <h2 className="text-goldie-300 mb-8 mt-4 text-xl font-bold capitalize">
                     Payment Details
                   </h2>
 
                   <div className="grid sm:grid-cols-2 sm:gap-5">
                     <div>
-                      <h3 className="mb-1 font-bold text-main">
+                      <h3 className="text-goldie-300 mb-1 font-bold">
                         Shipping Address
                       </h3>
-                      <p className="text-main">
+                      <p className="text-goldie-300">
                         123 Westborough Street, London
                       </p>
                     </div>
                     <div className="flex flex-wrap justify-end">
                       <div className="mt-6 flex w-full flex-wrap items-start justify-between sm:mt-0">
-                        <ul className="flex flex-col gap-3 text-main">
+                        <ul className="text-goldie-300 flex flex-col gap-3">
                           <li>Product Total</li>
                           <li>Options Total</li>
                           <li>Grand Total</li>
                         </ul>
-                        <ul className="flex flex-col gap-3 text-main">
+                        <ul className="text-goldie-300 flex flex-col gap-3">
                           <li>&euro;{cartTotal}</li>
                           <li>&euro;100</li>
                           <li>&euro;{cartTotal + 100}</li>
                         </ul>
                       </div>
-                      <button className="mt-7 self-end rounded-full bg-main px-5 py-2">
+                      <button className="bg-goldie-300 mt-7 self-end rounded-full px-5 py-2">
                         Checkout
                       </button>
                     </div>
                   </div>
                 </div>
               ) : (
-                <div className="space-y-2 text-center text-main">
+                <div className="text-goldie-300 space-y-2 text-center">
                   <figure className="mx-auto h-28 w-24">
                     <Image
                       src={illustration}
@@ -226,7 +226,7 @@ const CartPage = () => {
                   <p>Oops!, Your cart is empty</p>
                   <button
                     onClick={() => router.push("/shop")}
-                    className="rounded-full border border-main p-2 text-main"
+                    className="border-goldie-300 text-goldie-300 rounded-full border p-2"
                   >
                     Start Shopping
                   </button>

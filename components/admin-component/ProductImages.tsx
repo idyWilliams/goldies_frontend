@@ -75,7 +75,7 @@ export default function ProductImages() {
                     Replace
                   </label>
                   <button
-                    className="cursor-pointer rounded-md bg-main px-6 py-2"
+                    className="bg-goldie-300 cursor-pointer rounded-md px-6 py-2"
                     onClick={() => handleRemove(1)}
                   >
                     Remove
@@ -121,7 +121,7 @@ export default function ProductImages() {
                     Replace
                   </label>
                   <button
-                    className="cursor-pointer rounded-md bg-main px-6 py-2"
+                    className="bg-goldie-300 cursor-pointer rounded-md px-6 py-2"
                     onClick={() => handleRemove(2)}
                   >
                     Remove
@@ -167,7 +167,7 @@ export default function ProductImages() {
                     Replace
                   </label>
                   <button
-                    className="cursor-pointer rounded-md bg-main px-6 py-2"
+                    className="bg-goldie-300 cursor-pointer rounded-md px-6 py-2"
                     onClick={() => handleRemove(3)}
                   >
                     Remove
@@ -213,7 +213,7 @@ export default function ProductImages() {
                     Replace
                   </label>
                   <button
-                    className="cursor-pointer rounded-md bg-main px-6 py-2"
+                    className="bg-goldie-300 cursor-pointer rounded-md px-6 py-2"
                     onClick={() => handleRemove(4)}
                   >
                     Remove

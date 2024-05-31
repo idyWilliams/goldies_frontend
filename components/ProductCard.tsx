@@ -35,7 +35,7 @@ export default function ProductCard({ data }: { data: any }) {
           />
         </Link>
         <span
-          className="absolute right-2 top-2 inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-[5px] bg-black bg-opacity-50 text-main"
+          className="text-goldie-300 absolute right-2 top-2 inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-[5px] bg-black bg-opacity-50"
           onClick={() => setFav((prev: any) => !prev)}
         >
           {fav ? <Heart size={20} variant="Bold" /> : <Heart size={20} />}
@@ -58,9 +58,9 @@ export default function ProductCard({ data }: { data: any }) {
       <div className="mt-2 flex items-center gap-2">
         <button
           onClick={handleAddToCart}
-          className="inline-flex flex-grow items-center justify-center gap-2 rounded-md border border-neutral-900 bg-neutral-900 px-0 py-2.5 text-main"
+          className="text-goldie-300 inline-flex flex-grow items-center justify-center gap-2 rounded-md border border-neutral-900 bg-neutral-900 px-0 py-2.5"
         >
-          <span className="border-r border-main border-opacity-40 pr-2">
+          <span className="border-goldie-300 border-r border-opacity-40 pr-2">
             <ShoppingCart size={20} />
           </span>{" "}
           Add to cart

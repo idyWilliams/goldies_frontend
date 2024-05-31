@@ -75,7 +75,7 @@ export default function ChangePassword() {
           <button className="items-center justify-center rounded-sm border border-red-500 bg-white px-3 py-2 text-sm text-red-500 lg:text-base">
             Cancel Changes
           </button>
-          <button className="items-center justify-center rounded-sm bg-black px-5 py-2 text-sm text-main lg:text-base">
+          <button className="text-goldie-300 items-center justify-center rounded-sm bg-black px-5 py-2 text-sm lg:text-base">
             Save Changes
           </button>
         </div>
