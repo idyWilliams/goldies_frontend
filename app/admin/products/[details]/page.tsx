@@ -50,7 +50,7 @@ export default function Page({ params }: any) {
         <hr className="my-5" />
         <div className="grid grid-cols-1 gap-4 md:grid-cols-[55%_1fr]">
           <div className="rounded-md bg-black">
-            <h1 className="text-goldie-300 px-6 pb-4 pt-6 font-semibold">
+            <h1 className="px-6 pb-4 pt-6 font-semibold text-goldie-300">
               Product Information
             </h1>
             <div className="bg-white px-6 py-3">
@@ -80,7 +80,7 @@ export default function Page({ params }: any) {
                 </div>
                 <div className="mb-5">
                   <p className="font-semibold">Subcategory:</p>
-                  <p>{product?.subcategory?.label}</p>
+                  <p>{product?.subcategory}</p>
                 </div>
               </div>
               <div className="mb-5">
@@ -112,7 +112,7 @@ export default function Page({ params }: any) {
             </div>
           </div>
           <div className="h-fit rounded-md bg-black">
-            <h1 className="text-goldie-300 px-6 pb-4 pt-6 font-semibold">
+            <h1 className="px-6 pb-4 pt-6 font-semibold text-goldie-300">
               Product Images
             </h1>
             <div className="bg-white px-6 py-6">
