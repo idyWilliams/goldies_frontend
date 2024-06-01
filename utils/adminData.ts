@@ -339,7 +339,6 @@ export const customers = [
     dateOnboarded: "2024/02/12",
     customerName: "John Doe",
     amountSpent: 895.5,
-    action: "View More",
     orders: 20,
   },
   {
@@ -351,7 +350,6 @@ export const customers = [
     dateOnboarded: "2024/02/12",
     customerName: "John Doe",
     amountSpent: 895.5,
-    action: "View More",
     orders: 20,
   },
   {
@@ -363,7 +361,6 @@ export const customers = [
     dateOnboarded: "2024/02/12",
     customerName: "John Doe",
     amountSpent: 895.5,
-    action: "View More",
     orders: 20,
   },
   {
@@ -375,7 +372,6 @@ export const customers = [
     dateOnboarded: "2024/02/12",
     customerName: "John Doe",
     amountSpent: 895.5,
-    action: "View More",
     orders: 20,
   },
   {
@@ -387,7 +383,6 @@ export const customers = [
     dateOnboarded: "2024/02/12",
     customerName: "John Doe",
     amountSpent: 895.5,
-    action: "View More",
     orders: 20,
   },
   {
@@ -399,7 +394,6 @@ export const customers = [
     dateOnboarded: "2024/02/12",
     customerName: "John Doe",
     amountSpent: 895.5,
-    action: "View More",
     orders: 20,
   },
   {
@@ -411,7 +405,6 @@ export const customers = [
     dateOnboarded: "2024/02/12",
     customerName: "John Doe",
     amountSpent: 895.5,
-    action: "View More",
     orders: 20,
   },
   {
@@ -423,7 +416,6 @@ export const customers = [
     dateOnboarded: "2024/02/12",
     customerName: "John Doe",
     amountSpent: 895.5,
-    action: "View More",
     orders: 20,
   },
 ];

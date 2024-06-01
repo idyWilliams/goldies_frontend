@@ -26,7 +26,7 @@ import MobileOrderCard from "@/components/admin-component/MobileOrderCard";
 import OrderDetailsModal from "@/components/admin-component/OrderDetailsModal";
 import { useRouter } from "next/navigation";
 
-type Product = {
+type Customer = {
   id: string;
   image: any;
   customerName: string;
@@ -37,39 +37,16 @@ type Product = {
   action: string;
 };
 
-const statusColor = (status: string) => {
-  switch (status.toLowerCase()) {
-    case "success":
-      return (
-        <div className="inline-flex items-center gap-2 rounded-[50px] border border-green-700 bg-green-700 bg-opacity-10 px-3 py-[2px] text-sm text-green-700">
-          <span className="h-2 w-2 rounded-full bg-green-700"></span>
-          Success
-        </div>
-      );
-    case "failed":
-      return (
-        <div className="inline-flex items-center gap-2 rounded-[50px] border border-red-700 bg-red-700 bg-opacity-10 px-3 py-[2px] text-sm text-red-700">
-          <span className="h-2 w-2 rounded-full bg-red-700"></span> Failed
-        </div>
-      );
-    case "pending":
-      return (
-        <div className="inline-flex items-center gap-2 rounded-[50px] border border-orange-600 bg-orange-600 bg-opacity-10 px-3 py-[2px] text-sm text-orange-600">
-          <span className="h-2 w-2 rounded-full bg-orange-600"></span> Pending
-        </div>
-      );
-    default:
-      return;
-  }
-};
-
-const columnHelper = createColumnHelper<Product>();
+const columnHelper = createColumnHelper<Customer>();
 
 interface ITableProps {
   filteredTabs: any;
 }
 export default function Page() {
   const router = useRouter();
+  const handleView = (id: string) => {
+    router.push(`/admin/customers/${id}`);
+  };
   const columns = [
     columnHelper.accessor((row) => row, {
       id: "customerName",
@@ -111,7 +88,12 @@ export default function Page() {
     columnHelper.accessor((row) => row, {
       id: "action",
       cell: (info) => (
-        <span className="text-blue-400">{info.cell.row.original.action}</span>
+        <span
+          className="cursor-pointer text-blue-400"
+          onClick={() => handleView(info.cell.row.original.id)}
+        >
+          View More
+        </span>
       ),
       header: () => <span>Actions</span>,
       footer: (info) => info.column.id,
@@ -120,12 +102,7 @@ export default function Page() {
   return (
     <>
       <section className="w-full bg-[#EFEFEF] px-4 pt-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-lg font-extrabold uppercase">Customers</h1>
-          <span className="mr-10">
-            <User />
-          </span>
-        </div>
+        <h1 className="text-lg font-extrabold uppercase">Customers</h1>
         <hr className="mt-3 border-2 border-[#D4D4D4]" />
 
         <div className="hidden  md:block">
@@ -135,9 +112,6 @@ export default function Page() {
             statusType="customer"
             filteredTabs={["All", "Old", "New"]}
           />
-        </div>
-        <div className="block md:hidden">
-          <MobileOrderCard />
         </div>
       </section>
     </>
