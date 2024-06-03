@@ -77,7 +77,7 @@ const FilterComp = ({
     }
   }, [category, subcategory]);
 
-  console.log(selectedOptions);
+  // console.log(selectedOptions);
   return (
     <div className="w-full">
       <div className="space-y-3">

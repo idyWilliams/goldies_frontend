@@ -1,8 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    missingSuspenseWithCSRBailout: true,
-  },
+  // experimental: {
+  //   missingSuspenseWithCSRBailout: false,
+  // },
 };
 
 export default nextConfig;

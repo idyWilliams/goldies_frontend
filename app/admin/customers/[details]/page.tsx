@@ -14,7 +14,8 @@ export default function Page({ params }: any) {
   useEffect(() => {
     const info = customers.find((info: any) => params.details * 1 === info.id);
     setCustomer(info);
-  });
+  }, [params?.details]);
+
   console.log(params, customer);
   const handleViewMore = () => {
     if (activeSec === "contact") {

@@ -24,12 +24,12 @@ import { Suspense } from "react";
 let itemsPerPage = 6;
 
 const ShopPage = () => {
-  const [cakes, setCakes] = useState<any[]>([]);
+  const [cakes, setCakes] = useState<any[]>(addSlugToCakes(cakeProducts1));
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
   const [showFilter, setShowFilter] = useState(false);
-  const searchParams = useSearchParams();
-  const category = searchParams.get("cat") || "milestone cakes";
-  const subcategory = searchParams.get("sub") || "birthday cakes";
+  // const searchParams = useSearchParams();
+  // const category = searchParams.get("cat") || "milestone cakes";
+  // const subcategory = searchParams.get("sub") || "birthday cakes";
   const cakesProducts = addSlugToCakes(cakeProducts1);
   const [selectedOptions, setSelectedOptions] = useState<any>([]);
 
@@ -72,19 +72,19 @@ const ShopPage = () => {
     return 100; // or any default value
   };
 
-  useEffect(() => {
-    if (category && subcategory) {
-      const cat = addSlugToCakes(cakeProducts1).filter(
-        (product: any) =>
-          product?.category?.toLowerCase() === category &&
-          product?.subcategory?.toLowerCase() === subcategory,
-      );
-      setCakes(cat);
-    } else {
-      setCakes(cakesProducts);
-    }
-    console.log("updated");
-  }, [category, subcategory, selectedOptions, cakesProducts]);
+  // useEffect(() => {
+  //   // if (category && subcategory) {
+  //   //   const cat = addSlugToCakes(cakeProducts1).filter(
+  //   //     (product: any) =>
+  //   //       product?.category?.toLowerCase() === category &&
+  //   //       product?.subcategory?.toLowerCase() === subcategory,
+  //   //   );
+  //   //   setCakes(cat);
+  //   // } else {
+  // setCakes(cakesProducts);
+  //   // }
+  //   // console.log("updated");
+  // }, [cakesProducts]);
 
   useEffect(() => {
     AOS.init({
@@ -94,7 +94,7 @@ const ShopPage = () => {
     });
   }, []);
 
-  console.log(category, subcategory, "currentPage");
+  // console.log(category, subcategory, "currentPage");
 
   return (
     <>
@@ -122,7 +122,7 @@ const ShopPage = () => {
               <div className="mb-4 flex items-center justify-between border-b border-neutral-400 pb-4 lg:grid lg:grid-cols-[85%_10%] xl:hidden">
                 <div className="items-center justify-between lg:flex">
                   <h3 className="text-2xl font-bold text-black">
-                    {category !== null ? captalizedName(category) : "All Cakes"}
+                    {"" !== null ? captalizedName("") : "All Cakes"}
                   </h3>
                   <span className="text-sm text-neutral-500 lg:text-base">
                     Showing 1 - 20 of 2 results
@@ -177,8 +177,8 @@ const ShopPage = () => {
                   <FilterComp
                     min={min()}
                     max={max()}
-                    category={category}
-                    subcategory={subcategory}
+                    category={""}
+                    subcategory={""}
                     setSelectedOptions={setSelectedOptions}
                     selectedOptions={selectedOptions}
                   />
@@ -188,9 +188,7 @@ const ShopPage = () => {
                     <div className="items-center justify-between lg:flex">
                       <h3 className="text-2xl font-bold text-black">
                         {" "}
-                        {category !== null
-                          ? captalizedName(category)
-                          : "All Cakes"}
+                        {"" !== null ? captalizedName("") : "All Cakes"}
                       </h3>
                       <span className="text-sm text-neutral-500 lg:text-base">
                         Showing 1 - 20 of 2 results
@@ -241,8 +239,8 @@ const ShopPage = () => {
               <FilterComp
                 min={min()}
                 max={max()}
-                category={category}
-                subcategory={subcategory}
+                category={""}
+                subcategory={""}
                 setSelectedOptions={setSelectedOptions}
                 selectedOptions={selectedOptions}
               />
