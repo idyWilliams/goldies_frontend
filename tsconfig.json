@@ -27,7 +27,8 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "prettier.config.cjs",
-    "utils/helpers/cn.ts"
+    "utils/helpers/cn.ts",
+    "app/loading.tsx"
   ],
   "exclude": ["node_modules"]
 }
