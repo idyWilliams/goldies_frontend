@@ -10,6 +10,7 @@ import {
 } from "@tanstack/react-table";
 import { useEffect, useMemo, useState } from "react";
 import { CiSearch } from "react-icons/ci";
+import Pagination from "../custom-filter/Pagination";
 
 export default function ProductTable({
   columns,
@@ -24,6 +25,7 @@ export default function ProductTable({
 }) {
   const [selectedTabs, setSelectedTabs] = useState(filteredTabs[0]);
   const [chosenTab, setChosenTab] = useState(filteredTabs[0]);
+  const [currentPageIndex, setCurrentPageIndex] = useState(1);
   const [TData, setTData] = useState(Tdata);
   const data = useMemo(() => TData, [TData]);
   const [searchValue, setSearchValue] = useState("");
@@ -70,7 +72,7 @@ export default function ProductTable({
             filteredTabs.map((tabs: string, index: number) => (
               <button
                 key={index}
-                className={`w-fit rounded-sm border px-2 ${selectedTabs === tabs ? "text-goldie-300 bg-black" : "border-neutral-200 bg-white"}`}
+                className={`w-fit rounded-sm border px-2 ${selectedTabs === tabs ? "bg-black text-goldie-300" : "border-neutral-200 bg-white"}`}
                 onClick={() => {
                   setSelectedTabs(tabs);
                   setChosenTab(tabs);
@@ -103,7 +105,7 @@ export default function ProductTable({
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
-                  className="text-goldie-300 bg-black p-4 text-left capitalize"
+                  className="bg-black p-4 text-left capitalize text-goldie-300"
                 >
                   {header.isPlaceholder
                     ? null
@@ -128,6 +130,14 @@ export default function ProductTable({
           ))}
         </tbody>
       </table>
+      <Pagination
+        onPrev={undefined}
+        onNext={undefined}
+        onPaginateClick={undefined}
+        currentPageIndex={currentPageIndex}
+        itemsPerPage={0}
+        arr={TData}
+      />
     </div>
   );
 }
