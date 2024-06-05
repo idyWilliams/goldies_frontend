@@ -60,7 +60,7 @@ const Page = ({ params }: any) => {
       </div>
       <div className="wrapper relative mx-auto h-[200px] w-full py-6 md:my-[16px] md:w-[calc(100%_-_30px)]">
         <div className="absolute left-0 top-0 z-20 flex h-full w-full flex-col justify-center bg-gradient-to-r from-[#221b0fee] to-[rgba(17,17,17,0.8)] px-4 ">
-          <h1 className="text-goldie-300 text-2xl font-semibold md:text-3xl lg:text-5xl">
+          <h1 className="text-2xl font-semibold text-goldie-300 md:text-3xl lg:text-5xl">
             {category?.label}
           </h1>
           <p className="text-[#f8eeb9]">{category?.description}</p>
@@ -73,29 +73,35 @@ const Page = ({ params }: any) => {
         />
       </div>
 
-      <div className="wrapper grid gap-4 py-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="wrapper grid gap-4 py-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6 xl:px-[2%]">
         <EachElement
           of={category?.subcategories}
           render={(sub: any, index: number) => (
             <div
               key={index}
-              className=" h-[270px] w-full  gap-4 bg-neutral-100 "
+              className=" relative h-[270px] w-full bg-neutral-100 xl:h-[300px]"
             >
-              <figure className="relative h-full w-full">
-                <div className="absolute left-0 top-0 flex h-full w-full items-end justify-center bg-black bg-opacity-40 pb-5">
+              <figure className="relative z-10 mx-auto flex h-full w-11/12 items-end pb-3">
+                <div className="box-border flex h-auto w-full flex-col items-start justify-start bg-black bg-opacity-40 p-4 text-white backdrop-blur-sm">
+                  <h3 className="text-xl font-bold">{sub?.label}</h3>
+                  <p className="text-sm">
+                    A special moist sponge cake,topped with festive candles and
+                    tailored to the celebrant’s preference for birthday
+                    celebration.
+                  </p>
                   <Link
                     href={`/shop?cat=${category?.label?.toLowerCase()}&sub=${sub?.label?.toLowerCase()}`}
-                    className="inline-block border border-neutral-50 bg-white bg-opacity-40 px-4 py-3 font-semibold backdrop-blur-lg"
+                    className="mt-3 block w-full rounded-md bg-goldie-300 p-3 text-center text-neutral-900"
                   >
-                    {sub?.label}
+                    Buy now
                   </Link>
                 </div>
-                <Image
-                  src={category?.image}
-                  alt={category?.value}
-                  className="h-full w-full object-cover"
-                />
-              </figure>
+              </figure>{" "}
+              <Image
+                src={category?.image}
+                alt={category?.value}
+                className="absolute left-0 top-0 h-full w-full object-cover"
+              />
             </div>
           )}
         />
