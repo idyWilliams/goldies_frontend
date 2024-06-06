@@ -66,7 +66,7 @@ const reviews = [
   },
 ];
 
-let itemsPerPage = 9;
+let itemsPerPage = 6;
 const Testimonials = () => {
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
 
@@ -94,10 +94,12 @@ const Testimonials = () => {
   };
   return (
     <Layout>
-      <section className="bg-neutral-200">
+      <section className="bg-neutral-200 pb-10">
         <div className="relative mt-[64px] h-[200px] w-full md:h-[300px]">
           <div className="relative z-20 flex h-full w-full flex-col items-center justify-center px-4">
-            <h1 className="text-2xl font-bold text-white">Customer Reviews</h1>
+            <h1 className="text-2xl font-bold text-white md:text-3xl lg:mb-2 lg:text-5xl">
+              Customer Reviews
+            </h1>
             <p className="text-white"> Customers reviews on our products</p>
             <div className="mt-4">
               <Link href={"/"} className="text-white">
@@ -151,17 +153,17 @@ const Testimonials = () => {
               );
             },
           )}
-
-          <Pagination
-            className="bg-transparent"
-            onNext={handleNext}
-            onPrev={handlePrev}
-            onPaginateClick={handlePaginateClick}
-            itemsPerPage={itemsPerPage}
-            currentPageIndex={currentPageIndex}
-            arr={reviews}
-          />
         </div>
+
+        <Pagination
+          className="mx-auto bg-transparent"
+          onNext={handleNext}
+          onPrev={handlePrev}
+          onPaginateClick={handlePaginateClick}
+          itemsPerPage={itemsPerPage}
+          currentPageIndex={currentPageIndex}
+          arr={reviews}
+        />
       </section>
     </Layout>
   );
