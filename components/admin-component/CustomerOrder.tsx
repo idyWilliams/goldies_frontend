@@ -180,7 +180,9 @@ export default function CustomerOrder() {
         onClick={() => router.push("/admin/customers")}
       >
         <ArrowLeft />
-        <span className="font-bold uppercase">Abegunde's Order Details</span>
+        <span className="font-bold uppercase">
+          Abegunde&apos;s Order Details
+        </span>
       </div>
       <div className="hide-scrollbar w-full overflow-x-auto">
         <div className="flex w-min space-x-5 md:w-full md:gap-4 md:space-x-0 lg:grid lg:grid-cols-3 lg:gap-10">
