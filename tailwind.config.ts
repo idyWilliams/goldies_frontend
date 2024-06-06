@@ -13,6 +13,8 @@ const config: Config = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        review:
+          "linear-gradient(#d5a32b88,#e4d06433 ), url(/public/assets/reviews.png)",
       },
       colors: {
         main: "#E4D064",

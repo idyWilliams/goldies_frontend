@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useState } from "react";
 import { BsStarFill, BsStarHalf } from "react-icons/bs";
 
@@ -77,7 +78,7 @@ const Testimonials = () => {
                 onMouseLeave={() => setHoveredIndex(null)}
               >
                 <div className="flex items-center gap-3">
-                  <span className="to-goldie-300 inline-flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-[#b6a650] font-bold">
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-[#b6a650] to-goldie-300 font-bold">
                     {clientInitails(review.client)}
                   </span>
                   <div>
@@ -97,6 +98,12 @@ const Testimonials = () => {
               </blockquote>
             );
           })}
+        </div>
+
+        <div className="mt-3 flex items-center justify-center">
+          <Link className="font-semibold underline" href={"/testimonials"}>
+            SEE ALL
+          </Link>
         </div>
       </div>
     </section>
