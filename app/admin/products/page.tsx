@@ -234,7 +234,7 @@ export default function Page() {
             <p className="text-xs">List of all available products created</p>
           </div>
           <button
-            className="text-goldie-300 flex cursor-pointer items-center rounded-md bg-black px-5 py-2 text-[10px]"
+            className="flex cursor-pointer items-center gap-2 rounded-md bg-black px-5 py-2.5 text-sm text-goldie-300"
             onClick={handleAddNew}
           >
             <Add size={15} /> ADD NEW
@@ -258,7 +258,7 @@ export default function Page() {
           </label>
 
           <button
-            className="text-goldie-300 relative flex min-w-[83px] cursor-pointer items-center justify-between rounded-md bg-black px-3 py-2 text-[10px] md:hidden"
+            className="relative flex min-w-[83px] cursor-pointer items-center justify-between rounded-md bg-black px-3 py-2 text-[10px] text-goldie-300 md:hidden"
             onClick={() => setOpen((prev) => !prev)}
           >
             Sort by {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
