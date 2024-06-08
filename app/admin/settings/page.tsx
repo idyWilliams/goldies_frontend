@@ -5,6 +5,10 @@ import ProfileInfo from "@/components/admin-component/ProfileInfo";
 import { ArrowLeft, Lock1, Profile } from "iconsax-react";
 import React, { useState } from "react";
 import { twMerge } from "tailwind-merge";
+import Info from "../../../public/assets/rafiki.svg";
+import Reset from "../../../public/assets/reset-password.svg";
+import Image from "next/image";
+import { cn } from "@/helper/cn";
 
 const tabs = [
   {
@@ -47,23 +51,23 @@ export default function Page() {
             <Accordion arr={items} />
           </div>
           {/* desktop */}
-          <div className="hidden w-full bg-white px-8 py-5 lg:block">
-            <div className="flex gap-4">
-              {tabs.map((tab: any, index: number) => (
-                <div
-                  key={index}
-                  className={twMerge(
-                    "mb-3 inline-flex cursor-pointer items-center gap-2 bg-neutral-100 px-3 py-2 text-black duration-300",
-                    selectedTab === index && "text-goldie-300 bg-black",
-                  )}
-                  onClick={() => setSelectedTab(index)}
-                >
-                  {tab.icon}
-                  <h1 className="text-[14px] capitalize">{tab.label}</h1>
-                </div>
-              ))}
-            </div>
+          <div className="hidden w-full bg-white px-8 py-5 lg:grid lg:grid-cols-[400px_1fr]">
             <div className="w-[400px] overflow-hidden bg-white ">
+              <div className="grid grid-cols-2">
+                {tabs.map((tab: any, index: number) => (
+                  <div
+                    key={index}
+                    className={twMerge(
+                      "mb-3 inline-flex cursor-pointer items-center gap-2 bg-neutral-100 px-3 py-2 text-black duration-300",
+                      selectedTab === index && "bg-black text-goldie-300",
+                    )}
+                    onClick={() => setSelectedTab(index)}
+                  >
+                    {tab.icon}
+                    <h1 className="text-[14px] capitalize">{tab.label}</h1>
+                  </div>
+                ))}
+              </div>
               <div
                 className={twMerge(
                   "flex w-[820px] translate-x-0 items-end justify-around duration-300",
@@ -73,6 +77,24 @@ export default function Page() {
                 <ProfileInfo />
                 <ChangePassword />
               </div>
+            </div>
+            <div className="relative hidden h-full w-full lg:block">
+              <Image
+                src={Info}
+                alt="illustrations"
+                className={cn(
+                  "absolute left-0 right-0 top-1/2 mx-auto w-2/3 -translate-y-1/2 opacity-0 duration-300",
+                  selectedTab === 0 && "opacity-100",
+                )}
+              />
+              <Image
+                src={Reset}
+                alt="illustrations"
+                className={cn(
+                  "absolute left-0 right-0 top-1/2 mx-auto w-1/2 -translate-y-1/2 opacity-0 duration-300",
+                  selectedTab === 1 && "opacity-100",
+                )}
+              />
             </div>
           </div>
         </div>

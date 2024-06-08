@@ -69,7 +69,7 @@ interface ITableProps {
 }
 
 let itemsPerPage = 6;
-export default function CustomerOrder() {
+export default function CustomerOrder({ id }: any) {
   const router = useRouter();
   const [orders, setOrders] = useState(customerOrders);
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
@@ -100,7 +100,6 @@ export default function CustomerOrder() {
     columnHelper.accessor((row) => row, {
       id: "OrderId",
       cell: (info) => {
-        console.log(info, "column");
         return (
           <div className="grid grid-cols-[50px_1fr] items-center gap-2 text-sm">
             <h3 className="">{info.cell.row.original.OrderId}</h3>
@@ -177,12 +176,10 @@ export default function CustomerOrder() {
     <section className="bg-neutral-100 p-4">
       <div
         className="mb-5 inline-flex items-center gap-2"
-        onClick={() => router.push("/admin/customers")}
+        onClick={() => router.push(`/admin/customers/${id}`)}
       >
         <ArrowLeft />
-        <span className="font-bold uppercase">
-          Abegunde&apos;s Order Details
-        </span>
+        <span className="font-bold uppercase">John&apos;s Order</span>
       </div>
       <div className="hide-scrollbar w-full overflow-x-auto">
         <div className="flex w-min space-x-5 md:w-full md:gap-4 md:space-x-0 lg:grid lg:grid-cols-3 lg:gap-10">
@@ -203,7 +200,7 @@ export default function CustomerOrder() {
           />
         </div>
       </div>
-      <hr className="my-6 border-0 border-t-2 border-neutral-500" />
+      <hr className="my-6 border-0 border-t-2 border-neutral-300" />
       <label htmlFor="search" className="relative mb-4 block w-full md:hidden">
         <input
           //   value={searchValue}
@@ -234,16 +231,20 @@ export default function CustomerOrder() {
                       alt={item?.productName}
                       width={50}
                       height={50}
+                      className="h-full w-full object-cover"
                     />
                     <div>
-                      <h3 className="font-bold">
-                        {item?.productName} ({item?.quantity})
-                      </h3>
-                      <span>&euro;{item?.amount}</span>
+                      <h3 className="font-bold">{item?.productName}</h3>
+                      <span className="text-sm font-semibold">
+                        &euro;{item?.amount}
+                      </span>
                     </div>
                   </div>
-                  <div className="font-semibold capitalize text-green-600">
-                    {statusColor(item?.status)}
+                  <div className="flex flex-col items-end">
+                    <span className="font-semibold capitalize text-green-600">
+                      {statusColor(item?.status)}
+                    </span>
+                    <span>X{item?.quantity}</span>
                   </div>
                 </div>
               </div>

@@ -433,7 +433,7 @@ export const customerOrders = [
     amount: 250,
     shipping: 5.5,
     total: 225.5,
-    image: "https://via.placeholder.com/150?text=Red+Velvet+Cake",
+    image: RedVelvet,
   },
   {
     productName: "Chocolate Cake",
@@ -444,7 +444,7 @@ export const customerOrders = [
     amount: 150,
     shipping: 5.5,
     total: 225.5,
-    image: "https://via.placeholder.com/150?text=Chocolate+Cake",
+    image: Chocolate,
   },
   {
     productName: "Vanilla Cake",
@@ -455,10 +455,10 @@ export const customerOrders = [
     amount: 300,
     shipping: 5.5,
     total: 225.5,
-    image: "https://via.placeholder.com/150?text=Vanilla+Cake",
+    image: Vanilla,
   },
   {
-    productName: "Black Forest Cake",
+    productName: "Banana Cake",
     OrderId: "#SK2543",
     orderDate: "2024/02/09",
     quantity: 2,
@@ -466,7 +466,7 @@ export const customerOrders = [
     amount: 270,
     shipping: 5.5,
     total: 225.5,
-    image: "https://via.placeholder.com/150?text=Black+Forest+Cake",
+    image: Banana,
   },
   {
     productName: "Lemon Cake",
@@ -477,7 +477,7 @@ export const customerOrders = [
     amount: 100,
     shipping: 5.5,
     total: 225.5,
-    image: "https://via.placeholder.com/150?text=Lemon+Cake",
+    image: Lemon,
   },
   {
     productName: "Strawberry Cake",
@@ -488,7 +488,7 @@ export const customerOrders = [
     amount: 400,
     shipping: 5.5,
     total: 225.5,
-    image: "https://via.placeholder.com/150?text=Strawberry+Cake",
+    image: Strawberry,
   },
   {
     productName: "Carrot Cake",
@@ -499,7 +499,7 @@ export const customerOrders = [
     amount: 220,
     shipping: 5.5,
     total: 225.5,
-    image: "https://via.placeholder.com/150?text=Carrot+Cake",
+    image: Carrot,
   },
   {
     productName: "Cheesecake",
@@ -510,7 +510,7 @@ export const customerOrders = [
     amount: 180,
     shipping: 5.5,
     total: 225.5,
-    image: "https://via.placeholder.com/150?text=Cheesecake",
+    image: Coconut,
   },
   {
     productName: "Red Velvet Cake",
@@ -521,7 +521,7 @@ export const customerOrders = [
     amount: 375,
     shipping: 5.5,
     total: 225.5,
-    image: "https://via.placeholder.com/150?text=Red+Velvet+Cake",
+    image: RedVelvet,
   },
   {
     productName: "Chocolate Cake",
@@ -532,6 +532,6 @@ export const customerOrders = [
     amount: 300,
     shipping: 5.5,
     total: 225.5,
-    image: "https://via.placeholder.com/150?text=Chocolate+Cake",
+    image: Chocolate,
   },
 ];
