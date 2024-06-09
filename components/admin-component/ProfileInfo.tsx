@@ -30,6 +30,11 @@ export default function ProfileInfo() {
     console.log(data, errors);
     reset();
   };
+  const handleCancel = () => {
+    console.log("click cancelled");
+    reset();
+  };
+
   return (
     <section className="w-full px-2 lg:w-[48%]">
       <>
@@ -90,8 +95,11 @@ export default function ProfileInfo() {
               <p className="text-red-600">{errors.phone.message}</p>
             )} */}
           </label>
-          <div className="mb-6 mt-10 flex gap-8 lg:mb-0">
-            <button className="items-center justify-center rounded-sm border border-red-500 bg-white px-3 py-2 text-sm text-red-500 lg:text-base">
+          <div className="mb-6 mt-10 grid grid-cols-2 gap-8 lg:mb-0">
+            <button
+              className="items-center justify-center rounded-sm border border-red-500 bg-white px-3 py-2 text-sm text-red-500 lg:text-base"
+              onClick={handleCancel}
+            >
               Cancel Changes
             </button>
             <button className="items-center justify-center rounded-sm bg-black px-5 py-2 text-sm text-main lg:text-base">

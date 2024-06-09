@@ -13,9 +13,10 @@ import AdminSideBar from "./AdminSideBar";
 import MobileSideBar from "./MobileSideBar";
 import MenuPopup from "../MenuPopup";
 import { BiHeart, BiStore } from "react-icons/bi";
-import { SearchNormal1, Setting2, User } from "iconsax-react";
+import { Lock1, SearchNormal1, Setting2, User } from "iconsax-react";
 import moment from "moment";
 import { CiSearch } from "react-icons/ci";
+import { useRouter } from "next/navigation";
 
 export default function AdminNav() {
   const [sticky, setSticky] = useState(false);
@@ -23,6 +24,7 @@ export default function AdminNav() {
   const [isOpen, setOpen] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
   const [currentTime, setCurrentTime] = useState(moment().format("H:mm"));
+  const router = useRouter();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -48,7 +50,7 @@ export default function AdminNav() {
         <div className="flex items-center justify-between px-4">
           <div className="flex items-center gap-3">
             <span
-              className="text-goldie-300 inline-block lg:hidden"
+              className="inline-block text-goldie-300 lg:hidden"
               onClick={() => setIsOpen(true)}
             >
               <BsList size={24} />
@@ -69,7 +71,7 @@ export default function AdminNav() {
             <div className="inline-flex items-center justify-end">
               <label
                 htmlFor="search"
-                className={`bg-goldie-300 inline-block w-min rounded-l-md duration-300 ${openSearch ? "bg-opacity-20 opacity-100" : "opacity-0"}`}
+                className={`inline-block w-min rounded-l-md bg-goldie-300 duration-300 ${openSearch ? "bg-opacity-20 opacity-100" : "opacity-0"}`}
               >
                 <input
                   type="text"
@@ -77,38 +79,38 @@ export default function AdminNav() {
                   autoComplete="off"
                   id="search"
                   placeholder="Search..."
-                  className={`${openSearch ? "w-[400px] px-4" : "w-0 px-0"} text-goldie-300 placeholder:text-goldie-300 border-none bg-transparent text-[13px] duration-300 placeholder:text-opacity-50 focus:border-0 focus:outline-none focus:ring-0`}
+                  className={`${openSearch ? "w-[400px] px-4" : "w-0 px-0"} border-none bg-transparent text-[13px] text-goldie-300 duration-300 placeholder:text-goldie-300 placeholder:text-opacity-50 focus:border-0 focus:outline-none focus:ring-0`}
                 />
               </label>
               <span
-                className={`${openSearch ? "rounded-l-none bg-opacity-20" : "rounded-l-md bg-opacity-0"} bg-goldie-300 inline-flex h-10 w-10 items-center justify-center rounded-r-md  duration-300`}
+                className={`${openSearch ? "rounded-l-none bg-opacity-20" : "rounded-l-md bg-opacity-0"} inline-flex h-10 w-10 items-center justify-center rounded-r-md bg-goldie-300  duration-300`}
                 onClick={() => setOpenSearch((prev) => !prev)}
               >
                 {openSearch ? (
-                  <BsX size={18} className="text-goldie-300 inline-block" />
+                  <BsX size={18} className="inline-block text-goldie-300" />
                 ) : (
                   <BsSearch
                     size={18}
-                    className="text-goldie-300 inline-block"
+                    className="inline-block text-goldie-300"
                   />
                 )}
               </span>
             </div>
-            <span className="text-goldie-300 relative inline-block cursor-pointer">
+            <span className="relative inline-block cursor-pointer text-goldie-300">
               <IoMdNotificationsOutline size={24} />
               <span className="absolute right-0.5 top-1 inline-block h-1.5 w-1.5 rounded-full bg-red-600 text-sm outline outline-2 outline-black"></span>
             </span>
             <div className="hidden gap-3  sm:inline-flex">
-              <span className="text-goldie-300 text-sm font-normal">
+              <span className="text-sm font-normal text-goldie-300">
                 {moment().format("ddd D MMM")}
               </span>
-              <span className="text-goldie-300 text-sm font-normal">
+              <span className="text-sm font-normal text-goldie-300">
                 {currentTime}
               </span>
             </div>
             <button
               onClick={() => setOpen((prev) => !prev)}
-              className="border-goldie-300 text-goldie-300 flex items-center gap-2 border-l border-opacity-40 pl-4"
+              className="flex items-center gap-2 border-l border-goldie-300 border-opacity-40 pl-4 text-goldie-300"
             >
               <FaRegUserCircle size={20} />{" "}
               <span className="hidden text-sm md:inline-flex md:items-center md:gap-3">
@@ -127,13 +129,21 @@ export default function AdminNav() {
                   </span>
                 </div>
                 <div className="">
-                  <span className="flex items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
+                  <span
+                    className="flex cursor-pointer items-center gap-2  whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
+                    onClick={() => router.push(`/admin/settings?tab=account`)}
+                  >
                     <User size={20} />
                     My Account
                   </span>
-                  <span className="flex items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
-                    <Setting2 size={20} />
-                    Settings
+                  <span
+                    className="flex cursor-pointer items-center gap-2  whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
+                    onClick={() =>
+                      router.push(`/admin/settings?tab=change-password`)
+                    }
+                  >
+                    <Lock1 size={20} />
+                    Change Password
                   </span>
                 </div>
                 <div className="my-2 border-b border-black border-opacity-50"></div>
@@ -151,7 +161,7 @@ export default function AdminNav() {
           className={`fixed top-0 h-screen w-full duration-300 ${open ? "left-0" : "-left-full"}`}
         >
           <span
-            className="text-goldie-300 absolute left-3 top-4 z-50 inline-block cursor-pointer"
+            className="absolute left-3 top-4 z-50 inline-block cursor-pointer text-goldie-300"
             onClick={() => setIsOpen(false)}
           >
             <BsX size={30} />
