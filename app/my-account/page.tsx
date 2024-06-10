@@ -87,7 +87,7 @@ const Page = () => {
             My Account
           </h1>
 
-          <div className="mt-5 gap-4 md:grid md:grid-cols-[30%_1fr] md:items-start md:justify-between lg:mx-auto lg:max-w-[1000px] xl:max-w-[1140px]">
+          <div className="mt-5 gap-4 tabular-nums md:grid md:grid-cols-[30%_1fr] md:items-start md:justify-between lg:mx-auto lg:max-w-[1000px] xl:max-w-[1140px]">
             <div className="mb-4 mt-5 flex h-full flex-wrap gap-2 border-b border-neutral-200 pb-4 md:my-0 md:flex-col md:bg-white md:p-4">
               <EachElement
                 of={tabs}

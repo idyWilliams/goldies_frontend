@@ -30,6 +30,7 @@ export default function RootLayout({
   useEffect(() => {
     window.Tawk_API = window.Tawk_API || {};
     window.Tawk_LoadStart = new Date();
+
     (function () {
       const s1 = document.createElement("script");
       const s0 = document.getElementsByTagName("script")[0];
