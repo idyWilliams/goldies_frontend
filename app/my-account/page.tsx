@@ -68,19 +68,21 @@ const Page = () => {
       <Layout>
         <div className="mt-[65px] lg:mt-20"></div>
         {/* BREADCRUMBS */}
-        <div className="bg-black px-4 py-3">
-          <BreadCrumbs
-            items={[
-              {
-                name: "Home",
-                link: "/",
-              },
-              {
-                name: "My Account",
-                link: "/my-account",
-              },
-            ]}
-          />
+        <div className="bg-black">
+          <div className={cn("wrapper px-4 py-3")}>
+            <BreadCrumbs
+              items={[
+                {
+                  name: "Home",
+                  link: "/",
+                },
+                {
+                  name: "My Account",
+                  link: "/my-account",
+                },
+              ]}
+            />
+          </div>
         </div>
         <section className=" px-4 py-8 md:bg-neutral-200">
           <h1 className="flex flex-col items-center justify-center gap-1 text-center text-2xl font-bold after:inline-block after:h-1 after:w-[100px] after:bg-goldie-500">

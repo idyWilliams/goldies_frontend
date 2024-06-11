@@ -125,10 +125,13 @@ const Header = () => {
                       <BiStore size={20} />
                       Orders
                     </span>
-                    <span className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
+                    <Link
+                      href={"/saved-items"}
+                      className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
+                    >
                       <BiHeart size={20} />
                       Saved Items
-                    </span>
+                    </Link>
                   </div>
                   <div className="my-2 border-b border-black border-opacity-50"></div>
                   <Link

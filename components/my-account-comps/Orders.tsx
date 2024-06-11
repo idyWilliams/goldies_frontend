@@ -1,10 +1,11 @@
 import { chunkArray } from "@/helper/chunkArray";
 import { cn } from "@/helper/cn";
+import { getOrderColor } from "@/helper/getOrderColor";
 import { More } from "iconsax-react";
 import React, { useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
 
-const recentOrders = [
+export const recentOrders = [
   {
     name: "Strawberry Sponge Cake",
     id: "B736383836hgdy73",
@@ -77,19 +78,6 @@ const recentOrders = [
   },
 ];
 
-const getStatusColor = (status: string) => {
-  switch (status.toLowerCase()) {
-    case "pending":
-      return "text-orange-500";
-    case "completed":
-      return "text-green-700";
-    case "failed":
-      return "text-red-600";
-    default:
-      return "";
-  }
-};
-
 const Orders = () => {
   const [orders] = useState(recentOrders);
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
@@ -143,7 +131,7 @@ const Orders = () => {
                     </div>
                     <div className="table-cell py-2 align-middle">
                       <span
-                        className={cn("text-sm", getStatusColor(order?.status))}
+                        className={cn("text-sm", getOrderColor(order?.status))}
                       >
                         {order?.status}
                       </span>
