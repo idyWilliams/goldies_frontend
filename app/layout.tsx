@@ -8,7 +8,7 @@ import { store } from "@/redux/store";
 import { ShoppingCartProvider } from "@/context/ShoppingCartContext";
 import { ProductProvider } from "@/context/ProductInfoContext";
 import { cn } from "@/helper/cn";
-// import tomatoGrotesk from "@/utils/font";
+import tomatoGrotesk from "@/utils/font";
 import localFont from "@next/font/local";
 
 const metadata: Metadata = {
@@ -23,47 +23,6 @@ declare global {
     Tawk_LoadStart: Date;
   }
 }
-
-const tomatoGrotesk = localFont({
-  src: [
-    {
-      path: "./fonts/tomatogrotesk-bold-webfont.woff2",
-      weight: "700",
-      style: "normal",
-      //   format: "woff2",
-    },
-    // {
-    //   path: "./fonts/tomatogrotesk-bold-webfont.woff",
-    //   weight: "700",
-    //   style: "normal",
-    //   //   format: "woff",
-    // },
-    // {
-    //   path: "./fonts/tomatogrotesk-light-webfont.woff2",
-    //   weight: "300",
-    //   style: "normal",
-    //   //   format: "woff2",
-    // },
-    // {
-    //   path: "./fonts/tomatogrotesk-light-webfont.woff",
-    //   weight: "300",
-    //   style: "normal",
-    //   //   format: "woff",
-    // },
-    // {
-    //   path: "./fonts/tomatogrotesk-regular-webfont.woff2",
-    //   weight: "normal",
-    //   style: "normal",
-    //   //   format: "woff2",
-    // },
-    // {
-    //   path: "./fonts/tomatogrotesk-regular-webfont.woff",
-    //   weight: "normal",
-    //   style: "normal",
-    //   //   format: "woff",
-    // },
-  ],
-});
 
 export default function RootLayout({
   children,
