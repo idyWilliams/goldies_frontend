@@ -32,7 +32,7 @@ export default function Page({ params }: any) {
       <section className="px-4 py-5 lg:min-h-screen lg:bg-neutral-300">
         <div className="mb-5 flex items-center justify-between border-b border-neutral-500 pb-5">
           <span
-            className="inline-flex items-center gap-2"
+            className="inline-flex cursor-pointer items-center gap-2"
             onClick={() => router.push("/admin/customers")}
           >
             <ArrowLeft />
