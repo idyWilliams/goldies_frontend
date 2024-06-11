@@ -445,3 +445,80 @@ export const cakeProducts1 = [
     bestSeller: true,
   },
 ];
+
+export const savedItems = [
+  {
+    id: 1,
+    name: "Chocolate Fudge Cake",
+    description:
+      "Rich and moist chocolate cake layered with creamy fudge frosting.",
+    minPrice: 220.99,
+    maxPrice: 215.99,
+    imageUrl: Chocolate,
+    ingredients: ["Chocolate", "Flour", "Sugar", "Eggs", "Butter"],
+    allergens: ["Gluten", "Dairy", "Eggs"],
+    weight: "1.5kg",
+    available: true,
+    bestSeller: true,
+    category: "Milestone Cakes",
+    subcategory: "Birthday Cakes",
+  },
+
+  {
+    id: 7,
+    name: "Lemon Drizzle Cake",
+    description:
+      "Zesty lemon cake drizzled with tangy lemon syrup and topped with lemon zest.",
+    minPrice: 190.99,
+    maxPrice: 203.99,
+    imageUrl: LemonCake,
+    ingredients: ["Flour", "Sugar", "Butter", "Eggs", "Lemons"],
+    allergens: ["Gluten", "Dairy", "Eggs"],
+    weight: "1.2kg",
+    available: true,
+    bestSeller: false,
+  },
+  {
+    id: 6,
+    name: "Carrot Cake",
+    description:
+      "Moist carrot cake with a hint of cinnamon, topped with cream cheese frosting and walnuts.",
+    minPrice: 214.99,
+    maxPrice: 290.99,
+    imageUrl: carrot,
+    ingredients: [
+      "Flour",
+      "Sugar",
+      "Butter",
+      "Eggs",
+      "Carrots",
+      "Cinnamon",
+      "Walnuts",
+    ],
+    allergens: ["Gluten", "Dairy", "Eggs", "Nuts"],
+    weight: "1.8kg",
+    available: true,
+    bestSeller: false,
+  },
+  {
+    id: 5,
+    name: "Coconut Cream Cake",
+    description:
+      "Decadent coconut cake with layers of creamy coconut filling and topped with shredded coconut.",
+    minPrice: 213.99,
+    maxPrice: 270.99,
+    imageUrl: coconut,
+    ingredients: [
+      "Flour",
+      "Sugar",
+      "Butter",
+      "Eggs",
+      "Coconut Milk",
+      "Shredded Coconut",
+    ],
+    allergens: ["Gluten", "Dairy", "Eggs"],
+    weight: "1.5kg",
+    available: false,
+    bestSeller: false,
+  },
+];
