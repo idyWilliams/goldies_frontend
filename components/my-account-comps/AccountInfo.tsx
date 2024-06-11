@@ -45,7 +45,7 @@ const AccountInfo = () => {
     setValue("state", "Lagos");
     setValue("country", "Nigeria");
     setPhone("+2348089134442");
-  }, []);
+  }, [setValue]);
 
   const handleSave = (data: any) => {
     console.log(data);

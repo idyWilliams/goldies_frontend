@@ -7,7 +7,7 @@ import { chunkArray } from "@/helper/chunkArray";
 import { cakeProducts1, savedItems } from "@/utils/cakeData";
 import React, { useState } from "react";
 
-const page = () => {
+const Page = () => {
   let itemsPerPage = 6;
   const [cakes, setCakes] = useState<any[]>(addSlugToCakes(savedItems));
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
@@ -65,4 +65,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
