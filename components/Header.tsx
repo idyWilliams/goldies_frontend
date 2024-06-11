@@ -114,18 +114,24 @@ const Header = () => {
               {isOpen && (
                 <MenuPopup className="absolute right-0 top-16 z-20 w-[190px] rounded-md bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
                   <div className="">
-                    <span className="flex items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
+                    <Link
+                      href={"/my-account"}
+                      className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
+                    >
                       <FaRegUserCircle size={20} />
                       My Account
-                    </span>
-                    <span className="flex items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
+                    </Link>
+                    <span className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
                       <BiStore size={20} />
                       Orders
                     </span>
-                    <span className="flex items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
+                    <Link
+                      href={"/saved-items"}
+                      className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
+                    >
                       <BiHeart size={20} />
                       Saved Items
-                    </span>
+                    </Link>
                   </div>
                   <div className="my-2 border-b border-black border-opacity-50"></div>
                   <Link
