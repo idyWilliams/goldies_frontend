@@ -1,20 +1,21 @@
 import { cn } from "@/helper/cn";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { useEffect, useState } from "react";
+import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
 
 const schema = yup.object().shape({
   firstname: yup.string().required("First name is required"),
   lastname: yup.string().required("Last name is required"),
   email: yup.string().required("Email is required").email("Email is invalid"),
-  // phone: yup
-  //   .string()
-  //   .required("Valid Phone Number is required")
-  //   .min(6, "Valid Phone Number must be at least 6 characters")
-  //   .max(15, "Valid Phone Number must not exceed 12 characters"),
+  phone: yup
+    .string()
+    .required("Valid Phone Number is required")
+    .min(6, "Valid Phone Number must be at least 6 characters")
+    .max(15, "Valid Phone Number must not exceed 12 characters"),
   address: yup.string().required("Shipping address is required"),
   state: yup.string().required("Shipping address is required"),
   country: yup.string().required("Shipping address is required"),
@@ -22,9 +23,12 @@ const schema = yup.object().shape({
 
 const AccountInfo = () => {
   const [phone, setPhone] = useState("");
+  const [country, setCountry] = useState("");
+  const [state, setState] = useState("");
   const {
     reset,
     register,
+    control,
     setValue,
     handleSubmit,
     formState: { errors },
@@ -45,6 +49,7 @@ const AccountInfo = () => {
 
   const handleSave = (data: any) => {
     console.log(data);
+    reset();
   };
 
   return (
@@ -110,46 +115,40 @@ const AccountInfo = () => {
             <span className="mb-1 inline-block text-sm font-medium">
               Phone number
             </span>
-            <PhoneInput
-              country={"ng"}
-              value={phone}
-              // {...register("phone")}
-              onChange={(phoneNumber) => setPhone(phoneNumber)}
-              inputStyle={{ fontFamily: `"Space Grotesk", sans-serif` }}
-              inputProps={{
-                name: "phone",
-                id: "phone",
-                className:
-                  "pl-12 w-full rounded-sm z-50 border-none text-sm text-neutral-700 bg-gray-100 focus:border focus:border-black focus:ring-black",
-              }}
-              defaultErrorMessage="Phone number is required"
-              dropdownClass={"relative z-50"}
-            />
-          </label>
-          <label htmlFor="state" className="block w-full">
-            <span className="mb-1 inline-block text-sm font-medium">State</span>
-            <input
-              {...register("state")}
-              type="state"
-              id="state"
-              className={cn(
-                "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
-                errors.state && "border-red-600 focus:border-red-600",
+            <Controller
+              name="phone"
+              control={control}
+              rules={{ required: true }}
+              render={({ field }) => (
+                <PhoneInput
+                  {...field}
+                  country={"ng"}
+                  value={field.value || phone}
+                  onChange={(phoneNumber) => {
+                    field.onChange(phoneNumber);
+                    setPhone(phoneNumber);
+                  }}
+                  inputStyle={{ fontFamily: `"Space Grotesk", sans-serif` }}
+                  inputProps={{
+                    name: "phone",
+                    id: "phone",
+                    className:
+                      "pl-12 w-full rounded-sm z-50 border-none text-sm text-neutral-700 bg-gray-100 focus:border focus:border-black focus:ring-black",
+                  }}
+                  defaultErrorMessage="Phone number is required"
+                  dropdownClass={"relative z-50"}
+                />
               )}
             />
-            {errors?.state && (
-              <p className="text-red-600">{errors?.state?.message}</p>
-            )}
           </label>
           <label htmlFor="country" className="block w-full">
             <span className="mb-1 inline-block text-sm font-medium">
               Country
             </span>
-            <input
-              {...register("country")}
-              type="text"
-              id="country"
-              className={cn(
+            <CountryDropdown
+              value={country}
+              onChange={setCountry}
+              classes={cn(
                 "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
                 errors.country && "border-red-600 focus:border-red-600",
               )}
@@ -157,7 +156,34 @@ const AccountInfo = () => {
             {errors?.country && (
               <p className="text-red-600">{errors?.country?.message}</p>
             )}
-          </label>{" "}
+          </label>
+          <label htmlFor="state" className="block w-full">
+            <span className="mb-1 inline-block text-sm font-medium">State</span>
+            <Controller
+              name="state"
+              control={control}
+              rules={{ required: true }}
+              render={({ field: { onChange, value } }) => (
+                <RegionDropdown
+                  disableWhenEmpty={true}
+                  country={country}
+                  value={value || state}
+                  onChange={(region) => {
+                    onChange(region);
+                    setState(region);
+                  }}
+                  classes={cn(
+                    "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
+                    errors.state && "border-red-600 focus:border-red-600",
+                  )}
+                />
+              )}
+            />
+
+            {errors?.state && (
+              <p className="text-red-600">{errors?.state?.message}</p>
+            )}
+          </label>
           <label htmlFor="address" className="block w-full md:col-span-2">
             <span className="mb-1 inline-block text-sm font-medium">
               Shipping address
