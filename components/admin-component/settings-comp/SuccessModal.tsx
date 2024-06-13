@@ -14,7 +14,7 @@ export default function SuccessModal({
   return (
     <div
       className={cn(
-        "pointer-events-none fixed left-0 top-0 flex h-full w-full items-center justify-center bg-black bg-opacity-50 opacity-0 duration-300",
+        "pointer-events-none fixed left-0 top-0 flex h-full w-full items-center justify-center bg-black bg-opacity-50 p-4 opacity-0 duration-300",
         showModal && "pointer-events-auto opacity-100",
       )}
     >
