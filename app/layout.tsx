@@ -7,6 +7,9 @@ import { Provider } from "react-redux";
 import { store } from "@/redux/store";
 import { ShoppingCartProvider } from "@/context/ShoppingCartContext";
 import { ProductProvider } from "@/context/ProductInfoContext";
+import { cn } from "@/helper/cn";
+import tomatoGrotesk from "@/utils/font";
+import localFont from "@next/font/local";
 
 const metadata: Metadata = {
   title: "Goldies Confectioneries | Buy Delicious Cakes Online",
@@ -30,6 +33,7 @@ export default function RootLayout({
   useEffect(() => {
     window.Tawk_API = window.Tawk_API || {};
     window.Tawk_LoadStart = new Date();
+
     (function () {
       const s1 = document.createElement("script");
       const s0 = document.getElementsByTagName("script")[0];
@@ -55,7 +59,9 @@ export default function RootLayout({
       <ShoppingCartProvider>
         <Provider store={store}>
           <ProductProvider>
-            <body className="overflow-x-hidden">{children}</body>
+            <body className={cn("overflow-x-hidden", tomatoGrotesk.className)}>
+              {children}
+            </body>
           </ProductProvider>
         </Provider>
       </ShoppingCartProvider>
