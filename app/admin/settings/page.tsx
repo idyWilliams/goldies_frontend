@@ -1,7 +1,7 @@
 "use client";
 import Accordion from "@/components/Accordion";
-import ChangePassword from "@/components/admin-component/ChangePassword";
-import ProfileInfo from "@/components/admin-component/ProfileInfo";
+import ChangePassword from "@/components/admin-component/settings-comp/ChangePassword";
+import ProfileInfo from "@/components/admin-component/settings-comp/ProfileInfo";
 import { ArrowLeft, Lock1, Profile } from "iconsax-react";
 import React, { useState } from "react";
 import { twMerge } from "tailwind-merge";
@@ -9,6 +9,7 @@ import Info from "../../../public/assets/rafiki.svg";
 import Reset from "../../../public/assets/reset-password.svg";
 import Image from "next/image";
 import { cn } from "@/helper/cn";
+import SuccessModal from "@/components/admin-component/settings-comp/SuccessModal";
 
 const tabs = [
   {
@@ -20,18 +21,23 @@ const tabs = [
     icon: <Lock1 />,
   },
 ];
-const items = [
-  {
-    title: "Profile Information",
-    content: <ProfileInfo />,
-  },
-  {
-    title: "Change Password",
-    content: <ChangePassword />,
-  },
-];
+
 export default function Page() {
   const [selectedTab, setSelectedTab] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+
+  const items = [
+    {
+      title: "Profile Information",
+      content: <ProfileInfo />,
+    },
+    {
+      title: "Change Password",
+      content: (
+        <ChangePassword showModal={showModal} setShowModal={setShowModal} />
+      ),
+    },
+  ];
   return (
     <section>
       <div className="min-h-screen px-4 py-5 lg:bg-neutral-300 lg:px-8">
@@ -75,7 +81,10 @@ export default function Page() {
                 )}
               >
                 <ProfileInfo />
-                <ChangePassword />
+                <ChangePassword
+                  showModal={showModal}
+                  setShowModal={setShowModal}
+                />
               </div>
             </div>
             <div className="relative hidden h-full w-full lg:block">
@@ -99,6 +108,7 @@ export default function Page() {
           </div>
         </div>
       </div>
+      <SuccessModal showModal={showModal} setShowModal={setShowModal} />
     </section>
   );
 }

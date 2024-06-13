@@ -17,6 +17,8 @@ import { Lock1, SearchNormal1, Setting2, User } from "iconsax-react";
 import moment from "moment";
 import { CiSearch } from "react-icons/ci";
 import { useRouter } from "next/navigation";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function AdminNav() {
   const [sticky, setSticky] = useState(false);
@@ -44,6 +46,7 @@ export default function AdminNav() {
   }, []);
   return (
     <>
+      <ToastContainer />
       <nav
         className={`${sticky ? "shadow-[0_0_50px_rgba(0,0,0,0.5)] lg:fixed" : "lg:absolute"} sticky left-0 top-0  z-[999] w-full bg-black py-3`}
       >

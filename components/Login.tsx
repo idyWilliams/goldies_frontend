@@ -100,7 +100,11 @@ export default function Login() {
               onChange={(isValid) => {}}
             />
           )}
-          <p className="mt-2 text-right text-sm">Forgot password?</p>
+          <div className="mt-2 flex justify-end">
+            <Link href={"/forgot-password"} className="text-sm">
+              Forgot password?
+            </Link>
+          </div>
           <button
             type="submit"
             className="mt-6 w-full rounded-sm bg-black px-11 py-2 text-[#9C8222]"
