@@ -67,7 +67,7 @@ export default function ProductCard({ data }: { data: any }) {
           onClick={handleAddToCart}
           className="inline-flex flex-grow items-center justify-center gap-2 rounded-md border border-neutral-900 bg-neutral-900 px-0 py-2.5 text-goldie-300"
         >
-          <span className="border-r border-goldie-300 border-opacity-40 pr-2">
+          <span className="">
             <ShoppingCart size={20} />
           </span>{" "}
           Add to cart
