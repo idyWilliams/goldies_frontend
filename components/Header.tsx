@@ -18,6 +18,8 @@ import { BiHeart, BiStore } from "react-icons/bi";
 import { FaRegUserCircle } from "react-icons/fa";
 import { Menu } from "iconsax-react";
 import MenuPopup from "./MenuPopup";
+import { useDispatch } from "react-redux";
+import { setProducts } from "@/redux/features/product/productSlice";
 
 const Header = () => {
   const [show, setShow] = useState(false);
@@ -25,6 +27,7 @@ const Header = () => {
   const pathname = usePathname();
   const router = useRouter();
   const cart = useSelector((state: RootState) => state.product.cart);
+  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -40,6 +43,20 @@ const Header = () => {
     setShow((show: boolean) => !show);
     setIsOpen(false);
   };
+
+  // STORE CART ITEMS TO LOCALSTORAGE
+  useEffect(() => {
+    if (Object.values(cart).length >= 1) {
+      localStorage.setItem("cart", JSON.stringify(cart));
+    }
+  }, [cart]);
+
+  // RETRIEVE CART ITEMS FROM LOCALSTORAGE ON INITIAL RENDER
+  useEffect(() => {
+    if (localStorage.getItem("cart") !== null) {
+      dispatch(setProducts(JSON.parse(localStorage.getItem("cart") as string)));
+    }
+  }, []);
 
   return (
     <>
