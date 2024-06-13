@@ -32,3 +32,8 @@ span {
 .tawk-icon-right {
   @apply hidden;
 }
+
+/* TOASTITY */
+.Toastify__progress-bar--info {
+  @apply bg-goldie-500;
+}

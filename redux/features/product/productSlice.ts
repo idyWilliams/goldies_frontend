@@ -32,9 +32,17 @@ export const productSlice = createSlice({
     setProducts: (state, action: PayloadAction<ICake | ICake[]>) => {
       if (Array.isArray(action.payload)) {
         state.productList = [...state.productList, ...action.payload];
+        console.log(state, "state");
       } else {
         state.productList.push(action.payload);
       }
+
+      // Update cart items based on new product list
+      state.cart = Object.fromEntries(
+        Object.entries(state.cart).filter(([id, product]) =>
+          state.productList.some((p) => p.id === product.id),
+        ),
+      );
     },
     // Reducer to add products to cart
     addProductToCart: (
@@ -47,7 +55,9 @@ export const productSlice = createSlice({
       if (product && !state.cart[action.payload.id]) {
         product.quantity = 1;
         state.cart[action.payload.id] = product;
-        toast(`${product.name} added to cart`);
+        toast.success(`${product?.name} added to cart`);
+      } else {
+        toast.info(`${product?.name} already in cart`);
       }
     },
     // Reducer to add products to favs
@@ -71,7 +81,7 @@ export const productSlice = createSlice({
       );
       if (product) {
         delete state.cart[action.payload.id];
-        toast(`${product.name} is removed from cart`);
+        toast.success(`${product.name} is removed from cart`);
       }
     },
     // Reducer to increment product qty in cart
