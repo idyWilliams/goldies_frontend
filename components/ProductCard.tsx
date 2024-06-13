@@ -2,20 +2,27 @@ import Image from "next/image";
 import StarRating from "./StarRating";
 import { Heart, ShoppingCart } from "iconsax-react";
 import Img from "../public/assets/banana-cake-with-cinnamon-cream-102945-1.jpeg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { addProductToCart } from "@/redux/features/product/productSlice";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 export default function ProductCard({ data }: { data: any }) {
   const [fav, setFav] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
+  const cart = useSelector((state: RootState) => state.product.cart);
 
   const handleAddToCart = () => {
+    const items = Object.values(cart);
+
     dispatch(addProductToCart({ id: data.id }));
-    console.log(data.id);
+
+    localStorage.getItem("cart");
+    console.log(data.id, cart);
     // setShapes(null)
   };
 
