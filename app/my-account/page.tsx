@@ -32,10 +32,10 @@ const tabs = [
     label: "My Addresses",
     icon: <Book />,
   },
-  {
-    label: "Change Password",
-    icon: <Lock1 />,
-  },
+  // {
+  //   label: "Change Password",
+  //   icon: <Lock1 />,
+  // },
 ];
 
 function switchTabs(index: any) {
@@ -48,8 +48,8 @@ function switchTabs(index: any) {
       return <SavedItems />;
     case 3:
       return <MyAddresses />;
-    case 4:
-      return <ChangePassword />;
+    // case 4:
+    //   return <ChangePassword />;
     default:
       break;
   }

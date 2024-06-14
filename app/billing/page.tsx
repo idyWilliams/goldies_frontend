@@ -74,8 +74,8 @@ const Page = () => {
             />
           </div>
         </div>
-        <section className="wrapper bg-neutral-100 px-4 py-6">
-          <div className="grid-cols-2 gap-4 md:grid lg:grid-cols-[1fr_400px] lg:gap-8">
+        <section className="bg-neutral-100 px-4 py-6">
+          <div className="grid-cols-2 gap-4 md:grid lg:mx-auto lg:max-w-5xl lg:grid-cols-[1fr_400px] lg:gap-8 xl:max-w-6xl">
             <div>
               <div className="mb-4">
                 <h2 className="text-xl font-semibold">Billing Details</h2>
@@ -368,7 +368,7 @@ const Page = () => {
                         }}
                       />
 
-                      <label
+                      {/* <label
                         htmlFor="save"
                         className="inline-flex items-center gap-2"
                       >
@@ -379,13 +379,13 @@ const Page = () => {
                           className="form-checkbox"
                         />
                         <span>Save this information</span>
-                      </label>
+                      </label> */}
                     </div>
                   </div>
                 </div>
               </form>
             </div>
-            <div className="mt-3">
+            <div className="mt-3 md:mt-0">
               <h3 className="mb-3 hidden text-xl font-semibold md:block">
                 Order Summary
               </h3>
