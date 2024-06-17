@@ -101,7 +101,7 @@ const Header = () => {
               Bespoke Cake Order
             </Link>
             <Link href="/testimonials">Testimonials</Link>
-            <Link href="/#contact">Contact</Link>
+            <Link href="/contact">Contact</Link>
           </div>
 
           <div className="flex items-center gap-3">

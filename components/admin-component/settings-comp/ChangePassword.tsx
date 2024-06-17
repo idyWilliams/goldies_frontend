@@ -53,6 +53,8 @@ export default function ChangePassword({
     setShowModal(true);
     console.log(data, errors);
     reset();
+    setPassword("");
+    setPasswordAgain("");
   };
   const handleCancel = () => {
     setPassword("");
