@@ -37,3 +37,8 @@ span {
 .Toastify__progress-bar--info {
   @apply bg-goldie-500;
 }
+
+.custom.react-toggle:active:not(.react-toggle--disabled) .react-toggle-thumb,
+.custom.react-toggle--focus .react-toggle-thumb {
+  @apply shadow-none;
+}
