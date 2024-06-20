@@ -90,7 +90,7 @@ const Page = ({ params }: any) => {
                     celebration.
                   </p>
                   <Link
-                    href={`/shop?cat=${category?.label?.toLowerCase()}&sub=${sub?.label?.toLowerCase()}`}
+                    href={`/shop?cat=${encodeURIComponent(category?.label?.toLowerCase())}&sub=${encodeURIComponent(sub?.label?.toLowerCase())}`}
                     className="mt-3 block w-full rounded-md bg-goldie-300 p-3 text-center text-neutral-900"
                   >
                     Buy now
