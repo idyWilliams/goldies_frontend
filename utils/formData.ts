@@ -93,17 +93,17 @@ export const newCategory = [
 ];
 
 export const newSubcategory = [
-  {
-    label: "Parent Category",
-    name: "parentCategory",
-    place_holder: "Enter parent category",
-    error_message: "Parent category is required",
-    type: "text",
-    required: true,
-  },
+  // {
+  //   label: "Parent Category",
+  //   name: "parentCategory",
+  //   place_holder: "Enter parent category",
+  //   error_message: "Parent category is required",
+  //   type: "text",
+  //   required: true,
+  // },
   {
     label: "Subategory Name",
-    name: "subcategoryName",
+    name: "subCategoryName",
     place_holder: "Enter subcategory name",
     error_message: "Subategory name is required",
     type: "text",

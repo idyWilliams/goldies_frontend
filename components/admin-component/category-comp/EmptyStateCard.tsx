@@ -9,6 +9,8 @@ type EmptyStateCardProps = {
   handleClick: any;
   title: string;
   titleClassName?: string;
+  isDisabled?: boolean;
+  buttonElement?: React.ReactNode;
 };
 
 const EmptyStateCard = ({
@@ -18,6 +20,8 @@ const EmptyStateCard = ({
   buttonText,
   title,
   titleClassName,
+  isDisabled,
+  buttonElement,
 }: EmptyStateCardProps) => {
   return (
     <div
@@ -34,15 +38,20 @@ const EmptyStateCard = ({
         </span>
 
         <h2 className={cn("font-medium", titleClassName)}>{title}</h2>
-        <button
-          onClick={handleClick}
-          className={cn(
-            "mt-3 inline-block cursor-pointer bg-goldie-300 px-4 py-2 text-neutral-900",
-            buttonClassName,
-          )}
-        >
-          {buttonText}
-        </button>
+        {buttonElement ? (
+          buttonElement
+        ) : (
+          <button
+            disabled={isDisabled}
+            onClick={handleClick}
+            className={cn(
+              "mt-3 inline-block cursor-pointer bg-goldie-300 px-4 py-2 text-neutral-900",
+              buttonClassName,
+            )}
+          >
+            {buttonText}
+          </button>
+        )}
       </div>
     </div>
   );

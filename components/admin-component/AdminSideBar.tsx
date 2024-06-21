@@ -58,7 +58,7 @@ export default function AdminSideBar() {
           </Link>
           <Link
             href={"/admin/manage-categories"}
-            className={`flex items-center gap-2 whitespace-nowrap text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/create-products") ? "text-goldie-300" : "text-neutral-500"}`}
+            className={`flex items-center gap-2 whitespace-nowrap text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/manage-categories") ? "text-goldie-300" : "text-neutral-500"}`}
           >
             <Category2 size="20" />
             Manage Categories

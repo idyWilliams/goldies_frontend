@@ -1,44 +1,283 @@
 "use client";
+import ProductTable from "@/components/admin-component/ProductTable";
 import CreateSubategory from "@/components/admin-component/category-comp/CreateSubcategory";
 import EmptyStateCard from "@/components/admin-component/category-comp/EmptyStateCard";
 import EachElement from "@/helper/EachElement";
 import { cn } from "@/helper/cn";
 import { newCategory, newSubcategory } from "@/utils/formData";
-import { ArrowLeft, GalleryImport } from "iconsax-react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { createColumnHelper } from "@tanstack/react-table";
+import { ArrowLeft, Edit, GalleryImport, Trash } from "iconsax-react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { BsX } from "react-icons/bs";
 import Toggle from "react-toggle";
 import "react-toggle/style.css";
+import * as yup from "yup";
+import cs from "../../../../public/assets/AT0213_coconut-cream-cake_s4x3.webp";
+import StatusBar from "@/components/admin-component/category-comp/StatusBar";
+import {
+  CategoryPageProps,
+  CategoryProps,
+  SubategoriesColumns,
+} from "@/utils/categoryTypes";
 
-type CategoryProps = {
-  params: any;
-};
+const schema = yup.object().shape({
+  categoryName: yup.string().required("Subcategory name is required"),
+  categorySlug: yup.string().required("Subcategory slug is required"),
+  description: yup.string().required("Subcategory description is required"),
+});
 
-type SubategoryProps = {
-  category: string;
-  subcategoryName: string;
-  description: string;
-  status: "active" | "inactive";
-  image: any | File;
-};
+const columnHelper = createColumnHelper<SubategoriesColumns>();
+const columns = [
+  // columnHelper.accessor((row) => row, {
+  //   id: "customerName",
+  //   cell: (info) => {
+  //     console.log(info, "column");
+  //     return (
+  //       <div className="grid grid-cols-[50px_1fr] items-center gap-2">
+  //         <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-500">
+  //           <span className="text-white">JD</span>
+  //         </div>
+  //         <h3 className="font-bold">{info.cell.row.original.customerName}</h3>
+  //       </div>
+  //     );
+  //   },
+  //   header: () => <span>Customers</span>,
+  //   footer: (info) => info.column.id,
+  // }),
+  columnHelper.accessor((row) => row, {
+    id: "SubImage",
+    cell: (info) => {
+      console.log(info, "column");
+      return (
+        <div className="">
+          <Image
+            src={cs}
+            // src={info.cell.row.original.image}
+            alt={info.cell.row.original.subCategoryName}
+            width={150}
+            height={150}
+          />
+        </div>
+      );
+    },
+    header: () => <span> </span>,
+  }),
+  columnHelper.accessor("subCategoryName", {
+    header: () => <span>Subcategory</span>,
 
-const Page = ({ params }: CategoryProps) => {
-  const [subcategories, setSubcategories] = useState<any[]>([]);
+    footer: (info) => info.column.id,
+  }),
+  columnHelper.accessor("description", {
+    header: () => <span>Description</span>,
+    footer: (info) => info.column.id,
+  }),
+  columnHelper.accessor("status", {
+    header: () => <span>Status</span>,
+    footer: (info) => info.column.id,
+  }),
+  // columnHelper.accessor((row) => row.subcategory, {
+  //   id: "contactNumber",
+  //   cell: (info) => <span>+{info.getValue()}</span>,
+  //   header: () => <span>Contact Number </span>,
+  //   footer: (info) => info.column.id,
+  // }),
+
+  // columnHelper.accessor((row) => row, {
+  //   id: "action",
+  //   cell: (info) => (
+  //     <span
+  //       className="cursor-pointer text-blue-400"
+  //       // onClick={() => handleView(info.cell.row.original.id)}
+  //     >
+  //       View More
+  //     </span>
+  //   ),
+  //   header: () => <span>Actions</span>,
+  //   footer: (info) => info.column.id,
+  // }),
+];
+
+const Page = ({ params }: CategoryPageProps) => {
+  const [dragging, setDragging] = useState<boolean>(false);
+  const [image, setImage] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState<string>("");
+  const [showModal, setShowModal] = useState(false);
+  const [action, setAction] = useState("");
+  const [selected, setSelected] = useState<any>({
+    category: "Milestone Cakes",
+    categorySlug: "milestone-cakes",
+    description:
+      "Milestone cakes commemorate significant life events and achievements.",
+    image: cs,
+    status: "active",
+    subcategories: [
+      "Birthday Cakes",
+      "Anniversary Cakes",
+      "Graduation Cakes",
+      "Baby Shower Cakes",
+      "Retirement Cakes",
+    ],
+  });
+  const [category, setCategory] = useState<CategoryProps>({
+    categoryName: "",
+    categorySlug: "",
+    description: "",
+  });
+  const [subcategories, setSubcategories] = useState<any[]>([
+    // {
+    //   parentCategory: "dh2dh2",
+    //   subCategoryName: "Anniversary Cakes",
+    //   description: "j2djd",
+    //   status: "active",
+    //   image: cs,
+    // },
+    // {
+    //   parentCategory: "dh2dh2",
+    //   subCategoryName: "Baby Shower Cakes",
+    //   description: "j2djd",
+    //   status: "inactive",
+    //   image: cs,
+    // },
+  ]);
   const [showSub, setShowSub] = useState(false);
   const [cateStatus, setCateStatus] = useState(true);
   const pathname = usePathname();
   const isNewCreate = pathname.endsWith("/create");
   const router = useRouter();
-  const { control } = useForm();
+  const {
+    control,
+    handleSubmit,
+    register,
+    setValue,
+    reset,
+    formState: { errors },
+  } = useForm<any>({ resolver: yupResolver(schema) });
+
+  const onSubmit = (data: any) => {
+    console.log(data);
+    reset();
+  };
 
   const handleAddSubcategory = () => {
     setShowSub(true);
   };
 
-  console.log(cateStatus, "status");
+  // FILE UPLOAD FUNCTIONS
+  const handleDragEnter = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragging(true);
+  };
+
+  const handleDragLeave = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragging(false);
+  };
+
+  const handleDragOver = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragging(false);
+
+    const files = e.dataTransfer.files;
+    if (files && files[0]) {
+      const file = files[0];
+      const url = URL.createObjectURL(file);
+      setImage(file);
+      setImageUrl(url);
+    }
+  };
+
+  const handleChange = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDragging(false);
+
+    const file = e.target.files && e.target.files[0];
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setImage(file);
+      setImageUrl(url);
+    }
+  };
+
+  const handleRemoveCateImg = () => {
+    setImage(null);
+    setImageUrl("");
+    setDragging(false);
+  };
+
+  // HANDLE INPUT VALUES CHANGES
+  const handleCateChanges = (e: any) => {
+    const name = e.target.name;
+    const value = e.target.value;
+    setCategory((cate: any) => {
+      return {
+        ...cate,
+        [name]: value,
+      };
+    });
+
+    console.log(category);
+  };
+
+  const isDisabled =
+    category.categoryName === "" ||
+    category.categorySlug === "" ||
+    category.description === "";
+
+  // console.log(isDisabled, category);
+
+  const handleEdit = (item: any) => {
+    setAction("edit");
+    setShowModal(true);
+    setSelected(item);
+  };
+
+  const handleDelete = (item: any) => {
+    setShowModal(true);
+    setAction("edit");
+    setSelected(item);
+    // router.push(`/admin/manage-categories/edit/${item.id}`);
+  };
+
+  const handleConfirm = (item: any) => {
+    if (action == "delete") {
+      // setCategories(categories.filter((item: any) => item.id!== item.id));
+      setShowModal(false);
+    } else if (action == "edit") {
+      router.push(`/admin/manage-categories/${item.categorySlug}`);
+      setShowModal(false);
+    }
+  };
+
+  // SIDE EFFECTS: USE EFFECTS HOOKS
+  useEffect(() => {
+    if (category?.categoryName) {
+      setValue(
+        "categorySlug",
+        `${category?.categoryName?.toLowerCase()?.replace(/ /g, "-")}`,
+      );
+
+      setCategory((cate: any) => {
+        return {
+          ...cate,
+          categorySlug: `${category?.categoryName?.toLowerCase()?.replace(/ /g, "-")}`,
+        };
+      });
+    }
+  }, []);
 
   return (
     <>
@@ -61,22 +300,68 @@ const Page = ({ params }: CategoryProps) => {
         </div>
 
         <div className="md:grid md:grid-cols-[45%_1fr] md:items-center md:gap-5 xl:grid-cols-[450px_1fr]">
-          <div className="flex h-[300px] w-full flex-col items-center justify-center rounded-md border border-dashed border-neutral-200 bg-white py-6 md:h-full xl:h-[250px]">
-            <span>
-              <GalleryImport size={42} />
-            </span>
-            <label htmlFor="file">Drop or click here to add image</label>
-            <input
-              type="file"
-              name="file"
-              id="file"
-              className="hidden"
-              accept=".jpeg .png"
-            />
-          </div>
+          <input
+            type="file"
+            name="file1"
+            id="file1"
+            className="hidden"
+            onChange={(e) => handleChange(e)}
+            accept="image/jpeg, image/png, image/webp"
+          />
+          {!imageUrl && (
+            <div
+              onDragEnter={handleDragEnter}
+              onDragLeave={handleDragLeave}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+              className={cn(
+                "flex h-[300px] w-full flex-col items-center justify-center rounded-md border border-dashed border-neutral-200 bg-zinc-50 px-4 py-6 md:h-full xl:h-[250px]",
+                dragging &&
+                  "border-2 border-solid border-neutral-900 bg-sky-100 shadow-inner",
+              )}
+            >
+              <span className="mb-3 inline-block text-neutral-400 opacity-50">
+                <GalleryImport size={60} />
+              </span>
+              <label
+                htmlFor="file1"
+                className="cursor-pointer text-balance text-center text-neutral-400"
+              >
+                Drop image here or <u>click here</u> to upload image
+              </label>
+            </div>
+          )}
+
+          {imageUrl && (
+            <div className="group relative flex h-[300px] w-full flex-col items-center justify-center overflow-hidden rounded-md md:h-[350px] xl:h-[250px]">
+              <Image
+                src={imageUrl}
+                alt="upload-image"
+                width={200}
+                height={300}
+                className="h-full w-full object-cover"
+              />
+
+              <div className="absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center gap-2 bg-black bg-opacity-25 opacity-0 duration-300 group-hover:opacity-100">
+                <label
+                  htmlFor="file1"
+                  className="inline-block cursor-pointer rounded-md bg-white px-6 py-2"
+                >
+                  Replace
+                </label>
+                <button
+                  onClick={handleRemoveCateImg}
+                  className="cursor-pointer rounded-md bg-goldie-300 px-6 py-2"
+                >
+                  Remove
+                </button>
+              </div>
+            </div>
+          )}
 
           <div className="mt-4 md:mt-0 md:h-min">
             <form
+              onSubmit={handleSubmit(onSubmit)}
               id="create-category"
               className="md:grid md:gap-3 xl:grid-cols-2"
             >
@@ -124,7 +409,13 @@ const Page = ({ params }: CategoryProps) => {
                         )}
                       >
                         <label htmlFor={data.name} className="block w-full">
-                          <span className="mb-1 inline-block text-sm font-semibold">
+                          <span
+                            className={cn(
+                              "mb-1 inline-block text-sm font-semibold",
+                              data?.required &&
+                                "after:inline-block after:pl-0.5 after:text-red-600 after:content-['*']",
+                            )}
+                          >
                             {data?.label}
                           </span>
                           {data?.type === "text" && (
@@ -132,21 +423,33 @@ const Page = ({ params }: CategoryProps) => {
                               type={data.type}
                               id={data?.name}
                               name={data.name}
+                              // disabled={data?.name === "categorySlug"}
+                              value={category[data?.name] || ""}
                               placeholder={data.place_holder}
-                              className="form-input w-full rounded-md border-0 py-3 placeholder:text-sm placeholder:text-neutral-300 focus:ring-neutral-900"
+                              onChange={(e) => handleCateChanges(e)}
+                              className="form-input w-full rounded-md border-0 py-3 placeholder:text-sm placeholder:text-neutral-300 focus:ring-neutral-900 disabled:bg-neutral-50 disabled:text-neutral-400"
                             />
                           )}
                           {data?.type === "richtext" && (
                             <textarea
                               id={data?.name}
                               name={data.name}
+                              value={category[data?.name] || ""}
                               placeholder={data.place_holder}
+                              onChange={(e) => handleCateChanges(e)}
                               className="form-textarea w-full resize-none rounded-md border-0 py-3 placeholder:text-sm placeholder:text-neutral-300 focus:ring-neutral-900"
                             />
                           )}
                         </label>
 
-                        {/* <p>{data.error_message}</p> */}
+                        <p
+                          className={cn(
+                            "hidden text-sm text-red-600",
+                            errors?.[data?.name] && "block",
+                          )}
+                        >
+                          {data?.error_message}
+                        </p>
                       </div>
                     </>
                   );
@@ -156,16 +459,106 @@ const Page = ({ params }: CategoryProps) => {
           </div>
         </div>
 
-        <EmptyStateCard
-          className="mt-6 p-4"
-          buttonText={"Add Subategory"}
-          handleClick={handleAddSubcategory}
-          title={"No subcategories added yet"}
-          buttonClassName="bg-neutral-900 text-goldie-300 text-sm"
-          titleClassName="font-semibold text-xl text-center"
-        />
+        {subcategories?.length < 1 && (
+          <EmptyStateCard
+            className="mt-6 p-4"
+            buttonText={"Add Subategory"}
+            isDisabled={isDisabled}
+            buttonElement={
+              <button
+                disabled={isDisabled}
+                onClick={handleAddSubcategory}
+                className={cn(
+                  "mt-3 inline-block cursor-pointer bg-goldie-300 px-4 py-2 text-neutral-900 disabled:bg-neutral-200 disabled:text-neutral-400",
+                )}
+              >
+                Add Subcategory
+              </button>
+            }
+            handleClick={handleAddSubcategory}
+            title={"No subcategories added yet"}
+            buttonClassName="bg-neutral-900 text-goldie-300 text-sm"
+            titleClassName="font-semibold text-xl text-center"
+          />
+        )}
+        {subcategories.length >= 1 && (
+          <div className="mt-5 border-t pt-5">
+            <div className="mb-3 flex items-center justify-between">
+              <h3 className="font-bold">Subcategories</h3>
+              <button
+                onClick={handleAddSubcategory}
+                className={cn(
+                  "inline-block cursor-pointer bg-neutral-900 px-4 py-2 text-sm font-bold text-goldie-300 disabled:bg-neutral-200 disabled:text-neutral-400 md:mt-3",
+                )}
+              >
+                Add Subcategory
+              </button>
+            </div>
+
+            {/* SUBCATEGORIES LIST FOR MOBILE */}
+            <div className="grid gap-2 sm:grid-cols-2 md:hidden">
+              <EachElement
+                of={subcategories}
+                render={(sub: any, index: number) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between bg-white p-3"
+                  >
+                    <div className="grid grid-cols-[60px_1fr] items-center gap-2">
+                      <Image
+                        src={sub?.image}
+                        alt={sub?.subCategoryName}
+                        width={60}
+                        height={50}
+                        className="h-[50px] w-full object-cover object-center"
+                      />
+                      <div>
+                        <h3 className="text-sm font-bold md:text-base">
+                          {sub?.subCategoryName}
+                        </h3>
+                        <StatusBar status={sub?.status} className="text-xs" />
+                      </div>
+                    </div>
+
+                    <div className="inline-flex items-center gap-2">
+                      <span
+                        onClick={() => handleEdit(sub)}
+                        className="cursor-pointer text-blue-600"
+                      >
+                        <Edit size={20} />
+                      </span>
+                      <span
+                        onClick={() => handleDelete(sub)}
+                        className="cursor-pointer text-red-600"
+                      >
+                        <Trash size={20} />
+                      </span>
+                    </div>
+                  </div>
+                )}
+              />
+            </div>
+
+            {/* SUBCATEGORIES LIST FOR DESKTOP */}
+            <div className="hidden md:block">
+              <ProductTable
+                showSearchBar={false}
+                columns={columns}
+                Tdata={subcategories}
+                filteredTabs={[]}
+              />
+            </div>
+          </div>
+        )}
       </section>
-      <CreateSubategory showSub={showSub} setShowSub={setShowSub} />
+      {showSub && (
+        <CreateSubategory
+          showSub={showSub}
+          setShowSub={setShowSub}
+          category={category?.categoryName}
+          setSubcategories={setSubcategories}
+        />
+      )}
     </>
   );
 };
