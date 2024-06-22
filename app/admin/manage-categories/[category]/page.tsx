@@ -261,21 +261,21 @@ const Page = ({ params }: CategoryPageProps) => {
   };
 
   // SIDE EFFECTS: USE EFFECTS HOOKS
-  useEffect(() => {
-    if (category?.categoryName) {
-      setValue(
-        "categorySlug",
-        `${category?.categoryName?.toLowerCase()?.replace(/ /g, "-")}`,
-      );
+  // useEffect(() => {
+  //   if (category?.categoryName) {
+  //     setValue(
+  //       "categorySlug",
+  //       `${category?.categoryName?.toLowerCase()?.replace(/ /g, "-")}`,
+  //     );
 
-      setCategory((cate: any) => {
-        return {
-          ...cate,
-          categorySlug: `${category?.categoryName?.toLowerCase()?.replace(/ /g, "-")}`,
-        };
-      });
-    }
-  }, []);
+  //     setCategory((cate: any) => {
+  //       return {
+  //         ...cate,
+  //         categorySlug: `${category?.categoryName?.toLowerCase()?.replace(/ /g, "-")}`,
+  //       };
+  //     });
+  //   }
+  // }, []);
 
   useEffect(() => {
     reset({

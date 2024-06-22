@@ -7,7 +7,7 @@ import React, { useState } from "react";
 import cs from "../../../public/assets/milestone-cake.webp";
 import kid from "../../../public/assets/kid-cake.webp";
 import EachElement from "@/helper/EachElement";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import { cn } from "@/helper/cn";
 import ConfirmModal from "@/components/admin-component/category-comp/ConfirmModal";
 import StatusBar from "@/components/admin-component/category-comp/StatusBar";
@@ -30,7 +30,38 @@ const Page = () => {
       "Retirement Cakes",
     ],
   });
-  const [categories, setCategories] = useState<any[]>(mgCategory);
+  const [categories, setCategories] = useState<any[]>([
+    {
+      category: "Milestone Cakes",
+      categorySlug: "milestone-cakes",
+      description:
+        "Milestone cakes commemorate significant life events and achievements.",
+      image: cs,
+      status: "active",
+      subcategories: [
+        "Birthday Cakes",
+        "Anniversary Cakes",
+        "Graduation Cakes",
+        "Baby Shower Cakes",
+        "Retirement Cakes",
+      ],
+    },
+    {
+      category: "Kid's Cakes",
+      categorySlug: "kids-cakes",
+      description:
+        "Milestone cakes commemorate significant life events and achievements.",
+      image: kid,
+      status: "inactive",
+      subcategories: [
+        "Birthday Cakes",
+        "Anniversary Cakes",
+        "Graduation Cakes",
+        "Baby Shower Cakes",
+        "Retirement Cakes",
+      ],
+    },
+  ]);
   const router = useRouter();
 
   const handleAddNewCategory = () => {
@@ -168,36 +199,44 @@ const Page = () => {
 };
 
 export default Page;
+// interface MgCategory {
+//   category: string;
+//   categorySlug: string;
+//   description: string;
+//   image: StaticImageData;
+//   status: string;
+//   subcategories: string[];
+// }
 
-export const mgCategory = [
-  {
-    category: "Milestone Cakes",
-    categorySlug: "milestone-cakes",
-    description:
-      "Milestone cakes commemorate significant life events and achievements.",
-    image: cs,
-    status: "active",
-    subcategories: [
-      "Birthday Cakes",
-      "Anniversary Cakes",
-      "Graduation Cakes",
-      "Baby Shower Cakes",
-      "Retirement Cakes",
-    ],
-  },
-  {
-    category: "Kid's Cakes",
-    categorySlug: "kids-cakes",
-    description:
-      "Milestone cakes commemorate significant life events and achievements.",
-    image: kid,
-    status: "inactive",
-    subcategories: [
-      "Birthday Cakes",
-      "Anniversary Cakes",
-      "Graduation Cakes",
-      "Baby Shower Cakes",
-      "Retirement Cakes",
-    ],
-  },
-];
+// export const mgCategory: MgCategory[] = [
+// {
+//   category: "Milestone Cakes",
+//   categorySlug: "milestone-cakes",
+//   description:
+//     "Milestone cakes commemorate significant life events and achievements.",
+//   image: cs,
+//   status: "active",
+//   subcategories: [
+//     "Birthday Cakes",
+//     "Anniversary Cakes",
+//     "Graduation Cakes",
+//     "Baby Shower Cakes",
+//     "Retirement Cakes",
+//   ],
+// },
+// {
+//   category: "Kid's Cakes",
+//   categorySlug: "kids-cakes",
+//   description:
+//     "Milestone cakes commemorate significant life events and achievements.",
+//   image: kid,
+//   status: "inactive",
+//   subcategories: [
+//     "Birthday Cakes",
+//     "Anniversary Cakes",
+//     "Graduation Cakes",
+//     "Baby Shower Cakes",
+//     "Retirement Cakes",
+//   ],
+// },
+// ];

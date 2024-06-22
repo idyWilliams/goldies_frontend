@@ -36,7 +36,7 @@ const CartPage = () => {
     if (localStorage.getItem("cart") !== null) {
       dispatch(setProducts(JSON.parse(localStorage.getItem("cart") as string)));
     }
-  }, []);
+  }, [dispatch]);
 
   return (
     <>
