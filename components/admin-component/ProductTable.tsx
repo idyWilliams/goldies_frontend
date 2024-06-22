@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/helper/cn";
 import {
   Column,
   ColumnDef,
@@ -16,11 +17,13 @@ export default function ProductTable({
   Tdata,
   filteredTabs,
   statusType,
+  showSearchBar = true,
 }: {
   columns: any;
   Tdata: any;
   filteredTabs?: any;
-  statusType: string;
+  statusType?: string;
+  showSearchBar?: boolean;
 }) {
   const [selectedTabs, setSelectedTabs] = useState(filteredTabs[0]);
   const [chosenTab, setChosenTab] = useState(filteredTabs[0]);
@@ -40,7 +43,7 @@ export default function ProductTable({
         setTData(
           Tdata?.filter(
             (item: any) =>
-              item?.status.toLowerCase() === chosenTab.toLowerCase(),
+              item?.status.toLowerCase() === chosenTab?.toLowerCase(),
           ),
         );
       }
@@ -50,8 +53,8 @@ export default function ProductTable({
   useEffect(() => {
     const filteredProducts = Tdata?.filter(
       (item: any) =>
-        item?.productName.toLowerCase().includes(searchValue) ||
-        item?.id.toString().toLowerCase().includes(searchValue),
+        item?.productName?.toLowerCase()?.includes(searchValue) ||
+        item?.id?.toString()?.toLowerCase()?.includes(searchValue),
     );
     setTData(filteredProducts);
   }, [searchValue, Tdata]);
@@ -64,7 +67,12 @@ export default function ProductTable({
   console.log(searchValue, "searchValue");
   return (
     <div>
-      <div className="my-6 flex items-center justify-between gap-2">
+      <div
+        className={cn(
+          "flex items-center justify-between gap-2",
+          showSearchBar || (filteredTabs?.length && "mb-6"),
+        )}
+      >
         <div className="flex items-center gap-1">
           {filteredTabs &&
             filteredTabs.map((tabs: string, index: number) => (
@@ -80,27 +88,29 @@ export default function ProductTable({
               </button>
             ))}
         </div>
-        <label htmlFor="search" className="relative block w-[500px] ">
-          <input
-            value={searchValue}
-            type="text"
-            name="search"
-            autoComplete="search"
-            placeholder="search for product name, product ID..."
-            className="w-full rounded-[50px] px-4 py-1 placeholder:text-xs focus:border-black focus:ring-black"
-            onChange={(e) => handleChange(e)}
-          />
-          <span className="absolute right-3 top-1/2 -translate-y-1/2">
-            <CiSearch />
-          </span>
-        </label>
+        {showSearchBar && (
+          <label htmlFor="search" className="relative block w-[500px] ">
+            <input
+              value={searchValue}
+              type="text"
+              name="search"
+              autoComplete="search"
+              placeholder="search for product name, product ID..."
+              className="w-full rounded-[50px] px-4 py-1 placeholder:text-xs focus:border-black focus:ring-black"
+              onChange={(e) => handleChange(e)}
+            />
+            <span className="absolute right-3 top-1/2 -translate-y-1/2">
+              <CiSearch />
+            </span>
+          </label>
+        )}
       </div>
 
       <table className="w-full bg-[#fff]">
         <thead>
-          {table.getHeaderGroups().map((headerGroup) => (
+          {table?.getHeaderGroups()?.map((headerGroup) => (
             <tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
+              {headerGroup?.headers?.map((header) => (
                 <th
                   key={header.id}
                   className="bg-black p-4 text-left capitalize text-goldie-300"
@@ -117,7 +127,7 @@ export default function ProductTable({
           ))}
         </thead>
         <tbody>
-          {table.getRowModel().rows.map((row) => (
+          {table.getRowModel().rows?.map((row) => (
             <tr key={row.id} className="odd:bg-goldie-300 odd:bg-opacity-20">
               {row.getVisibleCells().map((cell) => (
                 <td key={cell.id} className="px-4 py-2">

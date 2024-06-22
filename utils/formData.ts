@@ -56,3 +56,73 @@ export const billingFormData = [
     required: true,
   },
 ];
+
+export const newCategory = [
+  {
+    label: "Category Name",
+    name: "categoryName",
+    place_holder: "Enter category name",
+    error_message: "Category name is required",
+    type: "text",
+    required: true,
+  },
+  {
+    label: "Category Slug",
+    name: "categorySlug",
+    place_holder: "Enter category slug",
+    error_message: "Category slug is required",
+    type: "text",
+    required: true,
+  },
+  {
+    label: "Description",
+    name: "description",
+    place_holder: "Enter description",
+    error_message: "Description is required",
+    type: "richtext",
+    required: true,
+  },
+  {
+    label: "Status",
+    name: "status",
+    place_holder: "Enter status",
+    error_message: "Status is required",
+    type: "text",
+    required: true,
+  },
+];
+
+export const newSubcategory = [
+  // {
+  //   label: "Parent Category",
+  //   name: "parentCategory",
+  //   place_holder: "Enter parent category",
+  //   error_message: "Parent category is required",
+  //   type: "text",
+  //   required: true,
+  // },
+  {
+    label: "Subategory Name",
+    name: "subCategoryName",
+    place_holder: "Enter subcategory name",
+    error_message: "Subategory name is required",
+    type: "text",
+    required: true,
+  },
+  {
+    label: "Description",
+    name: "description",
+    place_holder: "Enter description",
+    error_message: "Description is required",
+    type: "richtext",
+    required: true,
+  },
+  {
+    label: "Status",
+    name: "status",
+    place_holder: "Enter status",
+    error_message: "Status is required",
+    type: "text",
+    required: true,
+  },
+];

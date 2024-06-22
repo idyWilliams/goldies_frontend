@@ -30,19 +30,19 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   // TAWK_LOAD_START
-  useEffect(() => {
-    window.Tawk_API = window.Tawk_API || {};
-    window.Tawk_LoadStart = new Date();
+  // useEffect(() => {
+  //   window.Tawk_API = window.Tawk_API || {};
+  //   window.Tawk_LoadStart = new Date();
 
-    (function () {
-      const s1 = document.createElement("script");
-      const s0 = document.getElementsByTagName("script")[0];
-      s1.async = true;
-      s1.src = "https://embed.tawk.to/665b1746981b6c5647772f1f/1hv9t5rn4";
-      s1.setAttribute("crossorigin", "*");
-      s0?.parentNode?.insertBefore(s1, s0);
-    })();
-  }, []);
+  //   (function () {
+  //     const s1 = document.createElement("script");
+  //     const s0 = document.getElementsByTagName("script")[0];
+  //     s1.async = true;
+  //     s1.src = "https://embed.tawk.to/665b1746981b6c5647772f1f/1hv9t5rn4";
+  //     s1.setAttribute("crossorigin", "*");
+  //     s0?.parentNode?.insertBefore(s1, s0);
+  //   })();
+  // }, []);
 
   return (
     <html lang="en">
