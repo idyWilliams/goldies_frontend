@@ -18,8 +18,8 @@ const subData = {
 };
 
 const ConfirmModal: React.FC<ModalProps> = ({
-  actionType = "edit",
-  catOrSub = { cat: "Milestones Cakes", isCategory: true },
+  actionType,
+  catOrSub,
   setShowModal,
   handleConfirm,
 }) => {

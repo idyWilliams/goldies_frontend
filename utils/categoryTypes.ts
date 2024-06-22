@@ -47,7 +47,7 @@ export type SubategoriesColumns = {
 };
 
 export type SubCategoryProps = {
-  parentCategory: string;
+  // parentCategory: string;
   subCategoryName: string;
   description: string;
   status: "active" | "inactive";

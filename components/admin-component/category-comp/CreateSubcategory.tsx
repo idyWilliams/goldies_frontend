@@ -15,7 +15,7 @@ import "react-toggle/style.css";
 import * as yup from "yup";
 
 const schema = yup.object().shape({
-  parentCategory: yup.string().required("Parent category is required"),
+  // parentCategory: yup.string().required("Parent category is required"),
   subCategoryName: yup.string().required("Subcategory name is required"),
   description: yup.string().required("Subcategory description is required"),
 });
@@ -23,13 +23,14 @@ const schema = yup.object().shape({
 const CreateSubategory = ({
   showSub,
   setShowSub,
-  category,
   setSubcategories,
+  selectedSubcategory,
 }: {
   showSub: boolean;
   setShowSub: any;
   category: any;
   setSubcategories: React.Dispatch<React.SetStateAction<SubcategoriesProps[]>>;
+  selectedSubcategory?: any;
 }) => {
   const [cateStatus, setCateStatus] = useState(true);
   const [dragging, setDragging] = useState<boolean>(false);
@@ -38,40 +39,46 @@ const CreateSubategory = ({
   const pathname = usePathname();
   const isNewCreate = pathname.endsWith("/create");
   const [subcategory, setSubcategory] = useState<SubCategoryProps>({
-    parentCategory: "",
+    // parentCategory: "",
     subCategoryName: "",
     description: "",
-    status: cateStatus ? "active" : "inactive",
+    status: "active",
   });
+
   const {
     handleSubmit,
     control,
     register,
-    setValue,
     reset,
     formState: { errors },
   } = useForm<any>({
     resolver: yupResolver(schema),
-    defaultValues: {
-      parentCategory: category?.categoryName || "",
-    },
   });
 
+  // HANDLE SUBCATEGORY FORM MODAL SUBMISSION
   const onSubmit = (data: any, e: any) => {
     e.preventDefault();
-    console.log({ ...data, image: imageUrl });
+    console.log({ ...data, image: imageUrl, status: subcategory?.status });
     if (image) {
       setSubcategories((prev: any) => {
-        return [...prev, { ...data, image: imageUrl }];
+        return [
+          ...prev,
+          { ...data, image: imageUrl, status: subcategory?.status },
+        ];
       });
       reset();
+      setImage(null);
+      setImageUrl("");
+      setShowSub(false);
     }
   };
 
+  // CLOSE SUCATEGORY FORM MODAL
   const handleClose = () => {
     setShowSub(false);
   };
 
+  // ONDRAG EVENT LISTENER FUNCTIONS FOR IMAGE UPLOAD
   const handleDragEnter = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
@@ -103,6 +110,7 @@ const CreateSubategory = ({
     }
   };
 
+  // HANDLE IMAGE FILE UPLOAD
   const handleChange = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
@@ -116,16 +124,14 @@ const CreateSubategory = ({
     }
   };
 
+  // REMOVE IMAGE FILE UPLOAD
   const handleRemoveCateImg = () => {
     setImage(null);
     setImageUrl("");
     setDragging(false);
   };
 
-  useEffect(() => {
-    category && setSubcategory({ ...subcategory, parentCategory: category });
-  }, []);
-
+  // HANDLE ONCHANGE EVENT ON FORM INPUT FILEDS
   const handleSubChange = (e: any, isChecked?: boolean) => {
     const name = e.target.name;
     const value = e.target.value;
@@ -134,7 +140,7 @@ const CreateSubategory = ({
       return {
         ...prev,
         [name]: value,
-        status: isChecked ? "active" : "inactive",
+        // status: isChecked ? "active" : "inactive",
       };
     });
 
@@ -161,17 +167,18 @@ const CreateSubategory = ({
                 <BsX size={24} />
               </span>
             </div>
-            <div className="px-4 pt-4">
+            <div className="px-4 pt-2">
               <form id="create-subcategory" onSubmit={handleSubmit(onSubmit)}>
                 <EachElement
                   of={newSubcategory}
                   render={(data: any, index: number) => {
                     if (data.name === "status") {
                       return (
+                        // STATUS TOGGLE
                         <>
                           <label
                             htmlFor={data?.name}
-                            className="mt-2 inline-flex items-center gap-2"
+                            className="inline-flex items-center gap-2"
                           >
                             <span className="text-sm font-semibold">
                               {data?.label}:{" "}
@@ -182,6 +189,7 @@ const CreateSubategory = ({
                               render={({ field: { onChange } }) => (
                                 <Toggle
                                   checked={cateStatus}
+                                  defaultChecked={true}
                                   className="custom"
                                   name={data.name}
                                   value={cateStatus ? "active" : "inactive"}
@@ -189,7 +197,7 @@ const CreateSubategory = ({
                                   onChange={(e) => {
                                     onChange(e.target.checked);
                                     setCateStatus(e.target.checked);
-                                    handleSubChange(e, e.target.checked);
+                                    handleSubChange(e);
                                   }}
                                 />
                               )}
@@ -203,7 +211,7 @@ const CreateSubategory = ({
                         <div key={index}>
                           <label
                             htmlFor={data.name}
-                            className="mb-3 block w-full"
+                            className="mb-2 block w-full"
                           >
                             <span
                               className={cn(
@@ -225,7 +233,7 @@ const CreateSubategory = ({
                                 onChange={(event: any) =>
                                   handleSubChange(event)
                                 }
-                                className="form-input w-full rounded-md border-0 bg-neutral-50 py-3 placeholder:text-sm placeholder:text-neutral-300 focus:ring-neutral-900"
+                                className="form-input w-full rounded-md border-0 bg-neutral-50 py-3 text-sm placeholder:text-sm placeholder:text-neutral-400 focus:ring-neutral-900 md:text-base"
                               />
                             )}
                             {data?.type === "richtext" && (
@@ -238,7 +246,7 @@ const CreateSubategory = ({
                                   handleSubChange(event)
                                 }
                                 placeholder={data.place_holder}
-                                className="form-input w-full rounded-md border-0 bg-neutral-50 py-3 placeholder:text-sm placeholder:text-neutral-300 focus:ring-neutral-900"
+                                className="form-input w-full rounded-md border-0 bg-neutral-50 py-3 text-sm placeholder:text-sm placeholder:text-neutral-400 focus:ring-neutral-900 md:text-base"
                               />
                             )}
                           </label>
@@ -260,7 +268,9 @@ const CreateSubategory = ({
                 />
 
                 <div className="mt-5">
-                  <h3 className="mb-2 font-semibold">Subcategory Image</h3>
+                  <h3 className="mb-2 text-sm font-semibold">
+                    Subcategory Image
+                  </h3>
                   <input
                     type="file"
                     name="file2"
@@ -276,7 +286,7 @@ const CreateSubategory = ({
                       onDragOver={handleDragOver}
                       onDrop={handleDrop}
                       className={cn(
-                        "flex h-[300px] w-full flex-col items-center justify-center rounded-md border border-dashed border-neutral-200 bg-zinc-50 px-4 py-6 xl:h-[250px]",
+                        "flex h-[250px] w-full flex-col items-center justify-center rounded-md border border-dashed border-neutral-200 bg-zinc-50 px-4 py-4 xl:h-[250px]",
                         dragging &&
                           "border-2 border-solid border-neutral-900 bg-sky-100 shadow-inner",
                       )}
@@ -294,7 +304,7 @@ const CreateSubategory = ({
                   )}
 
                   {imageUrl && (
-                    <div className="group relative flex h-[300px] w-full flex-col items-center justify-center overflow-hidden rounded-md md:h-[350px] xl:h-[250px]">
+                    <div className="group relative flex h-[250px] w-full flex-col items-center justify-center overflow-hidden rounded-md md:h-[350px] xl:h-[250px]">
                       <Image
                         src={imageUrl}
                         alt="upload-image"

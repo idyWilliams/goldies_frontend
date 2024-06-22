@@ -24,6 +24,7 @@ import {
   CategoryProps,
   SubategoriesColumns,
 } from "@/utils/categoryTypes";
+import ConfirmModal from "@/components/admin-component/category-comp/ConfirmModal";
 
 const schema = yup.object().shape({
   categoryName: yup.string().required("Subcategory name is required"),
@@ -33,22 +34,6 @@ const schema = yup.object().shape({
 
 const columnHelper = createColumnHelper<SubategoriesColumns>();
 const columns = [
-  // columnHelper.accessor((row) => row, {
-  //   id: "customerName",
-  //   cell: (info) => {
-  //     console.log(info, "column");
-  //     return (
-  //       <div className="grid grid-cols-[50px_1fr] items-center gap-2">
-  //         <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-500">
-  //           <span className="text-white">JD</span>
-  //         </div>
-  //         <h3 className="font-bold">{info.cell.row.original.customerName}</h3>
-  //       </div>
-  //     );
-  //   },
-  //   header: () => <span>Customers</span>,
-  //   footer: (info) => info.column.id,
-  // }),
   columnHelper.accessor((row) => row, {
     id: "SubImage",
     cell: (info) => {
@@ -57,10 +42,11 @@ const columns = [
         <div className="">
           <Image
             src={cs}
-            // src={info.cell.row.original.image}
+            // src={info.cell.row.original.image} // Switch to this once api is available
             alt={info.cell.row.original.subCategoryName}
             width={150}
             height={150}
+            className="h-[80px] w-[100px] object-cover"
           />
         </div>
       );
@@ -76,30 +62,33 @@ const columns = [
     header: () => <span>Description</span>,
     footer: (info) => info.column.id,
   }),
-  columnHelper.accessor("status", {
+  columnHelper.accessor((row) => row, {
+    id: "status",
+    cell: (info) => <StatusBar status={info.cell.row.original.status} />,
     header: () => <span>Status</span>,
+  }),
+
+  columnHelper.accessor((row) => row, {
+    id: "action",
+    cell: (info) => (
+      <div className="space-x-2">
+        <span
+          // onClick={() => handleEdit(item)}
+          className="cursor-pointer text-blue-600"
+        >
+          <Edit size={24} />
+        </span>
+        <span
+          // onClick={() => handleDelete(item)}
+          className="cursor-pointer text-red-600"
+        >
+          <Trash size={24} />
+        </span>
+      </div>
+    ),
+    header: () => <span>Actions</span>,
     footer: (info) => info.column.id,
   }),
-  // columnHelper.accessor((row) => row.subcategory, {
-  //   id: "contactNumber",
-  //   cell: (info) => <span>+{info.getValue()}</span>,
-  //   header: () => <span>Contact Number </span>,
-  //   footer: (info) => info.column.id,
-  // }),
-
-  // columnHelper.accessor((row) => row, {
-  //   id: "action",
-  //   cell: (info) => (
-  //     <span
-  //       className="cursor-pointer text-blue-400"
-  //       // onClick={() => handleView(info.cell.row.original.id)}
-  //     >
-  //       View More
-  //     </span>
-  //   ),
-  //   header: () => <span>Actions</span>,
-  //   footer: (info) => info.column.id,
-  // }),
 ];
 
 const Page = ({ params }: CategoryPageProps) => {
@@ -129,20 +118,20 @@ const Page = ({ params }: CategoryPageProps) => {
     description: "",
   });
   const [subcategories, setSubcategories] = useState<any[]>([
-    // {
-    //   parentCategory: "dh2dh2",
-    //   subCategoryName: "Anniversary Cakes",
-    //   description: "j2djd",
-    //   status: "active",
-    //   image: cs,
-    // },
-    // {
-    //   parentCategory: "dh2dh2",
-    //   subCategoryName: "Baby Shower Cakes",
-    //   description: "j2djd",
-    //   status: "inactive",
-    //   image: cs,
-    // },
+    {
+      parentCategory: "dh2dh2",
+      subCategoryName: "Anniversary Cakes",
+      description: "j2djd",
+      status: "active",
+      image: cs,
+    },
+    {
+      parentCategory: "dh2dh2",
+      subCategoryName: "Baby Shower Cakes",
+      description: "j2djd",
+      status: "inactive",
+      image: cs,
+    },
   ]);
   const [showSub, setShowSub] = useState(false);
   const [cateStatus, setCateStatus] = useState(true);
@@ -154,9 +143,18 @@ const Page = ({ params }: CategoryPageProps) => {
     handleSubmit,
     register,
     setValue,
+    getValues,
     reset,
     formState: { errors },
-  } = useForm<any>({ resolver: yupResolver(schema) });
+  } = useForm<any>({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      categoryName: "Milestone Cakes",
+      categorySlug: "milestone-cakes",
+      description:
+        "Milestone cakes commemorate significant life events and achievements.",
+    },
+  });
 
   const onSubmit = (data: any) => {
     console.log(data);
@@ -239,26 +237,26 @@ const Page = ({ params }: CategoryPageProps) => {
 
   // console.log(isDisabled, category);
 
-  const handleEdit = (item: any) => {
+  const handleEdit = (item: any, index: number) => {
     setAction("edit");
     setShowModal(true);
-    setSelected(item);
+    setSelected({ ...item, id: index });
   };
 
   const handleDelete = (item: any) => {
     setShowModal(true);
-    setAction("edit");
+    setAction("delete");
     setSelected(item);
     // router.push(`/admin/manage-categories/edit/${item.id}`);
   };
 
-  const handleConfirm = (item: any) => {
+  const handleConfirm = () => {
     if (action == "delete") {
       // setCategories(categories.filter((item: any) => item.id!== item.id));
       setShowModal(false);
     } else if (action == "edit") {
-      router.push(`/admin/manage-categories/${item.categorySlug}`);
       setShowModal(false);
+      setShowSub(true);
     }
   };
 
@@ -279,6 +277,21 @@ const Page = ({ params }: CategoryPageProps) => {
     }
   }, []);
 
+  useEffect(() => {
+    reset({
+      categoryName: "Milestone Cakes",
+      categorySlug: "milestone-cakes",
+      description:
+        "Milestone cakes commemorate significant life events and achievements.",
+    });
+    setCategory({
+      categoryName: "Milestone Cakes",
+      categorySlug: "milestone-cakes",
+      description:
+        "Milestone cakes commemorate significant life events and achievements.",
+    });
+  }, []);
+
   return (
     <>
       <section className="min-h-screen w-full bg-neutral-100 px-4 py-4">
@@ -295,7 +308,7 @@ const Page = ({ params }: CategoryPageProps) => {
             </h1>
           </Link>
           <button className="bg-neutral-900 px-4 py-2 text-sm text-goldie-300">
-            New Category
+            Create Category
           </button>
         </div>
 
@@ -315,7 +328,7 @@ const Page = ({ params }: CategoryPageProps) => {
               onDragOver={handleDragOver}
               onDrop={handleDrop}
               className={cn(
-                "flex h-[300px] w-full flex-col items-center justify-center rounded-md border border-dashed border-neutral-200 bg-zinc-50 px-4 py-6 md:h-full xl:h-[250px]",
+                "flex h-[250px] w-full flex-col items-center justify-center rounded-md border border-dashed border-neutral-200 bg-zinc-50 px-4 py-6 md:h-full xl:h-[250px]",
                 dragging &&
                   "border-2 border-solid border-neutral-900 bg-sky-100 shadow-inner",
               )}
@@ -333,7 +346,7 @@ const Page = ({ params }: CategoryPageProps) => {
           )}
 
           {imageUrl && (
-            <div className="group relative flex h-[300px] w-full flex-col items-center justify-center overflow-hidden rounded-md md:h-[350px] xl:h-[250px]">
+            <div className="group relative flex h-[250px] w-full flex-col items-center justify-center overflow-hidden rounded-md md:h-[350px] xl:h-[250px]">
               <Image
                 src={imageUrl}
                 alt="upload-image"
@@ -420,6 +433,7 @@ const Page = ({ params }: CategoryPageProps) => {
                           </span>
                           {data?.type === "text" && (
                             <input
+                              {...register(data.name)}
                               type={data.type}
                               id={data?.name}
                               name={data.name}
@@ -432,6 +446,7 @@ const Page = ({ params }: CategoryPageProps) => {
                           )}
                           {data?.type === "richtext" && (
                             <textarea
+                              {...register(data.name)}
                               id={data?.name}
                               name={data.name}
                               value={category[data?.name] || ""}
@@ -469,7 +484,7 @@ const Page = ({ params }: CategoryPageProps) => {
                 disabled={isDisabled}
                 onClick={handleAddSubcategory}
                 className={cn(
-                  "mt-3 inline-block cursor-pointer bg-goldie-300 px-4 py-2 text-neutral-900 disabled:bg-neutral-200 disabled:text-neutral-400",
+                  "mt-3 inline-block cursor-pointer bg-neutral-900 px-4 py-2 text-sm font-medium text-goldie-300 disabled:cursor-auto disabled:bg-neutral-200 disabled:text-neutral-400",
                 )}
               >
                 Add Subcategory
@@ -522,7 +537,7 @@ const Page = ({ params }: CategoryPageProps) => {
 
                     <div className="inline-flex items-center gap-2">
                       <span
-                        onClick={() => handleEdit(sub)}
+                        onClick={() => handleEdit(sub, index)}
                         className="cursor-pointer text-blue-600"
                       >
                         <Edit size={20} />
@@ -557,6 +572,20 @@ const Page = ({ params }: CategoryPageProps) => {
           setShowSub={setShowSub}
           category={category?.categoryName}
           setSubcategories={setSubcategories}
+          selectedSubcategory={selected}
+        />
+      )}
+
+      {showModal && (
+        <ConfirmModal
+          showModal={showModal}
+          setShowModal={setShowModal}
+          catOrSub={{
+            sub: selected?.subCategoryName,
+            isSubcategory: true,
+          }}
+          actionType={action}
+          handleConfirm={handleConfirm}
         />
       )}
     </>

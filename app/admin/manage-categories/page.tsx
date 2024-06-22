@@ -30,7 +30,7 @@ const Page = () => {
       "Retirement Cakes",
     ],
   });
-  const [categories, setCategories] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>(mgCategory);
   const router = useRouter();
 
   const handleAddNewCategory = () => {
@@ -91,7 +91,7 @@ const Page = () => {
               of={categories}
               render={(item: any, index: number) => (
                 <div key={index} className="rounded-md bg-white p-4">
-                  <div className="grid  grid-cols-[150px_1fr] items-center gap-2">
+                  <div className="grid  items-center gap-2 sm:grid-cols-[150px_1fr]">
                     <Image
                       src={item.image}
                       alt={item.category}
@@ -135,7 +135,7 @@ const Page = () => {
                         render={(sub: string, index: number) => (
                           <span
                             key={index}
-                            className="inline-block rounded-md bg-goldie-300 p-2 px-4 text-sm capitalize text-neutral-900 xl:text-base"
+                            className="inline-block rounded-md bg-goldie-300 p-2 px-2.5 text-sm capitalize text-neutral-900 xl:text-base"
                           >
                             {sub}
                           </span>
