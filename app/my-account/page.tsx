@@ -10,10 +10,8 @@ import SavedItems from "@/components/my-account-comps/SavedItems";
 import EachElement from "@/helper/EachElement";
 import { cn } from "@/helper/cn";
 import { Book, Box, HeartTick, Lock1, UserSquare } from "iconsax-react";
-import React, { useEffect, useState } from "react";
-import { FieldError, useForm } from "react-hook-form";
-import { BiStore } from "react-icons/bi";
-import { CgNpm } from "react-icons/cg";
+import { useRouter } from "next/navigation";
+import React, { act, useEffect, useState } from "react";
 
 const tabs = [
   {
@@ -57,11 +55,19 @@ function switchTabs(index: any) {
 
 const Page = () => {
   const [activeTab, setActiveTab] = useState(0);
+  const router = useRouter();
 
-  const handleTab = (index: number) => {
+  const handleTab = (index: number, label: string) => {
     setActiveTab(index);
+    const newUrl = label?.toLowerCase().replace(/ /g, "-");
+    router.push(`/my-account?tab=${encodeURIComponent(newUrl)}`);
     window.scrollTo(0, 0);
   };
+
+  useEffect(() => {
+    const newUrl = tabs[activeTab]?.label?.toLowerCase().replace(/ /g, "-");
+    router.push(`/my-account?tab=${encodeURIComponent(newUrl)}`);
+  }, []);
 
   return (
     <>
@@ -96,7 +102,7 @@ const Page = () => {
                 render={(tab: any, index: number) => (
                   <div
                     key={index}
-                    onClick={() => handleTab(index)}
+                    onClick={() => handleTab(index, tab?.label)}
                     className={cn(
                       "flex cursor-pointer items-center justify-start gap-1 rounded-md border border-neutral-500 px-3 py-2 md:w-full md:rounded-none md:border-0",
                       activeTab === index &&

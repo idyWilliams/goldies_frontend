@@ -117,10 +117,10 @@ const Testimonials = () => {
             alt="banner"
             width={1000}
             height={400}
-            className="absolute left-0 top-0 -z-10 h-full w-full object-cover object-center"
+            className="absolute left-0 top-0 z-10 h-full w-full object-cover object-center"
           />
 
-          <div className="absolute left-0 top-0 h-full w-full bg-[linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.5))]"></div>
+          <div className="absolute left-0 top-0 z-[11] h-full w-full bg-[linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.5))]"></div>
         </div>
         <div className="wrapper">
           <div className="grid gap-5 py-6 sm:grid-cols-2 lg:grid-cols-3 ">

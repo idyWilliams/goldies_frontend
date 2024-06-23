@@ -32,7 +32,7 @@ const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={onPrev}
         className={twMerge(
-          "inline-flex h-10 w-10 items-center justify-center rounded-full bg-neutral-100 text-neutral-800",
+          "inline-flex h-7 w-7 items-center justify-center rounded-full bg-neutral-100 text-neutral-800",
           currentPageIndex === 1 ? "text-neutral-400" : "",
         )}
       >
@@ -45,7 +45,7 @@ const Pagination: React.FC<PaginationProps> = ({
               key={index}
               onClick={() => onPaginateClick(index)}
               className={twMerge(
-                "inline-flex h-10 w-10 items-center justify-center rounded-full bg-neutral-100 text-neutral-800",
+                "inline-flex h-7 w-7 items-center justify-center rounded-full bg-neutral-100 text-neutral-800",
                 currentPageIndex === index + 1 && "bg-goldie-300 text-black",
               )}
             >
@@ -58,7 +58,7 @@ const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={onNext}
         className={twMerge(
-          "inline-flex h-10 w-10 items-center justify-center rounded-full bg-neutral-100 text-neutral-800",
+          "inline-flex h-7 w-7 items-center justify-center rounded-full bg-neutral-100 text-neutral-800",
           currentPageIndex === chunkArray(arr, itemsPerPage).length &&
             "text-neutral-400",
         )}

@@ -11,7 +11,7 @@ const MobileNav = ({ pathname, show, setShow, isOpen, setIsOpen }: any) => {
     >
       <div
         onClick={(e: any) => e.stopPropagation()}
-        className="bg-goldie-300 flex h-full w-8/12 flex-col gap-8 p-9 pl-4 pt-24 sm:w-6/12"
+        className="flex h-full w-8/12 flex-col gap-8 bg-goldie-300 p-9 pl-4 pt-24 sm:w-6/12"
       >
         <div className="relative">
           <button
@@ -24,18 +24,27 @@ const MobileNav = ({ pathname, show, setShow, isOpen, setIsOpen }: any) => {
           {isOpen && (
             <div className="absolute right-0 top-10 z-20 w-[190px] rounded-md bg-[#e9da88] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
               <div className="">
-                <span className="flex items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
+                <Link
+                  href={"/my-account"}
+                  className="flex items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
+                >
                   <FaRegUserCircle size={20} />
                   My Account
-                </span>
-                <span className="flex items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
+                </Link>
+                <Link
+                  href={"/my-orders"}
+                  className="flex items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
+                >
                   <BiStore size={20} />
                   Orders
-                </span>
-                <span className="flex items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
+                </Link>
+                <Link
+                  href={"/saved-items"}
+                  className="flex items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
+                >
                   <BiHeart size={20} />
                   Saved Items
-                </span>
+                </Link>
               </div>
               <div className="my-2 border-b border-black border-opacity-50"></div>
               <Link

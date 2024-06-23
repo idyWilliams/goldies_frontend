@@ -16,7 +16,7 @@ import { VscAccount } from "react-icons/vsc";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { BiHeart, BiStore } from "react-icons/bi";
 import { FaRegUserCircle } from "react-icons/fa";
-import { Menu } from "iconsax-react";
+import { Menu, ShoppingCart } from "iconsax-react";
 import MenuPopup from "./MenuPopup";
 import { useDispatch } from "react-redux";
 import { setProducts } from "@/redux/features/product/productSlice";
@@ -109,13 +109,16 @@ const Header = () => {
               className="relative w-[30px] cursor-pointer"
               onClick={() => router.push("/cart")}
             >
-              <Image
+              {/* <Image
                 src={CartIcon}
                 className="h-[22px] w-auto"
                 alt="Goldis Logo"
-              />
+              /> */}
+              <span>
+                <ShoppingCart size={22} />
+              </span>
               {Object.values(cart) && Object.values(cart).length >= 0 && (
-                <span className="absolute -right-1 top-0 inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#89732e] text-xs font-medium text-[#fcf7e8]">
+                <span className="absolute -right-1 top-0 inline-flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs font-medium text-[#fcf7e8]">
                   {Object.values(cart).length}
                 </span>
               )}
