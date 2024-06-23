@@ -122,48 +122,50 @@ const Testimonials = () => {
 
           <div className="absolute left-0 top-0 h-full w-full bg-[linear-gradient(rgba(0,0,0,0.8),rgba(0,0,0,0.5))]"></div>
         </div>
-        <div className="grid gap-5 p-6 px-4 sm:grid-cols-2 lg:grid-cols-3 ">
-          {chunkArray(reviews, itemsPerPage)[currentPageIndex - 1]?.map(
-            (review: any, index: any) => {
-              return (
-                <blockquote
-                  key={index}
-                  className={`rounded-md border border-neutral-300 bg-white p-7 hover:shadow-md
+        <div className="wrapper">
+          <div className="grid gap-5 py-6 sm:grid-cols-2 lg:grid-cols-3 ">
+            {chunkArray(reviews, itemsPerPage)[currentPageIndex - 1]?.map(
+              (review: any, index: any) => {
+                return (
+                  <blockquote
+                    key={index}
+                    className={`rounded-md border border-neutral-300 bg-white p-7 hover:shadow-md
                 `}
-                >
-                  <div className="flex flex-col items-center gap-3">
-                    <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-tr from-[#b6a650] to-goldie-300 text-xl font-bold">
-                      {initials(review.client)}
-                    </span>
-                    <div>
-                      <h3 className="text-lg font-bold leading-[1.5]">
-                        {review.client}
-                      </h3>
-                      <div className="flex items-center justify-center gap-1">
-                        <BsStarFill size={18} className="text-orange-500" />
-                        <BsStarFill size={18} className="text-orange-500" />
-                        <BsStarFill size={18} className="text-orange-500" />
-                        <BsStarFill size={18} className="text-orange-500" />
-                        <BsStarHalf size={18} className="text-orange-500" />
+                  >
+                    <div className="flex flex-col items-center gap-3">
+                      <span className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-tr from-[#b6a650] to-goldie-300 text-xl font-bold">
+                        {initials(review.client)}
+                      </span>
+                      <div>
+                        <h3 className="text-lg font-bold leading-[1.5]">
+                          {review.client}
+                        </h3>
+                        <div className="flex items-center justify-center gap-1">
+                          <BsStarFill size={18} className="text-orange-500" />
+                          <BsStarFill size={18} className="text-orange-500" />
+                          <BsStarFill size={18} className="text-orange-500" />
+                          <BsStarFill size={18} className="text-orange-500" />
+                          <BsStarHalf size={18} className="text-orange-500" />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <p className="mt-4 leading-[150%]">{review.comment}</p>
-                </blockquote>
-              );
-            },
-          )}
-        </div>
+                    <p className="mt-4 leading-[150%]">{review.comment}</p>
+                  </blockquote>
+                );
+              },
+            )}
+          </div>
 
-        <Pagination
-          className="mx-auto bg-transparent"
-          onNext={handleNext}
-          onPrev={handlePrev}
-          onPaginateClick={handlePaginateClick}
-          itemsPerPage={itemsPerPage}
-          currentPageIndex={currentPageIndex}
-          arr={reviews}
-        />
+          <Pagination
+            className="mx-auto bg-transparent"
+            onNext={handleNext}
+            onPrev={handlePrev}
+            onPaginateClick={handlePaginateClick}
+            itemsPerPage={itemsPerPage}
+            currentPageIndex={currentPageIndex}
+            arr={reviews}
+          />
+        </div>
       </section>
     </Layout>
   );

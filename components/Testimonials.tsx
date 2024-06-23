@@ -86,11 +86,11 @@ const Testimonials = () => {
                       {review.client}
                     </h3>
                     <div className="flex items-center gap-1">
-                      <BsStarFill size={18} className="text-yellow-500" />
-                      <BsStarFill size={18} className="text-yellow-500" />
-                      <BsStarFill size={18} className="text-yellow-500" />
-                      <BsStarFill size={18} className="text-yellow-500" />
-                      <BsStarHalf size={18} className="text-yellow-500" />
+                      <BsStarFill size={18} className="text-orange-500" />
+                      <BsStarFill size={18} className="text-orange-500" />
+                      <BsStarFill size={18} className="text-orange-500" />
+                      <BsStarFill size={18} className="text-orange-500" />
+                      <BsStarHalf size={18} className="text-orange-500" />
                     </div>
                   </div>
                 </div>

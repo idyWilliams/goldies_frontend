@@ -117,134 +117,136 @@ const ShopPage = () => {
               />
             </div>
           </div>
-          <section className="relative px-4 py-6 xl:bg-neutral-100">
-            <div className="mx-auto w-full">
-              <div className="mb-4 flex items-center justify-between border-b border-neutral-400 pb-4 lg:grid lg:grid-cols-[85%_10%] xl:hidden">
-                <div className="items-center justify-between lg:flex">
-                  <h3 className="text-2xl font-bold text-black">
-                    {"" !== null ? captalizedName("") : "All Cakes"}
-                  </h3>
-                  <span className="text-sm text-neutral-500 lg:text-base">
-                    Showing 1 - 20 of 2 results
-                  </span>
-                </div>
-                <div
-                  onClick={() => setShowFilter(true)}
-                  className="inline-flex cursor-pointer items-center gap-3 border border-black p-2 xl:hidden"
-                >
-                  <span>Filter</span>
-                  <span>
-                    <Shuffle size={20} />
-                  </span>
-                </div>
-              </div>
-
-              <div className="grid gap-8 sm:grid-cols-2 md:gap-5 lg:grid-cols-3 xl:hidden">
-                {chunkArray(cakes, itemsPerPage)[currentPageIndex - 1]?.map(
-                  (cake: any, index: any) => {
-                    return <ProductCard data={cake} key={index} />;
-                  },
-                )}
-              </div>
-              <Pagination
-                className="lg:hidden"
-                onNext={handleNext}
-                onPrev={handlePrev}
-                onPaginateClick={handlePaginateClick}
-                itemsPerPage={itemsPerPage}
-                currentPageIndex={currentPageIndex}
-                arr={cakes}
-              />
-
-              {/* DESKTOP PRODUCT DISPLAY */}
-              <div className="hidden xl:grid xl:grid-cols-[300px_1fr] xl:items-start xl:gap-5">
-                <div className="w-full bg-white p-4">
-                  <div className="mb-3 flex items-center justify-between gap-2 text-neutral-500">
-                    <span className="inline-flex items-center gap-2 font-semibold">
-                      <span>
-                        <IoList size={20} />
-                      </span>
-                      Filter
-                    </span>
-
-                    <span
-                      className="cursor-pointer"
-                      onClick={() => setShowFilter(false)}
-                    >
-                      <BsX size={24} />
+          <section className="relative py-6 xl:bg-neutral-100">
+            <div className="wrapper">
+              <div className="mx-auto w-full">
+                <div className="mb-4 flex items-center justify-between border-b border-neutral-400 pb-4 lg:grid lg:grid-cols-[85%_10%] xl:hidden">
+                  <div className="items-center justify-between lg:flex">
+                    <h3 className="text-2xl font-bold text-black">
+                      {"" !== null ? captalizedName("") : "All Cakes"}
+                    </h3>
+                    <span className="text-sm text-neutral-500 lg:text-base">
+                      Showing 1 - 20 of 2 results
                     </span>
                   </div>
-                  <FilterComp
-                    min={min()}
-                    max={max()}
-                    category={""}
-                    subcategory={""}
-                    setSelectedOptions={setSelectedOptions}
-                    selectedOptions={selectedOptions}
-                  />
-                </div>
-                <div className="w-full bg-white p-4">
-                  <div className="mb-4 flex items-center justify-between border-b border-neutral-400 pb-4 lg:grid lg:grid-cols-[85%_10%]">
-                    <div className="items-center justify-between lg:flex">
-                      <h3 className="text-2xl font-bold text-black">
-                        {" "}
-                        {"" !== null ? captalizedName("") : "All Cakes"}
-                      </h3>
-                      <span className="text-sm text-neutral-500 lg:text-base">
-                        Showing 1 - 20 of 2 results
-                      </span>
-                    </div>
-                    <div
-                      // onClick={() => setShowFilter(true)}
-                      className="hidden cursor-pointer items-center justify-center gap-3 border border-black border-opacity-10 bg-neutral-50 p-2 xl:inline-flex"
-                    >
-                      <span>Sort</span>
-                      <span>
-                        <ArrowDown2 size={20} />
-                      </span>
-                    </div>
+                  <div
+                    onClick={() => setShowFilter(true)}
+                    className="inline-flex cursor-pointer items-center gap-3 border border-black p-2 xl:hidden"
+                  >
+                    <span>Filter</span>
+                    <span>
+                      <Shuffle size={20} />
+                    </span>
                   </div>
-                  <div className="grid grid-cols-3 gap-5">
-                    {chunkArray(cakes, itemsPerPage)[currentPageIndex - 1]?.map(
-                      (cake: any, index: any) => {
+                </div>
+
+                <div className="grid gap-8 sm:grid-cols-2 md:gap-5 lg:grid-cols-3 xl:hidden">
+                  {chunkArray(cakes, itemsPerPage)[currentPageIndex - 1]?.map(
+                    (cake: any, index: any) => {
+                      return <ProductCard data={cake} key={index} />;
+                    },
+                  )}
+                </div>
+                <Pagination
+                  className="lg:hidden"
+                  onNext={handleNext}
+                  onPrev={handlePrev}
+                  onPaginateClick={handlePaginateClick}
+                  itemsPerPage={itemsPerPage}
+                  currentPageIndex={currentPageIndex}
+                  arr={cakes}
+                />
+
+                {/* DESKTOP PRODUCT DISPLAY */}
+                <div className="hidden xl:grid xl:grid-cols-[300px_1fr] xl:items-start xl:gap-5">
+                  <div className="w-full bg-white p-4">
+                    <div className="mb-3 flex items-center justify-between gap-2 text-neutral-500">
+                      <span className="inline-flex items-center gap-2 font-semibold">
+                        <span>
+                          <IoList size={20} />
+                        </span>
+                        Filter
+                      </span>
+
+                      <span
+                        className="cursor-pointer"
+                        onClick={() => setShowFilter(false)}
+                      >
+                        <BsX size={24} />
+                      </span>
+                    </div>
+                    <FilterComp
+                      min={min()}
+                      max={max()}
+                      category={""}
+                      subcategory={""}
+                      setSelectedOptions={setSelectedOptions}
+                      selectedOptions={selectedOptions}
+                    />
+                  </div>
+                  <div className="w-full bg-white p-4">
+                    <div className="mb-4 flex items-center justify-between border-b border-neutral-400 pb-4 lg:grid lg:grid-cols-[85%_10%]">
+                      <div className="items-center justify-between lg:flex">
+                        <h3 className="text-2xl font-bold text-black">
+                          {" "}
+                          {"" !== null ? captalizedName("") : "All Cakes"}
+                        </h3>
+                        <span className="text-sm text-neutral-500 lg:text-base">
+                          Showing 1 - 20 of 2 results
+                        </span>
+                      </div>
+                      <div
+                        // onClick={() => setShowFilter(true)}
+                        className="hidden cursor-pointer items-center justify-center gap-3 border border-black border-opacity-10 bg-neutral-50 p-2 xl:inline-flex"
+                      >
+                        <span>Sort</span>
+                        <span>
+                          <ArrowDown2 size={20} />
+                        </span>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-5">
+                      {chunkArray(cakes, itemsPerPage)[
+                        currentPageIndex - 1
+                      ]?.map((cake: any, index: any) => {
                         return <ProductCard data={cake} key={index} />;
-                      },
+                      })}
+                    </div>
+
+                    {cakes?.length < 1 && (
+                      <div className="">No cake products found</div>
+                    )}
+                    {cakes?.length >= 1 && (
+                      <Pagination
+                        onNext={handleNext}
+                        onPrev={handlePrev}
+                        onPaginateClick={handlePaginateClick}
+                        itemsPerPage={itemsPerPage}
+                        currentPageIndex={currentPageIndex}
+                        arr={cakes}
+                      />
                     )}
                   </div>
-
-                  {cakes?.length < 1 && (
-                    <div className="">No cake products found</div>
-                  )}
-                  {cakes?.length >= 1 && (
-                    <Pagination
-                      onNext={handleNext}
-                      onPrev={handlePrev}
-                      onPaginateClick={handlePaginateClick}
-                      itemsPerPage={itemsPerPage}
-                      currentPageIndex={currentPageIndex}
-                      arr={cakes}
-                    />
-                  )}
                 </div>
               </div>
-            </div>
 
-            {/* FILTER SIDEBAR COMP */}
-            <FilterSidebar
-              data={cakes}
-              className="xl:hidden"
-              showFilter={showFilter}
-              setShowFilter={setShowFilter}
-            >
-              <FilterComp
-                min={min()}
-                max={max()}
-                category={""}
-                subcategory={""}
-                setSelectedOptions={setSelectedOptions}
-                selectedOptions={selectedOptions}
-              />
-            </FilterSidebar>
+              {/* FILTER SIDEBAR COMP */}
+              <FilterSidebar
+                data={cakes}
+                className="xl:hidden"
+                showFilter={showFilter}
+                setShowFilter={setShowFilter}
+              >
+                <FilterComp
+                  min={min()}
+                  max={max()}
+                  category={""}
+                  subcategory={""}
+                  setSelectedOptions={setSelectedOptions}
+                  selectedOptions={selectedOptions}
+                />
+              </FilterSidebar>
+            </div>
           </section>
         </Suspense>
       </Layout>
