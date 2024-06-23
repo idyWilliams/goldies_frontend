@@ -41,7 +41,7 @@ export default function Login() {
   };
   return (
     <>
-      <div className="w-full">
+      <div className="w-full flex-grow">
         <h1 className="font-bold">Login</h1>
         <p className="mb-5 text-[13px]">Enter your login details</p>
         <form

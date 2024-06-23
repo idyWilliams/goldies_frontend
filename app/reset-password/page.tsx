@@ -60,7 +60,7 @@ export default function Page() {
     <>
       <Layout>
         <div className="mt-[64px] lg:mt-20"></div>
-        <div className="mx-auto flex w-full items-center justify-center bg-white px-4 py-10 sm:w-[560px] md:h-[70vh] md:w-[640px] lg:w-[400px]">
+        <div className="mx-auto flex w-full items-center justify-center bg-white px-4 py-10 sm:w-[560px] md:h-[70vh] md:w-[640px] lg:w-[500px]">
           <div
             className={cn(
               "block w-full bg-white p-5 shadow-[0px_0px_30px_rgba(0,0,0,0.2)] md:shadow-none",
@@ -81,7 +81,9 @@ export default function Page() {
             </div>
             <form id="forgotPassword" onSubmit={handleSubmit(handleSave)}>
               <label htmlFor="newPassword">
-                <span className="mb-1 inline-block text-sm">Password</span>
+                <span className="mb-1 inline-block text-sm font-semibold">
+                  Password
+                </span>
                 <div className="relative mb-4">
                   <input
                     {...register("newPassword")}
@@ -102,7 +104,7 @@ export default function Page() {
                 </div>
               </label>
               <label htmlFor="confirm">
-                <span className="mb-1 inline-block text-sm">
+                <span className="mb-1 inline-block text-sm font-semibold">
                   Confirm Password
                 </span>
                 <div className="relative">

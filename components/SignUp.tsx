@@ -42,7 +42,7 @@ export default function SignUp() {
 
   return (
     <>
-      <div className="w-full">
+      <div className="w-full flex-grow">
         <h1 className="font-bold">Create an account</h1>
         <p className="text-[13px]">
           Register your account by filling the form below
@@ -60,7 +60,11 @@ export default function SignUp() {
                 placeholder="Your firstname"
                 className={`w-full rounded-sm bg-gray-50 text-[13px] ${errors.firstName ? "border border-red-500 focus:border-red-500 focus:outline-none focus:ring-0" : "border focus:border-black focus:outline-none focus:ring-black"}`}
               />
-              <p className="mt-2 text-[#a10]">{errors.firstName?.message}</p>
+              {errors?.firstName && (
+                <p className="mt-2 text-sm text-[#a10]">
+                  {errors.firstName?.message}
+                </p>
+              )}
             </label>
 
             <label htmlFor="lastName" className="block">
@@ -73,7 +77,11 @@ export default function SignUp() {
                 placeholder="Your lastname"
                 className={`w-full rounded-sm bg-gray-50 text-[13px] ${errors.lastName ? "border border-red-500 focus:border-red-500 focus:outline-none focus:ring-0" : "border focus:border-black focus:outline-none focus:ring-black"}`}
               />
-              <p className="mt-2 text-[#a10]">{errors.lastName?.message}</p>
+              {errors?.lastName && (
+                <p className="mt-2 text-sm text-[#a10]">
+                  {errors.lastName?.message}
+                </p>
+              )}
             </label>
           </div>
 
@@ -87,7 +95,7 @@ export default function SignUp() {
               placeholder="Your email"
               className={`w-full rounded-sm bg-gray-50 text-[13px] ${errors.email ? "border border-red-500 focus:border-red-500 focus:outline-none focus:ring-0" : "border focus:border-black focus:outline-none focus:ring-black"}`}
             />
-            <p className="mt-2 text-[#a10]">{errors.email?.message}</p>
+            <p className="mt-2 text-sm text-[#a10]">{errors.email?.message}</p>
           </label>
 
           <label htmlFor="password" className="">
@@ -110,7 +118,11 @@ export default function SignUp() {
                 {visible ? <BsEyeSlash /> : <AiOutlineEye />}
               </span>
             </div>
-            {/* <p className="mt-2 text-[#a10]">{errors.password?.message}</p> */}
+            {errors?.password && (
+              <p className="mt-2 text-sm text-[#a10]">
+                {errors.password?.message}
+              </p>
+            )}
           </label>
           {password !== "" && (
             <ReactPasswordChecklist
