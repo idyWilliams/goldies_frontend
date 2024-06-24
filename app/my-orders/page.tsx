@@ -2,11 +2,13 @@
 import Layout from "@/components/Layout";
 import ProductTable from "@/components/admin-component/ProductTable";
 import Pagination from "@/components/custom-filter/Pagination";
+import StatusColumn from "@/components/myOrdersComps/StatusColumn";
 import EachElement from "@/helper/EachElement";
 import { chunkArray } from "@/helper/chunkArray";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Eye } from "iconsax-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { Tooltip } from "react-tooltip";
 
@@ -19,35 +21,6 @@ type MyOrders = {
   total: number;
   shippingFee: number;
   quantity: number;
-};
-
-const StatusColumn = ({ status }: { status: string }) => {
-  switch (status.toLowerCase()) {
-    case "delivered":
-      return (
-        <span className="bg-green-700 px-2 py-1 text-sm text-white lg:bg-transparent lg:text-base lg:text-green-700">
-          {status}
-        </span>
-      );
-    case "cancelled":
-      return (
-        <span className="bg-red-600 px-2 py-1 text-sm text-white lg:bg-transparent lg:text-base lg:text-red-600">
-          {status}
-        </span>
-      );
-    case "pending":
-      return (
-        <span className="bg-orange-500 px-2 py-1 text-sm text-white lg:bg-transparent lg:text-base lg:text-orange-400">
-          {status}
-        </span>
-      );
-    default:
-      return (
-        <span className="bg-neutral-800 px-2 py-1 text-sm text-white lg:bg-transparent lg:text-base lg:text-neutral-800">
-          {status}
-        </span>
-      );
-  }
 };
 
 export const recentOrders = [
@@ -197,7 +170,7 @@ const columns = [
     cell: (info) => (
       <div className="flex justify-center text-neutral-600">
         <Link
-          href={`/my-orders/GOL${info.cell.row.original.id.slice(0, 4)}`}
+          href={`/my-orders/${info.cell.row.original.id}`}
           className="cursor-pointer"
           id="my-anchor-element-id"
         >
@@ -216,6 +189,7 @@ const columns = [
 let itemsPerPage = 6;
 
 const MyOrders = () => {
+  const router = useRouter();
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
   const [myOrders, setMyOrders] = useState(recentOrders);
   const [selectedTabs, setSelectedTabs] = useState("All");
@@ -261,14 +235,14 @@ const MyOrders = () => {
       <div className="mt-[64px]" />
       <section className="bg-neutral-100 py-6">
         <div className="wrapper">
-          <h1 className="mb-8 border-b pb-3 pt-7 text-2xl font-semibold">
+          <h1 className="mb-8 border-b pb-3 text-2xl font-semibold">
             All Orders
           </h1>
 
           <div className="lg:hidden">
             <div className="flex gap-1">
               <EachElement
-                of={["All", "Pending", "Success", "Failed"]}
+                of={["All", "Pending", "Delivered", "Cancelled"]}
                 render={(tabs: string, index: number) => (
                   <button
                     key={index}
@@ -284,7 +258,9 @@ const MyOrders = () => {
             </div>
             <div className="mt-5 grid gap-5 md:grid-cols-2">
               <EachElement
-                of={chunkArray(myOrders, itemsPerPage)[currentPageIndex - 1]}
+                of={
+                  chunkArray(filteredData, itemsPerPage)[currentPageIndex - 1]
+                }
                 render={(order: any, index: any) => {
                   return (
                     <div key={index} className="rounded-md bg-white p-4">
@@ -332,7 +308,12 @@ const MyOrders = () => {
                         <li>
                           <div className="flex items-center justify-between">
                             <span>Date:</span>
-                            <button className="inline-flex items-center gap-2 bg-neutral-900 px-2 py-1 text-sm text-goldie-300">
+                            <button
+                              onClick={() =>
+                                router.push(`/my-orders/${order?.id}`)
+                              }
+                              className="inline-flex items-center gap-2 bg-neutral-900 px-2 py-1 text-sm text-goldie-300"
+                            >
                               <span>View</span> <Eye size={20} />
                             </button>
                           </div>
