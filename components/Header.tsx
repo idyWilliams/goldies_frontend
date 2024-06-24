@@ -138,10 +138,13 @@ const Header = () => {
                       <FaRegUserCircle size={20} />
                       My Account
                     </Link>
-                    <span className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
+                    <Link
+                      href={"/my-orders"}
+                      className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
+                    >
                       <BiStore size={20} />
                       Orders
-                    </span>
+                    </Link>
                     <Link
                       href={"/saved-items"}
                       className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"

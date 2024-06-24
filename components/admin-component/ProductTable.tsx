@@ -1,16 +1,13 @@
 "use client";
-
 import { cn } from "@/helper/cn";
 import {
-  Column,
-  ColumnDef,
-  createColumnHelper,
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import { useEffect, useMemo, useState } from "react";
 import { CiSearch } from "react-icons/ci";
+import { Tooltip } from "react-tooltip";
 
 export default function ProductTable({
   columns,
@@ -70,7 +67,7 @@ export default function ProductTable({
       <div
         className={cn(
           "flex items-center justify-between gap-2",
-          showSearchBar || (filteredTabs?.length && "mb-6"),
+          filteredTabs?.length >= 1 && "mb-6",
         )}
       >
         <div className="flex items-center gap-1">
@@ -109,11 +106,11 @@ export default function ProductTable({
       <table className="w-full bg-[#fff]">
         <thead>
           {table?.getHeaderGroups()?.map((headerGroup) => (
-            <tr key={headerGroup.id}>
+            <tr key={headerGroup.id} className="bg-black">
               {headerGroup?.headers?.map((header) => (
                 <th
                   key={header.id}
-                  className="bg-black p-4 text-left capitalize text-goldie-300"
+                  className="p-4 text-left capitalize text-goldie-300"
                 >
                   {header.isPlaceholder
                     ? null
@@ -130,7 +127,7 @@ export default function ProductTable({
           {table.getRowModel().rows?.map((row) => (
             <tr key={row.id} className="odd:bg-goldie-300 odd:bg-opacity-20">
               {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="px-4 py-2">
+                <td key={cell.id} className="px-4 py-4">
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}
