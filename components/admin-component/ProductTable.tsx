@@ -51,6 +51,7 @@ export default function ProductTable({
     const filteredProducts = Tdata?.filter(
       (item: any) =>
         item?.productName?.toLowerCase()?.includes(searchValue) ||
+        item?.name?.toLowerCase()?.includes(searchValue) ||
         item?.id?.toString()?.toLowerCase()?.includes(searchValue),
     );
     setTData(filteredProducts);

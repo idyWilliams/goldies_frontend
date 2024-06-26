@@ -14,94 +14,104 @@ import { cn } from "@/helper/cn";
 import ProductTable from "@/components/admin-component/ProductTable";
 import { createColumnHelper } from "@tanstack/react-table";
 
+type MyOrderList = {
+  id: number;
+  name: string;
+  image: any;
+  price: number;
+  quantity: number;
+  category: string;
+  total: number;
+};
+
 function getStatus(status: string) {
   switch (status?.toLowerCase()) {
     case "delivered":
       return (
-        <span className="border-green-700 bg-green-700 bg-opacity-25 px-2 py-1 text-sm text-green-700">
+        <span className="rounded-full border border-green-700 bg-green-700 bg-opacity-10 px-3 py-1 text-green-700">
           {status}
         </span>
       );
     case "cancelled":
       return (
-        <span className="border-red-600 bg-red-600 bg-opacity-25 px-2 py-1 text-sm text-red-600">
+        <span className="rounded-full border border-red-600 bg-red-600 bg-opacity-10 px-3 py-1 text-red-600">
           {status}
         </span>
       );
     case "pending":
       return (
-        <span className="border-orange-400 bg-orange-500 bg-opacity-25 px-2 py-1 text-sm text-orange-400">
+        <span className="rounded-full border border-orange-400 bg-orange-500 bg-opacity-10 px-3 py-1 text-orange-400">
           {status}
         </span>
       );
     default:
       return (
-        <span className="border-neutral-800 bg-neutral-800 bg-opacity-25 px-2 py-1 text-sm text-neutral-800">
+        <span className="rounded-full border border-neutral-800 bg-neutral-800 bg-opacity-10 px-3 py-1 text-neutral-800">
           {status}
         </span>
       );
   }
 }
 
-// const columnHelper = createColumnHelper<MyOrders>();
-// const columns = [
-//   columnHelper.accessor((row) => row, {
-//     id: "orderID",
-//     header: () => <span>Order ID</span>,
-//     cell: (info) => (
-//       <span className="uppercase">
-//         #GOL{info.cell.row.original.id.slice(0, 4)}
-//       </span>
-//     ),
-//   }),
-//   columnHelper.accessor((row) => row, {
-//     id: "orderDate",
-//     header: () => <span>Order Date</span>,
-//     cell: (info) => (
-//       <span className="">{info.cell.row.original.date.replace(/-/g, "/")}</span>
-//     ),
-//   }),
-//   columnHelper.accessor("quantity", {
-//     header: () => <span>Qnty</span>,
-//     cell: (info) => <div className="">{info.cell.row.original.quantity}</div>,
-//   }),
-//   columnHelper.accessor("price", {
-//     header: () => <span>Amount</span>,
-//     cell: (info) => (
-//       <div className="">&euro;{info.cell.row.original.price}</div>
-//     ),
-//   }),
-//   columnHelper.accessor("shippingFee", {
-//     header: () => <span>Shipping</span>,
-//     cell: (info) => (
-//       <div className="">&euro;{info.cell.row.original.shippingFee}</div>
-//     ),
-//   }),
-//   columnHelper.accessor("status", {
-//     header: () => <span>Status</span>,
-//     cell: (info) => <StatusColumn status={info.cell.row.original.status} />,
-//   }),
-//   columnHelper.accessor((row) => row, {
-//     id: "action",
-//     header: () => <div className="text-center">Action</div>,
-//     cell: (info) => (
-//       <div className="flex justify-center text-neutral-600">
-//         <Link
-//           href={`/my-orders/${info.cell.row.original.id}`}
-//           className="cursor-pointer"
-//           id="my-anchor-element-id"
-//         >
-//           <Eye />
-//         </Link>
-//         <Tooltip
-//           anchorSelect="#my-anchor-element-id"
-//           content="view order"
-//           place="left"
-//         />
-//       </div>
-//     ),
-//   }),
-// ];
+const orderItems = [
+  {
+    id: 0,
+    name: "Chocolate Fudge Cake",
+    image: Chocolate,
+    price: 508.98,
+    quantity: 1,
+    category: "Milestone Cakes",
+    total: 508.98,
+  },
+  {
+    id: 1,
+    name: "Red Velvet Cake",
+    image: RedVelvet,
+    price: 100.0,
+    quantity: 1,
+    category: "Milestone Cakes",
+    total: 100.0,
+  },
+];
+
+const columnHelper = createColumnHelper<MyOrderList>();
+const columns = [
+  columnHelper.accessor((row) => row, {
+    id: "product",
+    header: () => <span>Product</span>,
+    cell: (info) => (
+      <div className="grid grid-cols-[70px_1fr] items-center gap-2">
+        <Image
+          src={info.cell.row.original.image}
+          alt={info.cell.row.original.name}
+          className="h-[50px] w-full object-cover"
+        />
+        <span>{info.cell.row.original.name}</span>
+      </div>
+    ),
+  }),
+  columnHelper.accessor((row) => row, {
+    id: "category",
+    header: () => <span>Category</span>,
+    cell: (info) => <span className="">{info.cell.row.original.category}</span>,
+  }),
+  columnHelper.accessor("quantity", {
+    header: () => <span>Qnty</span>,
+    cell: (info) => <div className="">{info.cell.row.original.quantity}</div>,
+  }),
+  columnHelper.accessor("price", {
+    header: () => <span>Amount</span>,
+    cell: (info) => (
+      <div className="">&euro;{info.cell.row.original.price}</div>
+    ),
+  }),
+  columnHelper.accessor("total", {
+    header: () => <span>Shipping</span>,
+    cell: (info) => (
+      <div className="">&euro;{info.cell.row.original.total}</div>
+    ),
+  }),
+];
 
 const MyOrderDetails = ({ params }: { params: any }) => {
   const { order: id } = params;
@@ -277,50 +287,79 @@ const MyOrderDetails = ({ params }: { params: any }) => {
               </ul>
             </div>
           </div>
+          <div className="hidden lg:mx-auto lg:block xl:max-w-[90%]">
+            {/* ORDER DETAILS */}
+            <div className="rounded-md bg-white p-5">
+              <span className="font-semibold ">
+                Order ID : #GOL{order?.id?.slice(0, 4)}
+              </span>
 
-          <div className="hidden rounded-md bg-white p-5 lg:block">
-            <span>Order ID : #GOL{order?.id?.slice(0, 4)}</span>
-            <div className="flex justify-between">
-              <ul>
-                <li>Name</li>
-                <li>John Doe</li>
-              </ul>
-              <ul>
-                <li>Status</li>
-                <li>{getStatus(order?.status)}</li>
-              </ul>
+              <div className="mt-3 flex justify-between">
+                <div className="flex flex-col gap-5">
+                  <ul>
+                    <li className="font-medium">Name</li>
+                    <li className="text-neutral-600">John Doe</li>
+                  </ul>{" "}
+                  <ul>
+                    <li className="font-medium">Email</li>
+                    <li className="text-neutral-600">johndoe@gmail.com</li>
+                  </ul>
+                  <ul>
+                    <li className="font-medium">Billing Address</li>
+                    <li className="text-neutral-600">
+                      37 Wallenger Avenue, Romford, Essex, England, RM2 6EP
+                    </li>
+                  </ul>
+                  <ul>
+                    <li className="font-medium">Shipping Address</li>
+                    <li className="text-neutral-600">
+                      37 Wallenger Avenue, Romford, Essex, England, RM2 6EP
+                    </li>
+                  </ul>
+                </div>
+                <div className="flex flex-col gap-5">
+                  <ul>
+                    <li className="font-medium">Status</li>
+                    <li>{getStatus(order?.status)}</li>
+                  </ul>
+                  <ul>
+                    <li className="font-medium">Contact No</li>
+                    <li className="text-neutral-600">+449387645218</li>
+                  </ul>
+                  <ul>
+                    <li className="font-medium">Order Date</li>
+                    <li className="text-neutral-600">{order?.date}</li>
+                  </ul>
+                </div>
+              </div>
             </div>
-            <div className="flex justify-between">
-              <ul>
-                <li>Email</li>
-                <li>johndoe@gmail.com</li>
-              </ul>
-              <ul>
-                <li>Contact No</li>
-                <li>+449387645218</li>
-              </ul>
+
+            {/* ORDER ITEMS TABLE */}
+            <div className="mt-5">
+              <ProductTable
+                columns={columns}
+                Tdata={orderItems}
+                filteredTabs={[]}
+                showSearchBar={false}
+              />
+
+              <div className=" mt-5 flex justify-end">
+                <div className="flex w-[300px] flex-col gap-3 bg-white p-4">
+                  <div className="inline-flex items-center justify-between">
+                    <span>Subtotal</span>
+                    <span>€608.98</span>
+                  </div>
+                  <div className="inline-flex items-center justify-between">
+                    <span>Tax</span>
+                    <span>€50.50</span>
+                  </div>
+                  <div className="inline-flex items-center justify-between border-t pt-3">
+                    <span>Total</span>
+                    <span>€659.48</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="flex justify-between">
-              <ul>
-                <li>Billing Address</li>
-                <li> 37 Wallenger Avenue, Romford, Essex, England, RM2 6EP</li>
-              </ul>
-              <ul>
-                <li>Order Date</li>
-                <li>{order?.date}</li>
-              </ul>
-            </div>
-            <ul>
-              <li>Shipping Address</li>
-              <li> 37 Wallenger Avenue, Romford, Essex, England, RM2 6EP</li>
-            </ul>
-          </div>
-          <div>
-            {/* <ProductTable
-              columns={columns}
-              Tdata={recentOrders}
-              filteredTabs={["All", "Pending", "Delivered", "Cancelled"]}
-            /> */}
           </div>
         </div>
       </section>

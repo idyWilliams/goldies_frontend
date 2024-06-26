@@ -340,6 +340,7 @@ const MyOrders = () => {
             <ProductTable
               columns={columns}
               Tdata={recentOrders}
+              statusType="order"
               filteredTabs={["All", "Pending", "Delivered", "Cancelled"]}
             />
           </div>
