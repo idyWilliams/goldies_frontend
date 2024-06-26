@@ -27,7 +27,10 @@ const tabs = [
 ];
 
 export default function Page({ params }: any) {
-  const [activeTab, setActiveTab] = useState(0);
+  // const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(() =>
+    params.authentication === "signup" ? 1 : 0,
+  );
   const [visible, setVisible] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
@@ -56,22 +59,6 @@ export default function Page({ params }: any) {
     window.history.pushState(null, "", `/${value}`);
     // router.push(`/${value}`);
   };
-  console.log("rerender");
-  console.log(
-    "params",
-    params,
-    tabs[activeTab],
-    activeTab,
-    tabs[activeTab].value,
-  );
-
-  useEffect(() => {
-    if (params.authentication === "signup") {
-      setActiveTab(1);
-    } else {
-      setActiveTab(0);
-    }
-  }, []);
 
   return (
     <>
@@ -103,7 +90,7 @@ export default function Page({ params }: any) {
           <div className="hide-scroll-bar w-full overflow-hidden">
             <div
               className={cn(
-                "flex w-[700px] items-start gap-1 duration-300",
+                "flex w-[700px] items-start gap-1 duration-300 md:w-[900px]",
                 activeTab === 1 ? "-translate-x-1/2" : "translate-x-0",
               )}
             >
@@ -111,7 +98,7 @@ export default function Page({ params }: any) {
               <SignUp />
             </div>
 
-            {/* {activeTab === 0 && <Login />}
+            {/* {activeTab === 0 && <Login />}ss
             {activeTab === 1 && <SignUp />} */}
           </div>
         </div>

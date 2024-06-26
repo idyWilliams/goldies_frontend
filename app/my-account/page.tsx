@@ -67,7 +67,7 @@ const Page = () => {
   useEffect(() => {
     const newUrl = tabs[activeTab]?.label?.toLowerCase().replace(/ /g, "-");
     router.push(`/my-account?tab=${encodeURIComponent(newUrl)}`);
-  }, []);
+  }, [activeTab, router]);
 
   return (
     <>

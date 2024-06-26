@@ -290,7 +290,7 @@ const Page = ({ params }: CategoryPageProps) => {
       description:
         "Milestone cakes commemorate significant life events and achievements.",
     });
-  }, []);
+  }, [reset]);
 
   return (
     <>

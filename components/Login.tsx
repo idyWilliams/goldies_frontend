@@ -56,13 +56,13 @@ export default function Login() {
               type="email"
               // name="email"
               autoComplete="off"
-              id="email"
+              id="emaillog"
               placeholder="Your email"
               className={`w-full rounded-sm bg-gray-50 text-[13px] ${errors.email ? "border border-red-500 focus:border-red-500 focus:outline-none focus:ring-0" : "border focus:border-black focus:outline-none focus:ring-black"}`}
             />
             <p className="mt-2 text-[#a10]">{errors.email?.message}</p>
           </label>
-          <label htmlFor="password" className="mb-4 mt-4 block">
+          <label htmlFor="passwordlog" className="mb-4 mt-4 block">
             <span className="mb-2 block w-full">Password</span>
             <div className="relative">
               <input
@@ -71,7 +71,7 @@ export default function Login() {
                 //   name="password"
                 value={password}
                 autoComplete="off"
-                id="password"
+                id="passwordlog"
                 placeholder="Your password"
                 onChange={(e: any) => setPassword(e.target.value)}
                 className={`w-full rounded-sm bg-gray-50 text-[13px] ${errors.password ? "border border-red-500 focus:border-red-500 focus:outline-none focus:ring-0" : "border focus:border-black focus:outline-none focus:ring-black"}`}
