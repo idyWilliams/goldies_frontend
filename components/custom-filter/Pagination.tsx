@@ -11,6 +11,7 @@ type PaginationProps = {
   itemsPerPage: number;
   arr: any[];
   className?: string;
+  buttonClassName?: string;
 };
 
 const Pagination: React.FC<PaginationProps> = ({
@@ -21,6 +22,7 @@ const Pagination: React.FC<PaginationProps> = ({
   itemsPerPage,
   arr,
   className,
+  buttonClassName,
 }) => {
   return (
     <div

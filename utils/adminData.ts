@@ -535,3 +535,117 @@ export const customerOrders = [
     image: Chocolate,
   },
 ];
+
+export type Order = {
+  name: string;
+  id: string;
+  date: string;
+  price: string;
+  status: "Pending" | "Cancelled" | "Delivered";
+  total: number;
+  shippingFee: number;
+  quantity: number;
+};
+
+export const recentOrders: Order[] = [
+  {
+    name: "Strawberry Sponge Cake",
+    id: "B736383836hgdy73",
+    date: "2024-05-06",
+    price: "300.00",
+    status: "Pending", // Options: Pending, Cancelled",Delivered
+    total: 100,
+    shippingFee: 5.5,
+    quantity: 2,
+  },
+  {
+    name: "Chocolate Fudge Cake",
+    id: "C839383938dj38",
+    date: "2024-05-07",
+    price: "250.00",
+    status: "Delivered",
+    total: 100,
+    quantity: 1,
+    shippingFee: 5.5,
+  },
+  {
+    name: "Vanilla Cream Cake",
+    id: "V939383838dk39",
+    date: "2024-05-08",
+    price: "200.00",
+    status: "Cancelled",
+    total: 100,
+    shippingFee: 5.5,
+    quantity: 2,
+  },
+  {
+    name: "Red Velvet Cake",
+    id: "R828383828fj29",
+    date: "2024-05-09",
+    price: "320.00",
+    status: "Pending",
+    total: 100,
+    shippingFee: 5.5,
+    quantity: 3,
+  },
+  {
+    name: "Lemon Drizzle Cake",
+    id: "L737383727gj40",
+    date: "2024-05-10",
+    price: "180.00",
+    status: "Delivered",
+    total: 100,
+    shippingFee: 5.5,
+    quantity: 1,
+  },
+  {
+    name: "Carrot Cake",
+    id: "K929383728fh50",
+    date: "2024-05-11",
+    price: "270.00",
+    status: "Pending",
+    total: 100,
+    quantity: 2,
+    shippingFee: 5.5,
+  },
+  {
+    name: "Cheesecake",
+    id: "C826363638gh60",
+    date: "2024-05-12",
+    price: "230.00",
+    status: "Delivered",
+    total: 100,
+    quantity: 2,
+    shippingFee: 5.5,
+  },
+  {
+    name: "Black Forest Cake",
+    id: "B737363737hi70",
+    date: "2024-05-13",
+    price: "340.00",
+    status: "Cancelled",
+    total: 100,
+    quantity: 2,
+    shippingFee: 5.5,
+  },
+  {
+    name: "Pineapple Upside Down Cake",
+    id: "P826373738ij80",
+    date: "2024-05-14",
+    price: "290.00",
+    status: "Pending",
+    total: 100,
+    quantity: 2,
+    shippingFee: 5.5,
+  },
+  {
+    name: "Tiramisu",
+    id: "T738383939kj90",
+    date: "2024-05-15",
+    price: "310.00",
+    status: "Delivered",
+    total: 100,
+    quantity: 2,
+    shippingFee: 5.5,
+  },
+];
