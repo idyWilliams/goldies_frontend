@@ -9,6 +9,8 @@ import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { cn } from "@/helper/cn";
+import { Tooltip } from "react-tooltip";
 
 export default function ProductCard({ data }: { data: any }) {
   const [fav, setFav] = useState(false);
@@ -41,12 +43,45 @@ export default function ProductCard({ data }: { data: any }) {
             className="h-full w-full object-cover object-center"
           />
         </Link>
-        <span
-          className="absolute right-2 top-2 inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-[5px] bg-black bg-opacity-50 text-goldie-300"
-          onClick={() => setFav((prev: any) => !prev)}
-        >
-          {fav ? <Heart size={20} variant="Bold" /> : <Heart size={20} />}
-        </span>
+        <div className="absolute left-0 top-2 flex w-full items-center justify-between px-2">
+          <span
+            className={cn("rounded-md bg-white px-2 py-1 text-sm capitalize")}
+          >
+            <span
+              className="cursor-pointer"
+              id={`my-anchor-element-${data?.id}`}
+            >
+              <span
+                className={cn(
+                  "font-semibold",
+                  data?.type === "pre-order"
+                    ? "text-red-600"
+                    : "text-green-700",
+                )}
+              >
+                {data?.type}
+              </span>
+            </span>
+            <Tooltip
+              className="border bg-[#fff_!important] text-[#333_!important]"
+              anchorSelect={`#my-anchor-element-${data?.id}`}
+              content={
+                data?.type === "pre-order"
+                  ? "Preorder now for a fresh bake!"
+                  : "Ready for immediate purchase!"
+              }
+              place="bottom-start"
+            />
+          </span>
+          <span
+            className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-[5px] bg-black bg-opacity-50 text-goldie-300"
+            onClick={() => setFav((prev: any) => !prev)}
+            onMouseEnter={() => setFav(true)}
+            onMouseLeave={() => setFav(false)}
+          >
+            {fav ? <Heart size={20} variant="Bold" /> : <Heart size={20} />}
+          </span>
+        </div>
       </figure>
       <div className="mb-1 flex flex-col text-lg">
         {" "}
@@ -62,23 +97,32 @@ export default function ProductCard({ data }: { data: any }) {
         <StarRating iconSize={20} canRate={false} />{" "}
         <span className="text-sm">(32)</span>
       </div>
-      <div className="mt-2 flex items-center gap-2">
+      {data?.type === "pre-order" ? (
         <button
-          onClick={handleAddToCart}
-          className="inline-flex flex-grow items-center justify-center gap-2 rounded-md border border-neutral-900 bg-neutral-900 px-0 py-2.5 text-goldie-300"
+          onClick={() => router.push(`/shop/${data?.slug}`)}
+          className="flex w-full flex-grow items-center justify-center gap-2 rounded-md border border-neutral-900 bg-neutral-900 px-0 py-2.5 text-goldie-300"
         >
-          <span className="">
-            <ShoppingCart size={20} />
-          </span>{" "}
-          Add to cart
+          Shop now
         </button>
-        <button
-          onClick={handleBuyNow}
-          className="rounded-md border border-neutral-900 px-4 py-2.5 text-neutral-900"
-        >
-          Buy now
-        </button>
-      </div>
+      ) : (
+        <div className="mt-2 flex items-center gap-2">
+          <button
+            onClick={handleAddToCart}
+            className="inline-flex flex-grow items-center justify-center gap-2 rounded-md border border-neutral-900 bg-neutral-900 px-0 py-2.5 text-goldie-300"
+          >
+            <span className="">
+              <ShoppingCart size={20} />
+            </span>{" "}
+            Add to cart
+          </button>
+          <button
+            onClick={handleBuyNow}
+            className="rounded-md border border-neutral-900 px-4 py-2.5 text-neutral-900"
+          >
+            Buy now
+          </button>
+        </div>
+      )}
     </div>
   );
 }

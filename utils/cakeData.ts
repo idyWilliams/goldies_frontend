@@ -313,6 +313,7 @@ export const cakeProducts1 = [
     bestSeller: true,
     category: "Milestone Cakes",
     subcategory: "Birthday Cakes",
+    type: "available",
   },
   {
     id: 2,
@@ -329,6 +330,7 @@ export const cakeProducts1 = [
     bestSeller: false,
     category: "Kids' Cakes",
     subcatergory: "Princess Cakes",
+    type: "available",
   },
   {
     id: 3,
@@ -343,6 +345,7 @@ export const cakeProducts1 = [
     weight: "1.2kg",
     available: false,
     bestSeller: false,
+    type: "pre-order",
   },
   {
     id: 4,
@@ -364,6 +367,7 @@ export const cakeProducts1 = [
     weight: "1.5kg",
     available: true,
     bestSeller: true,
+    type: "available",
   },
   {
     id: 5,
@@ -378,6 +382,7 @@ export const cakeProducts1 = [
     weight: "1.2kg",
     available: true,
     bestSeller: false,
+    type: "available",
   },
   {
     id: 6,
@@ -400,6 +405,7 @@ export const cakeProducts1 = [
     weight: "1.8kg",
     available: true,
     bestSeller: false,
+    type: "pre-order",
   },
   {
     id: 7,
@@ -421,6 +427,7 @@ export const cakeProducts1 = [
     weight: "1.5kg",
     available: false,
     bestSeller: false,
+    type: "pre-order",
   },
   {
     id: 8,
@@ -443,6 +450,7 @@ export const cakeProducts1 = [
     weight: "1kg",
     available: true,
     bestSeller: true,
+    type: "pre-order",
   },
 ];
 

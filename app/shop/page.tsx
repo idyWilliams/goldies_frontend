@@ -123,10 +123,12 @@ const ShopPage = () => {
                 <div className="mb-4 flex items-center justify-between border-b border-neutral-400 pb-4 lg:grid lg:grid-cols-[85%_10%] xl:hidden">
                   <div className="items-center justify-between lg:flex">
                     <h3 className="text-2xl font-bold text-black">
-                      {"" !== null ? captalizedName("") : "All Cakes"}
+                      {" "}
+                      {"" ? captalizedName("") : "All Cakes"}
                     </h3>
                     <span className="text-sm text-neutral-500 lg:text-base">
-                      Showing 1 - 20 of 2 results
+                      Showing {currentPageIndex} - {itemsPerPage} of{" "}
+                      {cakes?.length} results
                     </span>
                   </div>
                   <div
@@ -189,10 +191,11 @@ const ShopPage = () => {
                       <div className="items-center justify-between lg:flex">
                         <h3 className="text-2xl font-bold text-black">
                           {" "}
-                          {"" !== null ? captalizedName("") : "All Cakes"}
+                          {"" ? captalizedName("") : "All Cakes"}
                         </h3>
                         <span className="text-sm text-neutral-500 lg:text-base">
-                          Showing 1 - 20 of 2 results
+                          Showing {currentPageIndex} - {itemsPerPage} of{" "}
+                          {cakes?.length} results
                         </span>
                       </div>
                       <div

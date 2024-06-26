@@ -20,7 +20,7 @@ export interface ProductState {
 
 const initialState: ProductState = {
   productList: cakes,
-  cart: {},
+  cart: JSON.parse(localStorage.getItem("cart") || "{}"),
   favorites: {},
 };
 
@@ -58,6 +58,7 @@ export const productSlice = createSlice({
         toast.success(`${product?.name} added to cart`);
       } else {
         toast.info(`${product?.name} already in cart`);
+        localStorage.setItem("cart", JSON.stringify(state.cart));
       }
     },
     // Reducer to add products to favs
@@ -82,6 +83,7 @@ export const productSlice = createSlice({
       if (product) {
         delete state.cart[action.payload.id];
         toast.success(`${product.name} is removed from cart`);
+        localStorage.setItem("cart", JSON.stringify(state.cart));
       }
     },
     // Reducer to increment product qty in cart
@@ -92,6 +94,7 @@ export const productSlice = createSlice({
       if (state.cart[action.payload.id]) {
         const product = state.cart[action.payload.id];
         (product.quantity as number) += 1;
+        localStorage.setItem("cart", JSON.stringify(state.cart));
       }
     },
     // Reducer to decrement product qty in cart
@@ -102,6 +105,7 @@ export const productSlice = createSlice({
       if (state.cart[action.payload.id]) {
         const product = state.cart[action.payload.id];
         if ((product.quantity as number) > 1) (product.quantity as number) -= 1;
+        localStorage.setItem("cart", JSON.stringify(state.cart));
       }
     },
   },
