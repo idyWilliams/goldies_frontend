@@ -96,7 +96,7 @@ export default function Page() {
                       </span>
                       <span className="text-[14px]">johndoe@gmail.com</span>
                     </div>
-                    <div className="inline-flex items-center gap-5">
+                    <div className="inline-flex items-start gap-5">
                       <span>
                         <Location />
                       </span>
