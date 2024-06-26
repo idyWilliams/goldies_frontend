@@ -5,128 +5,15 @@ import Pagination from "@/components/custom-filter/Pagination";
 import StatusColumn from "@/components/myOrdersComps/StatusColumn";
 import EachElement from "@/helper/EachElement";
 import { chunkArray } from "@/helper/chunkArray";
+import { Order, recentOrders } from "@/utils/adminData";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Eye } from "iconsax-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Tooltip } from "react-tooltip";
 
-type MyOrders = {
-  name: string;
-  id: string;
-  date: string;
-  price: string;
-  status: string;
-  total: number;
-  shippingFee: number;
-  quantity: number;
-};
-
-export const recentOrders = [
-  {
-    name: "Strawberry Sponge Cake",
-    id: "B736383836hgdy73",
-    date: "2024-05-06",
-    price: "300.00",
-    status: "Pending", // Options: Pending, Cancelled",Delivered
-    total: 100,
-    shippingFee: 5.5,
-    quantity: 2,
-  },
-  {
-    name: "Chocolate Fudge Cake",
-    id: "C839383938dj38",
-    date: "2024-05-07",
-    price: "250.00",
-    status: "Delivered",
-    total: 100,
-    quantity: 1,
-    shippingFee: 5.5,
-  },
-  {
-    name: "Vanilla Cream Cake",
-    id: "V939383838dk39",
-    date: "2024-05-08",
-    price: "200.00",
-    status: "Cancelled",
-    total: 100,
-    shippingFee: 5.5,
-    quantity: 2,
-  },
-  {
-    name: "Red Velvet Cake",
-    id: "R828383828fj29",
-    date: "2024-05-09",
-    price: "320.00",
-    status: "Pending",
-    total: 100,
-    shippingFee: 5.5,
-    quantity: 3,
-  },
-  {
-    name: "Lemon Drizzle Cake",
-    id: "L737383727gj40",
-    date: "2024-05-10",
-    price: "180.00",
-    status: "Delivered",
-    total: 100,
-    shippingFee: 5.5,
-    quantity: 1,
-  },
-  {
-    name: "Carrot Cake",
-    id: "K929383728fh50",
-    date: "2024-05-11",
-    price: "270.00",
-    status: "Pending",
-    total: 100,
-    quantity: 2,
-    shippingFee: 5.5,
-  },
-  {
-    name: "Cheesecake",
-    id: "C826363638gh60",
-    date: "2024-05-12",
-    price: "230.00",
-    status: "Delivered",
-    total: 100,
-    quantity: 2,
-    shippingFee: 5.5,
-  },
-  {
-    name: "Black Forest Cake",
-    id: "B737363737hi70",
-    date: "2024-05-13",
-    price: "340.00",
-    status: "Cancelled",
-    total: 100,
-    quantity: 2,
-    shippingFee: 5.5,
-  },
-  {
-    name: "Pineapple Upside Down Cake",
-    id: "P826373738ij80",
-    date: "2024-05-14",
-    price: "290.00",
-    status: "Pending",
-    total: 100,
-    quantity: 2,
-    shippingFee: 5.5,
-  },
-  {
-    name: "Tiramisu",
-    id: "T738383939kj90",
-    date: "2024-05-15",
-    price: "310.00",
-    status: "Delivered",
-    total: 100,
-    quantity: 2,
-    shippingFee: 5.5,
-  },
-];
-
-const columnHelper = createColumnHelper<MyOrders>();
+const columnHelper = createColumnHelper<Order>();
 const columns = [
   columnHelper.accessor((row) => row, {
     id: "orderID",
@@ -191,9 +78,9 @@ let itemsPerPage = 6;
 const MyOrders = () => {
   const router = useRouter();
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
-  const [myOrders, setMyOrders] = useState(recentOrders);
+  const [myOrders, setMyOrders] = useState<Order[]>([]);
   const [selectedTabs, setSelectedTabs] = useState("All");
-  const [filteredData, setFilteredData] = useState(recentOrders);
+  const [filteredData, setFilteredData] = useState<Order[]>([]);
   const handleTabClick = (status: string) => {
     setSelectedTabs(status);
     if (status === "All") {
@@ -208,7 +95,7 @@ const MyOrders = () => {
   };
 
   const handleNext = () => {
-    if (currentPageIndex !== chunkArray(myOrders, itemsPerPage).length) {
+    if (currentPageIndex !== chunkArray(filteredData, itemsPerPage).length) {
       setCurrentPageIndex(currentPageIndex + 1);
       window.scroll(0, 0);
     } else {
@@ -229,6 +116,11 @@ const MyOrders = () => {
       return;
     }
   };
+
+  useEffect(() => {
+    setMyOrders(recentOrders);
+    setFilteredData(recentOrders);
+  }, []);
 
   return (
     <Layout>
@@ -332,7 +224,7 @@ const MyOrders = () => {
               onPaginateClick={handlePaginateClick}
               itemsPerPage={itemsPerPage}
               currentPageIndex={currentPageIndex}
-              arr={myOrders}
+              arr={filteredData}
             />
           </div>
 

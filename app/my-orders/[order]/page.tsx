@@ -5,7 +5,6 @@ import { ArrowLeft, Eye } from "iconsax-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { recentOrders } from "../page";
 import StatusColumn from "@/components/myOrdersComps/StatusColumn";
 import RedVelvet from "../../../public/assets/red-velvet-cake.webp";
 import Chocolate from "../../../public/assets/birthday-cake.webp";
@@ -13,6 +12,7 @@ import Image from "next/image";
 import { cn } from "@/helper/cn";
 import ProductTable from "@/components/admin-component/ProductTable";
 import { createColumnHelper } from "@tanstack/react-table";
+import { recentOrders } from "@/utils/adminData";
 
 type MyOrderList = {
   id: number;
