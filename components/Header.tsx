@@ -87,7 +87,7 @@ const Header = () => {
             <Link href="/" className={`${pathname === "/" ? "font-bold" : ""}`}>
               Home
             </Link>
-            <Link href="/#about">About</Link>
+            <Link href="/about-us">About</Link>
             <Link
               href="/shop"
               className={`${pathname === "/shop" ? "font-bold" : ""}`}
