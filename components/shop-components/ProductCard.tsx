@@ -1,5 +1,4 @@
 import Image from "next/image";
-import StarRating from "./StarRating";
 import { Heart, ShoppingCart } from "iconsax-react";
 import Img from "../public/assets/banana-cake-with-cinnamon-cream-102945-1.jpeg";
 import { useEffect, useState } from "react";
@@ -11,6 +10,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { cn } from "@/helper/cn";
 import { Tooltip } from "react-tooltip";
+import StarRating from "../StarRating";
 
 export default function ProductCard({ data }: { data: any }) {
   const [fav, setFav] = useState(false);
@@ -63,6 +63,7 @@ export default function ProductCard({ data }: { data: any }) {
               </span>
             </span>
             <Tooltip
+              style={{ left: "8px !important", transform: "translateX(-8px)" }}
               className="border bg-[#fff_!important] text-[#333_!important]"
               anchorSelect={`#my-anchor-element-${data?.id}`}
               content={

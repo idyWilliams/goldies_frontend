@@ -120,6 +120,7 @@ const CustomSelect = (props: CustomSelectProps) => {
               isClearable={false}
               onChange={(option) => onChange(option.label)}
               isDisabled={isDisabled}
+              className="focus:border-0"
             />
           )}
         />

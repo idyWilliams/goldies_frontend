@@ -4,6 +4,11 @@
 
 html {
   scroll-behavior: smooth;
+  font-size: 1rem;
+}
+
+body {
+  @apply text-base;
 }
 
 .wrapper {

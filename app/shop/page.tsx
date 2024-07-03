@@ -16,7 +16,7 @@ import { IoList } from "react-icons/io5";
 import FilterSidebar from "@/components/custom-filter/FilterSideBar";
 import { chunkArray } from "@/helper/chunkArray";
 import Pagination from "@/components/custom-filter/Pagination";
-import ProductCard from "@/components/ProductCard";
+import ProductCard from "@/components/shop-components/ProductCard";
 import { useSearchParams } from "next/navigation";
 import { captalizedName } from "@/helper/nameFormat";
 import { Suspense } from "react";

@@ -37,7 +37,10 @@ const FilterSidebar = ({
             Filter
           </span>
 
-          <span className="cursor-pointer" onClick={() => setShowFilter(false)}>
+          <span
+            className="cursor-pointer lg:hidden"
+            onClick={() => setShowFilter(false)}
+          >
             <BsX size={24} />
           </span>
         </div>
