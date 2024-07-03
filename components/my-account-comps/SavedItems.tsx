@@ -8,8 +8,8 @@ import Image from "next/image";
 import img from "../../public/assets/banana-cake-with-cinnamon-cream-102945-1.jpeg";
 import { addSlugToCakes } from "@/helper";
 import { savedItems } from "@/utils/cakeData";
-import ProductCard from "../ProductCard";
 import Link from "next/link";
+import ProductCard from "../shop-components/ProductCard";
 
 let itemsPerPage = 6;
 const SavedItems = () => {

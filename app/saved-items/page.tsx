@@ -1,6 +1,6 @@
 "use client";
 import Layout from "@/components/Layout";
-import ProductCard from "@/components/ProductCard";
+import ProductCard from "@/components/shop-components/ProductCard";
 import Pagination from "@/components/custom-filter/Pagination";
 import { addSlugToCakes } from "@/helper";
 import { chunkArray } from "@/helper/chunkArray";

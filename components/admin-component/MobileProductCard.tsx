@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { productList } from "@/utils/adminData";
 import { ArrowDown2, ArrowUp2, Edit, Eye, Trash } from "iconsax-react";
-import ProductCard from "../ProductCard";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import ProductOptionModal from "./ProductOptionModal";
