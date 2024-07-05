@@ -15,14 +15,7 @@ import {
   decrementProductQty,
   incrementProductQty,
 } from "@/redux/features/product/productSlice";
-import {
-  cakeProducts1,
-  cakeShapes,
-  cakeSizes,
-  cakeTimes,
-  fillingsList,
-  toppings,
-} from "@/utils/cakeData";
+import { cakeProducts1, cakeTimes } from "@/utils/cakeData";
 import { addSlugToCakes } from "@/helper";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
@@ -32,6 +25,34 @@ import StarRating from "@/components/StarRating";
 import EachElement from "@/helper/EachElement";
 import ProductStatusType from "@/components/shop-components/ProductStatusType";
 import ProductReview from "@/components/shop-components/ProductReview";
+import Select from "react-select";
+import ProductCard from "@/components/shop-components/ProductCard";
+import { ArrowRight } from "iconsax-react";
+import Link from "next/link";
+
+const cakeSizes = [
+  { value: "6-round", label: "6″ round serves 10 - 12" },
+  { value: "6-square", label: "6″ square serves 16 – 18" },
+  { value: "8-round", label: "8″ round serves 18 – 20" },
+  { value: "8-square", label: "8″ square serves 30 – 32" },
+  { value: "10-round", label: "10″ round serves 26 – 28" },
+  { value: "10-square", label: "10″ square serves 48 – 50" },
+];
+
+const flavour = [
+  { value: "vanilla", label: "Vanilla" },
+  { value: "red-velvet", label: "Red Velvet" },
+  { value: "lemon", label: "Lemon" },
+  { value: "chocolate-chilli", label: "Chocolate Chilli" },
+  { value: "strawberry", label: "Strawberry" },
+];
+
+const toppings = [
+  { value: "decorative", label: "Decorative" },
+  { value: "candy-and-sweet", label: "Candy and Sweet" },
+  { value: "chocolate", label: "Chocolate" },
+  { value: "unique-and-themed", label: "Unique and Themed" },
+];
 
 function generateSizeArray(minSize: any, maxSize: any) {
   const sizes = [];
@@ -40,18 +61,6 @@ function generateSizeArray(minSize: any, maxSize: any) {
   }
   return sizes;
 }
-
-/* 
-          <ul className="mt-3 flex flex-col gap-2 text-sm text-gray-600">
-                  <li>6″ round serves 10 - 12</li>
-                  <li>6″ square serves 16 – 18</li>
-                  <li>8″ round serves 18 – 20</li>
-                  <li>8″ square serves 30 – 32</li>
-                  <li>10″ round serves 26 – 28</li>
-                  <li>10″ square serves 48 – 50</li>
-                </ul>
-
-*/
 
 export type SelectOptionType = {
   label: string | number;
@@ -62,11 +71,10 @@ export type SelectOptionType = {
 function CakeDetailsPage({ params }: any) {
   const [showReviews, setShowReviews] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [fillings, setFillings] = useState<SelectOptionType>(null);
-  const [shapes, setShapes] = useState<SelectOptionType>(null);
+  const [flavour, setFlavour] = useState<SelectOptionType>(null);
   const [duration, setDuration] = useState<SelectOptionType>(null);
-  const [addons, setAddons] = useState<SelectOptionType>(null);
-  const [sizes, setSizes] = useState<SelectOptionType>(null);
+  const [addon, setAddon] = useState<SelectOptionType>(null);
+  const [size, setSize] = useState<SelectOptionType>(null);
   const [quantity, setQuantity] = useState<number>(1);
   const router = useRouter();
   const dispatch = useDispatch();
@@ -95,18 +103,6 @@ function CakeDetailsPage({ params }: any) {
   const getProduct = cakeProduct.find(
     (product: { slug: any }) => product.slug === params.alias,
   );
-
-  const data = {
-    shape: create(shapes),
-    size: create(sizes),
-    filling: create(fillings),
-    cakeDetails: {
-      time: time,
-      duration: create(duration),
-      addons: create(addons),
-    },
-    message: message,
-  };
 
   function create(value: any) {
     if (value !== null) {
@@ -166,12 +162,12 @@ function CakeDetailsPage({ params }: any) {
           </div>
         </section>
         <section className="">
-          <div className="wrapper py-4">
-            <div className="">
+          <div className="wrapper py-4 md:grid md:grid-cols-2 md:items-start md:gap-4 lg:justify-evenly lg:gap-8 xl:grid-cols-[40%_50%] xl:gap-10">
+            <div className="w-full overflow-hidden rounded-md md:h-3/4">
               <Image
                 src={getProduct.imageUrl}
                 alt={getProduct.slug}
-                className="mx-auto h-full w-full object-cover"
+                className="mx-auto h-full w-full object-cover object-center"
               />
             </div>
 
@@ -221,33 +217,34 @@ function CakeDetailsPage({ params }: any) {
               {showReviews ? (
                 <ProductReview setShowReviews={setShowReviews} />
               ) : (
-                <form id="detail">
+                <form id="detail" className="lg:w-[75%]">
                   <div className="mt-4 space-y-3">
                     <label htmlFor="size" className="block w-full">
                       <span className="mb-1.5 inline-block">Size</span>
-                      <CustomSelect
-                        selectedOption={sizes}
-                        setSelectOption={setSizes}
-                        options={cakeSizes || []}
+                      <Select
+                        options={cakeSizes}
+                        className=""
+                        // unstyled
+                        styles={{
+                          control: (baseStyles, state) => ({
+                            ...baseStyles,
+                            borderColor: state.isFocused
+                              ? "border-neutral-800 ring-neutral-800"
+                              : "border-neutral-500",
+                          }),
+                        }}
                       />
                     </label>
                     <label htmlFor="toppings" className="block w-full">
                       <span className="mb-1.5 inline-block">Toppings</span>
-                      <CustomSelect
-                        selectedOption={addons}
-                        setSelectOption={setAddons}
-                        options={toppings || []}
-                      />
+                      <Select options={toppings} />
                     </label>
                     <label htmlFor="duration" className="block w-full">
                       <span className="mb-1.5 inline-block">
                         When do you need your cake?
                       </span>
-                      <CustomSelect
-                        selectedOption={duration}
-                        setSelectOption={setDuration}
-                        options={cakeTimes || []}
-                      />
+                      <Select options={cakeTimes} />
+
                       <p className="text-sm">
                         48hours is the minimum time required for all cake orders
                       </p>
@@ -301,6 +298,25 @@ function CakeDetailsPage({ params }: any) {
                   </div>
                 </form>
               )}
+            </div>
+          </div>
+        </section>
+        <section className="">
+          <div className="wrapper">
+            <div className="mb-4 flex items-center gap-3">
+              <h3 className="text-2xl font-bold">Related Product</h3>
+              <Link
+                href="/shop"
+                className="inline-flex items-center gap-2 text-2xl font-bold text-green-700"
+              >
+                See All <ArrowRight />
+              </Link>
+            </div>
+
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {Array.from({ length: 4 }, (_: any, index: number) => {
+                return <ProductCard key={index} data={cakeProduct[index]} />;
+              })}
             </div>
           </div>
         </section>

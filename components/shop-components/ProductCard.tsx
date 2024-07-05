@@ -98,32 +98,12 @@ export default function ProductCard({ data }: { data: any }) {
         <StarRating iconSize={20} canRate={false} />{" "}
         <span className="text-sm">(32)</span>
       </div>
-      {data?.type === "pre-order" ? (
-        <button
-          onClick={() => router.push(`/shop/${data?.slug}`)}
-          className="flex w-full flex-grow items-center justify-center gap-2 rounded-md border border-neutral-900 bg-neutral-900 px-0 py-2.5 text-goldie-300"
-        >
-          Shop now
-        </button>
-      ) : (
-        <div className="mt-2 flex items-center gap-2">
-          <button
-            onClick={handleAddToCart}
-            className="inline-flex flex-grow items-center justify-center gap-2 rounded-md border border-neutral-900 bg-neutral-900 px-0 py-2.5 text-goldie-300"
-          >
-            <span className="">
-              <ShoppingCart size={20} />
-            </span>{" "}
-            Add to cart
-          </button>
-          <button
-            onClick={handleBuyNow}
-            className="rounded-md border border-neutral-900 px-4 py-2.5 text-neutral-900"
-          >
-            Buy now
-          </button>
-        </div>
-      )}
+      <button
+        onClick={() => router.push(`/shop/${data?.slug}`)}
+        className="flex w-full flex-grow items-center justify-center gap-2 rounded-md border border-neutral-900 bg-neutral-900 px-0 py-2.5 text-goldie-300"
+      >
+        Shop now
+      </button>
     </div>
   );
 }
