@@ -20,6 +20,7 @@ import { Menu, ShoppingCart } from "iconsax-react";
 import MenuPopup from "./MenuPopup";
 import { useDispatch } from "react-redux";
 import { setProducts } from "@/redux/features/product/productSlice";
+import { IoCartOutline } from "react-icons/io5";
 
 const Header = () => {
   const [show, setShow] = useState(false);
@@ -115,7 +116,7 @@ const Header = () => {
                 alt="Goldis Logo"
               /> */}
               <span>
-                <ShoppingCart size={22} />
+                <IoCartOutline size={24} />
               </span>
               {Object.values(cart) && Object.values(cart).length >= 0 && (
                 <span className="absolute -right-1 top-0 inline-flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs font-medium text-[#fcf7e8]">
