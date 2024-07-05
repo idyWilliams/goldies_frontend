@@ -14,7 +14,9 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
         review:
-          "linear-gradient(#d5a32b88,#e4d06433 ), url(/public/assets/reviews.png)",
+          "linear-gradient(#d5a32b88,#e4d06433 ), url(./public/assets/reviews.png)",
+        about:
+          "linear-gradient(rgba(0,0,0,0.2),rgba(0,0,0,0.2)), url(/public/assets/about-us/about-banner.jpg)",
       },
       colors: {
         main: "#E4D064",

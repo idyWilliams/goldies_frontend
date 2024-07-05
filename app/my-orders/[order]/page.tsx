@@ -123,7 +123,7 @@ const MyOrderDetails = ({ params }: { params: any }) => {
     console.log(orderDetails);
 
     setOrder(orderDetails);
-  }, [params]);
+  }, [params, id]);
 
   return (
     <Layout>

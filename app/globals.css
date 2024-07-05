@@ -20,12 +20,14 @@ span {
   @apply inline-block;
 }
 
-.hide-scrollbar {
+.hide-scrollbar,
+.team {
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
 
-.hide-scrollbar::-webkit-scrollbar {
+.hide-scrollbar::-webkit-scrollbar,
+.team::-webkit-scrollbar {
   display: none; /* Chrome, Safari, and Opera */
 }
 
@@ -41,4 +43,37 @@ span {
 .custom.react-toggle:active:not(.react-toggle--disabled) .react-toggle-thumb,
 .custom.react-toggle--focus .react-toggle-thumb {
   @apply shadow-none;
+}
+
+/* SWIPER  */
+.team .swiper {
+  position: relative !important;
+  /* overflow: hidden scroll !important; */
+  /* height: 250px !important; */
+  padding-inline: 80px !important;
+}
+
+.new .swiper {
+  padding-inline: 50px !important;
+}
+
+.team .swiper-pagination {
+  margin-top: 20px !important;
+  position: static !important;
+}
+
+.team .swiper-pagination-bullet-active {
+  background: #000 !important;
+}
+
+.team .swiper-button-next:after,
+.team .swiper-button-prev:after {
+  font-size: 32px !important;
+  color: #000 !important;
+}
+
+.team .swiper-button-next,
+.team .swiper-button-prev {
+  transform: translateY(50% - 20px);
+  z-index: 20 !important;
 }
