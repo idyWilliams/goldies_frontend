@@ -64,7 +64,7 @@ const MobileNav = ({ pathname, show, setShow, isOpen, setIsOpen }: any) => {
           Home
         </Link>
         <Link
-          href="/#about"
+          href="/about-us"
           onClick={() => setShow(false)}
           className="duration-300 hover:translate-x-2"
         >
@@ -85,14 +85,14 @@ const MobileNav = ({ pathname, show, setShow, isOpen, setIsOpen }: any) => {
           Bespoke Cake Order
         </Link>
         <Link
-          href="/#testimonials"
+          href="/testimonials"
           onClick={() => setShow(false)}
           className="duration-300 hover:translate-x-2"
         >
           Testimonials
         </Link>
         <Link
-          href="/#contact"
+          href="/contact"
           onClick={() => setShow(false)}
           className="duration-300 hover:translate-x-2"
         >
