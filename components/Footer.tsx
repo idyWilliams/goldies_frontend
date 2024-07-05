@@ -1,12 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import Img from "../public/assets/goldis-gold-logo.png";
-import LinkedIn from "../public/assets/linkedin.svg";
-import Phone from "../public/assets/phone.svg";
-import Instagram from "../public/assets/instagram.svg";
-import Youtube from "../public/assets/youtube.svg";
 import {
-  BsChevronRight,
   BsFacebook,
   BsInstagram,
   BsLinkedin,
@@ -16,70 +11,8 @@ import { Call, Facebook, Location, Sms } from "iconsax-react";
 
 const Footer = () => {
   return (
-    <section className="relative flex min-h-[500px] w-full pt-3">
+    <section className="relative grid min-h-[500px] w-full bg-neutral-900 pt-3">
       <div className="wrapper relative z-30">
-        {/* <h2 className="text-goldie-300 mb-8 text-center text-2xl font-bold capitalize md:text-3xl">
-          Connect with me
-        </h2>
-        <div className="grid gap-4 sm:grid-cols-2 md:mx-auto md:w-[700px]">
-          <div className="bg-goldie-300 flex items-center gap-5 rounded-lg p-3">
-            <span className="inline-block">
-              <Image src={Youtube} alt="Youtube" className="w-[100px]" />
-            </span>
-            <div>
-              <h3 className="text-xl font-bold text-[#9C8222]">YouTube</h3>
-              <Link
-                href="/"
-                className="inline-flex items-center gap-2 font-bold text-[#9C8222]"
-              >
-                Take me there <BsChevronRight />
-              </Link>
-            </div>
-          </div>
-
-          <div className="bg-goldie-300 flex items-center gap-5 rounded-lg p-3">
-            <span className="inline-block">
-              <Image src={Phone} alt="Phone" className="w-[100px]" />
-            </span>
-            <div>
-              <h3 className="text-xl font-bold text-[#9C8222]">Phone</h3>
-              <span className="inline-flex items-center gap-2 font-bold text-[#9C8222]">
-                +123(555)1234
-              </span>
-            </div>
-          </div>
-
-          <div className="bg-goldie-300 flex items-center gap-5 rounded-lg p-3">
-            <span className="inline-block">
-              <Image src={Instagram} alt="Instagram" className="w-[100px]" />
-            </span>
-            <div>
-              <h3 className="text-xl font-bold text-[#9C8222]">Instagram</h3>
-              <Link
-                href="/"
-                className="inline-flex items-center gap-2 font-bold text-[#9C8222]"
-              >
-                Take me there <BsChevronRight />
-              </Link>
-            </div>
-          </div>
-
-          <div className="bg-goldie-300 flex items-center gap-5 rounded-lg p-3">
-            <span className="inline-block">
-              <Image src={LinkedIn} alt="Linkedin" className="w-[100px]" />
-            </span>
-            <div>
-              <h3 className="text-xl font-bold text-[#9C8222]">Linkedin</h3>
-              <Link
-                href="/"
-                className="inline-flex items-center gap-2 font-bold text-[#9C8222]"
-              >
-                Take me there <BsChevronRight />
-              </Link>
-            </div>
-          </div>
-        </div> */}
-
         <div className="mx-auto grid gap-6 rounded-2xl bg-[#494848] px-4 py-4 md:max-w-[70%] md:grid-cols-2 md:items-center md:py-6">
           <div>
             <h1 className="text-2xl font-bold text-goldie-300 md:text-[32px]">
@@ -205,22 +138,18 @@ const Footer = () => {
           </div>
         </div>
       </div>
-
-      {/* VIDEO BACKGROUND */}
-      <div className="absolute left-0 top-0 h-full w-full before:absolute before:left-0 before:top-0 before:z-10 before:block before:h-full before:w-full before:bg-black before:bg-opacity-75">
-        <video
-          width="320"
-          height="350"
-          autoPlay
-          muted
-          loop
-          className="absolute left-0 top-0 h-full w-full object-cover"
-          preload="auto"
-        >
-          <source src="/assets/footer.webm" type="video/webm" />
-          <source src="/assets/footer.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+      <div className="mt-5 flex items-center bg-neutral-700 py-3">
+        <div className="wrapper flex w-full flex-col-reverse items-center justify-between gap-5 md:flex-row">
+          <p className="text-white">©Goldies 2024 All Rights Reserved</p>
+          <div className="inline-flex gap-8">
+            <Link href={"/"} className="text-white">
+              Terms of Service
+            </Link>
+            <Link href={"/"} className="text-white">
+              Privacy Policy
+            </Link>
+          </div>
+        </div>
       </div>
     </section>
   );
