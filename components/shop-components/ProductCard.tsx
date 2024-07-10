@@ -43,7 +43,7 @@ export default function ProductCard({ data }: { data: any }) {
             className="h-full w-full object-cover object-center"
           />
         </Link>
-        <div className="absolute left-0 top-2 flex w-full items-center justify-between px-2">
+        <div className="absolute -left-2 top-0 flex w-full items-center justify-between px-2">
           <span
             className={cn("rounded-md bg-white px-2 py-1 text-sm capitalize")}
           >

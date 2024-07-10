@@ -12,7 +12,7 @@ const Page = () => {
 
   return (
     <Layout>
-      <div className="mt-[65px] bg-neutral-900 py-3">
+      <div className="mt-[65px] bg-neutral-900 py-3 lg:mt-20">
         <div className="wrapper">
           <BreadCrumbs
             items={[

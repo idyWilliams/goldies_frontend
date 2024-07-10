@@ -1,25 +1,31 @@
 "use client";
-import BreadCrumbs from "@/components/BreadCrumbs";
 import Layout from "@/components/Layout";
 import Image from "next/image";
 import React from "react";
 import Founder from "../../public/assets/about-us/founder.png";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { Carousel } from "react-responsive-carousel";
-import { initials } from "@/helper/initials";
-import { CgChevronRight } from "react-icons/cg";
-import EachElement from "@/helper/EachElement";
-import { BsFacebook } from "react-icons/bs";
 import BrandSlider from "@/components/about-components/BrandSlider";
 import TeamSlider from "@/components/about-components/TeamSlider";
 import ReviewSlider from "@/components/about-components/ReviewSlider";
-
+import AboutImg from "@/public/assets/about-banner.jpg";
 const AboutUs = () => {
   return (
     <Layout>
       <div className="mt-[64px] lg:mt-20" />
       {/* ====== ABOUT BANNER ====== */}
-      <section className="bg-about w-full bg-cover py-20">
+      <section
+        style={{
+          backgroundImage: `linear-gradient(rgba(0,0,0,0.3),rgba(0,0,0,0.5)),url(${AboutImg.src})`,
+        }}
+        className="w-full bg-cover bg-center py-20"
+      >
+        {/* <div>
+          <Image
+            src={AboutImg}
+            alt="imagebanner"
+            className="absolute left-0 top-0 h-full w-full"
+          />
+        </div> */}
         <div className="wrapper flex flex-col items-center text-center">
           <h1 className="text-3xl font-bold text-white">About us</h1>
           <p className="text-goldie-300">

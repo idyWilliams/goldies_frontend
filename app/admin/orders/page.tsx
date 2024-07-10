@@ -119,7 +119,7 @@ export default function Page() {
       id: "actions",
       cell: (info) => (
         <button
-          className="bg-goldie-300 rounded-[50px] px-4 py-1 text-black"
+          className="rounded-[50px] bg-goldie-300 px-4 py-1 text-black"
           onClick={() =>
             router.push(`/admin/orders/${info.cell.row.original.id}`)
           }
@@ -135,7 +135,7 @@ export default function Page() {
     <>
       <section className="w-full bg-[#EFEFEF] px-4 pt-6">
         <h1 className="text-lg font-extrabold">Orders</h1>
-        <hr className="mt-3 border-2 border-[#D4D4D4]" />
+        <hr className="my-6 border-2 border-[#D4D4D4]" />
 
         <div className="hidden  md:block">
           <ProductTable

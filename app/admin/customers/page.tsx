@@ -129,14 +129,14 @@ export default function Page() {
     <>
       <section className="min-h-screen w-full bg-[#EFEFEF] px-4 py-6">
         <h1 className="text-lg font-extrabold uppercase">Customers</h1>
-        <hr className="mt-3 hidden border-2 border-[#D4D4D4] md:block" />
+        <hr className="my-3 hidden border-2 border-[#D4D4D4] md:block" />
 
         <div className="hidden  md:block">
           <ProductTable
             columns={columns}
             Tdata={customers}
             statusType="customer"
-            filteredTabs={[]}
+            filteredTabs={[""]}
           />
         </div>
         <div>

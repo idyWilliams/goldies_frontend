@@ -16,6 +16,7 @@ export const categories = [
       { label: "Graduation Cakes", value: "graduation_cakes" },
       { label: "Baby Shower Cakes", value: "baby_shower_cakes" },
       { label: "Retirement Cakes", value: "retirement_cakes" },
+      { label: "Wedding Cakes", value: "wedding_cakes" },
     ],
   },
   {
@@ -47,20 +48,58 @@ export const categories = [
     ],
   },
   {
-    label: "Wedding Cakes",
-    value: "wedding_cakes",
-    image: WeddingCakes,
+    label: "Customized Themed Cakes",
+    value: "customized_themed_cakes",
+    image: WeddingCakes, // Make sure to replace this with the correct image import or path
     description:
-      "Wedding cakes are a centerpiece of the celebration, reflecting the couple's style and theme.",
+      "Customized themed cakes bring a unique touch to any celebration, tailored to match the specific theme and preferences.",
     subcategories: [
       {
-        label: "Traditional Wedding Cakes",
-        value: "traditional_wedding_cakes",
+        label: "Traditional Themed Cakes",
+        value: "traditional_themed_cakes",
       },
-      { label: "Modern Wedding Cakes", value: "modern_wedding_cakes" },
-      { label: "Floral Wedding Cakes", value: "floral_wedding_cakes" },
-      { label: "Rustic Wedding Cakes", value: "rustic_wedding_cakes" },
-      { label: "Themed Wedding Cakes", value: "themed_wedding_cakes" },
+      {
+        label: "Modern Themed Cakes",
+        value: "modern_themed_cakes",
+      },
+      {
+        label: "Floral Themed Cakes",
+        value: "floral_themed_cakes",
+      },
+      {
+        label: "Rustic Themed Cakes",
+        value: "rustic_themed_cakes",
+      },
+      {
+        label: "Fantasy Themed Cakes",
+        value: "fantasy_themed_cakes",
+      },
+      {
+        label: "Cartoon Themed Cakes",
+        value: "cartoon_themed_cakes",
+      },
+      {
+        label: "Holiday Themed Cakes",
+        value: "holiday_themed_cakes",
+      },
     ],
   },
+
+  // {
+  //   label: "Wedding Cakes",
+  //   value: "wedding_cakes",
+  //   image: WeddingCakes,
+  //   description:
+  //     "Wedding cakes are a centerpiece of the celebration, reflecting the couple's style and theme.",
+  //   subcategories: [
+  //     {
+  //       label: "Traditional Wedding Cakes",
+  //       value: "traditional_wedding_cakes",
+  //     },
+  //     { label: "Modern Wedding Cakes", value: "modern_wedding_cakes" },
+  //     { label: "Floral Wedding Cakes", value: "floral_wedding_cakes" },
+  //     { label: "Rustic Wedding Cakes", value: "rustic_wedding_cakes" },
+  //     { label: "Themed Wedding Cakes", value: "themed_wedding_cakes" },
+  //   ],
+  // },
 ];

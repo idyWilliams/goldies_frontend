@@ -88,7 +88,12 @@ const Header = () => {
             <Link href="/" className={`${pathname === "/" ? "font-bold" : ""}`}>
               Home
             </Link>
-            <Link href="/about-us">About</Link>
+            <Link
+              href="/about-us"
+              className={`${pathname === "/about-us" ? "font-bold" : ""}`}
+            >
+              About
+            </Link>
             <Link
               href="/shop"
               className={`${pathname === "/shop" ? "font-bold" : ""}`}
@@ -101,8 +106,18 @@ const Header = () => {
             >
               Bespoke Cake Order
             </Link>
-            <Link href="/testimonials">Testimonials</Link>
-            <Link href="/contact">Contact</Link>
+            <Link
+              href="/testimonials"
+              className={`${pathname === "/testimonials" ? "font-bold" : ""}`}
+            >
+              Testimonials
+            </Link>
+            <Link
+              href="/contact"
+              className={`${pathname === "/contact" ? "font-bold" : ""}`}
+            >
+              Contact
+            </Link>
           </div>
 
           <div className="flex items-center gap-3">
