@@ -7,7 +7,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import BrandSlider from "@/components/about-components/BrandSlider";
 import TeamSlider from "@/components/about-components/TeamSlider";
 import ReviewSlider from "@/components/about-components/ReviewSlider";
-import AboutImg from "@/public/assets/about-banner.jpg";
+import AboutImg from "@/public/assets/abt-img.jpg";
 const AboutUs = () => {
   return (
     <Layout>
@@ -17,7 +17,7 @@ const AboutUs = () => {
         style={{
           backgroundImage: `linear-gradient(rgba(0,0,0,0.3),rgba(0,0,0,0.5)),url(${AboutImg.src})`,
         }}
-        className="w-full bg-cover bg-center py-20"
+        className="h-[300px] w-full bg-cover bg-center py-20"
       >
         {/* <div>
           <Image
