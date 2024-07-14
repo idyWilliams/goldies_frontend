@@ -53,12 +53,12 @@ export default function AdminNav() {
         <div className="flex items-center justify-between px-4">
           <div className="flex items-center gap-3">
             <span
-              className="inline-block text-goldie-300 lg:hidden"
+              className="text-goldie-300 inline-block lg:hidden"
               onClick={() => setIsOpen(true)}
             >
               <BsList size={24} />
             </span>
-            <Link href="/" className="relative">
+            <Link href="/admin" className="relative">
               <Image
                 src="/assets/goldis-gold-logo.png"
                 className="w-[100px] lg:w-[130px]"
@@ -74,7 +74,7 @@ export default function AdminNav() {
             <div className="inline-flex items-center justify-end">
               <label
                 htmlFor="search"
-                className={`inline-block w-min rounded-l-md bg-goldie-300 duration-300 ${openSearch ? "bg-opacity-20 opacity-100" : "opacity-0"}`}
+                className={`bg-goldie-300 inline-block w-min rounded-l-md duration-300 ${openSearch ? "bg-opacity-20 opacity-100" : "opacity-0"}`}
               >
                 <input
                   type="text"
@@ -82,38 +82,38 @@ export default function AdminNav() {
                   autoComplete="off"
                   id="search"
                   placeholder="Search..."
-                  className={`${openSearch ? "w-[400px] px-4" : "w-0 px-0"} border-none bg-transparent text-[13px] text-goldie-300 duration-300 placeholder:text-goldie-300 placeholder:text-opacity-50 focus:border-0 focus:outline-none focus:ring-0`}
+                  className={`${openSearch ? "w-[400px] px-4" : "w-0 px-0"} text-goldie-300 placeholder:text-goldie-300 border-none bg-transparent text-[13px] duration-300 placeholder:text-opacity-50 focus:border-0 focus:outline-none focus:ring-0`}
                 />
               </label>
               <span
-                className={`${openSearch ? "rounded-l-none bg-opacity-20" : "rounded-l-md bg-opacity-0"} inline-flex h-10 w-10 items-center justify-center rounded-r-md bg-goldie-300  duration-300`}
+                className={`${openSearch ? "rounded-l-none bg-opacity-20" : "rounded-l-md bg-opacity-0"} bg-goldie-300 inline-flex h-10 w-10 items-center justify-center rounded-r-md  duration-300`}
                 onClick={() => setOpenSearch((prev) => !prev)}
               >
                 {openSearch ? (
-                  <BsX size={18} className="inline-block text-goldie-300" />
+                  <BsX size={18} className="text-goldie-300 inline-block" />
                 ) : (
                   <BsSearch
                     size={18}
-                    className="inline-block text-goldie-300"
+                    className="text-goldie-300 inline-block"
                   />
                 )}
               </span>
             </div>
-            <span className="relative inline-block cursor-pointer text-goldie-300">
+            <span className="text-goldie-300 relative inline-block cursor-pointer">
               <IoMdNotificationsOutline size={24} />
               <span className="absolute right-0.5 top-1 inline-block h-1.5 w-1.5 rounded-full bg-red-600 text-sm outline outline-2 outline-black"></span>
             </span>
             <div className="hidden gap-3  sm:inline-flex">
-              <span className="text-sm font-normal text-goldie-300">
+              <span className="text-goldie-300 text-sm font-normal">
                 {moment().format("ddd D MMM")}
               </span>
-              <span className="text-sm font-normal text-goldie-300">
+              <span className="text-goldie-300 text-sm font-normal">
                 {currentTime}
               </span>
             </div>
             <button
               onClick={() => setOpen((prev) => !prev)}
-              className="flex items-center gap-2 border-l border-goldie-300 border-opacity-40 pl-4 text-goldie-300"
+              className="border-goldie-300 text-goldie-300 flex items-center gap-2 border-l border-opacity-40 pl-4"
             >
               <FaRegUserCircle size={20} />{" "}
               <span className="hidden text-sm md:inline-flex md:items-center md:gap-3">
@@ -164,7 +164,7 @@ export default function AdminNav() {
           className={`fixed top-0 h-screen w-full duration-300 ${open ? "left-0" : "-left-full"}`}
         >
           <span
-            className="absolute left-3 top-4 z-50 inline-block cursor-pointer text-goldie-300"
+            className="text-goldie-300 absolute left-3 top-4 z-50 inline-block cursor-pointer"
             onClick={() => setIsOpen(false)}
           >
             <BsX size={30} />

@@ -1,8 +1,22 @@
-import { Overview, topProduct } from "@/utils/adminData";
+"use client";
+
 import React from "react";
-import Card from "../Card";
-import Table from "../Table";
-import { Column } from "react-table";
+import { Moneys, Profile2User, ShoppingBag } from "iconsax-react";
+import EachElement from "@/helper/EachElement";
+import OverviewCard from "./overview-comps/OverviewCard";
+import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
+import { SaleChart } from "./overview-comps/SaleChart";
+import { CategoryChart } from "./overview-comps/CategoryChart";
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 type Data = {
   id: number;
@@ -10,90 +24,140 @@ type Data = {
   age: number;
 };
 
-const columns: readonly Column<object>[] = [
+const Overviews = [
   {
-    Header: "#",
-    accessor: (row: any) => {
-      console.log(row, "row");
-      return <span>0{row.id}</span>;
-    },
-  },
-  { Header: "Name", accessor: "productName" },
-  {
-    Header: "Popularity",
-    accessor: (row: any) => {
-      return (
-        <div className="mr-6 h-2 w-full overflow-hidden rounded-[50px] bg-[#EDE098]">
-          <div
-            className="h-full rounded-[50px] bg-black"
-            style={{ width: `${row.percent}%` }}
-          ></div>
-        </div>
-      );
-    },
-  },
-  {
-    Header: "Sales",
-    accessor: (row: any) => {
-      return <span>{row.sale}%</span>;
-    },
-  },
-];
+    title: "Total sales",
+    icon: Moneys,
 
-const Tcolumns: readonly Column<object>[] = [
-  {
-    Header: "#",
-    accessor: (row: any) => {
-      console.log(row, "row");
-      return <span>0{row.id}</span>;
-    },
+    value: 53000,
+    increaseRate: 6,
+    lastValue: 500000,
+    isPrice: true,
   },
-  { Header: "Name", accessor: "productName" },
   {
-    Header: "Sales",
-    accessor: (row: any) => {
-      return <span>{row.sale}%</span>;
-    },
+    title: "Total Orders",
+    value: 22,
+    icon: ShoppingBag,
+    increaseRate: 3,
+    lastValue: 16,
+    isPrice: false,
   },
-];
-
-const data = [
-  { id: 1, name: "John", age: 30 },
-  { id: 2, name: "Jane", age: 25 },
-  { id: 3, name: "Doe", age: 35 },
+  {
+    title: "New Customers",
+    icon: Profile2User,
+    value: 5,
+    increaseRate: 5,
+    lastValue: 2,
+    isPrice: false,
+  },
 ];
 
 export default function Dashboard() {
+  const router = useRouter();
   return (
     <>
-      <section className="bg-goldie-300 w-full px-4 py-6 pt-[24px] lg:bg-white lg:p-8 lg:pt-6">
+      <section className="w-full bg-goldie-300 px-4 py-6 pt-[24px] lg:bg-white lg:p-8 lg:pt-6">
         <div className="bg-goldie-300 lg:p-8">
-          <p className="font-bold">Today&apos;s Sales</p>
-          <p className="mb-4 text-[13px]">Sales summary</p>
+          <div className="flex items-center justify-between">
+            <div className="">
+              <p className="font-bold">Today&apos;s Sales</p>
+              <p className="mb-4 text-[13px]">Sales summary</p>
+            </div>
+            <Button
+              onClick={() => router.push("/admin/create-products")}
+              className="m-0 bg-stone-700 text-goldie-300"
+            >
+              Create Product
+            </Button>
+          </div>
 
-          <div className="text-goldie-300 grid grid-cols-2 gap-4 md:grid-cols-4 xl:gap-6">
-            {Overview.map((data: any, index: number) => {
-              return (
-                <Card key={index} className="bg-black p-4">
-                  <data.icon size={30} className="font-bold" />
-                  <p className="mt-2 text-lg font-bold">{data.value}</p>
-                  <p className="text-xs">{data.title}</p>
-                  <div className="border-goldie-300 my-2 mb-4 border-b border-opacity-50"></div>
-                  <p className="text-xs">{data.info}</p>
-                </Card>
-              );
-            })}
+          <div className="grid grid-cols-1 gap-4 text-goldie-300 md:grid-cols-2 lg:grid-cols-3 xl:gap-6">
+            <EachElement
+              of={Overviews}
+              render={(item: any, index: any) => (
+                <OverviewCard key={index} data={item} />
+              )}
+            />
           </div>
         </div>
-        <div className="bg-goldie-300 mt-6 hidden h-[330px] md:block lg:p-8 ">
-          <h3 className="font-bold">Top Products</h3>
-          <Table columns={columns} data={topProduct} />
-        </div>
-        <div className="mt-6 md:hidden">
-          <h3 className="font-bold">Top Products</h3>
-          <Table columns={Tcolumns} data={topProduct} />
-        </div>
       </section>
+      <SaleReport />
     </>
   );
 }
+
+const SaleReport = () => {
+  return (
+    <>
+      <section className="bg-white px-5 py-10">
+        <div></div>
+        <SaleChart />
+      </section>
+
+      {/* <CategoryChart /> */}
+
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart
+          width={500}
+          height={400}
+          data={[
+            {
+              name: "Page A",
+              uv: 4000,
+              pv: 2400,
+              amt: 2400,
+            },
+            {
+              name: "Page B",
+              uv: 3000,
+              pv: 1398,
+              amt: 2210,
+            },
+            {
+              name: "Page C",
+              uv: 2000,
+              pv: 9800,
+              amt: 2290,
+            },
+            {
+              name: "Page D",
+              uv: 2780,
+              pv: 3908,
+              amt: 2000,
+            },
+            {
+              name: "Page E",
+              uv: 1890,
+              pv: 4800,
+              amt: 2181,
+            },
+            {
+              name: "Page F",
+              uv: 2390,
+              pv: 3800,
+              amt: 2500,
+            },
+            {
+              name: "Page G",
+              uv: 3490,
+              pv: 4300,
+              amt: 2100,
+            },
+          ]}
+          margin={{
+            top: 10,
+            right: 30,
+            left: 0,
+            bottom: 0,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Area type="monotone" dataKey="uv" stroke="#8884d8" fill="#8884d8" />
+        </AreaChart>
+      </ResponsiveContainer>
+    </>
+  );
+};
