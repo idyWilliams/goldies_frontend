@@ -1,5 +1,6 @@
 "use client";
 
+import { TrendingUp } from "lucide-react";
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 import {
@@ -10,79 +11,95 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-
 const chartData = [
   { month: "January", price: 186 },
-  { month: "February", price: 305 },
+  { month: "February", price: 300 },
   { month: "March", price: 237 },
   { month: "April", price: 73 },
   { month: "May", price: 209 },
   { month: "June", price: 214 },
+  { month: "July", price: 100 },
+  // { month: "August", price: 0 },
+  // { month: "September", price: 0 },
+  // { month: "October", price: 0 },
+  // { month: "November", price: 0 },
+  { month: "December", price: 300 },
 ];
 
 const chartConfig = {
-  price: {
-    label: "Desktop",
+  month: {
+    label: "Month",
     color: "#e4d064",
   },
-  month: {
-    label: "Desktop",
+  price: {
+    label: "Sales",
     color: "#e4d064",
   },
 } satisfies ChartConfig;
 
 export function SaleChart() {
   return (
-    <Card className="border-none bg-neutral-900">
-      <CardHeader>
-        <CardTitle className="text-main">Sales Report</CardTitle>
-      </CardHeader>
-      <CardContent className="p-4">
-        <ChartContainer config={chartConfig}>
+    <section className="rounded-xl border-0 bg-neutral-900 p-4">
+      <h3 className="mb-6 text-goldie-300">Sales Revenue Report</h3>
+      <div>
+        <ChartContainer
+          config={chartConfig}
+          className="sales min-h-[200px] w-full lg:max-h-[500px]"
+        >
           <AreaChart
             accessibilityLayer
             data={chartData}
             margin={{
-              left: 12,
-              right: 12,
+              left: 0,
+              right: 0,
             }}
           >
-            <CartesianGrid vertical={false} color="#e4d064" />
+            <CartesianGrid vertical={false} stroke="#e4d06433" />
             <XAxis
               dataKey="month"
               tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickFormatter={(value: any) => value.slice(0, 3)}
+              axisLine={true}
+              tickMargin={10}
+              tickFormatter={(value) => value.slice(0, 3)}
+              color="#e4d064"
+              stroke="#e4d064"
+              fill="#e4d064"
             />
-            {/* <YAxis
+            <YAxis
               dataKey="price"
               tickLine={false}
               axisLine={false}
-              tickMargin={8}
-              // tickFormatter={(value: any) => `£${value.slice(0, 3)}`}
-            /> */}
+              tickMargin={20}
+              tickCount={100}
+              tickFormatter={(value) => `€${value}`}
+            />
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent indicator="line" />}
+              content={<ChartTooltipContent indicator="dot" />}
             />
+            <defs>
+              <linearGradient id="sales" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#e4d064" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#e4d064" stopOpacity={0.1} />
+              </linearGradient>
+            </defs>
+
             <Area
-              dataKey="desktop"
+              dataKey="price"
               type="natural"
-              fill="var(--color-desktop)"
+              fill="url(#sales)"
               fillOpacity={0.4}
-              stroke="var(--color-desktop)"
+              stroke="#e4d064"
             />
           </AreaChart>
         </ChartContainer>
-      </CardContent>{" "}
-    </Card>
+      </div>
+    </section>
   );
 }

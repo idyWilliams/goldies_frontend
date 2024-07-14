@@ -9,9 +9,9 @@ export default function Page() {
   return (
     <>
       {/* <AdminLayout> */}
-        <div>
-          <Dashboard />
-        </div>
+      <div className="pb-10">
+        <Dashboard />
+      </div>
       {/* </AdminLayout> */}
     </>
   );

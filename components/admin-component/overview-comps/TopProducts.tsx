@@ -20,10 +20,10 @@ import {
 import EachElement from "@/helper/EachElement";
 import { cn } from "@/helper/cn";
 const chartData = [
-  { category: "milestones", sales: 200, fill: "#13B136" },
-  { category: "themed", sales: 100, fill: "#FFCC00" },
+  { category: "Crimson Delight", sales: 200, fill: "#BC8123" },
+  { category: "themed", sales: 100, fill: "#DEBE41" },
   { category: "kids", sales: 187, fill: "#E4D064" },
-  { category: "cupcakes", sales: 173, fill: "#E03131" },
+  { category: "cupcakes", sales: 173, fill: "#D5A32B" },
 ];
 
 const chartConfig = {
@@ -31,27 +31,27 @@ const chartConfig = {
     label: "Cake Categories",
   },
   milestones: {
-    label: "Milestone Cakes",
+    label: "Crimson Delight Cakes",
     color: "#13B136",
   },
   themed: {
-    label: "Themed Cakes",
+    label: "Red  Velvet Cakes",
     color: "#FFCC00",
   },
   kids: {
-    label: "Kids Cakes",
+    label: "Lemon Cake",
     color: "#E4D064",
   },
   cupcakes: {
-    label: "Cupcakes",
+    label: "Kid Cakes",
     color: "#E03131",
   },
 } satisfies ChartConfig;
 
-export function CategoryChart() {
+export function TopProducts() {
   return (
     <div className="flex flex-col rounded-2xl border-0 bg-neutral-900 p-4">
-      <h2 className="font-bold text-goldie-300">Cakes Category Chart</h2>
+      <h2 className="font-bold text-goldie-300">Top Product Sales</h2>
       <div className="items-center justify-center xl:flex">
         <div className="pb-0">
           <ChartContainer
