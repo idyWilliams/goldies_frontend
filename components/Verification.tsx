@@ -27,7 +27,7 @@ export default function Verification({ email }: { email: string }) {
         </div>
         <div className="flex cursor-pointer items-center justify-center gap-3 ">
           <Link
-            href={"/login"}
+            href={"/sign-in"}
             className="inline-flex items-center gap-2 text-sm text-neutral-500"
           >
             <span>

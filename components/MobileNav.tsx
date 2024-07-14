@@ -48,7 +48,7 @@ const MobileNav = ({ pathname, show, setShow, isOpen, setIsOpen }: any) => {
               </div>
               <div className="my-2 border-b border-black border-opacity-50"></div>
               <Link
-                href={`/login`}
+                href={`/sign-in`}
                 className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
               >
                 Sign In
