@@ -116,10 +116,15 @@ const Page = () => {
                       checked
                       className="form-checkbox h-4 w-4 checked:bg-goldie-300 checked:hover:bg-neutral-800 focus:ring-neutral-800 checked:focus:ring-neutral-800"
                     />
-                    <span>Keep me signed in</span>
+                    <span className="text-sm">Keep me signed in</span>
                   </label>
 
-                  <Link href="/forgot-password">Forgot password?</Link>
+                  <Link
+                    href="/forgot-password"
+                    className="text-sm hover:text-goldie-400"
+                  >
+                    Forgot password?
+                  </Link>
                 </div>
                 <Button className="mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300">
                   Sign Up

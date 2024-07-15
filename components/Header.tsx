@@ -141,7 +141,10 @@ const Header = () => {
             </div>
             <div className="hidden lg:block">
               <button
-                onClick={() => setIsOpen((prev) => !prev)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsOpen((prev) => !prev);
+                }}
                 className="flex items-center gap-2"
               >
                 <FaRegUserCircle size={20} /> Account

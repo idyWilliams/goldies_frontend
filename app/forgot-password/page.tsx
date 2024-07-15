@@ -40,7 +40,7 @@ export default function Page() {
         <div className="mx-auto flex w-full items-center justify-center bg-white px-4 py-10 sm:w-[560px] md:h-[70vh] md:w-[640px] lg:w-[500px]">
           <div
             className={cn(
-              "block w-full bg-white p-5 shadow-[0px_0px_30px_rgba(0,0,0,0.2)] md:shadow-none",
+              "block w-full bg-white p-5 sm:mx-auto sm:w-[400px] sm:border sm:bg-white sm:p-6 sm:shadow-lg md:border-0 md:shadow-none",
               open && "hidden",
             )}
           >

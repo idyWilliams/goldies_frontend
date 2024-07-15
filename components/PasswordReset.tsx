@@ -7,7 +7,7 @@ import { BiArrowBack } from "react-icons/bi";
 export default function PasswordReset() {
   return (
     <>
-      <div className="w-full bg-white p-5 shadow-[0px_0px_30px_rgba(0,0,0,0.2)] md:shadow-none">
+      <div className="w-full bg-white p-5 sm:mx-auto sm:w-[400px] sm:border sm:bg-white sm:p-6 sm:shadow-lg md:border-0 md:shadow-none">
         <div className="mb-6 flex flex-col items-center justify-center">
           <span className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-green-700 bg-opacity-10">
             <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-green-700 bg-opacity-10">
