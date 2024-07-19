@@ -99,7 +99,7 @@ const Page = () => {
           {categories?.length >= 1 && (
             <Link
               href={"/admin/manage-categories/create"}
-              className="inline-block bg-neutral-900 px-3 py-2 text-sm text-goldie-300"
+              className="inline-block rounded-md bg-neutral-900 px-3 py-2 text-sm text-goldie-300"
             >
               New Category
             </Link>
@@ -131,16 +131,16 @@ const Page = () => {
                     <div className="py-1.5">
                       <div className="mb-1 flex items-center justify-between">
                         <StatusBar status={item?.status} />
-                        <div className="inline-flex items-center gap-2">
+                        <div className="inline-flex items-center gap-3">
                           <span
                             onClick={() => handleEdit(item)}
-                            className="cursor-pointer text-blue-600"
+                            className="cursor-pointer text-blue-600 hover:text-blue-400"
                           >
                             <Edit size={24} />
                           </span>
                           <span
                             onClick={() => handleDelete(item)}
-                            className="cursor-pointer text-red-600"
+                            className="cursor-pointer text-red-600 hover:text-red-400"
                           >
                             <Trash size={24} />
                           </span>

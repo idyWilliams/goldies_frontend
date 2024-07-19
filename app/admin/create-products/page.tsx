@@ -361,19 +361,20 @@ export default function Page() {
           <div className="flex items-center justify-between">
             <h1 className="font-bold">Create New Products</h1>
             <button
-              className="text-goldie-300 rounded-md bg-black px-10 py-2 text-[12px]"
+              className="rounded-md bg-black px-10 py-2 text-[12px] text-goldie-300"
               type="submit"
             >
               Save Changes
             </button>
           </div>
-          <hr className="my-6 border-2 text-neutral-500" />
+          <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
+
           <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
             <div className="">
               <h2 className="mb-3 font-bold">Product Information</h2>
               <div className="h-full rounded-md border border-neutral-300 p-4">
                 <label htmlFor="productName" className="">
-                  <span className="mb-1 block after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+                  <span className="mb-1 block after:ml-1 after:text-xl after:text-[#E10] after:content-['*']">
                     Product Name
                   </span>
                   <input
@@ -386,7 +387,7 @@ export default function Page() {
                   />
                 </label>
                 <label htmlFor="productDescription" className="">
-                  <span className="mb-1 block after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+                  <span className="mb-1 block after:ml-1 after:text-xl after:text-[#E10] after:content-['*']">
                     Product Description
                   </span>
                   <textarea
@@ -399,7 +400,7 @@ export default function Page() {
                 </label>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="mt-3 w-full">
-                    <h2 className="mb-1 after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+                    <h2 className="mb-1 after:ml-1 after:text-xl after:text-[#E10] after:content-['*']">
                       Category
                     </h2>
 
@@ -432,7 +433,7 @@ export default function Page() {
                     </select>
                   </div>
                   <div className="mt-3 w-full">
-                    <h2 className="mb-1 after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+                    <h2 className="mb-1 after:ml-1 after:text-xl after:text-[#E10] after:content-['*']">
                       Subcategory
                     </h2>
                     {sub}
@@ -441,7 +442,9 @@ export default function Page() {
               </div>
             </div>
             <div className="lg:mt-10 xl:mt-0">
-              <h1 className="mb-3 font-bold">Product Images</h1>
+              <h1 className="mb-3 font-bold after:text-xl after:text-[#E10] after:content-['*']">
+                Product Images
+              </h1>
               <div className="grid grid-cols-4 grid-rows-[180px] gap-4 rounded-md border border-neutral-300 p-4 xl:h-full xl:grid-cols-2">
                 <div className="relative flex flex-col items-center justify-center overflow-hidden rounded-md border border-dashed border-neutral-300 bg-[#F8F8F8]">
                   {!images.image1 && (
@@ -480,7 +483,7 @@ export default function Page() {
                           Replace
                         </label>
                         <button
-                          className="bg-goldie-300 cursor-pointer rounded-md px-6 py-2"
+                          className="cursor-pointer rounded-md bg-goldie-300 px-6 py-2"
                           onClick={() => handleRemove(1)}
                         >
                           Remove
@@ -526,7 +529,7 @@ export default function Page() {
                           Replace
                         </label>
                         <button
-                          className="bg-goldie-300 cursor-pointer rounded-md px-6 py-2"
+                          className="cursor-pointer rounded-md bg-goldie-300 px-6 py-2"
                           onClick={() => handleRemove(2)}
                         >
                           Remove
@@ -572,7 +575,7 @@ export default function Page() {
                           Replace
                         </label>
                         <button
-                          className="bg-goldie-300 cursor-pointer rounded-md px-6 py-2"
+                          className="cursor-pointer rounded-md bg-goldie-300 px-6 py-2"
                           onClick={() => handleRemove(3)}
                         >
                           Remove
@@ -618,7 +621,7 @@ export default function Page() {
                           Replace
                         </label>
                         <button
-                          className="bg-goldie-300 cursor-pointer rounded-md px-6 py-2"
+                          className="cursor-pointer rounded-md bg-goldie-300 px-6 py-2"
                           onClick={() => handleRemove(4)}
                         >
                           Remove
@@ -633,7 +636,7 @@ export default function Page() {
               <h1 className="mb-3 font-bold">Product Pricing</h1>
               <div className="flex h-full w-full gap-4 rounded-md border border-neutral-300 p-4">
                 <label htmlFor="priceFrom" className="block flex-grow">
-                  <span className="mb-1 inline-block after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+                  <span className="mb-1 inline-block after:ml-1 after:text-xl after:text-[#E10] after:content-['*']">
                     Price From
                   </span>
                   <div className="relative overflow-hidden rounded-md border bg-gray-100 focus-within:border-black">
@@ -651,7 +654,7 @@ export default function Page() {
                   </div>
                 </label>
                 <label htmlFor="priceTo" className="block flex-grow">
-                  <span className="mb-1 inline-block after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+                  <span className="mb-1 inline-block after:ml-1 after:text-xl after:text-[#E10] after:content-['*']">
                     Price To
                   </span>
                   <div className="relative overflow-hidden rounded-md border bg-gray-100 focus-within:border-black">
@@ -674,7 +677,7 @@ export default function Page() {
               <h2 className="mb-3 font-bold">Product Variant</h2>
               <div className="grid h-full grid-cols-2 gap-2 rounded-md border border-neutral-300 p-4">
                 <div className="block">
-                  <span className="mb-1 inline-block after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+                  <span className="mb-1 inline-block after:ml-1 after:text-xl after:text-[#E10] after:content-['*']">
                     Product Shapes
                   </span>
                   <MultiSelect
@@ -685,7 +688,7 @@ export default function Page() {
                   />
                 </div>
                 <div className="block">
-                  <span className="mb-1 inline-block after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+                  <span className="mb-1 inline-block after:ml-1 after:text-xl after:text-[#E10] after:content-['*']">
                     Product Sizes
                   </span>
                   <MultiSelect
@@ -696,7 +699,7 @@ export default function Page() {
                   />
                 </div>
                 <div className="block">
-                  <span className="mb-1 inline-block after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+                  <span className="mb-1 inline-block after:ml-1 after:text-xl after:text-[#E10] after:content-['*']">
                     Product Fillings
                   </span>
                   <MultiSelect
@@ -707,7 +710,7 @@ export default function Page() {
                   />
                 </div>
                 <div className="block">
-                  <span className="mb-1 inline-block after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+                  <span className="mb-1 inline-block after:ml-1 after:text-xl after:text-[#E10] after:content-['*']">
                     Toppings/Add-ons
                   </span>
                   <MultiSelect

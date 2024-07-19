@@ -59,7 +59,7 @@ export default function Dashboard() {
             </Button>
           </div>
 
-          <div className="w-full overflow-x-auto">
+          <div className="hide-scrollbar w-full overflow-x-auto">
             <div className="w-full gap-6 space-y-4 text-goldie-300 md:flex md:w-min md:space-y-0 lg:grid-cols-3 xl:grid xl:w-full xl:gap-6">
               <EachElement
                 of={Overviews}

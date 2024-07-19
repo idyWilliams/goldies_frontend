@@ -135,7 +135,7 @@ export default function Page() {
     <>
       <section className="w-full bg-[#EFEFEF] px-4 pt-6">
         <h1 className="text-lg font-extrabold">Orders</h1>
-        <hr className="my-6 border-2 border-[#D4D4D4]" />
+        <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
 
         <div className="hidden  md:block">
           <ProductTable

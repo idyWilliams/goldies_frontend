@@ -229,9 +229,9 @@ export default function Page() {
     <>
       <section className="w-full px-4 pt-6">
         <div className="flex items-center justify-between">
-          <div>
+          <div className="mb-5">
             <h1 className="text-lg font-extrabold">Products</h1>
-            <p className="text-xs">List of all available products created</p>
+            <p className="text-sm">List of all available products created</p>
           </div>
           <button
             className="flex cursor-pointer items-center gap-2 rounded-md bg-black px-5 py-2.5 text-sm text-goldie-300"

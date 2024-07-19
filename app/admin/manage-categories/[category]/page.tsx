@@ -307,7 +307,7 @@ const Page = ({ params }: CategoryPageProps) => {
               {isNewCreate ? "New Category" : "Edit Category"}
             </h1>
           </Link>
-          <button className="bg-neutral-900 px-4 py-2 text-sm text-goldie-300">
+          <button className="rounded-md bg-neutral-900 px-4 py-2 text-sm text-goldie-300">
             Create Category
           </button>
         </div>
@@ -484,7 +484,7 @@ const Page = ({ params }: CategoryPageProps) => {
                 disabled={isDisabled}
                 onClick={handleAddSubcategory}
                 className={cn(
-                  "mt-3 inline-block cursor-pointer bg-neutral-900 px-4 py-2 text-sm font-medium text-goldie-300 disabled:cursor-auto disabled:bg-neutral-200 disabled:text-neutral-400",
+                  "mt-3 inline-block cursor-pointer rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-goldie-300 disabled:cursor-auto disabled:bg-neutral-200 disabled:text-neutral-400",
                 )}
               >
                 Add Subcategory
@@ -503,7 +503,7 @@ const Page = ({ params }: CategoryPageProps) => {
               <button
                 onClick={handleAddSubcategory}
                 className={cn(
-                  "inline-block cursor-pointer bg-neutral-900 px-4 py-2 text-sm font-bold text-goldie-300 disabled:bg-neutral-200 disabled:text-neutral-400 md:mt-3",
+                  "inline-block cursor-pointer rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-goldie-300 disabled:bg-neutral-200 disabled:text-neutral-400 md:mt-3",
                 )}
               >
                 Add Subcategory
