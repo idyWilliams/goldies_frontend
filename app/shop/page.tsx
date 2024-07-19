@@ -19,7 +19,6 @@ import Pagination from "@/components/custom-filter/Pagination";
 import ProductCard from "@/components/shop-components/ProductCard";
 import { useSearchParams } from "next/navigation";
 import { captalizedName } from "@/helper/nameFormat";
-import { Suspense } from "react";
 
 let itemsPerPage = 6;
 
@@ -147,6 +146,7 @@ const ShopPage = () => {
                   },
                 )}
               </div>
+
               <Pagination
                 className="lg:hidden"
                 onNext={handleNext}

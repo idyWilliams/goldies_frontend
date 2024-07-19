@@ -29,6 +29,9 @@ import Select from "react-select";
 import ProductCard from "@/components/shop-components/ProductCard";
 import { ArrowRight } from "iconsax-react";
 import Link from "next/link";
+import { Controller, useForm } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 const cakeSizes = [
   { value: "6-round", label: "6″ round serves 10 - 12" },
@@ -68,6 +71,18 @@ export type SelectOptionType = {
   description?: string;
 } | null;
 
+const schema = yup.object().shape({
+  sizes: yup.string().required(),
+  toppings: yup.string().required(),
+  message: yup.string().required(),
+});
+
+interface FormValues {
+  sizes: string;
+  toppings: string;
+  message: string;
+}
+
 function CakeDetailsPage({ params }: any) {
   const [showReviews, setShowReviews] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -82,6 +97,9 @@ function CakeDetailsPage({ params }: any) {
   const [time, setTime] = useState("");
   const [message, setMessage] = useState("");
   const [age, setAge] = useState("");
+  const { register, handleSubmit, control } = useForm({
+    resolver: yupResolver(schema),
+  });
 
   // const handleChange = (event: SelectChangeEvent) => {
   //   setAge(event.target.value as string);
@@ -129,13 +147,26 @@ function CakeDetailsPage({ params }: any) {
     }
   }, [getProduct]);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
 
   if (!getProduct) {
     return <div>Product not found.</div>;
   }
+
+  const selectTheme = (theme: any) => ({
+    ...theme,
+    colors: {
+      ...theme.colors,
+      primary25: "hotpink",
+      primary: "black",
+    },
+  });
+
+  const onSubmit = (data: any) => {
+    console.log(data);
+  };
 
   return (
     <>
@@ -217,35 +248,45 @@ function CakeDetailsPage({ params }: any) {
               {showReviews ? (
                 <ProductReview setShowReviews={setShowReviews} />
               ) : (
-                <form id="detail" className="lg:w-[75%]">
+                <form
+                  id="detail"
+                  className="lg:w-[75%]"
+                  onSubmit={handleSubmit(onSubmit)}
+                >
                   <div className="mt-4 space-y-3">
                     <label htmlFor="size" className="block w-full">
-                      <span className="mb-1.5 inline-block">Size</span>
-                      <Select
-                        options={cakeSizes}
-                        className=""
-                        // unstyled
-                        styles={{
-                          control: (baseStyles, state) => ({
-                            ...baseStyles,
-                            borderColor: state.isFocused
-                              ? "border-neutral-800 ring-neutral-800"
-                              : "border-neutral-500",
-                          }),
+                      <span className="mb-1.5 inline-block after:inline-block after:text-red-600 after:content-['*']">
+                        Size
+                      </span>
+                      <Controller
+                        control={control}
+                        name="sizes"
+                        render={({ field: { value, onChange } }) => {
+                          console.log(value, "vavav");
+
+                          return (
+                            <Select
+                              options={cakeSizes}
+                              // value={value}
+                              onChange={onChange}
+                              theme={selectTheme}
+                            />
+                          );
                         }}
                       />
                     </label>
                     <label htmlFor="toppings" className="block w-full">
-                      <span className="mb-1.5 inline-block">Toppings</span>
-                      <Select options={toppings} />
+                      <span className="mb-1.5 inline-block after:inline-block after:text-red-600 after:content-['*']">
+                        Toppings
+                      </span>
+                      <Select options={toppings} theme={selectTheme} />
                     </label>
                     <label htmlFor="duration" className="block w-full">
-                      <span className="mb-1.5 inline-block">
+                      <span className="mb-1.5 inline-block after:inline-block after:text-red-600 after:content-['*']">
                         When do you need your cake?
                       </span>
-                      <Select options={cakeTimes} />
-
-                      <p className="text-sm">
+                      <Select theme={selectTheme} options={cakeTimes} />
+                      <p className="mt-1 text-sm">
                         48hours is the minimum time required for all cake orders
                       </p>
                     </label>
