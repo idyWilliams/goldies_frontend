@@ -19,6 +19,23 @@ import { CiSearch } from "react-icons/ci";
 import { useRouter } from "next/navigation";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { BellIcon, CheckIcon } from "@radix-ui/react-icons";
+
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function AdminNav() {
   const [sticky, setSticky] = useState(false);
@@ -53,7 +70,7 @@ export default function AdminNav() {
         <div className="flex items-center justify-between px-4">
           <div className="flex items-center gap-3">
             <span
-              className="text-goldie-300 inline-block lg:hidden"
+              className="inline-block text-goldie-300 lg:hidden"
               onClick={() => setIsOpen(true)}
             >
               <BsList size={24} />
@@ -74,7 +91,7 @@ export default function AdminNav() {
             <div className="inline-flex items-center justify-end">
               <label
                 htmlFor="search"
-                className={`bg-goldie-300 inline-block w-min rounded-l-md duration-300 ${openSearch ? "bg-opacity-20 opacity-100" : "opacity-0"}`}
+                className={`inline-block w-min rounded-l-md bg-goldie-300 duration-300 ${openSearch ? "bg-opacity-20 opacity-100" : "opacity-0"}`}
               >
                 <input
                   type="text"
@@ -82,38 +99,46 @@ export default function AdminNav() {
                   autoComplete="off"
                   id="search"
                   placeholder="Search..."
-                  className={`${openSearch ? "w-[400px] px-4" : "w-0 px-0"} text-goldie-300 placeholder:text-goldie-300 border-none bg-transparent text-[13px] duration-300 placeholder:text-opacity-50 focus:border-0 focus:outline-none focus:ring-0`}
+                  className={`${openSearch ? "w-[400px] px-4" : "w-0 px-0"} border-none bg-transparent text-[13px] text-goldie-300 duration-300 placeholder:text-goldie-300 placeholder:text-opacity-50 focus:border-0 focus:outline-none focus:ring-0`}
                 />
               </label>
               <span
-                className={`${openSearch ? "rounded-l-none bg-opacity-20" : "rounded-l-md bg-opacity-0"} bg-goldie-300 inline-flex h-10 w-10 items-center justify-center rounded-r-md  duration-300`}
+                className={`${openSearch ? "rounded-l-none bg-opacity-20" : "rounded-l-md bg-opacity-0"} inline-flex h-10 w-10 items-center justify-center rounded-r-md bg-goldie-300  duration-300`}
                 onClick={() => setOpenSearch((prev) => !prev)}
               >
                 {openSearch ? (
-                  <BsX size={18} className="text-goldie-300 inline-block" />
+                  <BsX size={18} className="inline-block text-goldie-300" />
                 ) : (
                   <BsSearch
                     size={18}
-                    className="text-goldie-300 inline-block"
+                    className="inline-block text-goldie-300"
                   />
                 )}
               </span>
             </div>
-            <span className="text-goldie-300 relative inline-block cursor-pointer">
-              <IoMdNotificationsOutline size={24} />
-              <span className="absolute right-0.5 top-1 inline-block h-1.5 w-1.5 rounded-full bg-red-600 text-sm outline outline-2 outline-black"></span>
-            </span>
+            <Popover>
+              <PopoverTrigger>
+                <span className="relative inline-block cursor-pointer text-goldie-300">
+                  <IoMdNotificationsOutline size={24} />
+                  <span className="absolute right-0.5 top-1 inline-block h-1.5 w-1.5 rounded-full bg-red-600 text-sm outline outline-2 outline-black"></span>
+                </span>
+              </PopoverTrigger>
+              <PopoverContent className="w-[300px] border-0 bg-neutral-950 p-0 shadow-[0_0_30px_rgb(228,208,100,0.3)]">
+                <NotificationBar />
+              </PopoverContent>
+            </Popover>
+
             <div className="hidden gap-3  sm:inline-flex">
-              <span className="text-goldie-300 text-sm font-normal">
+              <span className="text-sm font-normal text-goldie-300">
                 {moment().format("ddd D MMM")}
               </span>
-              <span className="text-goldie-300 text-sm font-normal">
+              <span className="text-sm font-normal text-goldie-300">
                 {currentTime}
               </span>
             </div>
             <button
               onClick={() => setOpen((prev) => !prev)}
-              className="border-goldie-300 text-goldie-300 flex items-center gap-2 border-l border-opacity-40 pl-4"
+              className="flex items-center gap-2 border-l border-goldie-300 border-opacity-40 pl-4 text-goldie-300"
             >
               <FaRegUserCircle size={20} />{" "}
               <span className="hidden text-sm md:inline-flex md:items-center md:gap-3">
@@ -122,7 +147,7 @@ export default function AdminNav() {
             </button>
             {isOpen && (
               <MenuPopup className="absolute -right-3 top-10 z-40 w-[190px] rounded-md bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
-                <div className="mb-2 flex items-center justify-center gap-3 border-b border-black border-opacity-20 p-2 pb-3 sm:hidden">
+                <div className="mb-2 flex items-center justify-start gap-3 border-b border-black border-opacity-20 p-2 pb-3 sm:hidden">
                   <span className="text-sm font-normal text-black">
                     {moment().format("ddd D MMM")}
                   </span>
@@ -164,7 +189,7 @@ export default function AdminNav() {
           className={`fixed top-0 h-screen w-full duration-300 ${open ? "left-0" : "-left-full"}`}
         >
           <span
-            className="text-goldie-300 absolute left-3 top-4 z-50 inline-block cursor-pointer"
+            className="absolute left-3 top-4 z-50 inline-block cursor-pointer text-goldie-300"
             onClick={() => setIsOpen(false)}
           >
             <BsX size={30} />
@@ -190,3 +215,56 @@ export default function AdminNav() {
     </>
   );
 }
+
+const notifications = [
+  {
+    title: "New Order Received!",
+    description: "A new order has been placed by a customer.",
+    isRead: false,
+  },
+  {
+    title: "New Customer Joined!",
+    description: "A new customer has just signed up.",
+    isRead: false,
+  },
+];
+
+const NotificationBar = () => {
+  return (
+    <Card className={cn("w-full border-0 bg-transparent shadow-none")}>
+      <CardHeader className="px-4 text-white">
+        <CardTitle className="text-white">Notifications</CardTitle>
+        <CardDescription className="text-neutral-300">
+          You have 2 unread messages.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="grid gap-4 px-4">
+        <div>
+          {notifications.map((notification, index) => (
+            <div
+              key={index}
+              className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0"
+            >
+              <span className="flex h-2 w-2 translate-y-1 rounded-full bg-goldie-400" />
+              <div className="space-y-1">
+                <p
+                  className={cn("text-sm font-medium leading-none text-white")}
+                >
+                  {notification.title}
+                </p>
+                <p className="text-sm text-neutral-400">
+                  {notification.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </CardContent>
+      <CardFooter className="px-4">
+        <Button className="w-full bg-goldie-400 text-goldie-950 hover:bg-goldie-300">
+          <CheckIcon className="mr-2 h-4 w-4" /> Mark all as read
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+};
