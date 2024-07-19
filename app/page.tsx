@@ -8,6 +8,7 @@ import Layout from "@/components/Layout";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect } from "react";
+import LandPage from "@/components/LandPage";
 
 const Home = () => {
   useEffect(() => {
@@ -20,7 +21,9 @@ const Home = () => {
   return (
     <>
       <Layout>
+        <div className="mt-[64px] lg:mt-[80px]" />
         <main className="overflow-hidden">
+          <LandPage />
           <Hero />
           <About />
           <CakeCategory />

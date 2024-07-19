@@ -169,4 +169,18 @@
   .sales .recharts-cartesian-axis-tick text {
     fill: #e4d064 !important;
   }
+
+  .hero-bg {
+    background-image: url("/assets/cake.gif");
+    background-size: cover;
+    background-position: center;
+  }
+
+  .vector-bg {
+    background-image: linear-gradient(
+        rgba(255, 255, 255, 0.8),
+        rgba(255, 255, 255, 0.9)
+      ),
+      url("/assets/vectorBG.jpg");
+  }
 }
