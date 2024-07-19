@@ -139,13 +139,15 @@ const Footer = () => {
         </div>
       </div>
       <div className="mt-5 flex items-center bg-neutral-700 py-3">
-        <div className="wrapper flex w-full flex-col-reverse items-center justify-between gap-5 md:flex-row">
-          <p className="text-white">©Goldies 2024 All Rights Reserved</p>
+        <div className="wrapper flex w-full flex-col-reverse justify-between gap-5 md:flex-row md:items-center">
+          <p className="text-xs text-white md:text-sm">
+            ©Goldies 2024 All Rights Reserved
+          </p>
           <div className="inline-flex gap-8">
-            <Link href={"/"} className="text-white">
+            <Link href={"/"} className="text-xs text-white md:text-sm">
               Terms of Service
             </Link>
-            <Link href={"/"} className="text-white">
+            <Link href={"/"} className="text-xs text-white md:text-sm">
               Privacy Policy
             </Link>
           </div>

@@ -44,7 +44,7 @@ const Page = () => {
 
       <section className="py-10">
         <div className="wrapper">
-          <div className="flex flex-col items-center sm:mx-auto sm:w-[400px] sm:border sm:bg-white sm:p-6 sm:shadow-lg">
+          <div className="flex flex-col items-center sm:mx-auto sm:w-[500px] sm:border sm:bg-white sm:p-6 sm:shadow-lg">
             <span className="flex h-20 w-20 items-center justify-center rounded-full bg-goldie-300 bg-opacity-35">
               <span className="flex h-16 w-16 items-center justify-center rounded-full bg-goldie-300 bg-opacity-35">
                 <AiOutlineUserAdd size={30} />
@@ -59,7 +59,7 @@ const Page = () => {
             <div className="w-full">
               <form
                 id="signup"
-                className="grid gap-5"
+                className="grid gap-5 md:grid-cols-2"
                 onSubmit={handleSubmit(onSubmit)}
               >
                 <label htmlFor="firstname" className="">
@@ -98,7 +98,7 @@ const Page = () => {
                     placeholder="Your lastname"
                   />
                 </label>
-                <label htmlFor="email" className="">
+                <label htmlFor="email" className="md:col-span-2">
                   <span className="mb-1 inline-block font-medium capitalize">
                     Email Address
                   </span>
@@ -116,7 +116,7 @@ const Page = () => {
                     placeholder="Your email"
                   />
                 </label>
-                <label htmlFor="password" className="relative">
+                <label htmlFor="password" className="relative md:col-span-2">
                   <span className="mb-1 inline-block font-medium capitalize">
                     Password
                   </span>
@@ -144,7 +144,10 @@ const Page = () => {
                     )}
                   </span>
                 </label>
-                <label htmlFor="agree" className="flex items-center gap-3">
+                <label
+                  htmlFor="agree"
+                  className="flex items-center gap-3 md:col-span-2"
+                >
                   <input
                     type="checkbox"
                     name="agree"
@@ -162,11 +165,11 @@ const Page = () => {
                     </span>
                   </span>
                 </label>
-                <Button className="mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300">
+                <Button className="col-span-2 mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300">
                   Sign Up
                 </Button>
 
-                <p className="text-center">
+                <p className="col-span-2 text-center">
                   Already have an account?{" "}
                   <Link href="/sign-in" className="text-goldie-300">
                     Sign In
