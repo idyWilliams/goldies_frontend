@@ -13,9 +13,9 @@ const Footer = () => {
   return (
     <section className="relative grid min-h-[500px] w-full bg-neutral-900 pt-3">
       <div className="wrapper relative z-30">
-        <div className="mx-auto grid gap-6 rounded-2xl bg-[#494848] px-4 py-4 md:max-w-[70%] md:grid-cols-2 md:items-center md:py-6">
+        <div className="mx-auto grid gap-6 rounded-2xl bg-[#494848] px-4 py-4 md:grid-cols-2 md:items-center md:py-6 xl:w-10/12">
           <div>
-            <h1 className="text-2xl font-bold text-goldie-300 md:text-[32px]">
+            <h1 className="text-2xl font-bold text-goldie-300 lg:text-[32px]">
               Subscribe to our NewsLetter
             </h1>
             <p className="text-[16px] text-goldie-300">
@@ -42,7 +42,7 @@ const Footer = () => {
             </form>
           </div>
         </div>
-        <div className="mt-20 grid justify-between gap-y-8 px-4 md:px-10 lg:grid-cols-5">
+        <div className="mt-20 grid justify-between gap-y-8 lg:grid-cols-5">
           <div className="space-y-4">
             <div>
               <Image
@@ -76,7 +76,7 @@ const Footer = () => {
               </Link>
             </div>
           </div>
-          <div className="inline-flex flex-col space-y-3 text-white md:pl-8">
+          <div className="inline-flex flex-col space-y-3 text-white">
             <div>
               <h3 className="font-bold text-white">Company</h3>
               <hr className="mb-2 w-[35px] border border-goldie-300" />

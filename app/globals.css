@@ -246,4 +246,24 @@
       ),
       url("/assets/slide-5.jpeg");
   }
+
+  /* Custom scrollbar styles */
+  ::-webkit-scrollbar {
+    width: 10px;
+    position: fixed !important;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #e4d1644f;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #121212c1;
+    border-radius: 10px;
+    border: 3px solid #e4d064;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 }
