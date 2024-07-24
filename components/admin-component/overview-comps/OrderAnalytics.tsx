@@ -8,6 +8,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useMediaQuery } from "react-responsive";
 
 const chartData = [
   { month: "January", orders: 186 },
@@ -32,15 +33,71 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function OrderAnalytics() {
+  const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1224 });
+  const isMobile = useMediaQuery({ maxWidth: 767 });
+
+  const bar = () => {
+    if (isMobile) {
+      return 10;
+    } else if (isTablet) {
+      return 30;
+    } else {
+      return 30;
+    }
+  };
   return (
     <Card className="border-0 bg-goldie-300">
       <CardHeader>
-        <CardTitle className="mb-8">Order Analytics</CardTitle>
+        <CardTitle className="">Order Analytics</CardTitle>
       </CardHeader>
       <CardContent>
         <ChartContainer
           config={chartConfig}
-          className="orders min-h-[200px] w-full pl-0 lg:max-h-[500px]"
+          className="orders max-h-[300px] min-h-[200px] w-full pl-0 lg:hidden"
+        >
+          <BarChart
+            accessibilityLayer
+            data={chartData}
+            margin={{
+              left: 0,
+              right: 0,
+            }}
+          >
+            <CartesianGrid
+              vertical={false}
+              strokeOpacity={0.9}
+              stroke="hsl(0deg 0% 28.5% / 50%)"
+            />
+            <XAxis
+              dataKey="month"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={true}
+              tickFormatter={(value) => value.slice(0, 3)}
+            />
+            {/* <YAxis
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              tickCount={10}
+            /> */}
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent indicator="dot" color="#000" />}
+            />
+            <Bar
+              dataKey="orders"
+              fill="var(--color-desktop)"
+              radius={0}
+              barSize={bar()}
+            />
+          </BarChart>
+        </ChartContainer>
+
+        {/* DESKTOP */}
+        <ChartContainer
+          config={chartConfig}
+          className="orders hidden min-h-[200px] w-full pl-0 lg:block lg:max-h-[400px]"
         >
           <BarChart
             accessibilityLayer
@@ -76,7 +133,7 @@ export function OrderAnalytics() {
               dataKey="orders"
               fill="var(--color-desktop)"
               radius={0}
-              barSize={50}
+              barSize={40}
             />
           </BarChart>
         </ChartContainer>

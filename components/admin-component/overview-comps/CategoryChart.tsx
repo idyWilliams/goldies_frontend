@@ -52,7 +52,7 @@ export function CategoryChart() {
   return (
     <div className="flex flex-col rounded-2xl border-0 bg-neutral-900 p-4">
       <h2 className="font-bold text-goldie-300">Cakes Category Chart</h2>
-      <div className="items-center justify-center xl:flex">
+      <div className="items-center justify-center xl:flex xl:flex-col">
         <div className="pb-0">
           <ChartContainer
             config={chartConfig}

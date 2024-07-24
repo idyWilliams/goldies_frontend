@@ -72,7 +72,7 @@ export default function Dashboard() {
         </div>
       </section>
 
-      <div className="space-y-6 px-4">
+      <div className="space-y-6 px-4 xl:hidden">
         <SaleChart />
         <div className="grid gap-5 md:grid-cols-2 md:items-start">
           {" "}
@@ -80,6 +80,17 @@ export default function Dashboard() {
         </div>
         <OrderAnalytics />
         <CustomersAnalytics />
+      </div>
+
+      <div className="hidden space-y-6 px-4 xl:block">
+        <SaleChart />
+        <div className="grid gap-5 md:grid-cols-[0.5fr_2fr] md:items-stretch">
+          <CategoryChart /> <OrderAnalytics />
+        </div>
+        <div className="grid gap-5 md:grid-cols-[2fr_0.5fr] md:items-stretch">
+          <CustomersAnalytics />
+          <TopProducts />
+        </div>
       </div>
     </>
   );
