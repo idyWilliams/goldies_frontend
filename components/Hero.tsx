@@ -1,44 +1,160 @@
 import Link from "next/link";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Pagination, Navigation } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+import { Button } from "./ui/button";
+import EachElement from "@/helper/EachElement";
+
+const stats = [
+  { value: "12000+", title: "Cakes Delivered" },
+  { value: "12000+", title: "Verified Customers" },
+  { value: "500+", title: "Cakes Recipes" },
+];
+
 const Hero = () => {
   return (
-    <section className="bg-goldie-300 py-16">
-      <div className="wrapper">
-        <div className="relative h-[350px] w-full md:h-[400px] lg:h-[500px]">
-          <video
-            width="320"
-            height="350"
-            autoPlay
-            muted
-            loop
-            className="absolute left-0 top-0 h-full w-full object-cover"
-            preload="auto"
-          >
-            <source src="/assets/home.webm" type="video/webm" />
-            <source src="/assets/home.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-
-          <div className="bg-goldie-300 relative z-20 mt-6 flex h-full w-full flex-col items-center justify-center bg-opacity-40 p-8 backdrop-blur-sm md:items-start">
-            <div className="flex w-full flex-wrap justify-center md:w-9/12 md:justify-start">
-              <h1
-                data-aos="fade-down"
-                data-aos-delay="500"
-                className="tagline text-center text-3xl font-bold leading-[48px] md:text-left md:text-4xl md:leading-[150%] lg:text-5xl lg:leading-[153%]"
-              >
-                Crafting Smiles, One Delicious Moment at a Time
+    <>
+      <Swiper
+        slidesPerView={1}
+        spaceBetween={0}
+        autoplay={{
+          delay: 3500,
+          disableOnInteraction: false,
+        }}
+        loop
+        // pagination={{
+        //   clickable: true,
+        // }}
+        modules={[Autoplay, Pagination, Navigation]}
+        className="mySwiper h-[40vh] w-full xl:h-screen"
+      >
+        <SwiperSlide
+          style={{ display: "flex" }}
+          className="hero-bg items-center"
+        >
+          <div className="wrapper">
+            <div className="lg:w-[30%] xl:w-[40%]">
+              <h1 className="text-3xl font-bold text-white xl:text-6xl xl:leading-[1.3]">
+                Taste the Extraordinary
               </h1>
-              <Link
-                href="/shop"
-                data-aos="fade-down"
-                className="hover:border-goldie-300 hover:bg-goldie-300 mt-8 inline-block border-2 border-black px-6 py-3 font-bold shadow-[0_3px_30px_rgba(0,0,0,0.8)] duration-300"
+              <p className="text-balance text-xl text-white lg:leading-[1.5] xl:mt-4 xl:text-2xl">
+                Crafting Smiles, One Delicious Moment at a time.
+              </p>
+              <Button
+                size="lg"
+                className="mt-6 bg-goldie-300 font-semibold text-black hover:bg-goldie-300"
               >
-                Shop Cakes
-              </Link>
+                Order Now
+              </Button>
             </div>
           </div>
+        </SwiperSlide>
+        <SwiperSlide
+          style={{ display: "flex" }}
+          className="slide2 items-center"
+        >
+          <div className="wrapper">
+            <div className="lg:w-[30%] xl:w-[40%]">
+              <h1 className="text-3xl font-bold text-white xl:text-6xl xl:leading-[1.3]">
+                Every cake is a Masterpiece
+              </h1>
+              <p className="text-balance text-xl text-white lg:leading-[1.5] xl:mt-4 xl:text-2xl">
+                Unique bespoke cake designed Just for You.
+              </p>
+              <Button
+                size="lg"
+                className="mt-6 bg-goldie-300 font-semibold text-black hover:bg-goldie-300"
+              >
+                Order Now
+              </Button>
+            </div>
+          </div>
+        </SwiperSlide>
+        <SwiperSlide
+          style={{ display: "flex" }}
+          className="slide3 items-center"
+        >
+          <div className="wrapper">
+            <div className="lg:w-[30%] xl:w-[40%]">
+              <h1 className="text-3xl font-bold text-white xl:text-6xl xl:leading-[1.3]">
+                Cake for Every Occasion
+              </h1>
+              <p className="text-balance text-xl text-white lg:leading-[1.5] xl:mt-4 xl:text-2xl">
+                Personalized for occasions and events.
+              </p>
+              <Button
+                size="lg"
+                className="mt-6 bg-goldie-300 font-semibold text-black hover:bg-goldie-300"
+              >
+                Order Now
+              </Button>
+            </div>
+          </div>
+        </SwiperSlide>
+        <SwiperSlide
+          style={{ display: "flex" }}
+          className="slide4 items-center"
+        >
+          <div className="wrapper">
+            <div className="lg:w-[30%] xl:w-[40%]">
+              <h1 className="text-3xl font-bold text-white xl:text-6xl xl:leading-[1.3]">
+                Customized themed Cake
+              </h1>
+              <p className="text-balance text-xl text-white lg:leading-[1.5] xl:mt-4 xl:text-2xl">
+                Customized to your satisfaction.
+              </p>
+              <Button
+                size="lg"
+                className="mt-6 bg-goldie-300 font-semibold text-black hover:bg-goldie-300"
+              >
+                Order Now
+              </Button>
+            </div>
+          </div>
+        </SwiperSlide>
+        <SwiperSlide
+          style={{ display: "flex" }}
+          className="slide5 items-center"
+        >
+          <div className="wrapper">
+            <div className="lg:w-[30%] xl:w-[40%]">
+              <h1 className="text-3xl font-bold text-white xl:text-balance xl:text-6xl xl:leading-[1.3]">
+                Cupcakes Just for you
+              </h1>
+              <p className="text-balance text-xl text-white lg:leading-[1.5] xl:mt-4 xl:text-2xl">
+                Unwrap the joy with every bite.
+              </p>
+              <Button
+                size="lg"
+                className="mt-6 bg-goldie-300 font-semibold text-black hover:bg-goldie-300"
+              >
+                Order Now
+              </Button>
+            </div>
+          </div>
+        </SwiperSlide>
+      </Swiper>
+      {/* STATS */}
+      <section className="bg-neutral-950 py-10">
+        <div className="wrapper flex items-center justify-between sm:justify-evenly sm:gap-8">
+          <EachElement
+            of={stats}
+            render={(item: any, index: number) => (
+              <div key={index} className="">
+                <h3 className="text-xl font-bold text-goldie-300">
+                  {item?.value}
+                </h3>
+                <p className="text-sm font-medium text-goldie-300">
+                  {item?.title}
+                </p>
+              </div>
+            )}
+          />
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 };
 
