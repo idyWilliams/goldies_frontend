@@ -13,7 +13,14 @@ import AdminSideBar from "./AdminSideBar";
 import MobileSideBar from "./MobileSideBar";
 import MenuPopup from "../MenuPopup";
 import { BiHeart, BiStore } from "react-icons/bi";
-import { Lock1, SearchNormal1, Setting2, User } from "iconsax-react";
+import {
+  Bag,
+  Lock1,
+  SearchNormal1,
+  Setting2,
+  User,
+  UserCirlceAdd,
+} from "iconsax-react";
 import moment from "moment";
 import { CiSearch } from "react-icons/ci";
 import { useRouter } from "next/navigation";
@@ -123,7 +130,7 @@ export default function AdminNav() {
                   <span className="absolute right-0.5 top-1 inline-block h-1.5 w-1.5 rounded-full bg-red-600 text-sm outline outline-2 outline-black"></span>
                 </span>
               </PopoverTrigger>
-              <PopoverContent className="w-[300px] border-0 bg-neutral-950 p-0 shadow-[0_0_30px_rgb(228,208,100,0.3)]">
+              <PopoverContent className="w-[320px] border-0 bg-neutral-950 p-0 shadow-[0_0_30px_rgb(228,208,100,0.3)]">
                 <NotificationBar />
               </PopoverContent>
             </Popover>
@@ -219,33 +226,49 @@ export default function AdminNav() {
 const notifications = [
   {
     title: "New Order Received!",
-    description: "A new order has been placed by a customer.",
+    description: "A new order has been placed.",
     isRead: false,
+    type: "order",
   },
   {
     title: "New Customer Joined!",
     description: "A new customer has just signed up.",
     isRead: false,
+    type: "user",
   },
 ];
+
+const notifyType = (type: string) => {
+  switch (type?.toLowerCase()) {
+    case "user":
+      return <UserCirlceAdd size="20" />;
+    case "order":
+      return <Bag size="20" />;
+
+    default:
+      break;
+  }
+};
 
 const NotificationBar = () => {
   return (
     <Card className={cn("w-full border-0 bg-transparent shadow-none")}>
-      <CardHeader className="px-4 text-white">
+      <CardHeader className="mb-2 px-4 text-white">
         <CardTitle className="text-white">Notifications</CardTitle>
         <CardDescription className="text-neutral-300">
           You have 2 unread messages.
         </CardDescription>
       </CardHeader>
-      <CardContent className="grid gap-4 px-4">
-        <div>
+      <CardContent className="px-4">
+        <div className="grid gap-8">
           {notifications.map((notification, index) => (
             <div
               key={index}
-              className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0"
+              className="grid h-full grid-cols-[40px_1fr] items-center gap-3"
             >
-              <span className="flex h-2 w-2 translate-y-1 rounded-full bg-goldie-400" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-goldie-400 bg-opacity-20 text-goldie-300">
+                {notifyType(notification?.type)}
+              </div>
               <div className="space-y-1">
                 <p
                   className={cn("text-sm font-medium leading-none text-white")}
