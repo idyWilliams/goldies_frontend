@@ -6,6 +6,8 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { useEffect, useState } from "react";
 import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
+import Link from "next/link";
+import { ArrowLeft } from "iconsax-react";
 
 const schema = yup.object().shape({
   firstname: yup.string().required("First name is required"),
@@ -54,9 +56,15 @@ const AccountInfo = () => {
 
   return (
     <div className="">
-      <div className="mb-4 pb-4">
-        <h2 className="text-xl font-semibold">Account Informations</h2>
-        <p>This is your default shipping information</p>
+      <div className="mb-4 flex items-start gap-2 border-b border-neutral-200 pb-4 md:block md:border-0">
+        <Link href="/my-account" className="md:hidden">
+          <ArrowLeft size={32} />
+        </Link>
+        <div>
+          {" "}
+          <h2 className="text-xl font-semibold">Account Information</h2>
+          <p>This is your default shipping information</p>
+        </div>
       </div>
       <form onSubmit={handleSubmit(handleSave)}>
         <div className="space-y-3 md:grid md:grid-cols-2 md:gap-3 md:gap-x-8 md:space-y-0">

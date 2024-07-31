@@ -1,6 +1,8 @@
 import EachElement from "@/helper/EachElement";
 import { cn } from "@/helper/cn";
-import { Edit, Trash } from "iconsax-react";
+import { ArrowLeft, Edit, Trash } from "iconsax-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { MdDeleteOutline } from "react-icons/md";
 
@@ -55,9 +57,14 @@ const addresses = [
 const MyAddresses = () => {
   return (
     <div>
-      <div className="mb-4 border-b border-neutral-200 pb-4">
-        <h2 className="text-xl font-semibold">My Addresses</h2>
-        <p>Manage your personal and frequently used shipping addresses.</p>
+      <div className="mb-4 flex items-start gap-2 border-b border-neutral-200 pb-4 md:block">
+        <Link href="/my-account" className="md:hidden">
+          <ArrowLeft size={32} />
+        </Link>
+        <div>
+          <h2 className="text-xl font-semibold">My Addresses</h2>
+          <p>Manage your personal and frequently used shipping addresses.</p>
+        </div>
       </div>
 
       <div className="grid gap-3 lg:grid-cols-2">

@@ -12,6 +12,7 @@ import { cn } from "@/helper/cn";
 import { Book, Box, HeartTick, Lock1, Logout, UserSquare } from "iconsax-react";
 import { useRouter } from "next/navigation";
 import React, { act, useEffect, useState } from "react";
+import { useMediaQuery } from "react-responsive";
 
 const tabs = [
   {
@@ -57,17 +58,25 @@ const Page = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [subPage, setSubPage] = useState(false);
   const router = useRouter();
+  const isMobile = useMediaQuery({ maxWidth: 767 });
 
   const handleTab = (index: number, label: string) => {
     setActiveTab(index);
     const newUrl = label?.toLowerCase().replace(/ /g, "-");
     router.push(`/my-account?tab=${encodeURIComponent(newUrl)}`);
     window.scrollTo(0, 0);
+
+    isMobile && setSubPage(true);
+  };
+
+  const handleMobileTabs = (label: string) => {
+    const newUrl = label?.toLowerCase().replace(/ /g, "-");
+    router.push(`/my-account/${encodeURIComponent(newUrl)}`);
   };
 
   useEffect(() => {
     const newUrl = tabs[activeTab]?.label?.toLowerCase().replace(/ /g, "-");
-    router.push(`/my-account?tab=${encodeURIComponent(newUrl)}`);
+    !isMobile && router.push(`/my-account?tab=${encodeURIComponent(newUrl)}`);
   }, [activeTab, router]);
 
   return (
@@ -75,7 +84,7 @@ const Page = () => {
       <Layout>
         <div className="mt-[65px] lg:mt-20"></div>
         {/* BREADCRUMBS */}
-        <div className="bg-black">
+        <div className="hidden bg-black lg:block">
           <div className={cn("wrapper px-4 py-3")}>
             <BreadCrumbs
               items={[
@@ -97,7 +106,45 @@ const Page = () => {
               My Account
             </h1>
 
-            <div className="mb-4 mt-5 grid h-full flex-wrap gap-4 border-b border-neutral-200 pb-4 md:my-0 md:flex-col md:bg-neutral-900 md:p-4 lg:flex lg:gap-4">
+            {/* MOBILE */}
+            <div className="md:hidden">
+              <div className="mt-4 grid gap-5 md:hidden">
+                <EachElement
+                  of={tabs}
+                  render={(tab: any, index: number) => (
+                    <div
+                      key={index}
+                      onClick={() => handleMobileTabs(tab?.label)}
+                      className={cn(
+                        "flex cursor-pointer items-center justify-start gap-2 border border-neutral-500 bg-white px-3 py-2 md:w-full md:rounded-none md:border-0 lg:gap-3",
+                        activeTab === index &&
+                          "bg-neutral-900 text-goldie-300 md:justify-start",
+                      )}
+                    >
+                      <div
+                        className={cn(
+                          "flex w-5 items-center justify-center gap-2 text-neutral-500",
+                          activeTab === index && "text-goldie-300",
+                        )}
+                      >
+                        {tab.icon}
+                      </div>
+                      <h3
+                        className={cn(
+                          "w-auto whitespace-nowrap text-neutral-500 opacity-100 duration-300 md:text-xl",
+                          activeTab === index && "text-goldie-300",
+                        )}
+                      >
+                        {tab.label}
+                      </h3>
+                    </div>
+                  )}
+                />
+              </div>
+            </div>
+
+            {/* DESKTOP */}
+            <div className="mb-4 mt-5 hidden  h-full flex-wrap gap-4 border-b border-neutral-200 pb-4 md:my-0 md:grid md:flex-col md:bg-neutral-900 md:p-4 lg:flex lg:gap-4">
               <EachElement
                 of={tabs}
                 render={(tab: any, index: number) => (
@@ -105,7 +152,7 @@ const Page = () => {
                     key={index}
                     onClick={() => handleTab(index, tab?.label)}
                     className={cn(
-                      "flex cursor-pointer items-center justify-start gap-2 border border-neutral-500 bg-white px-3 py-2 md:w-full md:rounded-none md:border-0 lg:gap-3",
+                      "flex cursor-pointer items-center justify-start gap-2 border border-neutral-500 px-3 py-2 md:w-full md:rounded-none md:border-0 lg:gap-3",
                       activeTab === index &&
                         "bg-neutral-900 text-goldie-300 md:justify-start",
                     )}
@@ -152,11 +199,10 @@ const Page = () => {
               </div>
             </div>
 
-            <div className="hidden md:h-full md:bg-white md:p-4 lg:block">
+            <div className="hidden md:block md:h-full md:bg-white md:p-4">
               {switchTabs(activeTab)}
             </div>
           </div>
-          {subPage && <div></div>}
         </section>
       </Layout>
     </>

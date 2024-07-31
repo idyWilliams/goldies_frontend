@@ -10,6 +10,7 @@ import { addSlugToCakes } from "@/helper";
 import { savedItems } from "@/utils/cakeData";
 import Link from "next/link";
 import ProductCard from "../shop-components/ProductCard";
+import { ArrowLeft } from "iconsax-react";
 
 let itemsPerPage = 6;
 const SavedItems = () => {
@@ -22,11 +23,17 @@ const SavedItems = () => {
 
   return (
     <div>
-      <div className="mb-4 border-b border-neutral-200 pb-4">
-        <h2 className="text-xl font-semibold">Saved Items</h2>
-        <p>
-          Quickly access and manage your favorite items for easy shopping later.
-        </p>
+      <div className="mb-4 flex items-start gap-2 border-b border-neutral-200 pb-4 md:block">
+        <Link href="/my-account" className="md:hidden">
+          <ArrowLeft size={32} />
+        </Link>
+        <div>
+          <h2 className="text-xl font-semibold">Saved Items</h2>
+          <p>
+            Quickly access and manage your favorite items for easy shopping
+            later.
+          </p>
+        </div>
       </div>
       <div className="grid gap-5 sm:grid-cols-2">
         {chunkArray(cakes, itemsPerPage)[currentPageIndex - 1]?.map(
