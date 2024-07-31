@@ -41,9 +41,15 @@ const CakeCategory = () => {
             <EachElement
               of={categories}
               render={(cake: any, index: any) => {
+                const delay = index * 100;
                 if (index > 2) return;
                 return (
-                  <div className="relative flex h-[300px] items-end sm:w-[300px] lg:w-full">
+                  <div
+                    data-aos="fade-up"
+                    data-aos-delay={delay}
+                    key={index}
+                    className="relative flex h-[300px] items-end sm:w-[300px] lg:w-full"
+                  >
                     <Image
                       src={cake?.image}
                       alt={cake?.value}

@@ -2,7 +2,7 @@ import { cn } from "@/helper/cn";
 import { getOrderColor } from "@/helper/getOrderColor";
 import { useEffect, useState } from "react";
 import { BsThreeDots } from "react-icons/bs";
-import { recentOrders } from "./Orders";
+
 import { chunkArray } from "@/helper/chunkArray";
 import Image from "next/image";
 import img from "../../public/assets/banana-cake-with-cinnamon-cream-102945-1.jpeg";

@@ -6,6 +6,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Button } from "./ui/button";
 import EachElement from "@/helper/EachElement";
+import { ChevronRight } from "lucide-react";
 
 const stats = [
   { value: "12000+", title: "Cakes Delivered" },
@@ -44,9 +45,12 @@ const Hero = () => {
               </p>
               <Button
                 size="lg"
-                className="mt-6 bg-goldie-300 font-semibold text-black hover:bg-goldie-300"
+                className="group mt-6 w-min overflow-hidden bg-goldie-300 font-semibold text-black hover:bg-goldie-300"
               >
-                Order Now
+                Order Now{" "}
+                <span className="origin-right translate-x-[55px] duration-300 ease-linear group-hover:translate-x-4">
+                  <ChevronRight />
+                </span>
               </Button>
             </div>
           </div>
@@ -65,9 +69,12 @@ const Hero = () => {
               </p>
               <Button
                 size="lg"
-                className="mt-6 bg-goldie-300 font-semibold text-black hover:bg-goldie-300"
+                className="group mt-6 w-min overflow-hidden bg-goldie-300 font-semibold text-black hover:bg-goldie-300"
               >
-                Order Now
+                Order Now{" "}
+                <span className="origin-right translate-x-[55px] duration-300 ease-linear group-hover:translate-x-4">
+                  <ChevronRight />
+                </span>
               </Button>
             </div>
           </div>
@@ -86,9 +93,12 @@ const Hero = () => {
               </p>
               <Button
                 size="lg"
-                className="mt-6 bg-goldie-300 font-semibold text-black hover:bg-goldie-300"
+                className="group mt-6 w-min overflow-hidden bg-goldie-300 font-semibold text-black hover:bg-goldie-300"
               >
-                Order Now
+                Order Now{" "}
+                <span className="origin-right translate-x-[55px] duration-300 ease-linear group-hover:translate-x-4">
+                  <ChevronRight />
+                </span>
               </Button>
             </div>
           </div>
@@ -107,9 +117,12 @@ const Hero = () => {
               </p>
               <Button
                 size="lg"
-                className="mt-6 bg-goldie-300 font-semibold text-black hover:bg-goldie-300"
+                className="group mt-6 w-min overflow-hidden bg-goldie-300 font-semibold text-black hover:bg-goldie-300"
               >
-                Order Now
+                Order Now{" "}
+                <span className="origin-right translate-x-[55px] duration-300 ease-linear group-hover:translate-x-4">
+                  <ChevronRight />
+                </span>
               </Button>
             </div>
           </div>
@@ -128,9 +141,12 @@ const Hero = () => {
               </p>
               <Button
                 size="lg"
-                className="mt-6 bg-goldie-300 font-semibold text-black hover:bg-goldie-300"
+                className="group mt-6 w-min overflow-hidden bg-goldie-300 font-semibold text-black hover:bg-goldie-300"
               >
-                Order Now
+                Order Now{" "}
+                <span className="origin-right translate-x-[55px] duration-300 ease-linear group-hover:translate-x-4">
+                  <ChevronRight />
+                </span>
               </Button>
             </div>
           </div>

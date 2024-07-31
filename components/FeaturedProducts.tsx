@@ -33,7 +33,7 @@ const FeaturedProducts = () => {
               of={addSlugToCakes(cakeProducts1)}
               render={(cake: any, index: any) => {
                 if (index > 5) return;
-                return <ProductCard data={cake} key={index} />;
+                return <ProductCard data={cake} key={index} index={index} />;
               }}
             />
           </div>

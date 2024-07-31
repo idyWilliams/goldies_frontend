@@ -12,11 +12,18 @@ import { cn } from "@/helper/cn";
 import { Tooltip } from "react-tooltip";
 import StarRating from "../StarRating";
 
-export default function ProductCard({ data }: { data: any }) {
+export default function ProductCard({
+  data,
+  index,
+}: {
+  data: any;
+  index?: number;
+}) {
   const [fav, setFav] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
   const cart = useSelector((state: RootState) => state.product.cart);
+  const delay = index && index * 100;
 
   const handleAddToCart = () => {
     const items = Object.values(cart);
@@ -34,7 +41,11 @@ export default function ProductCard({ data }: { data: any }) {
   };
 
   return (
-    <div className="w-full rounded-[10px] border border-neutral-100 bg-white p-2 shadow-[0_0_30px_-10px_rgba(0,0,0,0.1)]">
+    <div
+      data-aos="fade-up"
+      data-aos-delay={delay}
+      className="w-full rounded-[10px] border border-neutral-100 bg-white p-2 shadow-[0_0_30px_-10px_rgba(0,0,0,0.1)]"
+    >
       <figure className="relative mb-3 h-[230px] w-full overflow-hidden rounded-[5px]">
         <Link href={`/shop/${data?.slug}`}>
           <Image
