@@ -9,26 +9,26 @@ import Orders from "@/components/my-account-comps/Orders";
 import SavedItems from "@/components/my-account-comps/SavedItems";
 import EachElement from "@/helper/EachElement";
 import { cn } from "@/helper/cn";
-import { Book, Box, HeartTick, Lock1, UserSquare } from "iconsax-react";
+import { Book, Box, HeartTick, Lock1, Logout, UserSquare } from "iconsax-react";
 import { useRouter } from "next/navigation";
 import React, { act, useEffect, useState } from "react";
 
 const tabs = [
   {
     label: "Account Details",
-    icon: <UserSquare />,
+    icon: <UserSquare size={40} />,
   },
   {
     label: "Recent Orders",
-    icon: <Box />,
+    icon: <Box size={40} />,
   },
   {
     label: "Saved Items",
-    icon: <HeartTick />,
+    icon: <HeartTick size={40} />,
   },
   {
     label: "My Addresses",
-    icon: <Book />,
+    icon: <Book size={40} />,
   },
   // {
   //   label: "Change Password",
@@ -55,6 +55,7 @@ function switchTabs(index: any) {
 
 const Page = () => {
   const [activeTab, setActiveTab] = useState(0);
+  const [subPage, setSubPage] = useState(false);
   const router = useRouter();
 
   const handleTab = (index: number, label: string) => {
@@ -90,13 +91,13 @@ const Page = () => {
             />
           </div>
         </div>
-        <section className=" px-4 py-8 md:bg-neutral-200">
-          <h1 className="flex flex-col items-center justify-center gap-1 text-center text-2xl font-bold after:inline-block after:h-1 after:w-[100px] after:bg-goldie-500">
-            My Account
-          </h1>
+        <section className="relative bg-neutral-50 px-4 py-8 lg:bg-neutral-200">
+          <div className="gap-4 tabular-nums md:grid md:grid-cols-[30%_1fr] md:items-start md:justify-between lg:mx-auto lg:max-w-[1000px] xl:max-w-[1140px]">
+            <h1 className="col-span-2 text-left text-2xl font-bold">
+              My Account
+            </h1>
 
-          <div className="mt-5 gap-4 tabular-nums md:grid md:grid-cols-[30%_1fr] md:items-start md:justify-between lg:mx-auto lg:max-w-[1000px] xl:max-w-[1140px]">
-            <div className="mb-4 mt-5 flex h-full flex-wrap gap-2 border-b border-neutral-200 pb-4 md:my-0 md:flex-col md:bg-white md:p-4">
+            <div className="mb-4 mt-5 grid h-full flex-wrap gap-4 border-b border-neutral-200 pb-4 md:my-0 md:flex-col md:bg-neutral-900 md:p-4 lg:flex lg:gap-4">
               <EachElement
                 of={tabs}
                 render={(tab: any, index: number) => (
@@ -104,9 +105,9 @@ const Page = () => {
                     key={index}
                     onClick={() => handleTab(index, tab?.label)}
                     className={cn(
-                      "flex cursor-pointer items-center justify-start gap-1 rounded-md border border-neutral-500 px-3 py-2 md:w-full md:rounded-none md:border-0",
+                      "flex cursor-pointer items-center justify-start gap-2 border border-neutral-500 bg-white px-3 py-2 md:w-full md:rounded-none md:border-0 lg:gap-3",
                       activeTab === index &&
-                        "w-min justify-center bg-neutral-900 text-goldie-300 md:justify-start",
+                        "bg-neutral-900 text-goldie-300 md:justify-start",
                     )}
                   >
                     <div
@@ -119,7 +120,7 @@ const Page = () => {
                     </div>
                     <h3
                       className={cn(
-                        "w-auto whitespace-nowrap text-center text-xs text-neutral-500 opacity-100 duration-300 md:text-sm",
+                        "w-auto whitespace-nowrap text-neutral-500 opacity-100 duration-300 md:text-xl",
                         activeTab === index && "text-goldie-300",
                       )}
                     >
@@ -128,12 +129,34 @@ const Page = () => {
                   </div>
                 )}
               />
+              <div
+                key="logout"
+                className={cn(
+                  "hidden cursor-pointer items-center justify-start gap-2 px-3 py-2 lg:flex",
+                )}
+              >
+                <div
+                  className={cn(
+                    "flex w-5 items-center justify-center gap-2 text-neutral-500",
+                  )}
+                >
+                  <Logout />
+                </div>
+                <h3
+                  className={cn(
+                    "w-auto whitespace-nowrap text-center text-xs text-neutral-500 opacity-100 duration-300 md:text-xl",
+                  )}
+                >
+                  Log out
+                </h3>
+              </div>
             </div>
 
-            <div className="md:h-full md:bg-white md:p-4">
+            <div className="hidden md:h-full md:bg-white md:p-4 lg:block">
               {switchTabs(activeTab)}
             </div>
           </div>
+          {subPage && <div></div>}
         </section>
       </Layout>
     </>

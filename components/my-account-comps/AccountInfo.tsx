@@ -54,12 +54,12 @@ const AccountInfo = () => {
 
   return (
     <div className="">
-      <div className="mb-4 border-b border-neutral-200 pb-4">
+      <div className="mb-4 pb-4">
         <h2 className="text-xl font-semibold">Account Informations</h2>
         <p>This is your default shipping information</p>
       </div>
       <form onSubmit={handleSubmit(handleSave)}>
-        <div className="space-y-3 md:grid md:grid-cols-2 md:gap-3 md:space-y-0">
+        <div className="space-y-3 md:grid md:grid-cols-2 md:gap-3 md:gap-x-8 md:space-y-0">
           <label htmlFor="firstname" className="block w-full">
             <span className="mb-1 inline-block text-sm font-medium">
               First name
@@ -202,12 +202,12 @@ const AccountInfo = () => {
           </label>
         </div>
 
-        <div className="mt-7 flex items-center justify-start gap-3">
+        <div className="mt-7 flex items-center justify-end gap-3">
           <button className="rounded border border-neutral-900 bg-neutral-900 px-5 py-2.5 text-goldie-300">
             Save changes
           </button>
-          <button className="rounded border border-red-600 px-5 py-2.5 font-medium text-red-600">
-            Close account
+          <button className="rounded border border-neutral-600 px-5 py-2.5 font-medium text-neutral-600">
+            Discard changes
           </button>
         </div>
       </form>
