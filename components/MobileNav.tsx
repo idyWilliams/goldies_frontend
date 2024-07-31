@@ -1,9 +1,14 @@
+import { cn } from "@/helper/cn";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { BiHeart, BiStore } from "react-icons/bi";
 import { FaRegUserCircle } from "react-icons/fa";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 
-const MobileNav = ({ pathname, show, setShow, isOpen, setIsOpen }: any) => {
+const MobileNav = ({ show, setShow, isOpen, setIsOpen }: any) => {
+  const pathname = usePathname();
+  console.log(pathname);
+
   return (
     <div
       onClick={() => setShow(false)}
@@ -66,7 +71,10 @@ const MobileNav = ({ pathname, show, setShow, isOpen, setIsOpen }: any) => {
         <Link
           href="/about-us"
           onClick={() => setShow(false)}
-          className="duration-300 hover:translate-x-2"
+          className={cn(
+            "duration-300 hover:translate-x-2",
+            pathname === "/about-us" ? "font-bold" : "",
+          )}
         >
           About
         </Link>

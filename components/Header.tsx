@@ -189,8 +189,7 @@ const Header = () => {
         </div>
       </header>
       <MobileNav
-        pathname={pathname}
-        show={show}
+          show={show}
         setShow={setShow}
         isOpen={isOpen}
         setIsOpen={setIsOpen}

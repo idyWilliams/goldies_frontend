@@ -65,7 +65,21 @@ const AboutUs = () => {
           Our Founder
         </h2>
 
-        <div className="bg-neutral-700 py-5">
+        <div className="relative bg-neutral-700 py-5">
+          <div className="absolute -bottom-1 left-0 hidden origin-bottom-left scale-110 md:block">
+            <svg
+              width="142"
+              height="467"
+              viewBox="0 0 142 467"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M62.2372 398.204C131.769 419.551 144.15 449.604 141.65 461.962L-172.984 466.231C-179.659 306.11 -181.141 12.4958 -181.258 3.92441C-143.639 -13.554 -59.1006 30.0375 -91.4991 92.7255C-123.898 155.413 -129.09 189.148 -32.6736 187.84C63.7428 186.531 61.0044 262.396 52.5903 277.237C27.1822 322.055 -7.29422 376.857 62.2372 398.204Z"
+                fill="#E4D064"
+              />
+            </svg>
+          </div>
           <div className="wrapper sm:grid sm:grid-cols-2 sm:items-center md:grid-cols-[1.5fr_2fr]">
             <>
               <div className="flex items-center justify-center">
