@@ -1,6 +1,6 @@
 "use client";
 import Layout from "@/components/Layout";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiUserSharedLine } from "react-icons/ri";
 import { Button } from "@/components/ui/button";
@@ -10,16 +10,34 @@ import { BsEyeSlash } from "react-icons/bs";
 import { AiOutlineEye, AiOutlineUserAdd } from "react-icons/ai";
 import Link from "next/link";
 import { cn } from "@/helper/cn";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { createUser, loginUser } from "@/services/hooks/auth";
+import { toast } from "react-toastify";
+import AuthContext from "@/context/AuthProvider";
+import { useRouter } from "next/navigation";
 
 const validationSchema = yup.object().shape({
-  firstname: yup.string().required("Firstname is required"),
-  lastname: yup.string().required("Lastname is required"),
+  firstName: yup.string().required("Firstname is required"),
+  lastName: yup.string().required("Lastname is required"),
   email: yup.string().required("Email is required"),
   password: yup.string().required("Password is required"),
 });
 
 const Page = () => {
+  const router = useRouter();
+  // @ts-ignore
+  const { setAuth, setIsLogin } = useContext(AuthContext);
   const [visible, setVisible] = useState(false);
+  const [isChecked, setIsChecked] = useState(true);
+  const [noSubmit, setNoSubmit] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const newUser = useMutation({
+    mutationFn: createUser,
+  });
+  const userLogin = useMutation({
+    mutationFn: loginUser,
+  });
+
   const {
     register,
     handleSubmit,
@@ -33,9 +51,53 @@ const Page = () => {
     setVisible((visible: boolean) => !visible);
   };
 
-  const onSubmit = (data: any) => {
-    console.log(data);
-    reset();
+  const autoLogin = (data: any) => {
+    userLogin
+      .mutateAsync({ email: data.email, password: data.password })
+      .then((res: any) => {
+        console.log(res);
+        setIsLogin(true);
+        localStorage.setItem("isLogin", JSON.stringify(true));
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("user");
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ token: res?.token, user: res?.user }),
+        );
+        localStorage.setItem("accessToken", res?.token);
+        router.push("/");
+        reset();
+      })
+      .catch((err: any) => {
+        console.log(err);
+        toast.error(err.message);
+      });
+  };
+
+  const onSubmit = async (data: any) => {
+    setLoading(true);
+    if (isChecked) {
+      setLoading(false);
+      setNoSubmit(false);
+      console.log(data);
+
+      newUser
+        .mutateAsync(data)
+        .then((res: any) => {
+          console.log(res);
+          setAuth(res);
+          autoLogin(data);
+        })
+        .catch((err: any) => {
+          console.log(err);
+          toast.success(err.message);
+        });
+
+      reset();
+    } else {
+      setNoSubmit(true);
+      setLoading(false);
+    }
   };
 
   return (
@@ -62,41 +124,51 @@ const Page = () => {
                 className="grid gap-5 md:grid-cols-2"
                 onSubmit={handleSubmit(onSubmit)}
               >
-                <label htmlFor="firstname" className="">
+                <label htmlFor="firstName" className="">
                   <span className="mb-1 inline-block font-medium capitalize">
                     First name
                   </span>
                   <input
-                    {...register("firstname")}
+                    {...register("firstName")}
                     type="text"
                     className={cn(
                       "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
-                      errors?.firstname
-                        ? "border border-red-600 focus:border-red-600"
+                      errors?.firstName
+                        ? "border border-red-600 focus:border-red-600 focus:ring-0"
                         : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
                     )}
-                    id="firstname"
-                    name="firstname"
+                    id="firstName"
+                    name="firstName"
                     placeholder="Your firstname"
                   />
+                  {errors?.firstName && (
+                    <p className={cn("mt-1 text-sm text-red-600")}>
+                      {errors.firstName?.message}
+                    </p>
+                  )}
                 </label>
-                <label htmlFor="lastname" className="">
+                <label htmlFor="lastName" className="">
                   <span className="mb-1 inline-block font-medium capitalize">
                     Last name
                   </span>
                   <input
-                    {...register("lastname")}
+                    {...register("lastName")}
                     type="text"
                     className={cn(
                       "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
-                      errors?.lastname
-                        ? "border border-red-600 focus:border-red-600"
+                      errors?.lastName
+                        ? "border border-red-600 focus:border-red-600 focus:ring-0"
                         : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
                     )}
-                    id="lastname"
-                    name="lastname"
+                    id="lastName"
+                    name="lastName"
                     placeholder="Your lastname"
                   />
+                  {errors?.lastName && (
+                    <p className={cn("mt-1 text-sm text-red-600")}>
+                      {errors.lastName?.message}
+                    </p>
+                  )}
                 </label>
                 <label htmlFor="email" className="md:col-span-2">
                   <span className="mb-1 inline-block font-medium capitalize">
@@ -108,41 +180,54 @@ const Page = () => {
                     className={cn(
                       "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
                       errors?.email
-                        ? "border border-red-600 focus:border-red-600"
+                        ? "border border-red-600 focus:border-red-600 focus:ring-0"
                         : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
                     )}
                     id="email"
                     name="email"
                     placeholder="Your email"
                   />
+                  {errors?.email && (
+                    <p className={cn("mt-1 text-sm text-red-600")}>
+                      {errors.email?.message}
+                    </p>
+                  )}
                 </label>
                 <label htmlFor="password" className="relative md:col-span-2">
                   <span className="mb-1 inline-block font-medium capitalize">
                     Password
                   </span>
-                  <input
-                    {...register("password")}
-                    type={visible ? "text" : "password"}
-                    className={cn(
-                      "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
-                      errors?.password
-                        ? "border border-red-600 focus:border-red-600"
-                        : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
-                    )}
-                    id="password"
-                    name="password"
-                    placeholder="Your password"
-                  />
-                  <span
-                    onClick={handleToggle}
-                    className="absolute bottom-[14px] right-3 cursor-pointer text-neutral-800"
-                  >
-                    {visible ? (
-                      <BsEyeSlash size={20} />
-                    ) : (
-                      <AiOutlineEye size={20} />
-                    )}
-                  </span>
+                  <div className="relative">
+                    <input
+                      {...register("password")}
+                      type={visible ? "text" : "password"}
+                      className={cn(
+                        "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
+                        errors?.password
+                          ? "border border-red-600 focus:border-red-600 focus:ring-0"
+                          : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
+                      )}
+                      id="password"
+                      name="password"
+                      placeholder="Your password"
+                    />
+                    <span
+                      onClick={handleToggle}
+                      className="absolute bottom-[14px] right-3 cursor-pointer text-neutral-800"
+                    >
+                      {visible ? (
+                        <BsEyeSlash size={20} />
+                      ) : (
+                        <AiOutlineEye size={20} />
+                      )}
+                    </span>
+                  </div>
+
+                  {errors?.password && (
+                    <p className={cn("mt-1 text-sm text-red-600")}>
+                      {errors.password?.message}
+                    </p>
+                  )}
                 </label>
                 <label
                   htmlFor="agree"
@@ -152,7 +237,12 @@ const Page = () => {
                     type="checkbox"
                     name="agree"
                     id="agree"
-                    className="form-checkbox h-4 w-4 checked:bg-neutral-800 checked:hover:bg-neutral-800 focus:ring-neutral-800 checked:focus:ring-neutral-800"
+                    checked={isChecked}
+                    onChange={(e) => setIsChecked(e.target.checked)}
+                    className={cn(
+                      "form-checkbox h-4 w-4 checked:bg-neutral-800 checked:hover:bg-neutral-800 focus:ring-neutral-800 checked:focus:ring-neutral-800",
+                      noSubmit && "border-red-600 animate-in",
+                    )}
                   />
                   <span className="text-sm">
                     I agree with the{" "}
@@ -165,8 +255,15 @@ const Page = () => {
                     </span>
                   </span>
                 </label>
-                <Button className="col-span-2 mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300">
-                  Sign Up
+                <Button
+                  disabled={newUser.isPending}
+                  className="col-span-2 mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300"
+                >
+                  {newUser.isPending ? (
+                    <div className="loader bg-slate-300"></div>
+                  ) : (
+                    "Sign Up"
+                  )}
                 </Button>
 
                 <p className="col-span-2 text-center">

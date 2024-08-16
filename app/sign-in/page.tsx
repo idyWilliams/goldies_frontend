@@ -1,6 +1,6 @@
 "use client";
 import Layout from "@/components/Layout";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiUserSharedLine } from "react-icons/ri";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,11 @@ import { BsEyeSlash } from "react-icons/bs";
 import { AiOutlineEye } from "react-icons/ai";
 import Link from "next/link";
 import { cn } from "@/helper/cn";
+import { useMutation } from "@tanstack/react-query";
+import { loginUser } from "@/services/hooks/auth";
+import AuthContext from "@/context/AuthProvider";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 const validationSchema = yup.object().shape({
   email: yup.string().required("Email is required"),
@@ -17,11 +22,18 @@ const validationSchema = yup.object().shape({
 });
 
 const Page = () => {
+  // @ts-ignore
+  const { setIsLogin } = useContext(AuthContext);
+  const router = useRouter();
   const [visible, setVisible] = useState(false);
   const [password, setPassword] = useState("");
+  const userLogin = useMutation({
+    mutationFn: loginUser,
+  });
   const {
     register,
     handleSubmit,
+    resetField,
     formState: { errors },
     reset,
   } = useForm({
@@ -34,7 +46,27 @@ const Page = () => {
 
   const onSubmit = (data: any) => {
     console.log(data);
-    reset();
+
+    userLogin
+      .mutateAsync(data)
+      .then((res: any) => {
+        console.log(res);
+        setIsLogin(true);
+        localStorage.setItem("isLogin", JSON.stringify(true));
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("user");
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ token: res?.token, user: res?.user }),
+        );
+        localStorage.setItem("accessToken", res?.token);
+        router.push("/");
+        reset();
+      })
+      .catch((err: any) => {
+        console.log(err);
+        toast.error(err.message);
+      });
   };
 
   return (
@@ -126,8 +158,11 @@ const Page = () => {
                     Forgot password?
                   </Link>
                 </div>
-                <Button className="mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300">
-                  Sign Up
+                <Button
+                  disabled={userLogin?.isPending}
+                  className="mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300"
+                >
+                  {userLogin?.isPending ? "Loading...." : "Sign In"}
                 </Button>
 
                 <p className="text-center">

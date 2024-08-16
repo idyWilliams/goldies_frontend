@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import CartIcon from "../public/assets/cart.png";
 import { BsList, BsX, BsXLg } from "react-icons/bs";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import MobileNav from "./MobileNav";
@@ -16,11 +16,23 @@ import { VscAccount } from "react-icons/vsc";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { BiHeart, BiStore } from "react-icons/bi";
 import { FaRegUserCircle } from "react-icons/fa";
-import { Menu, ShoppingCart } from "iconsax-react";
+import { Ghost, Menu, ShoppingCart } from "iconsax-react";
 import MenuPopup from "./MenuPopup";
 import { useDispatch } from "react-redux";
 import { setProducts } from "@/redux/features/product/productSlice";
 import { IoCartOutline } from "react-icons/io5";
+import AuthContext from "@/context/AuthProvider";
+import { Button } from "./ui/button";
+import { jwtDecode } from "jwt-decode";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog";
+import { cn } from "@/helper/cn";
 
 const Header = () => {
   const [show, setShow] = useState(false);
@@ -30,6 +42,25 @@ const Header = () => {
   const cart = useSelector((state: RootState) => state.product.cart);
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState<any | null>(null);
+  // @ts-ignore
+  const { isLogin, auth, setIsLogin, setAuth } = useContext(AuthContext);
+  const [showModal, setShowModal] = useState<boolean>(false);
+
+  const handleClick = () => {
+    setShow((show: boolean) => !show);
+    setIsOpen(false);
+  };
+
+  // Handle User logout
+  const logOut = () => {
+    setIsLogin(false);
+    setAuth({});
+    localStorage.removeItem("user");
+    localStorage.removeItem("accessToken");
+    localStorage.setItem("isLogin", JSON.stringify(false));
+    setUser(null);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,11 +70,6 @@ const Header = () => {
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const handleClick = () => {
-    setShow((show: boolean) => !show);
-    setIsOpen(false);
-  };
 
   // STORE CART ITEMS TO LOCALSTORAGE
   useEffect(() => {
@@ -58,6 +84,55 @@ const Header = () => {
       dispatch(setProducts(JSON.parse(localStorage.getItem("cart") as string)));
     }
   }, [dispatch]);
+
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user") as string);
+    setUser(storedUser?.user);
+    setAuth(storedUser);
+    setIsLogin(Boolean(JSON.parse(localStorage.getItem("isLogin") as string)));
+
+    console.log(storedUser, "useehehe");
+  }, []);
+  console.log(isLogin, "isLogged", auth);
+
+  // SESSION CHECKER
+  useEffect(() => {
+    const SESSION_DURATION = 1 * 24 * 60 * 60 * 1000; // 24HRs in milliseconds
+    const storedSession = JSON.parse(localStorage.getItem("user") as string);
+
+    try {
+      const decodedToken: { iat: number; exp: number } = jwtDecode(
+        storedSession?.token,
+      );
+
+      const storedTimestamp = decodedToken?.exp * 1000;
+      const currentTime = new Date().getTime();
+      const sessionExpired = currentTime - storedTimestamp >= SESSION_DURATION;
+      console.log(sessionExpired, "Expired");
+
+      if (!sessionExpired) {
+        setIsLogin(true);
+      } else {
+        // Session has expired, logout the user
+        logOut();
+        setShowModal(true);
+
+        // Optionally, inform the user about the session expiry
+        alert("Your session has expired. Please log in again.");
+        router.push("/sign-in");
+      }
+    } catch (error) {
+      if (
+        (!storedSession?.token && !pathname.includes("/sign-in")) ||
+        !pathname.includes("/sign-up")
+      ) {
+        console.error("Error checking session:", pathname.includes("/sign-in"));
+
+        setShowModal(true);
+      }
+      // Handle the error (e.g., log it, show a user-friendly message)
+    }
+  }, []);
 
   return (
     <>
@@ -147,28 +222,33 @@ const Header = () => {
                 }}
                 className="flex items-center gap-2"
               >
-                <FaRegUserCircle size={20} /> Account
+                <FaRegUserCircle size={20} />
+                {!isLogin ? (
+                  <span>Account</span>
+                ) : (
+                  <span>{user?.firstName}</span>
+                )}
                 {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
               </button>
               {isOpen && (
                 <MenuPopup className="absolute right-0 top-16 z-20 w-[190px] rounded-md bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
                   <div className="">
                     <Link
-                      href={"/my-account"}
+                      href={isLogin ? "/my-account" : "/sign-in"}
                       className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
                     >
                       <FaRegUserCircle size={20} />
                       My Account
                     </Link>
                     <Link
-                      href={"/my-orders"}
+                      href={isLogin ? "/my-orders" : "/sign-in"}
                       className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
                     >
                       <BiStore size={20} />
                       Orders
                     </Link>
                     <Link
-                      href={"/saved-items"}
+                      href={isLogin ? "/saved-items" : "/sign-in"}
                       className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
                     >
                       <BiHeart size={20} />
@@ -176,12 +256,21 @@ const Header = () => {
                     </Link>
                   </div>
                   <div className="my-2 border-b border-black border-opacity-50"></div>
-                  <Link
-                    href={`/sign-in`}
-                    className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
-                  >
-                    Sign In
-                  </Link>
+                  {isLogin ? (
+                    <Button
+                      onClick={logOut}
+                      className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
+                    >
+                      Logout
+                    </Button>
+                  ) : (
+                    <Link
+                      href={`/sign-in`}
+                      className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
+                    >
+                      Sign In
+                    </Link>
+                  )}
                 </MenuPopup>
               )}
             </div>
@@ -195,8 +284,70 @@ const Header = () => {
         isOpen={isOpen}
         setIsOpen={setIsOpen}
       />
+
+      <SessionModal
+        open={showModal}
+        setOpen={setShowModal}
+        title="Session not found"
+        content="Your session does not exist or has expired. Please Sign in again"
+        action={() => {
+          router.push("/sign-in");
+          setShowModal(false);
+        }}
+      />
     </>
   );
 };
 
 export default Header;
+type ComponentProp = {
+  open: boolean;
+  setOpen: any;
+  title: string;
+  content: string;
+  action: () => void;
+};
+const SessionModal: React.FC<ComponentProp> = ({
+  open,
+  setOpen,
+  title,
+  content,
+  action,
+}) => {
+  const pathname = usePathname();
+  const show = pathname.includes("/sign-in") || pathname.includes("/sign-in");
+  return (
+    <>
+      {!show && (
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogHeader className={cn("hidden")}>
+            <DialogTitle className="mb-2 mt-6 font-semibold text-neutral-900">
+              {title}
+            </DialogTitle>
+            <DialogDescription className="text-neutral-500">
+              {content}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogContent>
+            <div className="flex flex-col items-center">
+              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-neutral-800 text-goldie-300">
+                <Ghost size={24} />
+              </span>
+
+              <h3 className="mb-2 mt-6 font-semibold text-neutral-900">
+                {title}
+              </h3>
+              <p className="text-neutral-500">{content}</p>
+              <Button
+                onClick={action}
+                className="mt-6 h-auto w-full rounded-full bg-neutral-900 py-3 text-goldie-300"
+              >
+                Continue
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+    </>
+  );
+};

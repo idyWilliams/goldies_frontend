@@ -1,5 +1,12 @@
 "use client";
-import { Cake, FolderAdd, Home2, ShoppingBag } from "iconsax-react";
+import {
+  Cake,
+  Category2,
+  FolderAdd,
+  Home2,
+  Setting2,
+  ShoppingBag,
+} from "iconsax-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
@@ -17,40 +24,54 @@ export default function MobileSideBar() {
         <div className="flex flex-col items-start gap-6 px-4">
           <Link
             href={"/admin"}
-            className={`hover:text-goldie-300 flex items-center gap-2 whitespace-nowrap text-sm duration-300 ${pathname === "/admin" ? "text-goldie-300" : "text-neutral-500"}`}
+            className={`flex items-center gap-2 whitespace-nowrap text-sm duration-300 hover:text-goldie-300 ${pathname === "/admin" ? "text-goldie-300" : "text-neutral-500"}`}
           >
             <Home2 size="20" /> Overview
           </Link>
           <Link
             href={"/admin/products"}
-            className={`hover:text-goldie-300 flex items-center gap-2 whitespace-nowrap text-sm duration-300 ${pathname === "/admin/products" ? "text-goldie-300" : "text-neutral-500"}`}
+            className={`flex items-center gap-2 whitespace-nowrap text-sm duration-300 hover:text-goldie-300 ${pathname === "/admin/products" ? "text-goldie-300" : "text-neutral-500"}`}
           >
             <Cake size="20" />
             Products
           </Link>
           <Link
             href={"/admin/customers"}
-            className={`hover:text-goldie-300 flex items-center gap-2 whitespace-nowrap text-sm duration-300 ${pathname === "/admin/customers" ? "text-goldie-300" : "text-neutral-500"}`}
+            className={`flex items-center gap-2 whitespace-nowrap text-sm duration-300 hover:text-goldie-300 ${pathname === "/admin/customers" ? "text-goldie-300" : "text-neutral-500"}`}
           >
             <IoPeopleOutline size={20} />
             Customers
           </Link>
           <Link
             href={"/admin/orders"}
-            className={`hover:text-goldie-300 flex items-center gap-2 whitespace-nowrap text-sm duration-300 ${pathname === "/admin/orders" ? "text-goldie-300" : "text-neutral-500"}`}
+            className={`flex items-center gap-2 whitespace-nowrap text-sm duration-300 hover:text-goldie-300 ${pathname === "/admin/orders" ? "text-goldie-300" : "text-neutral-500"}`}
           >
             <ShoppingBag size="20" />
             Orders
           </Link>
           <Link
             href={"/admin/create-products"}
-            className={`hover:text-goldie-300 flex items-center gap-2 whitespace-nowrap text-sm duration-300 ${pathname === "/admin/create-products" ? "text-goldie-300" : "text-neutral-500"}`}
+            className={`flex items-center gap-2 whitespace-nowrap text-sm duration-300 hover:text-goldie-300 ${pathname === "/admin/create-products" ? "text-goldie-300" : "text-neutral-500"}`}
           >
             <FolderAdd size="20" />
             Create Products
           </Link>
+          <Link
+            href={"/admin/manage-categories"}
+            className={`flex items-center gap-2 whitespace-nowrap text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/manage-categories") ? "text-goldie-300" : "text-neutral-500"}`}
+          >
+            <Category2 size="20" />
+            Manage Categories
+          </Link>
+          <Link
+            href={"/admin/settings"}
+            className={`flex items-center gap-2 whitespace-nowrap text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/settings") ? "text-goldie-300" : "text-neutral-500"}`}
+          >
+            <Setting2 size="20" />
+            Settings
+          </Link>
           <span
-            className={`hover:text-goldie-300 flex items-center gap-2 whitespace-nowrap text-sm text-neutral-500 duration-300`}
+            className={`flex items-center gap-2 whitespace-nowrap text-sm text-neutral-500 duration-300 hover:text-goldie-300`}
           >
             <CiLogout size={20} />
             Logout

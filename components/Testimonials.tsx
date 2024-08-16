@@ -70,7 +70,7 @@ const Testimonials = () => {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:gap-7">
           {reviews.map((review: any, index: number) => {
             const delay = index * 100;
-            console.log(delay, "delay");
+            // console.log(delay, "delay");
             if (index > 2) return;
             return (
               <blockquote
