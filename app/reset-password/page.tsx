@@ -3,7 +3,9 @@ import Layout from "@/components/Layout";
 import PasswordReset from "@/components/PasswordReset";
 import Verification from "@/components/Verification";
 import { cn } from "@/helper/cn";
+import { resetPassword } from "@/services/hooks/auth";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation } from "@tanstack/react-query";
 import { Eye, EyeSlash, Key, PasswordCheck } from "iconsax-react";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -12,6 +14,7 @@ import { AiOutlineEye } from "react-icons/ai";
 import { BiArrowBack } from "react-icons/bi";
 import { BsEyeSlash } from "react-icons/bs";
 import ReactPasswordChecklist from "react-password-checklist";
+import { toast } from "react-toastify";
 import * as yup from "yup";
 
 const schema = yup.object().shape({
@@ -43,6 +46,10 @@ export default function Page() {
     setEye2((prev: any) => !prev);
   };
 
+  const submitPassword = useMutation({
+    mutationFn: resetPassword,
+  });
+
   const {
     register,
     handleSubmit,
@@ -54,7 +61,18 @@ export default function Page() {
   console.log(password);
   const handleSave = (data: any) => {
     console.log(data, errors);
-    reset();
+
+    submitPassword
+      .mutateAsync({ password: data.newPassword })
+      .then((res: any) => {
+        console.log(res);
+        setOpen(true);
+        reset();
+      })
+      .catch((error: any) => {
+        console.log(error);
+        toast.error(error.message);
+      });
   };
   return (
     <>

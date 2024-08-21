@@ -2,7 +2,9 @@
 import Layout from "@/components/Layout";
 import Verification from "@/components/Verification";
 import { cn } from "@/helper/cn";
+import { forgotPassword } from "@/services/hooks/auth";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation } from "@tanstack/react-query";
 import { Key } from "iconsax-react";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -10,6 +12,7 @@ import { useForm } from "react-hook-form";
 import { AiOutlineEye } from "react-icons/ai";
 import { BiArrowBack } from "react-icons/bi";
 import { BsEyeSlash } from "react-icons/bs";
+import { toast } from "react-toastify";
 import * as yup from "yup";
 
 const schema = yup.object().shape({
@@ -24,11 +27,28 @@ export default function Page() {
     handleSubmit,
     register,
     formState: { errors },
+    reset,
   } = useForm({
     resolver: yupResolver(schema),
   });
+
+  const submitEmail = useMutation({
+    mutationFn: forgotPassword,
+  });
+
   const onSubmit = (data: any) => {
     console.log(data);
+    // submitEmail
+    //   .mutateAsync({ email: data.email })
+    //   .then((res: any) => {
+    //     console.log(res);
+    //     setOpen(true);
+    //     reset();
+    //   })
+    //   .catch((err: any) => {
+    //     console.log(err);
+    //     toast.error(err.message);
+    //   });
   };
   const handleToggle = () => {
     setVisible((visible: boolean) => !visible);
@@ -83,6 +103,7 @@ export default function Page() {
               <button
                 className="my-5 w-full rounded bg-neutral-900 py-2 text-sm text-goldie-300"
                 onClick={() => setOpen(true)}
+                disabled={submitEmail.isPending}
               >
                 Reset Password
               </button>

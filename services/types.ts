@@ -31,3 +31,10 @@ export interface GetUserResponse {
   user: User;
   message: string;
 }
+
+export interface ForgotPassword {
+  email: string;
+}
+export interface ResetPassword {
+  password: string;
+}
