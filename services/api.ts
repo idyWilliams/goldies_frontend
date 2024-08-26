@@ -20,6 +20,8 @@ const instance = axios.create({
   baseURL: BASEURL,
   headers: {
     "Content-type": "application/json",
+    "x-access-token": `${localStorage.getItem("accessToken")}` as string,
+    Token: `Bearer ${localStorage.getItem("accessToken")}` as string,
   },
 });
 

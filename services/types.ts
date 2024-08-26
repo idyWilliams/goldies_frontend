@@ -37,4 +37,5 @@ export interface ForgotPassword {
 }
 export interface ResetPassword {
   password: string;
+  token: string;
 }

@@ -1,5 +1,10 @@
 import instance from "@/services/api";
-import { CreateUser, ForgotPassword, LoginUser, ResetPassword } from "@/services/types";
+import {
+  CreateUser,
+  ForgotPassword,
+  LoginUser,
+  ResetPassword,
+} from "@/services/types";
 
 // CREATE A USER
 export const createUser = async (data: CreateUser) => {
@@ -21,7 +26,12 @@ export const forgotPassword = async (data: ForgotPassword) => {
 };
 // SUBMIT EMAIL FOR FORGOT PASSWORD
 export const resetPassword = async (data: ResetPassword) => {
-  const response = await instance.post("/auth/reset_password", data);
+  localStorage.setItem("accessToken", data.token);
+  const response = await instance.post("/auth/reset_password", data, {
+    headers: {
+      Authorization: `Bearer ${data.token}`,
+    },
+  });
 
   return response.data;
 };

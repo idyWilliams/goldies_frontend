@@ -1,13 +1,15 @@
 "use client";
 import Layout from "@/components/Layout";
+import { Button } from "@/components/ui/button";
 import Verification from "@/components/Verification";
 import { cn } from "@/helper/cn";
 import { forgotPassword } from "@/services/hooks/auth";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
+import { log } from "console";
 import { Key } from "iconsax-react";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AiOutlineEye } from "react-icons/ai";
 import { BiArrowBack } from "react-icons/bi";
@@ -36,23 +38,33 @@ export default function Page() {
     mutationFn: forgotPassword,
   });
 
-  const onSubmit = (data: any) => {
+  const onSubmit = async (data: any) => {
     console.log(data);
-    // submitEmail
-    //   .mutateAsync({ email: data.email })
-    //   .then((res: any) => {
-    //     console.log(res);
-    //     setOpen(true);
-    //     reset();
-    //   })
-    //   .catch((err: any) => {
-    //     console.log(err);
-    //     toast.error(err.message);
-    //   });
+
+    submitEmail
+      .mutateAsync({ email: data.email })
+      .then((res: any) => {
+        console.log(res);
+        localStorage.removeItem("email");
+        localStorage.setItem("email", JSON.stringify({ email: data.email }));
+        setOpen(true);
+        reset();
+        return res;
+      })
+      .catch((err: any) => {
+        console.log(err);
+        toast.error(err.message);
+      });
   };
+
+  const resubmit = () => {
+    email && onSubmit({ email: email });
+  };
+
   const handleToggle = () => {
     setVisible((visible: boolean) => !visible);
   };
+
   return (
     <>
       <Layout>
@@ -100,13 +112,17 @@ export default function Page() {
                   <p className="mt-2 text-[#a10]">{errors.email?.message}</p>
                 </div>
               </label>
-              <button
-                className="my-5 w-full rounded bg-neutral-900 py-2 text-sm text-goldie-300"
-                onClick={() => setOpen(true)}
-                disabled={submitEmail.isPending}
+              <div
+                className={`${submitEmail.isPending ? "cursor-not-allowed" : ""}`}
               >
-                Reset Password
-              </button>
+                <Button
+                  className="my-5 w-full rounded bg-neutral-900 py-2 text-sm text-goldie-300 disabled:hover:cursor-not-allowed"
+                  disabled={submitEmail.isPending}
+                >
+                  {submitEmail.isPending ? "Submitting" : "Reset Password"}
+                </Button>
+              </div>
+
               <div className="flex cursor-pointer items-center justify-center gap-3 ">
                 <Link
                   href={"/sign-in"}
@@ -122,7 +138,7 @@ export default function Page() {
           </div>
 
           <div className={cn("hidden w-full", open && "block")}>
-            <Verification email={email} />
+            <Verification email={email} resubmit={resubmit} />
           </div>
         </div>
       </Layout>
