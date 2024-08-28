@@ -23,6 +23,7 @@ if (typeof window !== "undefined") {
 
 const instance = axios.create({
   baseURL: BASEURL,
+
   headers: {
     "Content-type": "application/json",
     "x-access-token": accessToken,
@@ -32,3 +33,4 @@ const instance = axios.create({
 });
 
 export default instance;
+// @ts-ignore
