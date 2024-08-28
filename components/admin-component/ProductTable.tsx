@@ -62,7 +62,7 @@ export default function ProductTable({
     setSearchValue(value);
     console.log(value, "value");
   };
-  console.log(searchValue, "searchValue");
+  // console.log(searchValue, "searchValue");
   return (
     <div>
       <div

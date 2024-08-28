@@ -53,3 +53,13 @@ export type SubCategoryProps = {
   status: "active" | "inactive";
   [x: string]: string;
 };
+
+export type CategoryImageProps = {
+  imageUrl: string;
+  dragging: boolean;
+  handleDragEnter: (e: any) => void;
+  handleDragLeave: (e: any) => void;
+  handleDragOver: (e: any) => void;
+  handleDrop: (e: any) => void;
+  handleRemoveCateImg: (e: any) => void;
+};

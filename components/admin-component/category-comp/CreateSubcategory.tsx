@@ -153,11 +153,13 @@ const CreateSubategory = ({
     <>
       <div
         className={cn(
-          "pointer-events-none fixed left-0 top-0 flex h-full w-full justify-center bg-black bg-opacity-20 px-4 pb-5 pt-[80px] opacity-0 duration-300",
+          "pointer-events-none fixed left-0 top-0 flex h-fit w-full justify-center bg-black bg-opacity-20 px-4 pb-5 pt-[80px] opacity-0 duration-300",
           showSub && "pointer-events-auto opacity-100",
         )}
       >
-        <div className="hide-scrollbar h-full w-full overflow-y-auto">
+        {" "}
+        modal
+        <div className=" h-full w-full overflow-y-auto">
           <div className="h-min bg-white pb-4 sm:mx-auto sm:w-[450px] md:w-[500px]">
             <div className="flex items-center justify-between bg-neutral-50 px-4 py-3">
               <h2 className="font-semibold">
