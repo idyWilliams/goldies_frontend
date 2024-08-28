@@ -18,11 +18,13 @@ export const ImageStorageUrl = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_API;
 
 const instance = axios.create({
   baseURL: BASEURL,
+
   headers: {
     "Content-type": "application/json",
-    "x-access-token": `${localStorage.getItem("accessToken")}` as string,
-    Token: `Bearer ${localStorage.getItem("accessToken")}` as string,
+    "x-access-token": `${localStorage.getItem("accessToken") ?? ""}`,
+    Token: `Bearer ${localStorage.getItem("accessToken")}`,
   },
 });
 
 export default instance;
+// @ts-ignore

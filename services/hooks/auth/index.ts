@@ -27,6 +27,7 @@ export const forgotPassword = async (data: ForgotPassword) => {
 // SUBMIT EMAIL FOR FORGOT PASSWORD
 export const resetPassword = async (data: ResetPassword) => {
   localStorage.setItem("accessToken", data.token);
+
   const response = await instance.post("/auth/reset_password", data, {
     headers: {
       Authorization: `Bearer ${data.token}`,
