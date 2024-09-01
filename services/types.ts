@@ -31,3 +31,24 @@ export interface GetUserResponse {
   user: User;
   message: string;
 }
+
+// Interfaces for the admin signup and invite admin
+export interface CreateAdmin {
+  email: string;
+  // referenceCode: string;
+  password: string;
+}
+
+export interface LoginAdmin {
+  email: string;
+  password: string;
+}
+
+export interface VerificationOtp {
+  email: string;
+  otp: string;
+}
+
+export interface InviteAdmin {
+  email: string;
+}
