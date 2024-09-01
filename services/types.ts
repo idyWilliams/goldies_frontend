@@ -7,11 +7,20 @@ export interface User {
   hashedPassword?: string;
   version: number;
 }
+export interface Admin {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  hashedPassword?: string;
+  version: number;
+}
 
 export interface AuthResponse {
   error: boolean;
   message: string;
   user: User;
+  admin: Admin;
   token?: string; // Add token for login response
 }
 
@@ -27,7 +36,22 @@ export interface LoginUser {
   password: string;
 }
 
+export interface LoginAdmin {
+  email: string;
+  password: string;
+}
+
 export interface GetUserResponse {
   user: User;
   message: string;
 }
+
+// export interface GetAdminResponse {
+//   admin: Admin;
+//   message: string;
+// }
+
+
+
+
+

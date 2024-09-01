@@ -15,6 +15,7 @@ import { loginAdmin } from "@/services/hooks/auth";
 import AuthContext from "@/context/AuthProvider";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 import AdminSignInVerification from "@/components/admin-component/AdminSignInVerification";
 
 const validationSchema = yup.object().shape({
@@ -36,6 +37,8 @@ const Page = () => {
     useMutation({
         mutationFn: loginAdmin,
     });
+
+
     const {
         register,
         handleSubmit,
@@ -62,9 +65,9 @@ const Page = () => {
         adminLogin
             .mutateAsync(data)
             .then((res: any) => {
-                console.log(res);
-
+                console.log('res: ', res.data);
                 setIsLogin(true);
+               
                 localStorage.setItem("isLogin", JSON.stringify(true));
                 localStorage.removeItem("accessToken");
                 localStorage.removeItem("admin");
@@ -73,17 +76,15 @@ const Page = () => {
                     JSON.stringify({ token: res?.token, admin: res?.admin })
                 );
                 localStorage.setItem("accessToken", res?.token);
-                // router.push("/otp");  
+                router.push("/admin");
                 reset();
-                // Redirect to OTP page after successful login
-                // router.push("/otp");  
             })
             .catch((err: any) => {
                 console.log(err);
                 toast.error(err.message);
-                // router.push("/otp");  
+                // adminLogin.isError
+             
             });
-        // router.push("/otp")
     };
 
     return (

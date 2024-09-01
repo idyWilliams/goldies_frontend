@@ -57,7 +57,7 @@ const AdminSignInVerification = ({email}: {email:string}) => {
                             </div>
                             <div className="w-full">
                                 <form className="grid gap-5" onSubmit={handleSubmit(onSubmit)}>
-                                    <div className="flex flex-col justify-center items-center gap-5  ">
+                                    <div className="flex flex-col justify-center items-center   ">
                                         <Controller name="otp" control={control} render={({field:{value, onChange}})=>
                                                 <InputOTP maxLength={6} onChange={onChange} value={value} >
                                                 <InputOTPGroup className="gap-5">
