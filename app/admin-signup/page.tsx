@@ -1,6 +1,6 @@
 "use client";
 import Layout from "@/components/Layout";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import * as yup from "yup";
@@ -13,8 +13,10 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { createAdmin, loginAdmin, verificationOtp } from "@/services/hooks/admin-auth";
 import { toast } from "react-toastify";
 import AuthContext from "@/context/AuthProvider";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import AdminSignUpVerification from "@/components/admin-component/AdminSignUpVerification";
+import { CgSpinner } from "react-icons/cg";
+
 
 
 const validationSchema = yup.object().shape({
@@ -22,8 +24,10 @@ const validationSchema = yup.object().shape({
   password: yup.string().required("Password is required"),
 });
 
+
+
 const Page = () => {
-  const router = useRouter();
+
   // @ts-ignore
   const { setAuth, setIsLogin } = useContext(AuthContext);
   const [visible, setVisible] = useState(false);
@@ -36,46 +40,56 @@ const Page = () => {
   const newAdmin = useMutation({
     mutationFn: createAdmin,
   });
-  // const adminLogin = useMutation({
-  //   mutationFn: loginAdmin,
-  // });
-  const sendOtp = useMutation({
-    mutationFn: verificationOtp,
-  })
+
+  const router = useRouter();
+  const params = new URLSearchParams(window.location.search);
+  useEffect(() => {
+    
+    let email: string | null = params.get('email');
+    if (email) {
+      email = email.replace(/ /g, '+');
+      setEmail(email);
+      setValue("email", email)
+    }
+  }, []);
+  
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
     reset,
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
 
+  const refCode = params.get("refCode");
+
+  
   const handleToggle = () => {
     setVisible((visible: boolean) => !visible);
   };
 
-  const newAdminSignUp = async (data: any) => {
+  const onSubmit = async (data: any) => {
+    setEmail(data.email);
+    setLoading(true);
+    setCanSubmit(true);
     try {
       const res = await newAdmin.mutateAsync({
         email: data.email,
         password: data.password,
+        refCode: refCode as string,
       })
       console.log(res);
-      localStorage.setItem("userEmail", data.email);
+      localStorage.setItem("adminEmail", data.email);
       setIsLogin(true);
       localStorage.setItem("isLogin", JSON.stringify(true));
       localStorage.setItem(
-        "user", 
-        JSON.stringify({token: res?.token, user: res?.user })
+        "admin", 
+        JSON.stringify({token: res?.token, admin: res?.admin })
       );
       localStorage.setItem("accessToken", res?.token)
-      // Send OTP to mail
-      await sendOtp.mutateAsync({ 
-        otp: data.otp, 
-        email: data.email
-      });
       // reset();
     } catch (err: any) {
       console.log(err);
@@ -83,131 +97,15 @@ const Page = () => {
     } finally {
       setLoading(false)
     }
-    
-      // .then((res: any) => {
-      //   console.log(res);
-      //   setIsLogin(true);
-      //   localStorage.setItem("isLogin", JSON.stringify(true));
-      //   localStorage.removeItem("accessToken");
-      //   localStorage.removeItem("user");
-      //   localStorage.setItem(
-      //     "user",
-      //     JSON.stringify({ token: res?.token, user: res?.user }),
-      //   );
-      //   localStorage.setItem("accessToken", res?.token);
-      //   await sendOtp.mutateAsync({ email: data.email}
-      //   reset();
-      // })
-      // .catch((err: any) => {
-      //   console.log(err);
-      //   toast.error(err.message);
-      // });
   };
 
-  // const verifyOtp = async (data: any) => {
-  //   try {
-  //     const res = await verificationOtp.mutateAsync({
-  //       email: data.email,
-  //       otp: data.otp,
-  //     })
-  //     console.log(res)
-  //   } catch (err: any) {
-  //     console.error(err);
-  //     toast.error(err.message);
-  //   } finally {
-  //     setLoading(false)
-  //   }
-  // };
-
-  const onSubmit = async (data: any) => {
-    setEmail(data.email);
-    setLoading(true);
-    setCanSubmit(true);
-    if (isChecked) {
-      try {
-        await newAdminSignUp(data);
-      } catch (err: any) {
-        console.error(err);
-        toast.error(err.message)
-      } finally {
-        setLoading(false);
-      }
-    } else {
-      setLoading(false);
-      toast.error("You must agree to the terms and conditions")
-    }
-  
-    // if (isChecked) {
-    //   try {
-    //     const res = await newAdmin.mutateAsync(data);
-    //     setAuth(res);
-    //     newAdminSignUp(data);
-    //   } catch (err: any) {
-    //     console.error(err);
-    //     toast.error(err.message);
-    //   } finally {
-    //     setLoading(false);
-    //     reset();
-    //   }
-    // } else {
-    //   // setNoSubmit(true);
-    //   setLoading(false);
-    //   reset();
-    // }
-    
-  };
-
-  // const onSubmit = async (data: any) => {
-  //   console.log(data);
-  //   setEmail(data.email);
-  //   setCanSubmit(true);
-  //   // router.push("/admin-signup-verification");
-  //   setLoading(true);
-  //   if (isChecked) {
-  //     // setLoading(false);
-  //     setNoSubmit(false);
-  //     console.log(data);
-  //     try {
-  //       const res = await newUser.mutateAsync(data)
-  //       console.log(res);
-  //       setAuth(res);
-  //       autoLogin(data);
-  //     } catch (err: any) {
-  //       console.log(err);
-  //       toast.error(err.message)
-  //     } finally {
-  //       setLoading(false)
-  //       reset();
-  //     }
-  //   } else {
-  //     setNoSubmit(true);
-  //     setLoading(false);
-  //   }
-
-  //     newUser
-  //       .mutateAsync(data)
-  //       .then((res: any) => {
-  //         console.log(res);
-  //         setAuth(res);
-  //         autoLogin(data);
-  //       })
-  //       .catch((err: any) => {
-  //         console.log(err);
-  //         toast.success(err.message);
-  //       });
-  //     reset();
-  //   } else {
-  //     // setNoSubmit(true);
-  //     setLoading(false);
-  //   }
-  // };
 
   return (
     <Layout>
         <div className="mt-[64px]" />
         <section className="py-10">
             <div className="wrapper">
-                {canSubmit? <AdminSignUpVerification email={email} /> : 
+                {newAdmin.isSuccess? <AdminSignUpVerification email={email} /> : 
                     <div className="flex flex-col items-center sm:mx-auto sm:w-[500px] sm:border sm:bg-white sm:p-6 sm:shadow-lg">
                     <span className="flex h-20 w-20 items-center justify-center rounded-full bg-goldie-300 bg-opacity-35">
                     <span className="flex h-16 w-16 items-center justify-center rounded-full bg-goldie-300 bg-opacity-35">
@@ -239,10 +137,12 @@ const Page = () => {
                                     ? "border border-red-600 focus:border-red-600 focus:ring-0"
                                     : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
                                 )}
-                                // disabled
+                                disabled
                                 id="email"
                                 name="email"
                                 placeholder="abegundetimilehin@gmail.com"
+                                defaultValue={email}
+                                value={email}
                               />
                               {errors?.email && (
                                 <p className={cn("mt-1 text-sm text-red-600")}>
@@ -335,14 +235,17 @@ const Page = () => {
                               </span>
                             </label>
                             <Button
-                              // disabled={newUser.isPending}
+                              disabled={newAdmin.isPending}
                               className="col-span-2 mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300"
                               >
-                              {false ? (
-                                  <div className="loader bg-slate-300"></div>
-                              ) : (
-                                  "Sign Up"
-                              )}
+                              {newAdmin.isPending ? 
+                                <div className="flex items-center gap-3 justify-center">
+                                <CgSpinner className="animate-spin" size={20} />
+                                Loading...
+                              </div>
+                               :
+                                "Sign Up"
+                              }
                             </Button>
                             <p className="col-span-2 text-center">
                               Already have an account?{" "}
