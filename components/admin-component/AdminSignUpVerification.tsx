@@ -8,8 +8,7 @@ import { SignupOtp } from "@/components/signupOtp"
 import { yupResolver } from "@hookform/resolvers/yup";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import Link from "next/link";
-import { useMutation } from "@tanstack/react-query";
-import { createUser, loginUser } from "../../services/hooks/auth";
+import { dataTagSymbol, useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import AuthContext from "../../context/AuthProvider";
 import { useRouter } from "next/navigation";
@@ -19,6 +18,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp"
+import { verificationOtp } from "@/services/hooks/admin-auth";
 
 
 const validationSchema = yup.object().shape({
@@ -29,18 +29,17 @@ const validationSchema = yup.object().shape({
   });
 
 
+
 const AdminSignUpVerification = ({email}: {email: string}) => {
     const router = useRouter();
     //@ts-ignore
   const { setAuth } = useContext(AuthContext);
   const [noSubmit, setNoSubmit] = useState(false);
   const [loading, setLoading] = useState(false);
-  const newUser = useMutation({
-    mutationFn: createUser,
-  });
-  const userLogin = useMutation({
-    mutationFn: loginUser,
-  });
+
+  const sendOtp = useMutation({
+    mutationFn: verificationOtp,
+  })
 
   const {
     register,
@@ -54,17 +53,17 @@ const AdminSignUpVerification = ({email}: {email: string}) => {
 
   const onSubmit = async (data: any) => {
     console.log(data);
-    // setLoading(true);
-    // try {
-    //   const res = await newUser.mutateAsync(data);
-    //   setAuth(res);
-    //   router.push("/dashboard");
-    // } catch (err: any) {
-    //   toast.error(err.message);
-    // } finally {
-    //   setLoading(false);
-    //   reset();
-    // }
+    try {
+       // Send OTP to mail
+      const otpVerify = await sendOtp
+       .mutateAsync({
+        otp: data.otp,
+        email,
+      });
+      router.push("/admin");
+    } catch (err: any) {
+      toast.error(err.message);
+    }
   };
 
   return (
@@ -93,7 +92,6 @@ const AdminSignUpVerification = ({email}: {email: string}) => {
                             onSubmit={handleSubmit(onSubmit)}
                         >
                             <div className="flex justify-center">
-                                {/* <SignupOtp register={register} /> */}
                                 <Controller name="otp" control={control} render={({field}) => 
                                   <InputOTP 
                                   maxLength={6} pattern={REGEXP_ONLY_DIGITS_AND_CHARS} 

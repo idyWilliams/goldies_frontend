@@ -35,7 +35,7 @@ export interface GetUserResponse {
 // Interfaces for the admin signup and invite admin
 export interface CreateAdmin {
   email: string;
-  // referenceCode: string;
+  refCode: string;
   password: string;
 }
 

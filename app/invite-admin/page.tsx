@@ -15,10 +15,11 @@ import { toast } from "react-toastify";
 import AuthContext from "@/context/AuthProvider";
 import { useRouter } from "next/navigation";
 import { inviteAdmin, verificationOtp } from "@/services/hooks/admin-auth";
+import InviteAdminModal from "@/components/admin-component/InviteAdminModal";
+import { CgSpinner } from "react-icons/cg";
 
 const validationSchema = yup.object().shape({
   email: yup.string().required("Email is required"),
-//   refferal: yup.string().required("Refferal Code is required"),
 });
 
 const Page = () => {
@@ -33,9 +34,6 @@ const Page = () => {
   const inviteAnAdmin = useMutation({
     mutationFn: inviteAdmin,
   }); 
-//   const otp = useMutation({
-//     mutationFn: verificationOtp,
-//   });
 
 
   const {
@@ -47,72 +45,24 @@ const Page = () => {
     resolver: yupResolver(validationSchema),
   });
 
-  const inviteNewAdmin = (data: any) => {
-    inviteAnAdmin
-    .mutateAsync({ email: data.email})
-    .then((res: any) => {
-        console.log(res);
-        toast.success('Invitation sent successfully!');
-        reset();
-    }) 
-    .catch((err: any) => {
-        console.log(err);
-        toast.error(err.message);
-    });
-  }
-
-
-  // const autoLogin = (data: any) => {
-  //   userLogin
-  //     .mutateAsync({ email: data.email, password: data.password })
-  //     .then((res: any) => {
-  //       console.log(res);
-  //       setIsLogin(true);
-  //       localStorage.setItem("isLogin", JSON.stringify(true));
-  //       localStorage.removeItem("accessToken");
-  //       localStorage.removeItem("user");
-  //       localStorage.setItem(
-  //         "user",
-  //         JSON.stringify({ token: res?.token, user: res?.user }),
-  //       );
-  //       localStorage.setItem("accessToken", res?.token);
-  //       router.push("/");
-  //       reset();
-  //     })
-  //     .catch((err: any) => {
-  //       console.log(err);
-  //       toast.error(err.message);
-  //     });
-  // };
 
   const onSubmit = async (data: any) => {
-    setLoading(true);
+    setLoading(false);
     console.log(data);
-    // setEmail(data.email);
-    // setCanSubmit(true);
-
-    if (isChecked) {
-      setLoading(false);
-      setNoSubmit(false);
-      console.log(data);
 
       inviteAnAdmin
         .mutateAsync(data)
         .then((res: any) => {
           console.log(res);
           setAuth(res);
-          inviteNewAdmin(data);
+          toast.success('Invitation sent successfully!');
         })
         .catch((err: any) => {
           console.log(err);
-          toast.success(err.message);
+          toast.error(err.message);
         });
 
       reset();
-    } else {
-      setNoSubmit(true);
-      setLoading(false);
-    }
   };
 
   return (
@@ -161,35 +111,15 @@ const Page = () => {
                                 </p>
                             )}
                             </label>
-                            {/* <label htmlFor="refferalCode" className="md:col-span-2">
-                            <span className="mb-1 inline-block font-medium capitalize">
-                                Refferal Code
-                            </span>
-                            <input
-                                {...register("refferal")}
-                                type="refferal"
-                                className={cn(
-                                "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
-                                errors?.refferal
-                                    ? "border border-red-600 focus:border-red-600 focus:ring-0"
-                                    : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
-                                )}
-                                id="refferalCode"
-                                name="refferal"
-                                placeholder="Enter referral code here"
-                            />
-                            {errors?.refferal && (
-                                <p className={cn("mt-1 text-sm text-red-600")}>
-                                {errors.refferal?.message}
-                                </p>
-                            )}
-                            </label> */}
                             <Button
-                            // disabled={newUser.isPending}
+                            disabled={inviteAnAdmin.isPending}
                             className="col-span-2 mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300"
                             >
-                            {false? (
-                                <div className="loader bg-slate-300"></div>
+                            {inviteAnAdmin.isPending? (
+                                <div className="flex items-center gap-3 justify-center">
+                                  <CgSpinner className="animate-spin" size={20} />
+                                  Loading...
+                                </div>
                             ) : (
                                 "Send Invite"
                             )}
