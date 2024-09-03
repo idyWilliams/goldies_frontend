@@ -15,11 +15,18 @@ switch (process.env.NODE_ENV) {
 }
 
 export const ImageStorageUrl = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_API;
+let accessToken = "";
+
+if (typeof window !== "undefined") {
+  accessToken = localStorage.getItem("accessToken") || "";
+}
 
 const instance = axios.create({
   baseURL: BASEURL,
   headers: {
     "Content-type": "application/json",
+    "x-access-token": accessToken,
+    Token: `Bearer ${accessToken}`,
   },
 });
 

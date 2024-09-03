@@ -32,6 +32,14 @@ export interface GetUserResponse {
   message: string;
 }
 
+export interface ForgotPassword {
+  email: string;
+}
+export interface ResetPassword {
+  password: string;
+  token: string;
+}
+
 // Interfaces for the admin signup and invite admin
 export interface CreateAdmin {
   email: string;
