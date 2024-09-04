@@ -19,15 +19,29 @@ export const loginUser = async (data: LoginUser) => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // ADMIN LOGIN
 export const loginAdmin = async (data: LoginAdmin) => {
-  const response = await instance.post("/admin/admin_auth", data);
+  const response = await instance.post("/admin/admin_auth-refCode${}", data);
   return response.data;
 };
 
 // OTP 
 export const verifyOTP = async (data:string  ) => {
-  const response = await instance.post('/admin/verify_otp' , data )
+  const response = await instance.post('/admin/verify_otp', data )
   return response.data;
 };
 

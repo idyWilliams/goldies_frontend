@@ -21,7 +21,7 @@ export interface AuthResponse {
   message: string;
   user: User;
   admin: Admin;
-  token?: string; // Add token for login response
+  token?: string; 
 }
 
 export interface CreateUser {
@@ -36,6 +36,18 @@ export interface LoginUser {
   password: string;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
 export interface LoginAdmin {
   email: string;
   password: string;
@@ -46,10 +58,7 @@ export interface GetUserResponse {
   message: string;
 }
 
-// export interface GetAdminResponse {
-//   admin: Admin;
-//   message: string;
-// }
+
 
 
 
