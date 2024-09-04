@@ -1,10 +1,57 @@
 "use client";
 import Layout from "@/components/Layout";
+import AuthContext from "@/context/AuthProvider";
+import { loginUser } from "@/services/hooks/auth";
+import { useMutation } from "@tanstack/react-query";
 import { Key, Sms } from "iconsax-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useContext, useState } from "react";
 import { BiArrowBack } from "react-icons/bi";
+import { toast } from "react-toastify";
+import { Button } from "./ui/button";
 
-export default function PasswordReset() {
+export default function PasswordReset({ password }: { password: string }) {
+  const router = useRouter();
+  // @ts-ignore
+  const { setIsLogin } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
+  const userLogin = useMutation({
+    mutationFn: loginUser,
+  });
+
+  const autoLogin = () => {
+    setLoading(true);
+    const email: string = localStorage.getItem("email") || "";
+    const userEmail = JSON.parse(email);
+
+    const data = {
+      email: userEmail.email,
+      password,
+    };
+
+    userLogin
+      .mutateAsync(data)
+      .then((res: any) => {
+        console.log(res);
+        setIsLogin(true);
+        localStorage.setItem("isLogin", JSON.stringify(true));
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("user");
+        localStorage.removeItem("email");
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ token: res?.token, user: res?.user }),
+        );
+        localStorage.setItem("accessToken", res?.token);
+        router.push("/");
+      })
+      .catch((err: any) => {
+        console.log(err);
+        toast.error(err.message);
+      });
+  };
+
   return (
     <>
       <div className="w-full bg-white p-5 sm:mx-auto sm:w-[400px] sm:border sm:bg-white sm:p-6 sm:shadow-lg md:border-0 md:shadow-none">
@@ -21,12 +68,15 @@ export default function PasswordReset() {
           </p>
         </div>
 
-        <Link
-          href={"/"}
-          className="my-5 block w-full rounded bg-neutral-900 py-2 text-center text-sm text-goldie-300"
-        >
-          Continue
-        </Link>
+        <div className={`${userLogin.isPending ? "cursor-not-allowed" : ""}`}>
+          <Button
+            className="my-5 w-full rounded bg-neutral-900 py-2 text-sm text-goldie-300 disabled:hover:cursor-not-allowed"
+            disabled={loading}
+            onClick={() => autoLogin()}
+          >
+            {loading ? "Signing in" : "Continue"}
+          </Button>
+        </div>
 
         <div className="flex cursor-pointer items-center justify-center gap-3 ">
           <Link

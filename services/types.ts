@@ -57,10 +57,3 @@ export interface GetUserResponse {
   user: User;
   message: string;
 }
-
-
-
-
-
-
-

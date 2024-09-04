@@ -1,6 +1,11 @@
 import instance from "@/services/api";
-import { CreateUser, LoginUser } from "@/services/types";
-import { LoginAdmin } from "@/services/types";
+import {
+  CreateUser,
+  ForgotPassword,
+  LoginUser,
+  ResetPassword,
+  LoginAdmin,
+} from "@/services/types";
 
 // CREATE A USER
 export const createUser = async (data: CreateUser) => {
@@ -14,23 +19,23 @@ export const loginUser = async (data: LoginUser) => {
   return response.data;
 };
 
+// SUBMIT EMAIL FOR FORGOT PASSWORD
+export const forgotPassword = async (data: ForgotPassword) => {
+  const response = await instance.post("/auth/forgot_password", data);
 
+  return response.data;
+};
+// SUBMIT EMAIL FOR FORGOT PASSWORD
+export const resetPassword = async (data: ResetPassword) => {
+  localStorage.setItem("accessToken", data.token);
+  const response = await instance.post("/auth/reset_password", data, {
+    headers: {
+      Authorization: `Bearer ${data.token}`,
+    },
+  });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  return response.data;
+};
 
 
 // ADMIN LOGIN
@@ -44,6 +49,7 @@ export const verifyOTP = async (data:string  ) => {
   const response = await instance.post('/admin/verify_otp', data )
   return response.data;
 };
+
 
 
 
