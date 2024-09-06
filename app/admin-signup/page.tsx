@@ -31,17 +31,11 @@ const AdminSignUp = () => {
   const [loading, setLoading] = useState(false);
   const [canSubmit, setCanSubmit] = useState(false);
   const [email, setEmail] = useState("");
-  // const params = useSearchParams();
-  // const refCode = params.get("refCode");
+  const [refCode, setRefCode] = useState<string | null>("");
 
   const newAdmin = useMutation({
     mutationFn: createAdmin,
   });
-
-  // const router = useRouter();
-  // const params = new URLSearchParams(window.location.search);
-
-  // console.log(refCode);
 
   const {
     register,
@@ -65,7 +59,7 @@ const AdminSignUp = () => {
       const res = await newAdmin.mutateAsync({
         email: data.email,
         password: data.password,
-        refCode: " refCode as string",
+        refCode: refCode as string,
       });
       console.log(res);
       localStorage.setItem("adminEmail", data.email);
@@ -85,14 +79,18 @@ const AdminSignUp = () => {
     }
   };
 
-  // useEffect(() => {
-  //   let email: string | null = params.get("email");
-  //   if (email) {
-  //     email = email.replace(/ /g, "+");
-  //     setEmail(email);
-  //     setValue("email", email);
-  //   }
-  // }, [setValue, params]);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const refCode = params.get("refCode");
+
+    let email: string | null = params.get("email");
+    setRefCode(refCode);
+    if (email) {
+      email = email.replace(/ /g, "+");
+      setEmail(email);
+      setValue("email", email);
+    }
+  }, [setValue]);
 
   return (
     <>
