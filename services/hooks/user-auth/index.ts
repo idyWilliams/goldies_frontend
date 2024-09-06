@@ -38,18 +38,6 @@ export const resetPassword = async (data: ResetPassword) => {
 };
 
 
-// ADMIN LOGIN
-export const loginAdmin = async (data: LoginAdmin) => {
-  const response = await instance.post("/admin/admin_auth", data);
-  // -refCode${}
-  return response.data;
-};
-
-// OTP 
-export const verifyOTP = async (data:string  ) => {
-  const response = await instance.post('/admin/verify_otp', data )
-  return response.data;
-};
 
 
 

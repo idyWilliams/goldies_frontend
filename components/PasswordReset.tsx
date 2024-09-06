@@ -1,7 +1,7 @@
 "use client";
 import Layout from "@/components/Layout";
 import AuthContext from "@/context/AuthProvider";
-import { loginUser } from "@/services/hooks/auth";
+import { loginUser } from "@/services/hooks/user-auth";
 import { useMutation } from "@tanstack/react-query";
 import { Key, Sms } from "iconsax-react";
 import Link from "next/link";

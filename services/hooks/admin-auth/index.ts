@@ -20,14 +20,15 @@ export const createAdmin = async (data: CreateAdmin) => {
   );
   return response.data;
 };
-// VERIFICATION OTP
-export const verificationOtp = async (data: VerificationOtp) => {
-  const response = await instance.post("/admin/verify_otp", data);
-  return response.data;
-};
 
 // ADMIN LOGIN
 export const loginAdmin = async (data: LoginAdmin) => {
-  const response = await instance.post("/auth/login", data);
+  const response = await instance.post("/admin/admin_auth", data);
+  return response.data;
+};
+
+// OTP
+export const verifyOTP = async (data: VerificationOtp) => {
+  const response = await instance.post("/admin/verify_otp", data);
   return response.data;
 };

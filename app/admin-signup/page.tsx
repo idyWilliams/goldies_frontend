@@ -13,7 +13,6 @@ import { useMutation } from "@tanstack/react-query";
 import { createAdmin } from "@/services/hooks/admin-auth";
 import { toast } from "react-toastify";
 import AuthContext from "@/context/AuthProvider";
-import { useRouter, useSearchParams } from "next/navigation";
 import AdminSignUpVerification from "@/components/admin-component/AdminSignUpVerification";
 import { CgSpinner } from "react-icons/cg";
 

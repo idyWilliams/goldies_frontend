@@ -16,7 +16,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { verificationOtp } from "@/services/hooks/admin-auth";
+import { verifyOTP } from "@/services/hooks/admin-auth";
 import { CgSpinner } from "react-icons/cg";
 
 const validationSchema = yup.object().shape({
@@ -31,7 +31,7 @@ const AdminSignUpVerification = ({ email }: { email: string }) => {
   //@ts-ignore
   const { setAuth } = useContext(AuthContext);
   const sendOtp = useMutation({
-    mutationFn: verificationOtp,
+    mutationFn: verifyOTP,
   });
 
   const {
