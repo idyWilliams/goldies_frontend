@@ -81,3 +81,14 @@ export interface GetUserResponse {
   user: User;
   message: string;
 }
+export interface Category {
+  name: string;
+  description: string;
+  image: string;
+  categorySlug: string;
+  status: boolean;
+}
+
+export interface CategoryId {
+  categoryId: string;
+}

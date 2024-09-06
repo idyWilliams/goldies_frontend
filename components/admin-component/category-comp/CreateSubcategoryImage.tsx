@@ -1,17 +1,29 @@
+import { cn } from "@/helper/cn";
+import { SubCategoryImageProps } from "@/utils/categoryTypes";
+import { GalleryImport } from "iconsax-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { cn } from "@/helper/cn";
-import { GalleryImport } from "iconsax-react";
-import { CategoryImageProps } from "@/utils/categoryTypes";
 
-export default function CategoryImage({
+export default function CreateSubcategoryImage({
+  file,
   register,
   errors,
-  imageUrl,
-  setImageUrl,
-}: CategoryImageProps) {
-  const [dragging, setDragging] = useState<boolean>(false);
+}: SubCategoryImageProps) {
+  console.log(errors);
 
+  const [dragging, setDragging] = useState<boolean>(false);
+  const [imageUrl, setImageUrl] = useState<string>("");
+
+  // SET IMAGE URL ON FILE UPLOAD
+  useEffect(() => {
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setImageUrl(url);
+      console.log(file);
+    }
+  }, [file]);
+
+  // ONDRAG EVENT LISTENER FUNCTIONS FOR IMAGE UPLOAD
   const handleDragEnter = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
@@ -38,26 +50,27 @@ export default function CategoryImage({
     if (files && files[0]) {
       const file = files[0];
       const url = URL.createObjectURL(file);
-      // setImage(file);
       setImageUrl(url);
     }
   };
 
   const handleRemoveCateImg = () => {
-    // setImage(null);
     setImageUrl("");
     setDragging(false);
   };
 
   return (
-    <>
+    <div className="mt-5">
+      <h3 className="mb-2 text-sm font-semibold">Subcategory Image</h3>
+
+      <p className={cn("hidden text-sm text-red-600", errors.image && "block")}>
+        {errors.image && (errors.image.message as string)}
+      </p>
       <input
         type="file"
-        id="file1"
-        size={3000000}
+        id="file2"
         {...register("image")}
         className="hidden"
-        // onChange={(e) => handleChange(e)}
         accept="image/jpeg, image/png, image/webp"
       />
       {!imageUrl && (
@@ -67,7 +80,7 @@ export default function CategoryImage({
           onDragOver={handleDragOver}
           onDrop={handleDrop}
           className={cn(
-            "flex h-[250px] w-full flex-col items-center justify-center rounded-md border border-dashed border-neutral-200 bg-zinc-50 px-4 py-6 md:h-full xl:h-[250px]",
+            "flex h-[250px] w-full flex-col items-center justify-center rounded-md border border-dashed border-neutral-200 bg-zinc-50 px-4 py-4 xl:h-[250px]",
             dragging &&
               "border-2 border-solid border-neutral-900 bg-sky-100 shadow-inner",
           )}
@@ -76,7 +89,7 @@ export default function CategoryImage({
             <GalleryImport size={60} />
           </span>
           <label
-            htmlFor="file1"
+            htmlFor="file2"
             className="cursor-pointer text-balance text-center text-neutral-400"
           >
             Drop image here or <u>click here</u> to upload image
@@ -96,7 +109,7 @@ export default function CategoryImage({
 
           <div className="absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center gap-2 bg-black bg-opacity-25 opacity-0 duration-300 group-hover:opacity-100">
             <label
-              htmlFor="file1"
+              htmlFor="file2"
               className="inline-block cursor-pointer rounded-md bg-white px-6 py-2"
             >
               Replace
@@ -110,6 +123,6 @@ export default function CategoryImage({
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

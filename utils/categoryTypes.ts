@@ -1,3 +1,13 @@
+import React from "react";
+import {
+  Control,
+  FieldError,
+  FieldErrors,
+  UseFormGetValues,
+  UseFormRegister,
+  UseFormSetValue,
+} from "react-hook-form";
+
 export type CatWithCategory = {
   cat: string;
   isCategory: boolean;
@@ -28,7 +38,14 @@ export type CategoryProps = {
   categoryName: string;
   categorySlug: string;
   description: string;
-  [x: string]: string;
+  image: any | FileList;
+  status: boolean;
+
+  // categoryName: string;
+  // categorySlug: string;
+  // description: string;
+  // [x: string]: string;
+  // [x: string]: string | boolean | Record<string, any>;
 };
 
 export type SubcategoriesProps = {
@@ -51,15 +68,32 @@ export type SubCategoryProps = {
   subCategoryName: string;
   description: string;
   status: "active" | "inactive";
-  [x: string]: string;
+  image: any | FileList;
+  // [x: string]: string;
+};
+
+export type CategoryInputsProps = {
+  control: Control<CategoryProps>;
+  register: UseFormRegister<CategoryProps>;
+  errors: FieldErrors<CategoryProps>;
+  getValues: UseFormGetValues<CategoryProps>;
+  setValue: UseFormSetValue<CategoryProps>;
 };
 
 export type CategoryImageProps = {
-  imageUrl: string;
-  dragging: boolean;
-  handleDragEnter: (e: any) => void;
-  handleDragLeave: (e: any) => void;
-  handleDragOver: (e: any) => void;
-  handleDrop: (e: any) => void;
-  handleRemoveCateImg: (e: any) => void;
+  register: UseFormRegister<CategoryProps>;
+  errors: FieldErrors<CategoryProps>;
+  imageUrl: string | null;
+  setImageUrl: React.Dispatch<React.SetStateAction<string>>;
+};
+export type SubCategoryImageProps = {
+  file: File | null;
+  register: UseFormRegister<SubCategoryProps>;
+  errors: FieldErrors<SubCategoryProps>;
+};
+
+export type SubcategoryInputsProps = {
+  control: Control<CategoryProps>;
+  register: UseFormRegister<SubCategoryProps>;
+  errors: FieldErrors<SubCategoryProps>;
 };

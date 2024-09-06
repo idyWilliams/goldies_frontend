@@ -4,15 +4,12 @@ import CreateSubategory from "@/components/admin-component/category-comp/CreateS
 import EmptyStateCard from "@/components/admin-component/category-comp/EmptyStateCard";
 import EachElement from "@/helper/EachElement";
 import { cn } from "@/helper/cn";
-import { newCategory, newSubcategory } from "@/utils/formData";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Edit, GalleryImport, Trash } from "iconsax-react";
+import { Edit, Trash } from "iconsax-react";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { BsX } from "react-icons/bs";
-import Toggle from "react-toggle";
+import { useForm } from "react-hook-form";
 import "react-toggle/style.css";
 import * as yup from "yup";
 import StatusBar from "@/components/admin-component/category-comp/StatusBar";
@@ -21,8 +18,6 @@ import { columns } from "@/components/admin-component/category-comp/Subcategorie
 import ConfirmModal from "@/components/admin-component/category-comp/ConfirmModal";
 import { selectedCategory, subcategoriesArray } from "@/utils/cakeCategories";
 import CategoryHeader from "@/components/admin-component/category-comp/CategoryHeader";
-import CategoryImage from "@/components/admin-component/category-comp/CategoryImage";
-import CategoryInputs from "@/components/admin-component/category-comp/CategoryInputs";
 import CategoryForm from "@/components/admin-component/category-comp/CategoryForm";
 
 const schema = yup.object().shape({
@@ -33,9 +28,6 @@ const schema = yup.object().shape({
 
 const Page = ({ params }: CategoryPageProps) => {
   const formRef = useRef<HTMLFormElement | null>(null);
-  const [dragging, setDragging] = useState<boolean>(false);
-  const [image, setImage] = useState<File | null>(null);
-  const [imageUrl, setImageUrl] = useState<string>("");
   const [showModal, setShowModal] = useState(false);
   const [action, setAction] = useState("");
 
@@ -44,13 +36,14 @@ const Page = ({ params }: CategoryPageProps) => {
     categoryName: "",
     categorySlug: "",
     description: "",
+    image: "",
+    status: true,
   });
   const [subcategories, setSubcategories] = useState<any[]>(subcategoriesArray);
   const [showSub, setShowSub] = useState(false);
-  const [cateStatus, setCateStatus] = useState(true);
+  const [loading, setLoading] = useState(false);
   const pathname = usePathname();
   const isNewCreate = pathname.endsWith("/create");
-  const router = useRouter();
   const {
     control,
     handleSubmit,
@@ -69,81 +62,8 @@ const Page = ({ params }: CategoryPageProps) => {
     },
   });
 
-  const onSubmit = (data: any) => {
-    console.log(data);
-    console.log(image);
-    reset();
-  };
-
   const handleAddSubcategory = () => {
     setShowSub(true);
-  };
-
-  // FILE UPLOAD FUNCTIONS
-  const handleDragEnter = (e: any) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragging(true);
-  };
-
-  const handleDragLeave = (e: any) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragging(false);
-  };
-
-  const handleDragOver = (e: any) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  const handleDrop = (e: any) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragging(false);
-
-    const files = e.dataTransfer.files;
-    if (files && files[0]) {
-      const file = files[0];
-      const url = URL.createObjectURL(file);
-      setImage(file);
-      setImageUrl(url);
-    }
-  };
-
-  const handleChange = (e: any) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragging(false);
-
-    const file = e.target.files && e.target.files[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setImage(file);
-      setImageUrl(url);
-    }
-    console.log(image);
-    console.log(imageUrl);
-  };
-
-  const handleRemoveCateImg = () => {
-    setImage(null);
-    setImageUrl("");
-    setDragging(false);
-  };
-
-  // HANDLE INPUT VALUES CHANGES
-  const handleCateChanges = (e: any) => {
-    const name = e.target.name;
-    const value = e.target.value;
-    setCategory((cate: any) => {
-      return {
-        ...cate,
-        [name]: value,
-      };
-    });
-
-    console.log(category);
   };
 
   const isDisabled =
@@ -176,11 +96,6 @@ const Page = ({ params }: CategoryPageProps) => {
     }
   };
 
-  useEffect(() => {
-    console.log(image?.name);
-    console.log(imageUrl);
-  }, [image, imageUrl]);
-
   // SIDE EFFECTS: USE EFFECTS HOOKS
 
   // useEffect(() => {
@@ -205,21 +120,25 @@ const Page = ({ params }: CategoryPageProps) => {
       categorySlug: "milestone-cakes",
       description:
         "Milestone cakes commemorate significant life events and achievements.",
+      image: null,
+      status: true,
     });
     setCategory({
       categoryName: "Milestone Cakes",
       categorySlug: "milestone-cakes",
       description:
         "Milestone cakes commemorate significant life events and achievements.",
+      image: null,
+      status: true,
     });
   }, [reset]);
 
   return (
     <>
       <section className="min-h-screen w-full bg-neutral-100 px-4 py-4">
-        <CategoryHeader formRef={formRef} />
+        <CategoryHeader formRef={formRef} loading={loading} />
 
-        <CategoryForm formRef={formRef} />
+        <CategoryForm formRef={formRef} setLoading={setLoading} />
 
         {subcategories?.length < 1 && (
           <EmptyStateCard

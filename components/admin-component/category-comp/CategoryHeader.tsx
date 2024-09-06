@@ -7,16 +7,18 @@ import { SubmitHandler, UseFormHandleSubmit } from "react-hook-form";
 
 export default function CategoryHeader({
   formRef,
+  loading,
 }: {
   formRef: RefObject<HTMLFormElement>;
+  loading: boolean;
 }) {
   const pathname = usePathname();
 
   const isNewCreate = pathname.endsWith("/create");
 
-  const handleOutsideButtonClick = () => {
+  const handleCategorySubmission = () => {
     if (formRef?.current) {
-      formRef.current.requestSubmit(); // Trigger the form submission using the ref
+      formRef.current.requestSubmit();
     }
   };
 
@@ -34,10 +36,15 @@ export default function CategoryHeader({
         </h1>
       </Link>
       <button
-        className="rounded-md bg-neutral-900 px-4 py-2 text-sm text-goldie-300"
-        onClick={() => handleOutsideButtonClick()}
+        disabled={loading}
+        className="rounded-md bg-neutral-900 px-4 py-2 text-sm text-goldie-300 disabled:opacity-75 disabled:hover:cursor-not-allowed"
+        onClick={() => handleCategorySubmission()}
       >
-        Create Category
+        {loading
+          ? "Submitting"
+          : isNewCreate
+            ? "Create Category"
+            : "Edit Category"}
       </button>
     </div>
   );

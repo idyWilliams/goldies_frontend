@@ -1,28 +1,27 @@
-import React from "react";
-import { Controller } from "react-hook-form";
-import { cn } from "@/helper/cn";
-import { CategoryInputsProps } from "@/utils/categoryTypes";
-import Toggle from "react-toggle";
+import React, { useState } from "react";
 import EachElement from "@/helper/EachElement";
-import { newCategory } from "@/utils/formData";
+import { cn } from "@/helper/cn";
+import { newSubcategory } from "@/utils/formData";
+import { SubcategoryInputsProps } from "@/utils/categoryTypes";
+import { Controller } from "react-hook-form";
+import Toggle from "react-toggle";
 
-export default function CategoryInputs({
+const CreateSubcategoryInput = ({
   control,
   register,
   errors,
-  getValues,
-  setValue,
-}: CategoryInputsProps) {
+}: SubcategoryInputsProps) => {
   return (
     <EachElement
-      of={newCategory}
+      of={newSubcategory}
       render={(data: any, index: number) => {
         if (data.name === "status") {
           return (
+            // STATUS TOGGLE
             <>
               <label
                 htmlFor={data?.name}
-                className="mt-2 inline-flex items-center gap-2 md:mt-0"
+                className="inline-flex items-center gap-2"
               >
                 <span className="text-sm font-semibold">{data?.label}: </span>
                 <Controller
@@ -31,7 +30,7 @@ export default function CategoryInputs({
                   render={({ field: { value, ...field } }) => (
                     <Toggle
                       {...field}
-                      checked={value}
+                      checked={value} //
                       className="custom"
                       icons={{ checked: null, unchecked: null }}
                     />
@@ -43,14 +42,8 @@ export default function CategoryInputs({
         }
         return (
           <>
-            <div
-              key={index}
-              className={cn(
-                "mt-3 md:mt-0",
-                data?.type === "richtext" && "xl:col-span-2",
-              )}
-            >
-              <label htmlFor={data.name} className="block w-full">
+            <div key={index}>
+              <label htmlFor={data.name} className="mb-2 block w-full">
                 <span
                   className={cn(
                     "mb-1 inline-block text-sm font-semibold",
@@ -62,38 +55,40 @@ export default function CategoryInputs({
                 </span>
                 {data?.type === "text" && (
                   <input
-                    {...register(data.name, {
-                      disabled: data.name === "categorySlug" ? true : false,
-                    })}
+                    {...register(data.name)}
                     type={data.type}
                     id={data?.name}
                     name={data.name}
                     placeholder={data.place_holder}
-                    className="form-input w-full rounded-md border-0 py-3 placeholder:text-sm placeholder:text-neutral-300 focus:ring-neutral-900 disabled:cursor-not-allowed disabled:bg-neutral-50 disabled:text-neutral-400"
-                    onBlur={() => {
-                      const value = getValues(data.name);
-                      setValue(data.name, value.trim());
-                    }}
+                    className="form-input w-full rounded-md border-0 bg-neutral-50 py-3 text-sm placeholder:text-sm placeholder:text-neutral-400 focus:ring-neutral-900 md:text-base"
                   />
                 )}
                 {data?.type === "richtext" && (
                   <textarea
                     {...register(data.name)}
                     id={data?.name}
-                    name={data.name}
+                    name={data?.name}
                     placeholder={data.place_holder}
-                    className="form-textarea w-full resize-none rounded-md border-0 py-3 placeholder:text-sm placeholder:text-neutral-300 focus:ring-neutral-900"
-                    onBlur={() => {
-                      const value = getValues(data.name);
-                      setValue(data.name, value.trim());
-                    }}
+                    className="form-input w-full rounded-md border-0 bg-neutral-50 py-3 text-sm placeholder:text-sm placeholder:text-neutral-400 focus:ring-neutral-900 md:text-base"
                   />
                 )}
               </label>
+
+              {/* {errors?.[data?.name] && (
+                <p
+                  className={cn(
+                    "hidden text-sm text-red-600",
+                    errors?.[data?.name] && "block",
+                  )}
+                >
+                  {data?.error_message}
+                </p>
+              )} */}
+
               <p
                 className={cn(
                   "hidden text-sm text-red-600",
-                  ` ${errors[data.name] && "block"}`,
+                  errors?.[data?.name] && "block",
                 )}
               >
                 {errors[data.name]?.message}
@@ -104,4 +99,6 @@ export default function CategoryInputs({
       }}
     />
   );
-}
+};
+
+export default CreateSubcategoryInput;

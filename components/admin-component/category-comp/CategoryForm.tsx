@@ -1,169 +1,121 @@
-"use client";
-
-import React, { ReactNode, RefObject, useEffect, useState } from "react";
+import React, { RefObject, useEffect, useState } from "react";
 import * as yup from "yup";
 import CategoryImage from "./CategoryImage";
-import EachElement from "@/helper/EachElement";
-import { newCategory } from "@/utils/formData";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import CategoryInputs from "./CategoryInputs";
-import { Button } from "@/components/ui/button";
+import { uploadImageToFirebase } from "@/lib/utils";
+import { useMutation } from "@tanstack/react-query";
+import { createCategory } from "@/services/hooks/category";
+import { log } from "console";
 
 const schema = yup.object().shape({
-  categoryName: yup.string().required("Subcategory name is required"),
-  categorySlug: yup.string().required("Subcategory slug is required"),
-  description: yup.string().required("Subcategory description is required"),
-  // image: yup.mixed().test("imageSize", "Image Size is too large", (value) => {
-  //   // console.log(value[0]);
-
-  //   if (!value || value.length === 0) return true;
-
-  //   const file = value[0];
-  //   return file.size <= 3000000; // 3MB
-  // }),
-  // status: yup.boolean().required("Status is required"),
+  categoryName: yup.string().required("Category name is required"),
+  categorySlug: yup.string().required("Category slug is required"),
+  description: yup.string().required("Category description is required"),
+  image: yup.mixed().required("Category image is required"),
+  status: yup.boolean().required("Status is required"),
 });
 
 export default function CategoryForm({
   formRef,
+  setLoading,
 }: {
   formRef: RefObject<HTMLFormElement>;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const [dragging, setDragging] = useState<boolean>(false);
   const [imageUrl, setImageUrl] = useState<string>("");
-  const [image, setImage] = useState<File | null>(null);
+
+  const newCategory = useMutation({
+    mutationFn: createCategory,
+  });
 
   const {
     control,
     handleSubmit,
     register,
+    watch,
     setValue,
     getValues,
-    watch,
-    reset,
-    formState: { errors },
+    formState: { errors, touchedFields },
   } = useForm<any>({
     resolver: yupResolver(schema),
     defaultValues: {
-      categoryName: "Milestone Cakes",
-      categorySlug: "milestone-cakes",
-      description:
-        "Milestone cakes commemorate significant life events and achievements.",
-      // status: true,
+      categoryName: "",
+      categorySlug: "",
+      description: "",
+      image: null,
+      status: true,
     },
   });
 
-  const onSubmit = (data: any) => {
-    console.log(data);
-    console.log(image);
-    console.log(data.image[0]);
-
-    // data.image = image?.name;
-
-    reset();
-  };
-
-  // FILE UPLOAD FUNCTIONS
-  const handleDragEnter = (e: any) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragging(true);
-  };
-
-  const handleDragLeave = (e: any) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragging(false);
-  };
-
-  const handleDragOver = (e: any) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  const handleDrop = (e: any) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragging(false);
-
-    const files = e.dataTransfer.files;
-    if (files && files[0]) {
-      const file = files[0];
-      const url = URL.createObjectURL(file);
-      setImage(file);
-      setImageUrl(url);
-    }
-  };
-
-  const handleChange = (e: any) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragging(false);
-
-    const file = e.target.files && e.target.files[0];
-    console.log(file);
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setImage(file);
-      setImageUrl(url);
-    }
-  };
-
-  const handleRemoveCateImg = () => {
-    setImage(null);
-    setImageUrl("");
-    setDragging(false);
-  };
-  const file = watch("image") && watch("image")[0];
+  const categoryName = watch("categoryName");
 
   useEffect(() => {
-    // console.log(file);
+    if (categoryName && categoryName !== " ") {
+      const slug = categoryName.toLowerCase().replace(/\s+/g, "_");
+      // .replace(/[^\w-]+/g, "");
 
+      setValue("categorySlug", slug);
+    }
+  }, [categoryName, setValue]);
+
+  useEffect(() => {
+    if (categoryName && categoryName.startsWith(" ")) {
+      setValue("categoryName", categoryName.trimStart());
+    }
+  }, [categoryName, setValue]);
+
+  const onSubmit = async (data: any) => {
+    console.log(data);
+    console.log(data.image[0]);
+    const file = data.image[0];
+    setLoading(true);
+
+    // try {
+    //   const imageURL = await uploadImageToFirebase(file);
+    //   console.log(imageURL);
+    //   const category = {
+    //     name: data.categoryName,
+    //     description: data.description,
+    //     image: imageURL,
+    //     categorySlug: data.categorySlug,
+    //     status: data.status,
+    //   };
+    //   console.log(category);
+
+    //   newCategory
+    //     .mutateAsync(category)
+    //     .then((res) => {
+    //       console.log(res);
+    //       reset();
+    //     })
+    //     .catch((err) => console.error(err));
+    // } catch (error) {
+    //   console.error(error);
+    // } finally {
+    //   setLoading(false);
+    // }
+  };
+
+  const file: File | null = watch("image", null) && watch("image")[0];
+
+  useEffect(() => {
     if (file) {
       const url = URL.createObjectURL(file);
-      setImage(file);
       setImageUrl(url);
+      console.log(file);
     }
   }, [file]);
 
-  useEffect(() => {
-    reset({
-      categoryName: "Milestone Cakes",
-      categorySlug: "milestone-cakes",
-      description:
-        "Milestone cakes commemorate significant life events and achievements.",
-      // image: null,
-      // status: true,
-    });
-    // setCategory({
-    //   categoryName: "Milestone Cakes",
-    //   categorySlug: "milestone-cakes",
-    //   description:
-    //     "Milestone cakes commemorate significant life events and achievements.",
-    // });
-  }, [reset]);
-
   return (
     <form onSubmit={handleSubmit(onSubmit)} id="create-category" ref={formRef}>
-      <div className="md:grid md:grid-cols-[45%_1fr] md:items-center md:gap-5 xl:grid-cols-[450px_1fr]">
-        <input
-          type="file"
-          id="file1"
-          {...register("image")}
-          className="hidden"
-          // onChange={(e) => handleChange(e)}
-          accept="image/jpeg, image/png, image/webp"
-        />
-
+      <div className=" md:grid md:grid-cols-[45%_1fr] md:items-center md:gap-5 xl:grid-cols-[450px_1fr]">
         <CategoryImage
+          register={register}
+          errors={errors}
           imageUrl={imageUrl}
-          dragging={dragging}
-          handleDragEnter={handleDragEnter}
-          handleDragLeave={handleDragLeave}
-          handleDragOver={handleDragOver}
-          handleDrop={handleDrop}
-          handleRemoveCateImg={handleRemoveCateImg}
+          setImageUrl={setImageUrl}
         />
 
         <div className="mt-4 md:mt-0 md:h-min">
@@ -172,6 +124,8 @@ export default function CategoryForm({
               control={control}
               register={register}
               errors={errors}
+              getValues={getValues}
+              setValue={setValue}
             />
           </div>
         </div>

@@ -11,8 +11,17 @@ import Image, { StaticImageData } from "next/image";
 import { cn } from "@/helper/cn";
 import ConfirmModal from "@/components/admin-component/category-comp/ConfirmModal";
 import StatusBar from "@/components/admin-component/category-comp/StatusBar";
+import { useQuery } from "@tanstack/react-query";
+import { getAllCategories } from "@/services/hooks/category";
 
 const Page = () => {
+  const { data, error } = useQuery({
+    queryKey: ["categories"],
+    queryFn: getAllCategories,
+  });
+  console.log(data);
+  console.log(error);
+
   const [showModal, setShowModal] = useState(false);
   const [action, setAction] = useState("");
   const [selected, setSelected] = useState<any>({
