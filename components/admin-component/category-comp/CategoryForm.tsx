@@ -11,7 +11,7 @@ import { log } from "console";
 
 const schema = yup.object().shape({
   categoryName: yup.string().required("Category name is required"),
-  categorySlug: yup.string().required("Category slug is required"),
+  categorySlug: yup.string(),
   description: yup.string().required("Category description is required"),
   image: yup.mixed().required("Category image is required"),
   status: yup.boolean().required("Status is required"),
@@ -35,8 +35,10 @@ export default function CategoryForm({
     handleSubmit,
     register,
     watch,
+    trigger,
     setValue,
     getValues,
+    reset,
     formState: { errors, touchedFields },
   } = useForm<any>({
     resolver: yupResolver(schema),
@@ -57,6 +59,9 @@ export default function CategoryForm({
       // .replace(/[^\w-]+/g, "");
 
       setValue("categorySlug", slug);
+      console.log(watch());
+      console.log(getValues("categorySlug"));
+      console.log(errors);
     }
   }, [categoryName, setValue]);
 
@@ -68,9 +73,10 @@ export default function CategoryForm({
 
   const onSubmit = async (data: any) => {
     console.log(data);
+    console.log(getValues("categorySlug"));
     console.log(data.image[0]);
     const file = data.image[0];
-    setLoading(true);
+    // setLoading(true);
 
     // try {
     //   const imageURL = await uploadImageToFirebase(file);
@@ -88,6 +94,7 @@ export default function CategoryForm({
     //     .mutateAsync(category)
     //     .then((res) => {
     //       console.log(res);
+    //       setImageUrl("");
     //       reset();
     //     })
     //     .catch((err) => console.error(err));

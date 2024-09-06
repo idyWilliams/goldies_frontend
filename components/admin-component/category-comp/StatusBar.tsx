@@ -21,10 +21,10 @@ const StatusBar: React.FC<StatusBarProps> = ({ status, className }) => {
       <span
         className={cn(
           "h-2 w-2 rounded-full",
-          status === "active" ? "bg-green-600" : "bg-red-600",
+          status ? "bg-green-600" : "bg-red-600",
         )}
       ></span>
-      {status}
+      {status ? "Active" : "Inactive"}
     </div>
   );
 };

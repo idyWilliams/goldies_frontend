@@ -2,8 +2,8 @@
 import EmptyStateCard from "@/components/admin-component/category-comp/EmptyStateCard";
 import { Edit, Information, Trash } from "iconsax-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { useCallback, useEffect, useState } from "react";
 import cs from "../../../public/assets/milestone-cake.webp";
 import kid from "../../../public/assets/kid-cake.webp";
 import EachElement from "@/helper/EachElement";
@@ -13,14 +13,26 @@ import ConfirmModal from "@/components/admin-component/category-comp/ConfirmModa
 import StatusBar from "@/components/admin-component/category-comp/StatusBar";
 import { useQuery } from "@tanstack/react-query";
 import { getAllCategories } from "@/services/hooks/category";
+import useCategoriesStore from "@/zustand/store";
 
 const Page = () => {
-  const { data, error } = useQuery({
+  // const allCategories = useCategoriesStore((state) => state.categories);
+  // const setAllCategories = useCategoriesStore((state) => state.setCategories);
+  // console.log(allCategories);
+
+  const result = useQuery({
     queryKey: ["categories"],
     queryFn: getAllCategories,
+    // initialData: allCategories,
   });
-  console.log(data);
-  console.log(error);
+
+  // if (result.isSuccess) {
+  //   setAllCategories(result?.data?.categories);
+  // }
+  // console.log(allCategories);
+
+  console.log(result.data);
+  console.log(result.error);
 
   const [showModal, setShowModal] = useState(false);
   const [action, setAction] = useState("");
@@ -71,6 +83,7 @@ const Page = () => {
       ],
     },
   ]);
+
   const router = useRouter();
 
   const handleAddNewCategory = () => {
@@ -95,7 +108,12 @@ const Page = () => {
       // setCategories(categories.filter((item: any) => item.id!== item.id));
       setShowModal(false);
     } else if (action == "edit") {
-      router.push(`/admin/manage-categories/${item.categorySlug}`);
+      console.log(item);
+
+      router.push(
+        `/admin/manage-categories/${item.categorySlug}?categoryId=${item._id}`,
+      );
+
       setShowModal(false);
     }
   };
@@ -181,6 +199,84 @@ const Page = () => {
                           </span>
                         )}
                       />
+                    </div>
+                  </div>
+                </div>
+              )}
+            />
+          </div>
+        )}
+
+        {result.isError && (
+          <p>There was an error fetching data: {result.error.message}</p>
+        )}
+        {result.isPending && <p>Please wait while we fetch the categories!</p>}
+
+        {result?.data?.categories?.length >= 1 && (
+          <div className="grid gap-5 md:grid-cols-2">
+            <EachElement
+              of={result?.data.categories}
+              render={(item: any, index: number) => (
+                <div key={index} className="rounded-md bg-white p-4">
+                  <div className=" grid items-center gap-2 sm:grid-cols-[150px_1fr]">
+                    <div className="relative h-[150px]">
+                      <Image
+                        src="https://firebasestorage.googleapis.com/v0/b/goldie-b3ba7.appspot.com/o/products%2Fbanana-cake-with-cinnamon-cream-102945-1.webp?alt=media&token=51337f91-4261-432e-accf-e024dc2eeb18"
+                        alt={item.name}
+                        width={100}
+                        height={100}
+                        // fill
+                        // sizes=""
+                        // placeholder="blur"
+                        className="h-full w-full rounded-md object-cover object-center"
+                      />
+                    </div>
+                    <div className="py-1.5">
+                      <div className="mb-1 flex items-center justify-between">
+                        <StatusBar status={item?.status} />
+                        <div className="inline-flex items-center gap-3">
+                          <span
+                            onClick={() => handleEdit(item)}
+                            className="cursor-pointer text-blue-600 hover:text-blue-400"
+                          >
+                            <Edit size={24} />
+                          </span>
+                          <span
+                            onClick={() => handleDelete(item)}
+                            className="cursor-pointer text-red-600 hover:text-red-400"
+                          >
+                            <Trash size={24} />
+                          </span>
+                        </div>
+                      </div>
+                      <h3 className="">
+                        <span className="font-semibold">Category:&nbsp;</span>
+                        {item.name}
+                      </h3>
+                      <p className="mt-1">
+                        <span className="font-semibold">
+                          Description:&nbsp;
+                        </span>
+                        {item.description}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-4 space-y-2">
+                    <h3 className="font-semibold">Subcategories</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {item.subcategories && (
+                        <EachElement
+                          of={item?.subcategories}
+                          render={(sub: string, index: number) => (
+                            <span
+                              key={index}
+                              className="inline-block rounded-md bg-goldie-300 p-2 px-2.5 text-sm capitalize text-neutral-900 xl:text-base"
+                            >
+                              {sub}
+                            </span>
+                          )}
+                        />
+                      )}
                     </div>
                   </div>
                 </div>

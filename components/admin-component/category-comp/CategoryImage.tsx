@@ -58,7 +58,7 @@ export default function CategoryImage({
         {...register("image")}
         className="hidden"
         // onChange={(e) => handleChange(e)}
-        accept="image/jpeg, image/png, image/webp"
+        accept="image/jpeg, image/png, image/webp image/jpg"
       />
       {!imageUrl && (
         <div

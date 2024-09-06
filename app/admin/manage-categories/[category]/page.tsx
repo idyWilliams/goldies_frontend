@@ -7,7 +7,7 @@ import { cn } from "@/helper/cn";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Edit, Trash } from "iconsax-react";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import "react-toggle/style.css";
@@ -19,6 +19,7 @@ import ConfirmModal from "@/components/admin-component/category-comp/ConfirmModa
 import { selectedCategory, subcategoriesArray } from "@/utils/cakeCategories";
 import CategoryHeader from "@/components/admin-component/category-comp/CategoryHeader";
 import CategoryForm from "@/components/admin-component/category-comp/CategoryForm";
+import useCategoriesStore from "@/zustand/store";
 
 const schema = yup.object().shape({
   categoryName: yup.string().required("Subcategory name is required"),
@@ -30,6 +31,12 @@ const Page = ({ params }: CategoryPageProps) => {
   const formRef = useRef<HTMLFormElement | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [action, setAction] = useState("");
+  const searchParams = useSearchParams();
+  const categoryId = searchParams.get("categoryId");
+  console.log(categoryId);
+  // const getCategoryById = useCategoriesStore((state) => state.getCategoryById);
+  // const editCategory = getCategoryById(categoryId);
+  // console.log(editCategory);
 
   const [selected, setSelected] = useState<any>(selectedCategory);
   const [category, setCategory] = useState<CategoryProps>({
