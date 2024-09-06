@@ -20,8 +20,7 @@ export interface AuthResponse {
   error: boolean;
   message: string;
   user: User;
-  admin: Admin;
-  token?: string; 
+  token?: string; // Add token for login response
 }
 
 export interface CreateUser {
@@ -36,23 +35,39 @@ export interface LoginUser {
   password: string;
 }
 
+export interface GetUserResponse {
+  user: User;
+  message: string;
+}
 
+export interface ForgotPassword {
+  email: string;
+}
+export interface ResetPassword {
+  password: string;
+  token: string;
+}
 
-
-
-
-
-
-
-
-
-
+// Interfaces for the admin signup and invite admin
+export interface CreateAdmin {
+  email: string;
+  refCode: string;
+  password: string;
+}
 
 export interface LoginAdmin {
   email: string;
   password: string;
 }
 
+export interface VerificationOtp {
+  email: string;
+  otp: string;
+}
+
+export interface InviteAdmin {
+  email: string;
+}
 export interface GetUserResponse {
   user: User;
   message: string;
