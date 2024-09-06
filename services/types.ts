@@ -7,6 +7,14 @@ export interface User {
   hashedPassword?: string;
   version: number;
 }
+export interface Admin {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  hashedPassword?: string;
+  version: number;
+}
 
 export interface AuthResponse {
   error: boolean;
@@ -59,4 +67,8 @@ export interface VerificationOtp {
 
 export interface InviteAdmin {
   email: string;
+}
+export interface GetUserResponse {
+  user: User;
+  message: string;
 }
