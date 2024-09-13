@@ -1,8 +1,11 @@
 import EachElement from "@/helper/EachElement";
 import { cn } from "@/helper/cn";
 import { Edit, Trash } from "iconsax-react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { MdDeleteOutline } from "react-icons/md";
+import EditAddressModal from "../EditAddressModal";
+import DeleteAddressModal from "../DeleteAddressModal";
+import { useMediaQuery } from "react-responsive";
 
 const addresses = [
   {
@@ -53,12 +56,62 @@ const addresses = [
 ];
 
 const MyAddresses = () => {
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+    const [isMobileView, setIsMobileView] = useState(false);
+
+
+  const handleEditClick = (data: any) => {
+    setIsEditOpen(true);
+    console.log("edit button clicked");
+  };
+
+  const handleDeleteClick = (data: any) => {
+    setIsDeleteOpen(true);
+    console.log("hello, delete button clicked");
+  };
+
+  const useIsMobile = () => {
+    const isMobileView = useMediaQuery({ maxWidth: 768 });
+    return isMobileView;
+  };
+
+  const isMobile = useIsMobile();
+
+
   return (
     <div>
       <div className="mb-4 border-b border-neutral-200 pb-4">
         <h2 className="text-xl font-semibold">My Addresses</h2>
         <p>Manage your personal and frequently used shipping addresses.</p>
       </div>
+
+      {isEditOpen && (
+        <div>
+          {isMobile ? (
+            <div className=" fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50  ">
+              <div
+                className=" max-w-md rounded-lg border-2 bg-white p-2"
+                style={{
+                  width: "90vw",
+                  height: "85vh",
+                  maxHeight: "85vh",
+                }}
+              >
+                <EditAddressModal onClose={() => setIsEditOpen(false)} />
+              </div>
+            </div>
+          ) : (
+            <div className=" fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50   ">
+              <EditAddressModal onClose={() => setIsEditOpen(false)} />
+            </div>
+          )}
+        </div>
+      )}
+
+      {isDeleteOpen && (
+        <DeleteAddressModal onClose={() => setIsDeleteOpen(false)} />
+      )}
 
       <div className="grid gap-3 lg:grid-cols-2">
         <EachElement
@@ -100,10 +153,16 @@ const MyAddresses = () => {
                   Set as default
                 </span>
                 <div className="inline-flex items-center gap-2">
-                  <span className="cursor-pointer text-neutral-900">
+                  <span
+                    className="cursor-pointer text-neutral-900"
+                    onClick={() => handleEditClick(item)}
+                  >
                     <Edit />
                   </span>
-                  <span className="cursor-pointer text-neutral-900">
+                  <span
+                    className="cursor-pointer text-neutral-900"
+                    onClick={() => handleDeleteClick(item)}
+                  >
                     <Trash />
                   </span>
                 </div>
