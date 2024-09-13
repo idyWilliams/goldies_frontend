@@ -11,19 +11,19 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Controller, useForm } from "react-hook-form";
-import { verifyOTP } from "@/services/hooks/auth";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import AuthContext from "@/context/AuthProvider";
+import { verifyOTP } from "@/services/hooks/admin-auth";
 
 const validationSchema = yup.object().shape({
   otp: yup.string().required("otp required"),
 });
 
 const AdminSignInVerification = ({ email }: { email: string }) => {
-      const authContext = useContext(AuthContext);
-      // @ts-ignore
-      const { setIsLogin } = authContext;
+  const authContext = useContext(AuthContext);
+  // @ts-ignore
+  const { setIsLogin } = authContext;
 
   const router = useRouter();
   const otpVerify = useMutation({

@@ -11,12 +11,12 @@ import { AiOutlineEye } from "react-icons/ai";
 import Link from "next/link";
 import { cn } from "@/helper/cn";
 import { useMutation } from "@tanstack/react-query";
-import { loginAdmin } from "@/services/hooks/auth";
 import AuthContext from "@/context/AuthProvider";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import AdminSignInVerification from "@/components/admin-component/AdminSignInVerification";
+import { loginAdmin } from "@/services/hooks/admin-auth";
 
 const validationSchema = yup.object().shape({
   email: yup.string().required("Email is required"),
@@ -24,7 +24,6 @@ const validationSchema = yup.object().shape({
 });
 
 const Page = () => {
-
   const router = useRouter();
   const [visible, setVisible] = useState(false);
   const [email, setEmail] = useState<string>("");
