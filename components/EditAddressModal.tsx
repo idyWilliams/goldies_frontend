@@ -56,6 +56,7 @@ const EditAddressModal = ({ onClose }: any) => {
   //    const isMobile = useMediaQuery({ maxWidth: 768 });
   //    return isMobile;
   //  };
+  
 
   const onSubmit = (data: any) => {
     console.log("data: ", data);

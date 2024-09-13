@@ -31,10 +31,10 @@ const DeleteAddressModal = ({ onClose }: any) => {
               />
             </button>
           </header>
+          
           <div className=" font-[400px] text-[14px] ">
-            Are you sure you want to delete Milestone Cakes categories? Deleting
-            this category means you will remove the category, products and
-            subcategories under it and cant be undone.
+            Are you sure you want to delete your address from the account information? Deleting
+            your address means you will remove the all information under it and cant be undone.
           </div>
           <div className="flex gap-6">
             <Button variant="outline" size="lg" className="bg-goldie-300 text-[#0F0904;]" >

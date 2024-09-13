@@ -70,6 +70,7 @@ const MyAddresses = () => {
     setIsDeleteOpen(true);
     console.log("hello, delete button clicked");
   };
+  
 
   const useIsMobile = () => {
     const isMobileView = useMediaQuery({ maxWidth: 768 });
