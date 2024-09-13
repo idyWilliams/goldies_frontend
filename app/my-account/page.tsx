@@ -217,6 +217,7 @@ const Page = () => {
                 />
               )}
             </div>
+            
 
             {!isMobileView && (
               <div className="md:h-full md:bg-white md:p-4">
