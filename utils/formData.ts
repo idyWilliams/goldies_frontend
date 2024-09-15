@@ -105,7 +105,7 @@ export const newSubcategory = [
   // },
   {
     label: "SubCategory Name",
-    name: "subCategoryName",
+    name: "name",
     place_holder: "Enter subcategory name",
     error_message: "Subategory name is required",
     type: "text",

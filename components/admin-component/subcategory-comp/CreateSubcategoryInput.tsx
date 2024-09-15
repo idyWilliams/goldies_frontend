@@ -10,6 +10,8 @@ const CreateSubcategoryInput = ({
   control,
   register,
   errors,
+  getValues,
+  setValue,
 }: SubcategoryInputsProps) => {
   return (
     <EachElement
@@ -30,7 +32,7 @@ const CreateSubcategoryInput = ({
                   render={({ field: { value, ...field } }) => (
                     <Toggle
                       {...field}
-                      checked={value} //
+                      checked={value === true}
                       className="custom"
                       icons={{ checked: null, unchecked: null }}
                     />
@@ -61,6 +63,10 @@ const CreateSubcategoryInput = ({
                     name={data.name}
                     placeholder={data.place_holder}
                     className="form-input w-full rounded-md border-0 bg-neutral-50 py-3 text-sm placeholder:text-sm placeholder:text-neutral-400 focus:ring-neutral-900 md:text-base"
+                    onBlur={() => {
+                      const value = getValues(data.name);
+                      setValue(data.name, value.trim());
+                    }}
                   />
                 )}
                 {data?.type === "richtext" && (
@@ -70,6 +76,10 @@ const CreateSubcategoryInput = ({
                     name={data?.name}
                     placeholder={data.place_holder}
                     className="form-input w-full rounded-md border-0 bg-neutral-50 py-3 text-sm placeholder:text-sm placeholder:text-neutral-400 focus:ring-neutral-900 md:text-base"
+                    onBlur={() => {
+                      const value = getValues(data.name);
+                      setValue(data.name, value.trim());
+                    }}
                   />
                 )}
               </label>
@@ -91,7 +101,7 @@ const CreateSubcategoryInput = ({
                   errors?.[data?.name] && "block",
                 )}
               >
-                {errors[data.name]?.message}
+                {errors[data.name]?.message as string}
               </p>
             </div>
           </>

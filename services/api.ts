@@ -15,16 +15,14 @@ switch (process.env.NODE_ENV) {
 }
 
 export const ImageStorageUrl = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_API;
-let accessToken =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2ZGIxOTE4YjIxYWY3NjMxNWNhODU1MCIsImlhdCI6MTcyNTY0MjcxMSwiZXhwIjoxNzI1NzI5MTExfQ.7aKMMqv3F6vXOkWffLnniD4KGF5KIoTkSZgV98i7kN0";
+let accessToken;
 
-// if (typeof window !== "undefined") {
-//   accessToken = localStorage.getItem("accessToken") || "";
-// }
+if (typeof window !== "undefined") {
+  accessToken = localStorage.getItem("accessToken") || "";
+}
 
 const instance = axios.create({
   baseURL: BASEURL,
-
   headers: {
     "Content-type": "application/json",
     "x-access-token": accessToken,
@@ -34,4 +32,3 @@ const instance = axios.create({
 });
 
 export default instance;
-// @ts-ignore

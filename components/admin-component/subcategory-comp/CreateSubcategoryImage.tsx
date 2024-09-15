@@ -5,23 +5,15 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 export default function CreateSubcategoryImage({
-  file,
   register,
   errors,
+  imageUrl,
+  setImageUrl,
 }: SubCategoryImageProps) {
-  console.log(errors);
 
   const [dragging, setDragging] = useState<boolean>(false);
-  const [imageUrl, setImageUrl] = useState<string>("");
 
-  // SET IMAGE URL ON FILE UPLOAD
-  useEffect(() => {
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setImageUrl(url);
-      console.log(file);
-    }
-  }, [file]);
+
 
   // ONDRAG EVENT LISTENER FUNCTIONS FOR IMAGE UPLOAD
   const handleDragEnter = (e: any) => {

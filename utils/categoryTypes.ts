@@ -9,67 +9,53 @@ import {
 } from "react-hook-form";
 
 export type CatWithCategory = {
-  cat: string;
   isCategory: boolean;
   sub?: never;
   isSubcategory?: never;
 };
 
 export type SubWithSubcategory = {
-  sub: string;
   isSubcategory: boolean;
   cat?: never;
   isCategory?: never;
 };
 
 export type ModalProps = {
-  showModal: boolean;
-  setShowModal: any;
   catOrSub: CatWithCategory | SubWithSubcategory;
-  actionType: string;
-  handleConfirm: any;
-};
-
-export type CategoryPageProps = {
-  params: any;
+  // handleConfirm: any;
 };
 
 export type CategoryProps = {
+  [x: string]: any;
   categoryName: string;
   categorySlug: string;
   description: string;
   image: any | FileList;
   status: boolean;
-
-  // categoryName: string;
-  // categorySlug: string;
-  // description: string;
-  // [x: string]: string;
-  // [x: string]: string | boolean | Record<string, any>;
 };
 
 export type SubcategoriesProps = {
+  [x: string]: any;
   category: string;
   subcategoryName: string;
   description: string;
   status: "active" | "inactive";
-  image: any | File;
+  image: any | FileList;
 }[];
 
 export type SubategoriesColumns = {
   image: any;
-  subCategoryName: string;
+  name: string;
   description: string;
   status: string;
 };
 
 export type SubCategoryProps = {
-  // parentCategory: string;
-  subCategoryName: string;
+  [x: string]: any;
+  name: string;
   description: string;
-  status: "active" | "inactive";
   image: any | FileList;
-  // [x: string]: string;
+  status: boolean;
 };
 
 export type CategoryInputsProps = {
@@ -87,13 +73,16 @@ export type CategoryImageProps = {
   setImageUrl: React.Dispatch<React.SetStateAction<string>>;
 };
 export type SubCategoryImageProps = {
-  file: File | null;
+  imageUrl: string | null;
+  setImageUrl: React.Dispatch<React.SetStateAction<string>>;
   register: UseFormRegister<SubCategoryProps>;
   errors: FieldErrors<SubCategoryProps>;
 };
 
 export type SubcategoryInputsProps = {
-  control: Control<CategoryProps>;
+  control: Control<SubCategoryProps>;
   register: UseFormRegister<SubCategoryProps>;
   errors: FieldErrors<SubCategoryProps>;
+  getValues: UseFormGetValues<SubCategoryProps>;
+  setValue: UseFormSetValue<SubCategoryProps>;
 };

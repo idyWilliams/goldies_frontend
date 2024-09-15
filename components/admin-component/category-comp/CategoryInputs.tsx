@@ -31,7 +31,7 @@ export default function CategoryInputs({
                   render={({ field: { value, ...field } }) => (
                     <Toggle
                       {...field}
-                      checked={value}
+                      checked={value === true}
                       className="custom"
                       icons={{ checked: null, unchecked: null }}
                     />
@@ -62,9 +62,9 @@ export default function CategoryInputs({
                 </span>
                 {data?.type === "text" && (
                   <input
-                    {...register(data.name, {
-                      disabled: data.name === "categorySlug" ? true : false,
-                    })}
+                    {...register(data.name)}
+                    readOnly={data.name === "categorySlug"}
+                    // disabled={data.name === "categorySlug"}
                     type={data.type}
                     id={data?.name}
                     name={data.name}
@@ -96,7 +96,7 @@ export default function CategoryInputs({
                   ` ${errors[data.name] && "block"}`,
                 )}
               >
-                {errors[data.name]?.message}
+                {errors[data.name]?.message as string}
               </p>
             </div>
           </>

@@ -1,12 +1,13 @@
 import { cn } from "@/helper/cn";
 import { Information } from "iconsax-react";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 type EmptyStateCardProps = {
+  url?: string;
   className?: string;
   buttonClassName?: string;
   buttonText: string;
-  handleClick: any;
   title: string;
   titleClassName?: string;
   isDisabled?: boolean;
@@ -14,8 +15,8 @@ type EmptyStateCardProps = {
 };
 
 const EmptyStateCard = ({
+  url,
   className,
-  handleClick,
   buttonClassName,
   buttonText,
   title,
@@ -23,6 +24,11 @@ const EmptyStateCard = ({
   isDisabled,
   buttonElement,
 }: EmptyStateCardProps) => {
+  const router = useRouter();
+
+  const handleAddNewCategory = () => {
+    if (url) router.push(url);
+  };
   return (
     <div
       className={cn(
@@ -43,7 +49,7 @@ const EmptyStateCard = ({
         ) : (
           <button
             disabled={isDisabled}
-            onClick={handleClick}
+            onClick={handleAddNewCategory}
             className={cn(
               "mt-3 inline-block cursor-pointer bg-goldie-300 px-4 py-2 text-neutral-900",
               buttonClassName,

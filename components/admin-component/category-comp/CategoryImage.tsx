@@ -38,13 +38,11 @@ export default function CategoryImage({
     if (files && files[0]) {
       const file = files[0];
       const url = URL.createObjectURL(file);
-      // setImage(file);
       setImageUrl(url);
     }
   };
 
   const handleRemoveCateImg = () => {
-    // setImage(null);
     setImageUrl("");
     setDragging(false);
   };
@@ -57,8 +55,7 @@ export default function CategoryImage({
         size={3000000}
         {...register("image")}
         className="hidden"
-        // onChange={(e) => handleChange(e)}
-        accept="image/jpeg, image/png, image/webp image/jpg"
+        accept="image/jpeg, image/png, image/webp"
       />
       {!imageUrl && (
         <div
