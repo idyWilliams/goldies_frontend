@@ -9,7 +9,6 @@ const Page = () => {
     <>
       <section className="min-h-screen w-full bg-neutral-100 px-4 py-4">
         <CategoryHeader />
-        {/* <LoadingCategory /> */}
         <CategoryForm />
 
         <SubCategories />

@@ -12,16 +12,6 @@ const Page = () => {
 
         <AllCategories />
       </section>
-
-      {/* {showModal && (
-        <ConfirmModal
-          catOrSub={{
-            isCategory: true,
-            sub: undefined,
-            isSubcategory: undefined,
-          }}
-        />
-      )} */}
       <CatAndSubCatModals />
     </section>
   );

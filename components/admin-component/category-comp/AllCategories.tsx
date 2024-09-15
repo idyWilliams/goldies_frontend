@@ -10,12 +10,10 @@ import { getAllCategories } from "@/services/hooks/category";
 import useBoundStore from "@/zustand/store";
 import ManageCategoriesSkeleton from "./ManageCategoriesSkeleton";
 
-
 const AllCategories = () => {
   const allCategories = useBoundStore((state) => state.categories);
   const setAllCategories = useBoundStore((state) => state.setCategories);
   const setActiveCategory = useBoundStore((state) => state.setActiveCategory);
-  const activeCategory = useBoundStore((state) => state.activeCategory);
   const setIsFetchingCategories = useBoundStore(
     (state) => state.setIsFetchingCategories,
   );
