@@ -260,7 +260,7 @@ const Page = () => {
                   className="col-span-2 mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300"
                 >
                   {newUser.isPending ? (
-                    <div className="loader bg-slate-300"></div>
+                    <div className="loader bg-[#fff]"></div>
                   ) : (
                     "Sign Up"
                   )}
