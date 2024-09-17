@@ -68,6 +68,15 @@ export interface VerificationOtp {
 export interface InviteAdmin {
   email: string;
 }
+
+export interface Users {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  hashedPassword?: string;
+  version: number;
+}
 export interface GetUserResponse {
   user: User;
   message: string;
