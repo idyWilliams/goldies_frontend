@@ -4,6 +4,7 @@ import {
   LoginAdmin,
   InviteAdmin,
   VerificationOtp,
+  Users,
 } from "@/services/types";
 
 // INVITE ADMIN
@@ -30,5 +31,11 @@ export const loginAdmin = async (data: LoginAdmin) => {
 // OTP
 export const verifyOTP = async (data: VerificationOtp) => {
   const response = await instance.post("/admin/verify_otp", data);
+  return response.data;
+};
+
+// GET USER
+export const getUsers = async () => {
+  const response = await instance.get("/user/get_all_users");
   return response.data;
 };

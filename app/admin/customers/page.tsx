@@ -2,7 +2,7 @@
 import AdminTable from "@/components/admin-component/AdminTable";
 import { customers } from "@/utils/adminData";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { Column } from "react-table";
 import {
@@ -28,12 +28,18 @@ import { useRouter } from "next/navigation";
 import { chunkArray } from "@/helper/chunkArray";
 import Pagination from "@/components/custom-filter/Pagination";
 import { initials } from "@/helper/initials";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import AuthContext from "@/context/AuthProvider";
+import { getUsers } from "@/services/hooks/admin-auth";
+import moment from "moment";
 
 type Customer = {
   id: string;
   image: any;
-  customerName: string;
-  dateOnboarded: string;
+  firstName: string;
+  lastName: string;
+  createdAt: string;
   orders: number;
   contactNumber: number;
   amountSpent: number;
@@ -47,7 +53,24 @@ interface ITableProps {
 }
 export default function Page() {
   const router = useRouter();
+  // @ts-ignore
+  const { setAuth } = useContext(AuthContext);
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const { data, isPending, isSuccess } = useQuery({
+    queryKey: ["getUsers"],
+    queryFn: getUsers,
+  });
+  const customers = useMemo(() => {
+    if (isPending) {
+      return [];
+    } else if (isSuccess) {
+      return data?.users;
+    }
+  }, [data, isPending, isSuccess]);
+
+  console.log(data, "Wangui");
+
   const handleNext = () => {
     if (currentPageIndex !== chunkArray(customers, itemsPerPage).length) {
       setCurrentPageIndex(currentPageIndex + 1);
@@ -73,43 +96,59 @@ export default function Page() {
   const handleView = (id: string) => {
     router.push(`/admin/customers/${id}`);
   };
+  console.log(customers, "Njoroge");
+
   const columns = [
     columnHelper.accessor((row) => row, {
       id: "customerName",
       cell: (info) => {
-        console.log(info, "column");
+        const fullName = `${info.cell.row.original.firstName} ${info.cell.row.original.lastName}`;
+        console.log(info, fullName, "column");
         return (
           <div className="grid grid-cols-[50px_1fr] items-center gap-2">
             <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-500">
-              <span className="text-white">JD</span>
+              <span className="text-white">{initials(fullName)}</span>
             </div>
-            <h3 className="font-bold">{info.cell.row.original.customerName}</h3>
+            <h3 className="font-bold">{fullName}</h3>
           </div>
         );
       },
       header: () => <span>Customers</span>,
       footer: (info) => info.column.id,
     }),
-    columnHelper.accessor("dateOnboarded", {
+    // columnHelper.accessor("createdAt", {
+    //   header: () => <span>Date Onboarded</span>,
+    //   footer: (info) => info.column.id,
+    // }),
+    columnHelper.accessor((row) => row, {
+      id: "createdAt",
+      cell: (info) => {
+        console.log(info, "Wangoi");
+        return (
+          <span>
+            {moment(info.row.original.createdAt).format("YYYY/MM/DD")}
+          </span>
+        );
+      },
       header: () => <span>Date Onboarded</span>,
       footer: (info) => info.column.id,
     }),
-    columnHelper.accessor((row) => row.contactNumber, {
-      id: "contactNumber",
-      cell: (info) => <span>+{info.getValue()}</span>,
-      header: () => <span>Contact Number </span>,
-      footer: (info) => info.column.id,
-    }),
-    columnHelper.accessor("orders", {
-      header: () => <span>Orders</span>,
-      footer: (info) => info.column.id,
-    }),
-    columnHelper.accessor((row) => row, {
-      id: "amountSpent",
-      cell: (info) => <span>&euro;{info.cell.row.original.amountSpent}</span>,
-      header: () => <span>Amount Spent</span>,
-      footer: (info) => info.column.id,
-    }),
+    // columnHelper.accessor((row) => row.contactNumber, {
+    //   id: "contactNumber",
+    //   cell: (info) => <span>+{info.getValue()}</span>,
+    //   header: () => <span>Contact Number </span>,
+    //   footer: (info) => info.column.id,
+    // }),
+    // columnHelper.accessor("orders", {
+    //   header: () => <span>Orders</span>,
+    //   footer: (info) => info.column.id,
+    // }),
+    // columnHelper.accessor((row) => row, {
+    //   id: "amountSpent",
+    //   cell: (info) => <span>&euro;{info.cell.row.original.amountSpent}</span>,
+    //   header: () => <span>Amount Spent</span>,
+    //   footer: (info) => info.column.id,
+    // }),
 
     columnHelper.accessor((row) => row, {
       id: "action",
@@ -132,12 +171,16 @@ export default function Page() {
         <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
 
         <div className="hidden  md:block">
-          <ProductTable
-            columns={columns}
-            Tdata={customers}
-            statusType="customer"
-            filteredTabs={[""]}
-          />
+          {isPending ? (
+            "loading..."
+          ) : (
+            <ProductTable
+              columns={columns}
+              Tdata={customers}
+              statusType="customer"
+              filteredTabs={[""]}
+            />
+          )}
         </div>
         <div>
           <label
