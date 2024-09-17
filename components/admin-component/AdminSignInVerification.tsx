@@ -9,17 +9,12 @@ import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-  InputOTPSeparator,
 } from "@/components/ui/input-otp";
 import { Controller, useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import AuthContext from "@/context/AuthProvider";
 import { verifyOTP } from "@/services/hooks/admin-auth";
-
-// "email": "pshubomi@gmail.com",
-//  "password": "12344321"
-// "otp": "396673"
 
 const validationSchema = yup.object().shape({
   otp: yup.string().required("otp required"),

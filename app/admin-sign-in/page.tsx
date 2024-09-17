@@ -47,7 +47,6 @@ const Page = () => {
 
   const onSubmit = (data: any) => {
     setEmail(data.email);
-
     console.log("Submitted Data:", data);
 
     adminLogin
@@ -59,7 +58,6 @@ const Page = () => {
       .catch((err: any) => {
         console.log(err);
         toast.error(err.message);
-        // adminLogin.isError
       });
   };
 
