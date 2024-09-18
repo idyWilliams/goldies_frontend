@@ -14,6 +14,9 @@ const AllCategories = () => {
   const allCategories = useBoundStore((state) => state.categories);
   const setAllCategories = useBoundStore((state) => state.setCategories);
   const setActiveCategory = useBoundStore((state) => state.setActiveCategory);
+  const isFetchingCategories = useBoundStore(
+    (state) => state.isFetchingCategories,
+  );
   const setIsFetchingCategories = useBoundStore(
     (state) => state.setIsFetchingCategories,
   );
@@ -23,9 +26,7 @@ const AllCategories = () => {
     queryFn: getAllCategories,
   });
 
-  useEffect(() => {
-    setIsFetchingCategories(isFetching);
-  }, [isFetching, setIsFetchingCategories]);
+  setIsFetchingCategories(isFetching);
 
   useEffect(() => {
     if (isSuccess && !isFetching) {
@@ -50,9 +51,9 @@ const AllCategories = () => {
 
   return (
     <>
-      {isFetching && <ManageCategoriesSkeleton />}
+      {isFetchingCategories && <ManageCategoriesSkeleton />}
 
-      {isError && !isFetching && (
+      {isError && !isFetchingCategories && (
         <p>There was an error fetching data: {error.message}</p>
       )}
 

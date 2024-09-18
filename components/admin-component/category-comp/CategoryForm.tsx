@@ -107,9 +107,9 @@ export default function CategoryForm() {
     // initialData: () => activeCategory && activeCategory,
   });
 
-  useEffect(() => {
-    setIsFetchingCategory(isFetching);
-  }, [setIsFetchingCategory, isFetching]);
+  setIsFetchingCategory(false);
+  // useEffect(() => {
+  // }, [setIsFetchingCategory, isFetching]);
 
   useEffect(() => {
     setRefetchCategory(refetch);
