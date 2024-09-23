@@ -6,6 +6,14 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Button } from "./ui/button";
 import EachElement from "@/helper/EachElement";
+import Image from "next/image";
+import HeroBg from "../public/assets/cake.png";
+import HeroBgGif from "../public/assets/cake.gif";
+import Slide2 from "../public/assets/slide-2.png";
+import Slide3 from "../public/assets/slide-3.png";
+import Slide4 from "../public/assets/slide-4.jpeg";
+import Slide5 from "../public/assets/slide-5.jpeg";
+import { useState } from "react";
 
 const stats = [
   { value: "12000+", title: "Cakes Delivered" },
@@ -13,7 +21,16 @@ const stats = [
   { value: "500+", title: "Cakes Recipes" },
 ];
 
+const imageUrl = [
+  "/assets/cake.gif",
+  "/assets/slide-2.png",
+  "/assets/slide-3.png",
+  "/assets/slide-4.jpeg",
+  "/assets/slide-5.jpeg",
+];
+
 const Hero = () => {
+  const [isLoaded, setIsLoaded] = useState(false);
   return (
     <>
       <Swiper
@@ -32,8 +49,30 @@ const Hero = () => {
       >
         <SwiperSlide
           style={{ display: "flex" }}
-          className="hero-bg items-center"
+          className="relative items-center"
         >
+          <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#000000ac] to-[#0000007c]"></div>
+
+          {!isLoaded && (
+            <Image
+              src={HeroBg}
+              alt="hero cake"
+              fill
+              priority
+              className="absolute -z-50 object-cover object-center"
+              placeholder="blur"
+            />
+          )}
+
+          <Image
+            src={HeroBgGif}
+            alt="hero cake"
+            fill
+            priority
+            className={`absolute -z-50 object-cover object-center ${isLoaded ? "opacity-100" : "opacity-0"}`}
+            onLoad={() => setIsLoaded(true)}
+          />
+
           <div className="wrapper">
             <div className="lg:w-[30%] xl:w-[40%]">
               <h1 className="text-3xl font-bold text-white xl:text-6xl xl:leading-[1.3]">
@@ -53,8 +92,19 @@ const Hero = () => {
         </SwiperSlide>
         <SwiperSlide
           style={{ display: "flex" }}
-          className="slide2 items-center"
+          className="relative items-center"
         >
+          <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#000000ac] to-[#0000007c]"></div>
+          <Image
+            src={Slide2}
+            alt="hero cake"
+            fill
+            priority
+            // objectFit="cover"
+            // objectPosition="center"
+            className="absolute -z-50 object-cover object-center"
+            placeholder="blur"
+          />
           <div className="wrapper">
             <div className="lg:w-[30%] xl:w-[40%]">
               <h1 className="text-3xl font-bold text-white xl:text-6xl xl:leading-[1.3]">
@@ -74,8 +124,19 @@ const Hero = () => {
         </SwiperSlide>
         <SwiperSlide
           style={{ display: "flex" }}
-          className="slide3 items-center"
+          className="relative items-center"
         >
+          <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#000000ac] to-[#0000007c]"></div>
+          <Image
+            src={Slide3}
+            alt="hero cake"
+            fill
+            priority
+            // objectFit="cover"
+            // objectPosition="center"
+            className="absolute -z-50 object-cover object-center"
+            placeholder="blur"
+          />
           <div className="wrapper">
             <div className="lg:w-[30%] xl:w-[40%]">
               <h1 className="text-3xl font-bold text-white xl:text-6xl xl:leading-[1.3]">
@@ -95,8 +156,19 @@ const Hero = () => {
         </SwiperSlide>
         <SwiperSlide
           style={{ display: "flex" }}
-          className="slide4 items-center"
+          className="relative items-center"
         >
+          <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#000000ac] to-[#0000007c]"></div>
+          <Image
+            src={Slide4}
+            alt="hero cake"
+            fill
+            priority
+            // objectFit="cover"
+            // objectPosition="center"
+            className="absolute -z-50 object-cover object-center"
+            placeholder="blur"
+          />
           <div className="wrapper">
             <div className="lg:w-[30%] xl:w-[40%]">
               <h1 className="text-3xl font-bold text-white xl:text-6xl xl:leading-[1.3]">
@@ -116,8 +188,19 @@ const Hero = () => {
         </SwiperSlide>
         <SwiperSlide
           style={{ display: "flex" }}
-          className="slide5 items-center"
+          className="relative items-center"
         >
+          <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[#000000ac] to-[#0000007c]"></div>
+          <Image
+            src={Slide5}
+            alt="hero cake"
+            fill
+            priority
+            // objectFit="cover"
+            // objectPosition="center"
+            className="absolute -z-50 object-cover object-center"
+            placeholder="blur"
+          />
           <div className="wrapper">
             <div className="lg:w-[30%] xl:w-[40%]">
               <h1 className="text-3xl font-bold text-white xl:text-balance xl:text-6xl xl:leading-[1.3]">

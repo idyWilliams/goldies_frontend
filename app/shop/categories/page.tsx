@@ -36,7 +36,7 @@ const Page = () => {
           />
         </div>
       </div>
-      <div className="wrapper">
+      <div className="wrapper ">
         <div className="py-6">
           <h3 className="text-2xl font-semibold">Product Categories</h3>
 

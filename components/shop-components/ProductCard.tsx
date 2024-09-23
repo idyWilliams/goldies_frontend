@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Heart, ShoppingCart } from "iconsax-react";
 import Img from "../public/assets/banana-cake-with-cinnamon-cream-102945-1.jpeg";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { addProductToCart } from "@/redux/features/product/productSlice";
 import { useDispatch } from "react-redux";
@@ -40,15 +40,18 @@ export default function ProductCard({ data }: { data: any }) {
           <Image
             src={data?.imageUrl}
             alt={data?.name}
+            placeholder="blur"
             className="h-full w-full object-cover object-center"
           />
         </Link>
         <div className="absolute -left-2 top-0 flex w-full items-center justify-between px-2">
           <span
-            className={cn("rounded-md bg-white px-2 py-1 text-sm capitalize")}
+            className={cn(
+              "ml-[2px] rounded-md bg-white px-2 py-1 text-sm capitalize",
+            )}
           >
             <span
-              className="cursor-pointer"
+              className=" cursor-pointer"
               id={`my-anchor-element-${data?.id}`}
             >
               <span
@@ -74,6 +77,7 @@ export default function ProductCard({ data }: { data: any }) {
               place="bottom-start"
             />
           </span>
+
           <span
             className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-[5px] bg-black bg-opacity-50 text-goldie-300"
             onClick={() => setFav((prev: any) => !prev)}
@@ -93,7 +97,7 @@ export default function ProductCard({ data }: { data: any }) {
           <Link href={`/shop/${data?.slug}`}>{data?.name}</Link>
         </h3>
       </div>
-      <p className="mb-1 text-neutral-500">{data?.description}</p>
+      <p className=" mb-1 line-clamp-2 text-neutral-500">{data?.description}</p>
       <div className="inline-flex gap-2">
         <StarRating iconSize={20} canRate={false} />{" "}
         <span className="text-sm">(32)</span>

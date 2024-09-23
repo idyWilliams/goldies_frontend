@@ -23,7 +23,7 @@ const FeaturedProducts = () => {
                 transform="rotate(-90 50 50)"
               />
             </svg>
-            <span className="absolute left-2 top-[7.5px] -z-[1] h-0.5 w-[40px] bg-black"></span>
+            <span className="absolute left-2 top-[7.5px] -z-[1] h-0.5 w-[40px] bg-black "></span>
           </div>
         </div>
 

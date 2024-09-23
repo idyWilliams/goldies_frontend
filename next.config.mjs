@@ -1,4 +1,7 @@
+import withPlaiceholder from "@plaiceholder/next";
+
 /** @type {import('next').NextConfig} */
+
 const nextConfig = {
   // experimental: {
   //   missingSuspenseWithCSRBailout: false,
@@ -7,12 +10,12 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "via.placeholder.com",
+        hostname: "firebasestorage.googleapis.com",
         port: "",
-        pathname: "/150**",
+        pathname: "/v0/b/goldie-b3ba7.appspot.com/o/**",
       },
     ],
   },
 };
 
-export default nextConfig;
+export default withPlaiceholder(nextConfig);
