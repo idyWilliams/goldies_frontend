@@ -1,18 +1,15 @@
 "use client";
+import { useState } from "react";
 import Image from "next/image";
-import MilestoneCake from "../public/assets/milestone-cake.webp";
-import KidCake from "../public/assets/kid-cake.webp";
-import Cupcakes from "../public/assets/cupcake.webp";
-import WeddingCake from "../public/assets/wedding-cake.webp";
 import Link from "next/link";
 import EachElement from "@/helper/EachElement";
 import { categories } from "@/utils/cakeCategories";
 import { Button } from "./ui/button";
+import Logo from "../public/assets/goldis-gold-logo.png";
 
 const CakeCategory = () => {
-  {
-    /* CATEGORIES */
-  }
+  const [isLoaded, setIsLoaded] = useState(false);
+
   return (
     <section className="py-10">
       {/* HEADIng */}
@@ -44,10 +41,19 @@ const CakeCategory = () => {
                 if (index > 2) return;
                 return (
                   <div className="relative flex h-[300px] items-end sm:w-[300px] lg:w-full">
+                    {!isLoaded && (
+                      <Image
+                        src={Logo}
+                        alt="placeholder for image"
+                        placeholder="blur"
+                        className="absolute left-0 top-0 h-full w-full"
+                      />
+                    )}
                     <Image
                       src={cake?.image}
                       alt={cake?.value}
-                      className="absolute left-0 top-0 h-full w-full"
+                      className={`absolute left-0 top-0 h-full w-full ${isLoaded ? "opacity-100" : "opacity-0"}`}
+                      onLoad={() => setIsLoaded(true)}
                     />
                     <div className=" bg-black bg-opacity-10 p-4 backdrop-blur-md">
                       <h3 className="font-bold text-white">{cake?.label}</h3>

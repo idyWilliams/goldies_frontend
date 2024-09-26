@@ -68,7 +68,6 @@ const Hero = () => {
             src={HeroBgGif}
             alt="hero cake"
             fill
-            priority
             className={`absolute -z-50 object-cover object-center ${isLoaded ? "opacity-100" : "opacity-0"}`}
             onLoad={() => setIsLoaded(true)}
           />
@@ -99,9 +98,6 @@ const Hero = () => {
             src={Slide2}
             alt="hero cake"
             fill
-            priority
-            // objectFit="cover"
-            // objectPosition="center"
             className="absolute -z-50 object-cover object-center"
             placeholder="blur"
           />
@@ -131,9 +127,6 @@ const Hero = () => {
             src={Slide3}
             alt="hero cake"
             fill
-            priority
-            // objectFit="cover"
-            // objectPosition="center"
             className="absolute -z-50 object-cover object-center"
             placeholder="blur"
           />
@@ -163,9 +156,6 @@ const Hero = () => {
             src={Slide4}
             alt="hero cake"
             fill
-            priority
-            // objectFit="cover"
-            // objectPosition="center"
             className="absolute -z-50 object-cover object-center"
             placeholder="blur"
           />
@@ -195,9 +185,6 @@ const Hero = () => {
             src={Slide5}
             alt="hero cake"
             fill
-            priority
-            // objectFit="cover"
-            // objectPosition="center"
             className="absolute -z-50 object-cover object-center"
             placeholder="blur"
           />

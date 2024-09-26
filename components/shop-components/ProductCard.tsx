@@ -11,12 +11,14 @@ import { RootState } from "@/redux/store";
 import { cn } from "@/helper/cn";
 import { Tooltip } from "react-tooltip";
 import StarRating from "../StarRating";
+import Logo from "../../public/assets/goldis-gold-logo.png";
 
 export default function ProductCard({ data }: { data: any }) {
   const [fav, setFav] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
   const cart = useSelector((state: RootState) => state.product.cart);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const handleAddToCart = () => {
     const items = Object.values(cart);
@@ -37,11 +39,21 @@ export default function ProductCard({ data }: { data: any }) {
     <div className="w-full rounded-[10px] border border-neutral-100 bg-white p-2 shadow-[0_0_30px_-10px_rgba(0,0,0,0.1)]">
       <figure className="relative mb-3 h-[230px] w-full overflow-hidden rounded-[5px]">
         <Link href={`/shop/${data?.slug}`}>
+          {!isLoaded && (
+            <Image
+              src={Logo}
+              alt="placeholder for image"
+              placeholder="blur"
+              className="h-full w-full object-cover object-center"
+            />
+          )}
+
           <Image
             src={data?.imageUrl}
             alt={data?.name}
             placeholder="blur"
-            className="h-full w-full object-cover object-center"
+            className={`h-full w-full object-cover object-center ${isLoaded ? "opacity-100" : "opacity-0"}`}
+            onLoad={() => setIsLoaded(true)}
           />
         </Link>
         <div className="absolute -left-2 top-0 flex w-full items-center justify-between px-2">
