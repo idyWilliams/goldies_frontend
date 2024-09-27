@@ -15,23 +15,11 @@ import * as yup from "yup";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import Image from "next/image";
-import RedVelvet from "../../public/assets/red-velvet-cake.webp";
-import Chocolate from "../../public/assets/birthday-cake.webp";
-
-import Link from "next/link";
-
-import illustration from "../../public/assets/illistration-removebg-preview.png";
-import { BsPlus, BsDash, BsTrash } from "react-icons/bs";
+// import RedVelvet from "../../public/assets/red-velvet-cake.webp";
+// import Chocolate from "../../public/assets/birthday-cake.webp";
 import { useRouter } from "next/navigation";
-import { GiEmptyChessboard } from "react-icons/gi";
 import { useDispatch } from "react-redux";
-import {
-  decrementProductQty,
-  deleteProductFromCart,
-  incrementProductQty,
-  setProducts,
-} from "@/redux/features/product/productSlice";
-import { useEffect } from "react";
+
 
 const schema = yup.object().shape({
   firstName: yup.string().required("First name is required"),
@@ -48,8 +36,6 @@ const schema = yup.object().shape({
 });
 
 const Page = () => {
-  const dispatch = useDispatch();
-  const router = useRouter();
 
   const cart = useSelector((state: RootState) => state.product.cart);
   const [country, setCountry] = useState("");
@@ -66,17 +52,19 @@ const Page = () => {
     resolver: yupResolver(schema),
   });
 
-  const cartTotal = Object.values(cart).reduce((acc, current) => {
+  const orderTotal = Object.values(cart).reduce((acc, current) => {
     return acc + parseFloat(current.maxPrice) * (current.quantity as number);
   }, 0);
-
-
 
   const handleOnchange = (event: any) => {
     setSelectedMethod(event.target.value);
   };
 
   console.log(cart, Object.values(cart));
+
+  const handleClick = () => {
+    console.log('billing data', cart )
+  }
 
   return (
     <>
@@ -431,9 +419,7 @@ const Page = () => {
                           <div className="flex justify-between ">
                             <div className="">
                               <h3>{item.name}</h3>
-                              <span className="">
-                                ({item.quantity} Quantity)
-                              </span>
+                              <span className="">({item.quantity} Quantity)</span>
                             </div>
                             <div className=" ">
                               <span className=" ">&euro; {item.maxPrice}</span>
@@ -444,7 +430,6 @@ const Page = () => {
                     );
                   })}
               </section>
-
               <div className="">
                 <div className="space-y-3 p-2 md:bg-white">
                   <div className="flex items-center justify-between">
@@ -454,16 +439,16 @@ const Page = () => {
                       <li>Total</li>
                     </ul>
                     <ul className="flex flex-col gap-3 ">
-                      <li>&euro;{cartTotal}</li>
+                      <li>&euro;{orderTotal}</li>
                       <li>&euro; 50.50</li>
-                      <li>&euro;{cartTotal + 50.5}</li>
+                      <li>&euro;{orderTotal + 50.5}</li>
                     </ul>
                   </div>
                 </div>
-             
                 <button
                   // type="submit"
                   className="mt-5 block w-full rounded bg-neutral-900 px-6 py-2.5 text-main"
+                  onClick={handleClick}
                 >
                   Proceed to payment
                 </button>
