@@ -35,10 +35,11 @@ export interface LoginUser {
   password: string;
 }
 
-export interface GetUserResponse {
-  user: User;
-  message: string;
-}
+// export interface GetUserResponse {
+//   data: any;
+//   user: User;
+//   message: string;
+// }
 
 export interface ForgotPassword {
   email: string;
@@ -78,6 +79,11 @@ export interface Users {
   version: number;
 }
 export interface GetUserResponse {
+  // id: string;
+  // firstName: string;
+  // lastName: string;
+  // email: string;
+  // data: any;
   user: User;
   message: string;
 }

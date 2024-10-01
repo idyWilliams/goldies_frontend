@@ -205,7 +205,7 @@ const CartPage = () => {
                         </ul>
                         <ul className="flex flex-col gap-3 text-goldie-300">
                           <li>&euro;{cartTotal}</li>
-                          <li>&euro;100</li>
+                          <li>&euro;100.00</li>
                           <li>&euro;{cartTotal + 100}</li>
                         </ul>
                       </div>

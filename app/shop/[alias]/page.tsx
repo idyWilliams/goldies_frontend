@@ -108,7 +108,7 @@ function CakeDetailsPage({ params }: any) {
   const cartTotal = Object.values(cart).reduce((acc, current) => {
     return acc + parseFloat(current.maxPrice) * (current.quantity as number);
   }, 0);
-  // console.log(cart, "cart");
+  console.log(cart, "cart");
 
   const cakes = addSlugToCakes(cakeProducts1);
 
@@ -324,7 +324,8 @@ function CakeDetailsPage({ params }: any) {
                     </div>
                   </div>
                   <div className="grid grid-cols-2 gap-3">
-                    <button
+                      <button
+                        onClick={handleClick}
                       type="submit"
                       className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
                     >
