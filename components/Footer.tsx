@@ -7,9 +7,19 @@ import {
   BsLinkedin,
   BsTwitterX,
 } from "react-icons/bs";
-import { Call, Facebook, Location, Sms } from "iconsax-react";
+import { Call, Location, Sms } from "iconsax-react";
+import { categories } from "@/utils/cakeCategories";
 
 const Footer = () => {
+  
+  const milestoneCategory = categories.find(category => category.label === 'Milestone Cakes');
+
+  // const subcategoriesToShow = ['Birthday Cakes', 'Retirement Cakes', 'Anniversary Cakes', 'Baby Shower Cakes'];
+ 
+  if (!milestoneCategory) {
+   return <p>Category not found</p>;
+ }
+
   return (
     <section className="relative grid min-h-[500px] w-full bg-neutral-900 pt-3">
       <div className="wrapper relative z-30">
@@ -81,20 +91,52 @@ const Footer = () => {
               <h3 className="font-bold text-white">Company</h3>
               <hr className="mb-2 w-[35px] border border-goldie-300" />
             </div>
-            <Link href={""}>Products</Link>
-            <Link href={""}>About Us</Link>
-            <Link href={""}>Testimonies</Link>
-            <Link href={""}>Contact Us</Link>
+            <Link href={"/shop"}>Products</Link>
+            <Link href={"/about-us"}>About Us</Link>
+            <Link href={"/testimonials"}>Testimonies</Link>
+            <Link href={"/contact"}>Contact Us</Link>
           </div>
           <div className="inline-flex flex-col space-y-3 text-white">
             <div>
               <h3 className="text-white">Products</h3>
               <hr className="mb-2 w-[35px] border border-goldie-300" />
             </div>
-            <Link href={""}>Birthday Cakes</Link>
-            <Link href={""}>Retirement Cakes</Link>
-            <Link href={""}>Anniversary Cakes</Link>
-            <Link href={""}>Baby Shower Cakes</Link>
+            <Link
+              href={`/shop?cat=${encodeURIComponent(milestoneCategory.value)}&sub=${encodeURIComponent("birthday_cakes")}`}
+            >
+              Birthday Cakes
+            </Link>
+            <Link
+              href={`/shop?cat=${encodeURIComponent(milestoneCategory.value)}&sub=${encodeURIComponent("retirement_cakes")}`}
+            >
+              Retirement Cakes
+            </Link>
+            <Link
+              href={`/shop?cat=${encodeURIComponent(milestoneCategory.value)}&sub=${encodeURIComponent("anniversary_cakes")}`}
+            >
+              Anniversary Cakes
+            </Link>
+            <Link
+              href={`/shop?cat=${encodeURIComponent(milestoneCategory.value)}&sub=${encodeURIComponent("baby_shower_cakes")}`}
+            >
+              Baby Shower Cakes
+            </Link>
+
+            {/* <ul>
+              {milestoneCategory.subcategories
+                .filter((subcategory) =>
+                  subcategoriesToShow.includes(subcategory.label),
+                )
+                .map((subcategory) => (
+                  <li key={subcategory.value}>
+                    <Link
+                      href={`/shop?cat=${encodeURIComponent(milestoneCategory.value)}&sub=${encodeURIComponent(subcategory.value)}`}
+                    >
+                      {subcategory.label}
+                    </Link>
+                  </li>
+                ))}
+            </ul> */}
           </div>
           <div className="inline-flex flex-col space-y-3 text-white">
             <div>
