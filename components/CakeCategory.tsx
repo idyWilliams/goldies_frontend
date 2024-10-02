@@ -114,7 +114,7 @@ const CakeCategory = () => {
 
                       <Image
                         src={cake?.image ?? ""}
-                        alt={cake?.value}
+                        alt={cake?.name}
                         fill
                         className={`absolute left-0 top-0 ${isLoaded ? "opacity-100" : "opacity-0"}`}
                         onLoad={() => setIsLoaded(true)}
