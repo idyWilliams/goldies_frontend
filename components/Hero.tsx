@@ -68,6 +68,7 @@ const Hero = () => {
             src={HeroBgGif}
             alt="hero cake"
             fill
+            unoptimized
             className={`absolute -z-50 object-cover object-center ${isLoaded ? "opacity-100" : "opacity-0"}`}
             onLoad={() => setIsLoaded(true)}
           />

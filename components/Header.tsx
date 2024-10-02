@@ -90,10 +90,7 @@ const Header = () => {
     setUser(storedUser?.user);
     setAuth(storedUser);
     setIsLogin(Boolean(JSON.parse(localStorage.getItem("isLogin") as string)));
-
-    console.log(storedUser, "useehehe");
   }, []);
-  console.log(isLogin, "isLogged", auth);
 
   // // SESSION CHECKER
   // useEffect(() => {

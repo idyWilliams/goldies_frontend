@@ -1,14 +1,36 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import EachElement from "@/helper/EachElement";
 import { categories } from "@/utils/cakeCategories";
 import { Button } from "./ui/button";
 import Logo from "../public/assets/goldis-gold-logo.png";
+import { getAllCategories } from "@/services/hooks/category";
+import { useQuery } from "@tanstack/react-query";
+
+type AllCategoriesType = {
+  [x: string]: any;
+  image?: "";
+  description?: "";
+  _id: "";
+};
 
 const CakeCategory = () => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const [allCategories, setAllCategories] = useState<AllCategoriesType[]>([]);
+
+  const { data, status } = useQuery({
+    queryKey: ["categories"],
+    queryFn: getAllCategories,
+  });
+
+  useEffect(() => {
+    if (status === "success") {
+      console.log(data);
+      setAllCategories(data.categories);
+    }
+  }, [status, data]);
 
   return (
     <section className="py-10">
@@ -35,7 +57,84 @@ const CakeCategory = () => {
       <div className="vector-bg mt-7 rounded-3xl border bg-cover bg-center py-10">
         <div className="hide-scrollbar w-full overflow-x-auto">
           <div className="wrapper w-full gap-3 space-y-5 sm:flex sm:w-min sm:grid-cols-2 sm:space-x-5 sm:space-y-0 lg:grid lg:w-full lg:grid-cols-3 lg:space-x-0 xl:gap-7">
-            <EachElement
+            {allCategories.length < 1 && (
+              // new Array(3).fill(null).map((_, index) => (
+              <>
+                {/* <div
+                  key={index}
+                  className="relative flex h-[300px] items-end sm:w-[300px] lg:w-full"
+                  >
+                  <Image
+                    src={Logo}
+                    alt="placeholder for image"
+                    fill
+                    placeholder="blur"
+                    className="absolute left-0 top-0"
+                    />
+                </div> */}
+
+                <EachElement
+                  of={new Array(3).fill(null)}
+                  render={(item: any, index: number) => {
+                    return (
+                      <div
+                        key={index}
+                        className="relative flex h-[300px] items-end sm:w-[300px] lg:w-full"
+                      >
+                        <Image
+                          src={Logo}
+                          alt="placeholder for image"
+                          fill
+                          placeholder="blur"
+                          className="absolute left-0 top-0"
+                        />
+                      </div>
+                    );
+                  }}
+                />
+              </>
+            )}
+
+            {allCategories.length > 1 && (
+              <EachElement
+                of={allCategories}
+                render={(cake: any, index: any) => {
+                  if (index > 2) return;
+                  return (
+                    <div className="relative flex h-[300px] items-end sm:w-[300px] lg:w-full">
+                      {!isLoaded && (
+                        <Image
+                          src={Logo}
+                          alt="placeholder for image"
+                          placeholder="blur"
+                          fill
+                          className="absolute left-0 top-0"
+                        />
+                      )}
+
+                      <Image
+                        src={cake?.image ?? ""}
+                        alt={cake?.value}
+                        fill
+                        className={`absolute left-0 top-0 ${isLoaded ? "opacity-100" : "opacity-0"}`}
+                        onLoad={() => setIsLoaded(true)}
+                      />
+
+                      <div className=" bg-black bg-opacity-10 p-4 backdrop-blur-md">
+                        <h3 className="font-bold text-white">
+                          {cake?.name || ""}
+                        </h3>
+                        <p className="text-white">{cake?.description || ""}</p>
+                        <Button className="mt-4 h-auto w-full bg-goldie-300 text-black">
+                          Buy Now
+                        </Button>
+                      </div>
+                    </div>
+                  );
+                }}
+              />
+            )}
+            {/* <EachElement
               of={categories}
               render={(cake: any, index: any) => {
                 if (index > 2) return;
@@ -65,7 +164,7 @@ const CakeCategory = () => {
                   </div>
                 );
               }}
-            />
+            /> */}
           </div>
         </div>
 

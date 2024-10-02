@@ -3,6 +3,7 @@ import instance from "@/services/api";
 // GET A USER
 
 const accessToken = localStorage.getItem("accessToken") || "";
+const user = JSON.parse(localStorage.getItem("user") || "");
 
 export const getAllCategories = async () => {
   const response = await instance.get(
@@ -10,7 +11,19 @@ export const getAllCategories = async () => {
 
     {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${user.token}`,
+      },
+    },
+  );
+  return response.data;
+};
+export const getCategory = async (categoryId: string) => {
+  const response = await instance.get(
+    `/category/get_category/${categoryId}`,
+
+    {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
       },
     },
   );
