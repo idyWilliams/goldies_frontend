@@ -1,7 +1,7 @@
 "use client";
 import Layout from "@/components/Layout";
 import React, { useState } from "react";
-import { resetPassword } from "@/services/hooks/auth";
+import { resetPassword } from "@/services/hooks/user-auth";
 import PasswordReset from "@/components/PasswordReset";
 import ResetLinkExpired from "@/components/ResetLinkExpired";
 import { Button } from "@/components/ui/button";

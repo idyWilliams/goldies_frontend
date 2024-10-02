@@ -11,7 +11,7 @@ import { AiOutlineEye } from "react-icons/ai";
 import Link from "next/link";
 import { cn } from "@/helper/cn";
 import { useMutation } from "@tanstack/react-query";
-import { loginUser } from "@/services/hooks/auth";
+import { loginUser } from "@/services/hooks/user-auth";
 import AuthContext from "@/context/AuthProvider";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
@@ -30,6 +30,7 @@ const Page = () => {
   const userLogin = useMutation({
     mutationFn: loginUser,
   });
+
   const {
     register,
     handleSubmit,

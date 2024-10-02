@@ -7,6 +7,14 @@ export interface User {
   hashedPassword?: string;
   version: number;
 }
+export interface Admin {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  hashedPassword?: string;
+  version: number;
+}
 
 export interface AuthResponse {
   error: boolean;
@@ -27,10 +35,11 @@ export interface LoginUser {
   password: string;
 }
 
-export interface GetUserResponse {
-  user: User;
-  message: string;
-}
+// export interface GetUserResponse {
+//   data: any;
+//   user: User;
+//   message: string;
+// }
 
 export interface ForgotPassword {
   email: string;
@@ -38,4 +47,43 @@ export interface ForgotPassword {
 export interface ResetPassword {
   password: string;
   token: string;
+}
+
+// Interfaces for the admin signup and invite admin
+export interface CreateAdmin {
+  email: string;
+  refCode: string;
+  password: string;
+}
+
+export interface LoginAdmin {
+  email: string;
+  password: string;
+}
+
+export interface VerificationOtp {
+  email: string;
+  otp: string;
+}
+
+export interface InviteAdmin {
+  email: string;
+}
+
+export interface Users {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  hashedPassword?: string;
+  version: number;
+}
+export interface GetUserResponse {
+  // id: string;
+  // firstName: string;
+  // lastName: string;
+  // email: string;
+  // data: any;
+  user: User;
+  message: string;
 }

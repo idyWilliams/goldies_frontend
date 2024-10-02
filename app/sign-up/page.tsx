@@ -11,7 +11,7 @@ import { AiOutlineEye, AiOutlineUserAdd } from "react-icons/ai";
 import Link from "next/link";
 import { cn } from "@/helper/cn";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { createUser, loginUser } from "@/services/hooks/auth";
+import { createUser, loginUser } from "@/services/hooks/user-auth";
 import { toast } from "react-toastify";
 import AuthContext from "@/context/AuthProvider";
 import { useRouter } from "next/navigation";
@@ -260,7 +260,7 @@ const Page = () => {
                   className="col-span-2 mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300"
                 >
                   {newUser.isPending ? (
-                    <div className="loader bg-slate-300"></div>
+                    <div className="loader bg-[#fff]"></div>
                   ) : (
                     "Sign Up"
                   )}

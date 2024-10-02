@@ -3,7 +3,7 @@ import Layout from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import Verification from "@/components/Verification";
 import { cn } from "@/helper/cn";
-import { forgotPassword } from "@/services/hooks/auth";
+import { forgotPassword } from "@/services/hooks/user-auth";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
 import { log } from "console";
