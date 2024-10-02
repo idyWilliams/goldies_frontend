@@ -37,7 +37,6 @@ const columns = [
   columnHelper.accessor((row) => row, {
     id: "SubImage",
     cell: (info) => {
-      console.log(info, "column");
       return (
         <div className="">
           <Image

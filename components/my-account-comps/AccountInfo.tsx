@@ -45,42 +45,41 @@ const AccountInfo = () => {
     mutationFn: getUser,
   });
 
-  const handleUser = async () => {
-    try {
-      const response = await getAUser.mutateAsync();
-
-      console.log("Full API response:", response);
-
-      if (response && response.user) {
-        const userData = response.user;
-        localStorage.setItem("user", JSON.stringify(userData));
-        // @ts-ignore
-        localStorage.setItem("accessToken", userData.token);
-
-        console.log("User data from response:", userData);
-
-        setValue("firstName", userData.firstName);
-        setValue("lastName", userData.lastName);
-        setValue("email", userData.email);
-        setValue(
-          "address",
-          "3, Alade Yusuf Street, Epetedo B/stop, Abaranje Road, Ikotun, Lagos.",
-        );
-        setValue("state", "Lagos");
-        setValue("country", "Nigeria");
-        setPhone("+2348089134442");
-      } else {
-        console.log("No response data");
-      }
-    } catch (error: any) {
-      console.error("Error fetching user data: ", error);
-      toast.error(error.message);
-    }
-  };
-
   useEffect(() => {
+    const handleUser = async () => {
+      try {
+        const response = await getAUser.mutateAsync();
+
+        console.log("Full API response:", response);
+
+        if (response && response.user) {
+          const userData = response.user;
+          localStorage.setItem("user", JSON.stringify(userData));
+          // @ts-ignore
+          localStorage.setItem("accessToken", userData.token);
+
+          console.log("User data from response:", userData);
+
+          setValue("firstName", userData.firstName);
+          setValue("lastName", userData.lastName);
+          setValue("email", userData.email);
+          setValue(
+            "address",
+            "3, Alade Yusuf Street, Epetedo B/stop, Abaranje Road, Ikotun, Lagos.",
+          );
+          setValue("state", "Lagos");
+          setValue("country", "Nigeria");
+          setPhone("+2348089134442");
+        } else {
+          console.log("No response data");
+        }
+      } catch (error: any) {
+        console.error("Error fetching user data: ", error);
+        toast.error(error.message);
+      }
+    };
     handleUser();
-  }, []);
+  }, [getAUser, setValue]);
 
   const handleSave = (data: any) => {
     console.log(data);

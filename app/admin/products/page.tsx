@@ -134,7 +134,6 @@ export default function Page() {
     columnHelper.accessor((row) => row, {
       id: "productName",
       cell: (info) => {
-        // console.log(info, "column");
         return (
           <div className="grid grid-cols-[50px_1fr] gap-2">
             <Image
