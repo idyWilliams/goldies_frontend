@@ -60,19 +60,6 @@ const CakeCategory = () => {
             {allCategories.length < 1 && (
               // new Array(3).fill(null).map((_, index) => (
               <>
-                {/* <div
-                  key={index}
-                  className="relative flex h-[300px] items-end sm:w-[300px] lg:w-full"
-                  >
-                  <Image
-                    src={Logo}
-                    alt="placeholder for image"
-                    fill
-                    placeholder="blur"
-                    className="absolute left-0 top-0"
-                    />
-                </div> */}
-
                 <EachElement
                   of={new Array(3).fill(null)}
                   render={(item: any, index: number) => {

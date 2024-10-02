@@ -11,6 +11,7 @@ import { categories } from "@/utils/cakeCategories";
 import Image from "next/image";
 import Link from "next/link";
 import Logo from "../../../../public/assets/goldis-gold-logo.png";
+import UserCategorySkeleton from "@/components/shop-components/category/UserCategorySkeleton";
 
 type CategoryType = {
   [x: string]: any;
@@ -24,6 +25,7 @@ const Page = ({ params }: any) => {
   const categoryId = searchParams.get("id") || "";
   const catStatus = searchParams.get("status");
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [isCatLoaded, setisCatLoaded] = useState<boolean>(false);
 
   const [category, setCategory] = useState<CategoryType | null>(null);
 
@@ -39,14 +41,6 @@ const Page = ({ params }: any) => {
       setCategory(data?.category);
     }
   }, [status, data]);
-
-  // useEffect(() => {
-  //   const category = categories.find(
-  //     (item: any) => item.value === params.category,
-  //   );
-
-  //   setCategory(category);
-  // }, [params.category]);
 
   return (
     <Layout>
@@ -74,7 +68,8 @@ const Page = ({ params }: any) => {
           />
         </div>
       </div>
-      {status === "success" && (
+      {isLoading && <UserCategorySkeleton />}
+      {status === "success" && category && (
         <>
           <div className="wrapper relative mx-auto h-[200px] w-full py-6 md:my-[16px] md:w-[calc(100%_-_30px)]">
             <div className="absolute left-0 top-0 z-20 flex h-full w-full flex-col justify-center bg-gradient-to-r from-[#221b0fee] to-[rgba(17,17,17,0.8)] px-4 ">
@@ -84,66 +79,70 @@ const Page = ({ params }: any) => {
               <p className="text-[#f8eeb9]">{category?.description}</p>
             </div>
 
-            {/* <Image
-              src={category?.image}
-              alt={category?.name}
-              className="absolute left-0 top-0 h-full w-full object-cover object-center"
-            /> */}
+            {!isCatLoaded && (
+              <Image
+                src={Logo}
+                alt="placeholder"
+                placeholder="blur"
+                fill
+                className="absolute left-0 top-0 object-cover"
+              />
+            )}
             <Image
               src={category?.image || ""}
               alt={category?.name}
               fill
               priority
-              className="absolute left-0 top-0 object-cover object-center"
+              className={`absolute left-0 top-0 object-cover object-center ${isCatLoaded ? "opacity-100" : "opacity-0"} `}
+              onLoad={() => setisCatLoaded(true)}
             />
           </div>
 
           <div className="wrapper grid gap-4 py-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6 xl:px-[2%]">
             <EachElement
               of={category?.subCategories}
-              render={(sub: any, index: number) => (
-                <div
-                  key={index}
-                  className=" relative h-[300px] w-full bg-neutral-100 xl:h-[413px]"
-                >
-                  <figure className="relative z-10 mx-auto flex h-full w-11/12 items-end pb-2 xl:pb-3">
-                    <div className="box-border flex h-[60%] w-full flex-col items-start justify-between bg-black bg-opacity-40 px-3 pb-5 pt-4 text-white backdrop-blur-sm xl:h-[55%]  ">
-                      <div className="grow overflow-hidden bg-red-400">
-                        <h3 className="text-xl font-bold">{sub?.name}</h3>
-                        <p className="line-clamp-1 w-full text-sm">
-                          {/* A special moist sponge cake,topped with festive
-                          candles and tailored to the celebrant’s preference for
-                          birthday celebration ddsabbbvgsdvghsvghsca vcsa gcsa
-                          csacsaccsssxs.scsacassssscscssssd */}
-                          {sub?.description}
-                        </p>
+              render={(sub: any, index: number) => {
+                if (!sub.status) return;
+                return (
+                  <div
+                    key={index}
+                    className=" relative h-[270px] w-full bg-neutral-100 xl:h-[300px]"
+                  >
+                    <figure className="relative z-10 mx-auto flex h-full w-11/12 items-end pb-3 xl:pb-3">
+                      <div className="box-border flex min-h-[180px] w-full flex-col items-start justify-between bg-black bg-opacity-40 p-4 text-white backdrop-blur-sm  ">
+                        <div className="o w-full grow">
+                          <h3 className="text-xl font-bold">{sub?.name}</h3>
+                          <p className="line-clamp-3 w-full break-all   text-sm">
+                            {sub?.description}
+                          </p>
+                        </div>
+                        <Link
+                          href={`/shop?cat=${encodeURIComponent(category?.name?.toLowerCase())}&sub=${encodeURIComponent(sub?.name?.toLowerCase())}`}
+                          className=" mt-3 block w-full rounded-md bg-goldie-300 p-2  text-center text-neutral-900 xl:p-3"
+                        >
+                          Buy now
+                        </Link>
                       </div>
-                      <Link
-                        href={`/shop?cat=${encodeURIComponent(category?.name?.toLowerCase())}&sub=${encodeURIComponent(sub?.name?.toLowerCase())}`}
-                        className=" mt-3 block w-full rounded-md bg-goldie-300 p-2  text-center text-neutral-900 xl:p-3"
-                      >
-                        Buy now
-                      </Link>
-                    </div>
-                  </figure>
-                  {!isLoaded && (
+                    </figure>
+                    {!isLoaded && (
+                      <Image
+                        src={Logo}
+                        alt="placeholder"
+                        placeholder="blur"
+                        fill
+                        className="absolute left-0 top-0 object-cover"
+                      />
+                    )}
                     <Image
-                      src={Logo}
+                      src={sub?.image || ""}
                       alt={sub?.name}
-                      placeholder="blur"
                       fill
-                      className="absolute left-0 top-0 object-cover"
+                      className={`absolute left-0 top-0 object-cover ${isLoaded ? "opacity-100" : "opacity-0"} `}
+                      onLoad={() => setIsLoaded(true)}
                     />
-                  )}
-                  <Image
-                    src={sub?.image || ""}
-                    alt={sub?.name}
-                    fill
-                    className={`absolute left-0 top-0 object-cover ${isLoaded ? "opacity-100" : "opacity-0"} `}
-                    onLoad={() => setIsLoaded(true)}
-                  />
-                </div>
-              )}
+                  </div>
+                );
+              }}
             />
           </div>
         </>
