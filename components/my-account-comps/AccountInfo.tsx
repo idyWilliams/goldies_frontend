@@ -6,10 +6,13 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { useEffect, useState } from "react";
 import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
+import { getUser } from "@/services/hooks/users";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 
 const schema = yup.object().shape({
-  firstname: yup.string().required("First name is required"),
-  lastname: yup.string().required("Last name is required"),
+  firstName: yup.string().required("First name is required"),
+  lastName: yup.string().required("Last name is required"),
   email: yup.string().required("Email is required").email("Email is invalid"),
   phone: yup
     .string()
@@ -25,6 +28,10 @@ const AccountInfo = () => {
   const [phone, setPhone] = useState("");
   const [country, setCountry] = useState("");
   const [state, setState] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+
   const {
     reset,
     register,
@@ -34,18 +41,45 @@ const AccountInfo = () => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
+  const getAUser = useMutation({
+    mutationFn: getUser,
+  });
+
   useEffect(() => {
-    setValue("firstname", "Timilehin");
-    setValue("lastname", "Abegunde");
-    setValue("email", "timilehinsunday144@gmail.com");
-    setValue(
-      "address",
-      "3, Alade Yusuf Street, Epetedo B/stop, Abaranje Road, Ikotun, Lagos.",
-    );
-    setValue("state", "Lagos");
-    setValue("country", "Nigeria");
-    setPhone("+2348089134442");
-  }, [setValue]);
+    const handleUser = async () => {
+      try {
+        const response = await getAUser.mutateAsync();
+
+        console.log("Full API response:", response);
+
+        if (response && response.user) {
+          const userData = response.user;
+          localStorage.setItem("user", JSON.stringify(userData));
+          // @ts-ignore
+          localStorage.setItem("accessToken", userData.token);
+
+          console.log("User data from response:", userData);
+
+          setValue("firstName", userData.firstName);
+          setValue("lastName", userData.lastName);
+          setValue("email", userData.email);
+          setValue(
+            "address",
+            "3, Alade Yusuf Street, Epetedo B/stop, Abaranje Road, Ikotun, Lagos.",
+          );
+          setValue("state", "Lagos");
+          setValue("country", "Nigeria");
+          setPhone("+2348089134442");
+        } else {
+          console.log("No response data");
+        }
+      } catch (error: any) {
+        console.error("Error fetching user data: ", error);
+        toast.error(error.message);
+      }
+    };
+    handleUser();
+  }, [getAUser, setValue]);
 
   const handleSave = (data: any) => {
     console.log(data);
@@ -55,43 +89,45 @@ const AccountInfo = () => {
   return (
     <div className="">
       <div className="mb-4 border-b border-neutral-200 pb-4">
-        <h2 className="text-xl font-semibold">Account Informations</h2>
+        <h2 className="text-xl font-semibold">Account Information</h2>
         <p>This is your default shipping information</p>
       </div>
       <form onSubmit={handleSubmit(handleSave)}>
         <div className="space-y-3 md:grid md:grid-cols-2 md:gap-3 md:space-y-0">
-          <label htmlFor="firstname" className="block w-full">
+          <label htmlFor="firstName" className="block w-full">
             <span className="mb-1 inline-block text-sm font-medium">
               First name
             </span>
             <input
-              {...register("firstname")}
+              {...register("firstName")}
               type="text"
-              id="firstname"
+              id="firstName"
+              defaultValue={firstName}
               className={cn(
                 "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
-                errors.firstname && "border-red-600 focus:border-red-600",
+                errors.firstName && "border-red-600 focus:border-red-600",
               )}
             />
-            {errors?.firstname && (
-              <p className="text-red-600">{errors?.firstname?.message}</p>
+            {errors?.firstName && (
+              <p className="text-red-600">{errors?.firstName?.message}</p>
             )}
           </label>
-          <label htmlFor="lastname" className="block w-full">
+          <label htmlFor="lastName" className="block w-full">
             <span className="mb-1 inline-block text-sm font-medium">
               Last name
             </span>
             <input
-              {...register("lastname")}
+              {...register("lastName")}
               type="text"
-              id="lastname"
+              id="lastName"
+              defaultValue={lastName}
               className={cn(
                 "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
-                errors.lastname && "border-red-600 focus:border-red-600",
+                errors.lastName && "border-red-600 focus:border-red-600",
               )}
             />
-            {errors?.lastname && (
-              <p className="text-red-600">{errors?.lastname?.message}</p>
+            {errors?.lastName && (
+              <p className="text-red-600">{errors?.lastName?.message}</p>
             )}
           </label>
           <label htmlFor="email" className="block w-full">
@@ -102,6 +138,7 @@ const AccountInfo = () => {
               {...register("email")}
               type="email"
               id="email"
+              defaultValue={email}
               className={cn(
                 "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
                 errors.email && "border-red-600 focus:border-red-600",
@@ -179,7 +216,6 @@ const AccountInfo = () => {
                 />
               )}
             />
-
             {errors?.state && (
               <p className="text-red-600">{errors?.state?.message}</p>
             )}

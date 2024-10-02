@@ -9,24 +9,57 @@ import {
 } from "@/services/types";
 
 // GET A USER
+<<<<<<< HEAD
 
 const accessToken = localStorage.getItem("accessToken") || "";
 
 export const getAllCategories = async () => {
+=======
+let accessToken = "";
+let user: { token?: string } = {};
+
+if (typeof window !== "undefined") {
+  accessToken = localStorage.getItem("accessToken") || "";
+  user = JSON.parse(localStorage.getItem("user") || "{}");
+}
+
+export const getCategoriesUser = async () => {
+>>>>>>> a022fa5173620546ba0d46150597ef360e9a9fa3
   const response = await instance.get(
     `/category/get_all_category`,
 
     {
       headers: {
+<<<<<<< HEAD
         Authorization: `Bearer ${accessToken}`,
+=======
+        Authorization: `Bearer ${user.token}`,
+      },
+    },
+  );
+  return response.data;
+};
+export const getCategoryUser = async (categoryId: string) => {
+  const response = await instance.get(
+    `/category/get_category/${categoryId}`,
+
+    {
+      headers: {
+        Authorization: `Bearer ${user.token}`,
+>>>>>>> a022fa5173620546ba0d46150597ef360e9a9fa3
       },
     },
   );
   return response.data;
 };
 
+<<<<<<< HEAD
 export const createCategory = async (data: Category) => {
   const response = await instance.post("/category/create_category", data, {
+=======
+export const createCategory = async (data: any) => {
+  const response = await instance.post("/user/category", data, {
+>>>>>>> a022fa5173620546ba0d46150597ef360e9a9fa3
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },

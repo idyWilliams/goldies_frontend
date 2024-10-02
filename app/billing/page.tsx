@@ -15,8 +15,11 @@ import * as yup from "yup";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import Image from "next/image";
-import RedVelvet from "../../public/assets/red-velvet-cake.webp";
-import Chocolate from "../../public/assets/birthday-cake.webp";
+// import RedVelvet from "../../public/assets/red-velvet-cake.webp";
+// import Chocolate from "../../public/assets/birthday-cake.webp";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+
 
 const schema = yup.object().shape({
   firstName: yup.string().required("First name is required"),
@@ -33,6 +36,7 @@ const schema = yup.object().shape({
 });
 
 const Page = () => {
+
   const cart = useSelector((state: RootState) => state.product.cart);
   const [country, setCountry] = useState("");
   const [phone, setPhone] = useState("");
@@ -48,11 +52,19 @@ const Page = () => {
     resolver: yupResolver(schema),
   });
 
+  const orderTotal = Object.values(cart).reduce((acc, current) => {
+    return acc + parseFloat(current.maxPrice) * (current.quantity as number);
+  }, 0);
+
   const handleOnchange = (event: any) => {
     setSelectedMethod(event.target.value);
   };
 
   console.log(cart, Object.values(cart));
+
+  const handleClick = () => {
+    console.log('billing data', cart )
+  }
 
   return (
     <>
@@ -385,66 +397,64 @@ const Page = () => {
                 </div>
               </form>
             </div>
+            {/* order summary */}
             <div className="mt-3 md:mt-0">
               <h3 className="mb-3 hidden text-xl font-semibold md:block">
                 Order Summary
               </h3>
+              <section>
+                {Object.values(cart).length >= 1 &&
+                  Object.values(cart).map((item, idx) => {
+                    return (
+                      // border-b py-2
+                      <div key={item.id} className=" space-y-3 p-2 md:bg-white">
+                        <div className="grid grid-cols-[50px_1fr] gap-2 rounded-md bg-white p-4 md:bg-transparent md:p-0">
+                          <Image
+                            src={item.imageUrl}
+                            alt={item.name}
+                            width={50}
+                            height={50}
+                            className="h-full w-full object-cover object-center"
+                          />
+                          <div className="flex justify-between ">
+                            <div className="">
+                              <h3>{item.name}</h3>
+                              <span className="">({item.quantity} Quantity)</span>
+                            </div>
+                            <div className=" ">
+                              <span className=" ">&euro; {item.maxPrice}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </section>
               <div className="">
                 <div className="space-y-3 p-2 md:bg-white">
-                  <div className="grid grid-cols-[50px_1fr] gap-2 rounded-md bg-white p-4 md:bg-transparent md:p-0">
-                    <Image
-                      src={Chocolate}
-                      alt="image"
-                      width={50}
-                      height={50}
-                      className="h-full w-full object-cover object-center"
-                    />
-                    <div className="flex justify-between">
-                      <div>
-                        <h3>Chocolate Fudge Cake</h3>
-                        <span>(1 Quantity)</span>
-                      </div>
-                      <span>€508.98</span>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-[50px_1fr] gap-2 rounded-md bg-white p-4 md:bg-transparent md:p-0">
-                    <Image
-                      src={RedVelvet}
-                      alt="image"
-                      width={50}
-                      height={50}
-                      className="h-full w-full object-cover object-center"
-                    />
-                    <div className="flex justify-between">
-                      <div>
-                        <h3>Red Velvet Cake</h3>
-                        <span>(1 Quantity)</span>
-                      </div>
-                      <span>€100.00</span>
-                    </div>
-                  </div>
                   <div className="flex items-center justify-between">
-                    <span>Subtotal</span>
-                    <span>€608.98</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>Delivery fees</span>
-                    <span>€50.5</span>
-                  </div>
-                  <hr className="my-3 w-full border-0 border-t" />
-                  <div className="flex items-center justify-between">
-                    <span>Total</span>
-                    <span>€659.48</span>
+                    <ul className="flex flex-col gap-3">
+                      <li>SubTotal</li>
+                      <li>Delivery Fees</li>
+                      <li>Total</li>
+                    </ul>
+                    <ul className="flex flex-col gap-3 ">
+                      <li>&euro;{orderTotal}</li>
+                      <li>&euro; 50.50</li>
+                      <li>&euro;{orderTotal + 50.5}</li>
+                    </ul>
                   </div>
                 </div>
                 <button
                   // type="submit"
                   className="mt-5 block w-full rounded bg-neutral-900 px-6 py-2.5 text-main"
+                  onClick={handleClick}
                 >
                   Proceed to payment
                 </button>
               </div>
             </div>
+            {/* end of order summary */}
           </div>
         </section>
       </Layout>

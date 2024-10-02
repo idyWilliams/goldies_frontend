@@ -14,39 +14,43 @@ const AboutUs = () => {
       <div className="mt-[64px] lg:mt-20" />
       {/* ====== ABOUT BANNER ====== */}
       <section
-        style={{
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.3),rgba(0,0,0,0.5)),url(${AboutImg.src})`,
-        }}
-        className="h-[300px] w-full bg-cover bg-center py-20"
+        // style={{
+        //   backgroundImage: `linear-gradient(rgba(0,0,0,0.3),rgba(0,0,0,0.5)),url(${AboutImg.src})`,
+        // }}
+        className="relative flex aspect-[3/1] w-full items-center justify-center py-20"
       >
-        {/* <div>
-          <Image
-            src={AboutImg}
-            alt="imagebanner"
-            className="absolute left-0 top-0 h-full w-full"
-          />
-        </div> */}
+        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-black/50 to-black/50"></div>
+
+        <Image
+          src={AboutImg}
+          alt="image banner"
+          placeholder="blur"
+          fill
+          priority
+          className="absolute left-0 top-0 -z-50 object-cover object-center"
+        />
+
         <div className="wrapper flex flex-col items-center text-center">
-          <h1 className="text-3xl font-bold text-white">About us</h1>
-          <p className="text-goldie-300">
+          <h1 className="text-2xl font-bold text-white sm:text-4xl lg:text-7xl">
+            About us
+          </h1>
+          <p className="w-[230px] text-sm font-bold text-goldie-300 sm:w-fit sm:text-base lg:text-2xl">
             Everything you need to know about Goldies Confectionery.
           </p>
         </div>
       </section>
 
       {/* ========= OUR COMPANY ============ */}
-      <section className="py-10">
+      <section className="py-6 md:py-10 lg:py-20">
         <div className="wrapper">
-          <div className="lg:mx-auto lg:w-[1000px]">
-            <div className="mb-3 flex flex-col items-center justify-center">
-              <div className="inline-block">
-                <h2 className="inline-block text-2xl font-bold uppercase">
-                  Our Company
-                </h2>
-                <span className="block h-0.5 w-[60px] bg-goldie-300"></span>
-              </div>
+          <div className="flex flex-col items-center justify-center gap-4 py-5 sm:px-10 md:gap-6">
+            <div className="inline-block">
+              <h2 className="inline-block text-xl font-bold uppercase sm:text-2xl lg:text-4xl">
+                Our Company
+              </h2>
+              <span className="block h-0.5 w-[60px] bg-goldie-300"></span>
             </div>
-            <p className="text-center lg:text-2xl lg:leading-[160%]">
+            <p className="max-w-[924px] text-center text-xs sm:text-base lg:text-2xl">
               Goldis offers a wide range of cakes for different occasions.
               Whether you seek a whimsical unicorn cake for your child&apos;s
               birthday, an elegant tiered cake for a lavish wedding, or a

@@ -66,7 +66,7 @@ const EditAddressModal = ({ onClose }: any) => {
 
   return (
     <>
-      <div className="border rounded-lg md:p-10 ">
+      <div className="border rounded-lg md:p-10 bg-white ">
         <div className="mb-4 flex items-center justify-between border-b border-neutral-200 ">
           <h2 className=" text-xl font-semibold">Edit address</h2>
           <button onClick={onClose} className="text-xl">

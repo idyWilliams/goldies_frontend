@@ -28,7 +28,7 @@ export default function AdminLayout({
     if (!storeAdmin) {
       router.push("/admin-sign-in");
     }
-  }, []);
+  }, [router]);
 
   return (
     <>
