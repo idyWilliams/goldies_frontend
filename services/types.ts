@@ -87,3 +87,35 @@ export interface GetUserResponse {
   user: User;
   message: string;
 }
+export interface Category {
+  name: string;
+  description: string;
+  image: string;
+  categorySlug: string;
+  status: boolean;
+}
+export interface SubCategory {
+  name: string;
+  description: string;
+  image: string;
+  status: boolean;
+  categoryId?: string | null;
+}
+
+export interface CategoryId {
+  categoryId: string | null;
+}
+
+export interface EditCategory {
+  category: Category;
+  categoryId: string;
+}
+
+export interface SubCategoryId {
+  subCategoryId: string | null;
+}
+
+export interface EditSubCategory {
+  subCategory: SubCategory;
+  subCategoryId: SubCategoryId;
+}

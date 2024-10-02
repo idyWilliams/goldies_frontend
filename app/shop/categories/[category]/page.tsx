@@ -11,6 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Logo from "../../../../public/assets/goldis-gold-logo.png";
 import UserCategorySkeleton from "@/components/shop-components/category/UserCategorySkeleton";
+// import UserCategorySkeleton from "@/components/shop-components/category/UserCategorySkeleton";
 
 type CategoryType = {
   [x: string]: any;

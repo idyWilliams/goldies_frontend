@@ -12,7 +12,7 @@ const UserCategorySkeleton = () => {
       </div>
       <div className="wrapper grid gap-4 py-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6 xl:px-[2%]">
         <EachElement
-          of={new Array(4).fill(null)}
+          of={new Array(3).fill(null)}
           render={(item: any, index: number) => (
             <div className=" relative h-[270px] w-full bg-neutral-100 xl:h-[300px]">
               <Skeleton className="absolute left-0 top-0 h-full w-full rounded-none " />

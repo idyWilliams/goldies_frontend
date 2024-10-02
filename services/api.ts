@@ -15,7 +15,7 @@ switch (process.env.NODE_ENV) {
 }
 
 export const ImageStorageUrl = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_API;
-let accessToken = "";
+let accessToken;
 
 if (typeof window !== "undefined") {
   accessToken = localStorage.getItem("accessToken") || "";

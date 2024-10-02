@@ -32,6 +32,7 @@ export default function ProductTable({
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+
   useEffect(() => {
     if (chosenTab === filteredTabs[0]) {
       setTData(Tdata);
@@ -60,9 +61,8 @@ export default function ProductTable({
   const handleChange = (e: any) => {
     const value = e.target.value;
     setSearchValue(value);
-    console.log(value, "value");
   };
-  console.log(searchValue, "searchValue");
+  // console.log(searchValue, "searchValue");
   return (
     <div>
       <div
@@ -125,15 +125,17 @@ export default function ProductTable({
           ))}
         </thead>
         <tbody>
-          {table.getRowModel().rows?.map((row) => (
-            <tr key={row.id} className="odd:bg-goldie-300 odd:bg-opacity-20">
-              {row.getVisibleCells().map((cell) => (
-                <td key={cell.id} className="px-4 py-4">
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
+          {table.getRowModel().rows?.map((row) => {
+            return (
+              <tr key={row.id} className="odd:bg-goldie-300 odd:bg-opacity-20">
+                {row.getVisibleCells().map((cell) => (
+                  <td key={cell.id} className="px-4 py-4">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>
