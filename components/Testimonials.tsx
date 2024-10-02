@@ -55,8 +55,8 @@ const Testimonials = () => {
   };
 
   return (
-    <>
-      <section id="testimonials" className="bg-black py-6">
+    <div className="vector-bg">
+      <section id="testimonials" className=" bg-black py-6">
         <div className="wrapper">
           <h2
             data-aos="fade-down"
@@ -66,7 +66,7 @@ const Testimonials = () => {
           </h2>
         </div>
       </section>
-      <div className="wrapper mt-8 pb-10">
+      <div className="wrapper pb-10 pt-8">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:gap-7">
           {reviews.map((review: any, index: number) => {
             const delay = index * 100;
@@ -77,7 +77,7 @@ const Testimonials = () => {
                 data-aos="fade-right"
                 data-aos-delay={delay}
                 key={index}
-                className={`vector-bg rounded-md border border-neutral-300 p-7 hover:shadow-md
+                className={`rounded-md border border-neutral-300 bg-white p-7 hover:shadow-md
                 ${hoveredIndex === index ? "" : ""}`}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
@@ -107,7 +107,7 @@ const Testimonials = () => {
           })}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
