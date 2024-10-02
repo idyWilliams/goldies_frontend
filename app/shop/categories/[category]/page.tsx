@@ -84,7 +84,7 @@ const Page = ({ params }: any) => {
               <figure className="relative z-10 mx-auto flex h-full w-11/12 items-end pb-3">
                 <div className="box-border flex h-auto w-full flex-col items-start justify-start bg-black bg-opacity-40 p-4 text-white backdrop-blur-sm">
                   <h3 className="text-xl font-bold">{sub?.label}</h3>
-                  <p className="text-sm">
+                  <p className="line-clamp-2 text-sm">
                     A special moist sponge cake,topped with festive candles and
                     tailored to the celebrant’s preference for birthday
                     celebration.
