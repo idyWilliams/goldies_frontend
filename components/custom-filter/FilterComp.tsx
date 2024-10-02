@@ -87,7 +87,7 @@ const FilterComp = ({
       setOpenIndex(0);
       setSelectedOptions((prev: any) => [...prev]);
     }
-  }, [category, subcategory]);
+  }, [category, subcategory, setSelectedOptions]);
   return (
     <div className="w-full">
       <div className="space-y-3">

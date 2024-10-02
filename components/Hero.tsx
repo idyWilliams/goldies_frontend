@@ -58,6 +58,7 @@ const Hero = () => {
               src={HeroBg}
               alt="hero cake"
               fill
+              sizes="(max-width: 1024px) 75vw "
               priority
               className="absolute -z-50 object-cover object-center"
               placeholder="blur"
@@ -68,6 +69,7 @@ const Hero = () => {
             src={HeroBgGif}
             alt="hero cake"
             fill
+            // sizes="(max-width: 1024px) 75vw, 33vw"
             unoptimized
             className={`absolute -z-50 object-cover object-center ${isLoaded ? "opacity-100" : "opacity-0"}`}
             onLoad={() => setIsLoaded(true)}
@@ -98,6 +100,7 @@ const Hero = () => {
           <Image
             src={Slide2}
             alt="hero cake"
+            sizes="(max-width: 1024px) 75vw, 33vw"
             fill
             className="absolute -z-50 object-cover object-center"
             placeholder="blur"
@@ -127,6 +130,7 @@ const Hero = () => {
           <Image
             src={Slide3}
             alt="hero cake"
+            sizes="(max-width: 1024px) 75vw, 33vw"
             fill
             className="absolute -z-50 object-cover object-center"
             placeholder="blur"
@@ -156,6 +160,7 @@ const Hero = () => {
           <Image
             src={Slide4}
             alt="hero cake"
+            sizes="(max-width: 1024px) 75vw, 33vw"
             fill
             className="absolute -z-50 object-cover object-center"
             placeholder="blur"
@@ -185,6 +190,7 @@ const Hero = () => {
           <Image
             src={Slide5}
             alt="hero cake"
+            sizes="(max-width: 1024px) 75vw, 33vw"
             fill
             className="absolute -z-50 object-cover object-center"
             placeholder="blur"

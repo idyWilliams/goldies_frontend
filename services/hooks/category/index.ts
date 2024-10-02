@@ -1,11 +1,18 @@
 import instance from "@/services/api";
 
 // GET A USER
+let accessToken = "";
+let user: { token?: string } = {};
 
-const accessToken = localStorage.getItem("accessToken") || "";
-const user = JSON.parse(localStorage.getItem("user") || "");
+if (typeof window !== "undefined") {
+  accessToken = localStorage.getItem("accessToken") || "";
+  user = JSON.parse(localStorage.getItem("user") || "{}");
+}
 
-export const getAllCategories = async () => {
+// const accessToken = localStorage.getItem("accessToken") || "";
+// const user = JSON.parse(localStorage.getItem("user") || "");
+
+export const getCategoriesUser = async () => {
   const response = await instance.get(
     `/category/get_all_category`,
 
@@ -17,7 +24,7 @@ export const getAllCategories = async () => {
   );
   return response.data;
 };
-export const getCategory = async (categoryId: string) => {
+export const getCategoryUser = async (categoryId: string) => {
   const response = await instance.get(
     `/category/get_category/${categoryId}`,
 

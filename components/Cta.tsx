@@ -11,10 +11,11 @@ const Cta = () => {
   const router = useRouter();
   return (
     <>
-      <section className="flex h-[250px] w-full items-center justify-center bg-red-300 py-10 md:hidden">
+      <section className="relative flex h-[250px] w-full items-center justify-center bg-red-300 py-10 md:hidden">
         <Image
           src={Cta1}
           alt="hero cake"
+          sizes="(max-width: 1024px) 33vw"
           fill
           priority
           className="absolute -z-50 object-cover object-center"
@@ -40,6 +41,7 @@ const Cta = () => {
               <Image
                 src={Cta1}
                 alt="hero cake"
+                sizes="(max-width: 1024px) 33vw"
                 fill
                 priority
                 className="absolute  object-cover object-center"

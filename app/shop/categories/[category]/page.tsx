@@ -6,8 +6,7 @@ import { useSearchParams } from "next/navigation";
 import BreadCrumbs from "@/components/BreadCrumbs";
 import Layout from "@/components/Layout";
 import EachElement from "@/helper/EachElement";
-import { getCategory } from "@/services/hooks/category";
-import { categories } from "@/utils/cakeCategories";
+import { getCategoryUser } from "@/services/hooks/category";
 import Image from "next/image";
 import Link from "next/link";
 import Logo from "../../../../public/assets/goldis-gold-logo.png";
@@ -31,7 +30,7 @@ const Page = ({ params }: any) => {
 
   const { data, status, isLoading } = useQuery({
     queryKey: ["category", categoryId],
-    queryFn: () => getCategory(categoryId),
+    queryFn: () => getCategoryUser(categoryId),
     enabled: !!categoryId && catStatus === "true",
   });
 
@@ -84,6 +83,7 @@ const Page = ({ params }: any) => {
                 src={Logo}
                 alt="placeholder"
                 placeholder="blur"
+                priority
                 fill
                 className="absolute left-0 top-0 object-cover"
               />

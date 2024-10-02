@@ -1,14 +1,13 @@
 "use client";
+import React, { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getCategoriesUser } from "@/services/hooks/category";
+import Link from "next/link";
 import BreadCrumbs from "@/components/BreadCrumbs";
 import Layout from "@/components/Layout";
 import UserCategoriesSkeleton from "@/components/shop-components/category/UserCategoriesSkeleton";
 import EachElement from "@/helper/EachElement";
-import { getAllCategories } from "@/services/hooks/category";
-import { categories as cakeCategories } from "@/utils/cakeCategories";
-import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
-import Link from "next/link";
-import React, { useEffect, useState } from "react";
 import Logo from "../../../public/assets/goldis-gold-logo.png";
 
 type AllCategoriesType = {
@@ -24,9 +23,9 @@ const Page = () => {
     AllCategoriesType[] | null
   >(null);
 
-  const { data, status, isLoading } = useQuery({
+  const { data, status } = useQuery({
     queryKey: ["categories"],
-    queryFn: getAllCategories,
+    queryFn: getCategoriesUser,
   });
 
   useEffect(() => {

@@ -103,7 +103,6 @@ export default function Page() {
       id: "customerName",
       cell: (info) => {
         const fullName = `${info.cell.row.original.firstName} ${info.cell.row.original.lastName}`;
-        console.log(info, fullName, "column");
         return (
           <div className="grid grid-cols-[50px_1fr] items-center gap-2">
             <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-500">
