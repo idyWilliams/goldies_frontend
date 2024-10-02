@@ -44,7 +44,6 @@ export default function Page() {
     submitEmail
       .mutateAsync({ email: data.email })
       .then((res: any) => {
-        console.log(res);
         localStorage.removeItem("email");
         localStorage.setItem("email", JSON.stringify({ email: data.email }));
         setOpen(true);
@@ -52,7 +51,7 @@ export default function Page() {
         return res;
       })
       .catch((err: any) => {
-        console.log(err);
+        console.error(err);
         toast.error(err.message);
       });
   };
