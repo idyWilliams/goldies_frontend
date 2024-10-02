@@ -9,9 +9,6 @@ if (typeof window !== "undefined") {
   user = JSON.parse(localStorage.getItem("user") || "{}");
 }
 
-// const accessToken = localStorage.getItem("accessToken") || "";
-// const user = JSON.parse(localStorage.getItem("user") || "");
-
 export const getCategoriesUser = async () => {
   const response = await instance.get(
     `/category/get_all_category`,
