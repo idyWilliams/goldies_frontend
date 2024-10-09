@@ -28,9 +28,7 @@ const ShopPage = () => {
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
   const [showFilter, setShowFilter] = useState(false);
   const cakesProducts = addSlugToCakes(cakeProducts1);
-  const [selectedOptions, setSelectedOptions] = useState<any>([
-    "Birthday Cakes",
-  ]);
+  const [selectedOptions, setSelectedOptions] = useState<any>(["cola cake"]);
 
   const handleNext = () => {
     if (currentPageIndex !== chunkArray(cakes, itemsPerPage).length) {
@@ -71,6 +69,18 @@ const ShopPage = () => {
     return 100; // or any default value
   };
 
+  const searchParams = useSearchParams();
+  const cat = searchParams.get("cat");
+  // console.log("cat is", cat);
+
+  const handleFilter = () => {
+    setCakes(
+      cakes?.filter((cake: any) =>
+        selectedOptions?.includes(cake?.subcategory?.toLowerCase()),
+      ),
+    );
+  };
+
   useEffect(() => {
     AOS.init({
       duration: 1000,
@@ -79,20 +89,36 @@ const ShopPage = () => {
     });
   }, []);
 
+  useEffect(() => {
+  if (cat) {
+    const cate = addSlugToCakes(cakeProducts1)?.filter(
+      (product: any) => product?.category?.toLowerCase() === cat
+    );
+    setCakes((prevCakes) => (JSON.stringify(prevCakes) !== JSON.stringify(cate) ? cate : prevCakes));
+  } else {
+    setCakes((prevCakes) => (JSON.stringify(prevCakes) !== JSON.stringify(cakesProducts) ? cakesProducts : prevCakes));
+  }
+  console.log("updated");
+}, [cat, cakesProducts]);
+
+
+
   console.log("currentPage", query);
 
   useEffect(() => {
     const queryString = window.location.search;
     const searchParams = new URLSearchParams(queryString);
-    setQuery({ cat: searchParams.get("cat"), sub: searchParams.get("sub") });
+    // setQuery({ cat: searchParams.get("cat"), sub: searchParams.get("sub") });
+    const category = searchParams.get("cat");
+    setQuery(category ? category : "");
 
     console.log(
-      queryString,
+      // queryString,
       "query",
       searchParams.get("cat"),
-      searchParams.get("sub"),
+      // searchParams.get("sub"),
     );
-  }, []);
+  }, [setQuery]);
 
   return (
     <>
@@ -121,8 +147,9 @@ const ShopPage = () => {
                 <div className="items-center justify-between lg:flex">
                   <h3 className="text-2xl font-bold text-black">
                     {" "}
-                    {"" ? captalizedName("") : "All Cakes"}
+                    {cat ? captalizedName(cat) : "All Cakes"}
                   </h3>
+                  {/* MOBILE PRODUCT DISPLAY */}
                   <span className="text-sm text-neutral-500 lg:text-base">
                     Showing {currentPageIndex} - {itemsPerPage} of{" "}
                     {cakes?.length} results
@@ -180,6 +207,7 @@ const ShopPage = () => {
                     max={max()}
                     setSelectedOptions={setSelectedOptions}
                     selectedOptions={selectedOptions}
+                    onFilter={handleFilter}
                     category={query?.cat}
                     subcategory={query?.sub}
                   />
@@ -189,7 +217,8 @@ const ShopPage = () => {
                     <div className="items-center justify-between lg:flex">
                       <h3 className="text-2xl font-bold text-black">
                         {" "}
-                        {query?.cat ? captalizedName(query?.cat) : "All Cakes"}
+                        {/* {query?.cat ? captalizedName(query?.cat) : "All Cakes"} */}
+                        {cat ? captalizedName(cat) : "All Cakes"}
                       </h3>
                       <span className="text-sm text-neutral-500 lg:text-base">
                         Showing {currentPageIndex} - {itemsPerPage} of{" "}
@@ -243,6 +272,7 @@ const ShopPage = () => {
                 max={max()}
                 setSelectedOptions={setSelectedOptions}
                 selectedOptions={selectedOptions}
+                onFilter={handleFilter}
                 category={query?.cat}
                 subcategory={query?.sub}
               />
