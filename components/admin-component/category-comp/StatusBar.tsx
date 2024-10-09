@@ -2,11 +2,13 @@ import { cn } from "@/helper/cn";
 import React from "react";
 
 type StatusBarProps = {
-  status: boolean;
+  status: string | boolean;
   className?: string;
 };
 
 const StatusBar: React.FC<StatusBarProps> = ({ status, className }) => {
+  console.log(status);
+
   return (
     <div
       className={cn(
