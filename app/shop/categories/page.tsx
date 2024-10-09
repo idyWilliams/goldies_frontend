@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getCategoriesUser } from "@/services/hooks/category";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { getPaginatedCategories } from "@/services/hooks/category";
 import Link from "next/link";
 import BreadCrumbs from "@/components/BreadCrumbs";
 import Layout from "@/components/Layout";
@@ -9,6 +9,14 @@ import UserCategoriesSkeleton from "@/components/shop-components/category/UserCa
 import EachElement from "@/helper/EachElement";
 import Image from "next/image";
 import Logo from "../../../public/assets/goldis-gold-logo.png";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+} from "@/components/ui/pagination";
+import { Button } from "@/components/ui/button";
+import { RxCaretLeft, RxCaretRight } from "react-icons/rx";
+import { twMerge } from "tailwind-merge";
 
 type AllCategoriesType = {
   [x: string]: any;
@@ -16,16 +24,19 @@ type AllCategoriesType = {
   description?: "";
   _id?: "";
 };
+const limit: number = 15;
 
 const Page = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [allCategories, setAllCategories] = useState<
     AllCategoriesType[] | null
   >(null);
+  const [page, setPage] = useState<number>(1);
 
-  const { data, status } = useQuery({
-    queryKey: ["categories"],
-    queryFn: getCategoriesUser,
+  const { data, status, isFetching } = useQuery({
+    queryKey: ["categories", page, limit],
+    queryFn: async () => getPaginatedCategories(page, limit),
+    placeholderData: keepPreviousData,
   });
 
   useEffect(() => {
@@ -34,6 +45,26 @@ const Page = () => {
       setAllCategories(data?.categories);
     }
   }, [status, data]);
+
+  const handleNext = () => {
+    if (data?.currentPage === data?.totalPages) return;
+
+    setPage((curPage) => curPage + 1);
+    window.scroll(0, 0);
+  };
+  const handlePrev = () => {
+    if (data?.currentPage === 1) return;
+
+    setPage((curPage) => curPage - 1);
+    window.scroll(0, 0);
+  };
+
+  const handlePaginateClick = (page: number) => {
+    if (data?.currentPage === page) return;
+
+    setPage(page);
+    window.scroll(0, 0);
+  };
 
   return (
     <Layout>
@@ -92,7 +123,9 @@ const Page = () => {
                           src={Logo}
                           alt="placeholder"
                           placeholder="blur"
+                          priority
                           fill
+                          sizes="(max-width: 1440px) 33vw"
                           className="absolute left-0 top-0 object-cover"
                         />
                       )}
@@ -101,6 +134,7 @@ const Page = () => {
                         src={cat?.image || ""}
                         alt={cat?.name || ""}
                         fill
+                        sizes="(max-width: 1440px) 33vw"
                         className={`absolute left-0 top-0 object-cover  ${isLoaded ? "opacity-100 duration-300 group-hover:scale-110" : "opacity-0"} `}
                         onLoad={() => setIsLoaded(true)}
                       />
@@ -108,6 +142,68 @@ const Page = () => {
                   );
                 }}
               />
+            </div>
+          )}
+
+          {data?.totalPages > 1 && (
+            <div className="mt-10 flex w-full flex-col items-center gap-4 bg-white px-4 py-3 sm:px-6">
+              <Pagination className="">
+                <PaginationContent className="gap-2">
+                  <PaginationItem className="flex items-center  justify-center">
+                    <span
+                      className={`flex items-center justify-center ${data?.currentPage === 1 ? "cursor-not-allowed" : ""}`}
+                    >
+                      <Button
+                        disabled={data?.currentPage === 1}
+                        className={twMerge(
+                          "inline-flex h-7 w-7 items-center justify-center rounded-full bg-neutral-100 text-neutral-800 disabled:text-neutral-400",
+                        )}
+                        onClick={() => handlePrev()}
+                      >
+                        <span>
+                          <RxCaretLeft size={32} />
+                        </span>
+                      </Button>
+                    </span>
+                  </PaginationItem>
+
+                  <EachElement
+                    of={new Array(data?.totalPages).fill(null)}
+                    render={(item: any, index: number) => {
+                      return (
+                        <PaginationItem>
+                          <Button
+                            className={twMerge(
+                              "inline-flex h-7 w-7 items-center justify-center rounded-full bg-neutral-100 text-neutral-800",
+                              data?.currentPage === index + 1 &&
+                                "bg-goldie-300 text-black",
+                            )}
+                            onClick={() => handlePaginateClick(index + 1)}
+                          >
+                            {index + 1}
+                          </Button>
+                        </PaginationItem>
+                      );
+                    }}
+                  />
+
+                  <PaginationItem className=" flex items-center  justify-center  p-1">
+                    <Button
+                      disabled={data?.currentPage === data?.totalPages}
+                      className={twMerge(
+                        "inline-flex h-7 w-7 items-center justify-center rounded-full bg-neutral-100 text-neutral-800 disabled:text-neutral-400",
+                      )}
+                      onClick={() => handleNext()}
+                    >
+                      <span className="">
+                        <RxCaretRight size={32} />
+                      </span>
+                    </Button>
+                  </PaginationItem>
+                </PaginationContent>
+              </Pagination>
+
+              {isFetching && <span>Loading....</span>}
             </div>
           )}
         </div>

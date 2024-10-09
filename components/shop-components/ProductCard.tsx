@@ -17,7 +17,7 @@ export default function ProductCard({ data }: { data: any }) {
   const [fav, setFav] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
-  const cart = useSelector((state: RootState) => state.product.cart);
+  const cart = useSelector((state: RootState) => state.product?.cart);
   const [isLoaded, setIsLoaded] = useState(false);
 
   const handleAddToCart = () => {

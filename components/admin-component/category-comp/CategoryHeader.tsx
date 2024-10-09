@@ -51,12 +51,12 @@ const CategoryHeader = () => {
           </Link>
 
           <button
-            disabled={!isValid || submitStatus === "submittingCategory"}
+            disabled={!isValid || submitStatus === 'submitting'}
             className="rounded-md bg-neutral-900 px-4 py-2 text-sm text-goldie-300 disabled:opacity-75 disabled:hover:cursor-not-allowed"
             onClick={() => handleCategorySubmission()}
           >
-            {submitStatus === "submittingCategory"
-              ? "Submitting"
+            {submitStatus === 'submitting'
+              ? "Sending Category"
               : isNewCreate
                 ? "Create Category"
                 : "Save Changes"}

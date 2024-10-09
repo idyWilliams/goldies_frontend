@@ -88,6 +88,7 @@ export interface GetUserResponse {
   message: string;
 }
 export interface Category {
+  [X: string]: any;
   name: string;
   description: string;
   image: string;

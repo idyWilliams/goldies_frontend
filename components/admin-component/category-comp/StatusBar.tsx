@@ -2,7 +2,7 @@ import { cn } from "@/helper/cn";
 import React from "react";
 
 type StatusBarProps = {
-  status: string;
+  status: boolean;
   className?: string;
 };
 

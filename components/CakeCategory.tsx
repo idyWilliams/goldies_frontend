@@ -6,7 +6,7 @@ import EachElement from "@/helper/EachElement";
 import { categories } from "@/utils/cakeCategories";
 import { Button } from "./ui/button";
 import Logo from "../public/assets/goldis-gold-logo.png";
-import { getCategoriesUser } from "@/services/hooks/category";
+import { getPaginatedCategories } from "@/services/hooks/category";
 import { useQuery } from "@tanstack/react-query";
 
 type AllCategoriesType = {
@@ -23,13 +23,12 @@ const CakeCategory = () => {
   >([]);
 
   const { data, status } = useQuery({
-    queryKey: ["categories"],
-    queryFn: getCategoriesUser,
+    queryKey: ["categories", 1, 3],
+    queryFn: async () => getPaginatedCategories(1, 3),
   });
 
   useEffect(() => {
     if (status === "success") {
-      console.log(data);
       setAllCategories(data.categories);
     }
   }, [status, data]);
