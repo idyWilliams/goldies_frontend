@@ -15,6 +15,8 @@ export const getColumns = (
     columnHelper.accessor((row) => row, {
       id: "SubImage",
       cell: (info) => {
+        console.log(info.cell.row.original);
+
         return (
           <div className="">
             <Image

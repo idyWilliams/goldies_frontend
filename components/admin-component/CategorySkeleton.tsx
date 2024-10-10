@@ -17,13 +17,14 @@ export default function CategorySkeleton() {
               <Skeleton className="h-6 w-6" />
             </div>
           </div>
-          <Skeleton className="mb-4 mt-3 h-4 w-52" />
-          <Skeleton className="mt-1 h-20 w-full" />
+          <div className="w-full pr-5">
+            <Skeleton className="mt-3 block h-4 max-w-[50%] " />
+            <Skeleton className="mb-4 mt-1 block h-4 max-w-[80%] " />
+          </div>
         </div>
       </CardContent>
       <CardFooter className="mt-4 flex flex-col items-start space-y-2 p-0">
         <Skeleton className="h-4 w-40" />
-        {/* <Skeleton className="h-20 w-full" /> */}
         <div className="flex flex-wrap gap-2">
           <Skeleton className="h-9 w-20" />
           <Skeleton className="h-9 w-20" />

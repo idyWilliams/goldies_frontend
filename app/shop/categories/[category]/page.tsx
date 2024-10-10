@@ -6,12 +6,11 @@ import { useSearchParams } from "next/navigation";
 import BreadCrumbs from "@/components/BreadCrumbs";
 import Layout from "@/components/Layout";
 import EachElement from "@/helper/EachElement";
-import { getCategoryUser } from "@/services/hooks/category";
+import { getCategory } from "@/services/hooks/category";
 import Image from "next/image";
 import Link from "next/link";
 import Logo from "../../../../public/assets/goldis-gold-logo.png";
 import UserCategorySkeleton from "@/components/shop-components/category/UserCategorySkeleton";
-// import UserCategorySkeleton from "@/components/shop-components/category/UserCategorySkeleton";
 
 type CategoryType = {
   [x: string]: any;
@@ -31,7 +30,7 @@ const Page = ({ params }: any) => {
 
   const { data, status, isLoading } = useQuery({
     queryKey: ["category", categoryId],
-    queryFn: () => getCategoryUser(categoryId),
+    queryFn: () => getCategory(categoryId),
     enabled: !!categoryId && catStatus === "true",
   });
 
@@ -111,7 +110,7 @@ const Page = ({ params }: any) => {
                   >
                     <figure className="relative z-10 mx-auto flex h-full w-11/12 items-end pb-3 xl:pb-3">
                       <div className="box-border flex min-h-[180px] w-full flex-col items-start justify-between bg-black bg-opacity-40 p-4 text-white backdrop-blur-sm  ">
-                        <div className="o w-full grow">
+                        <div className=" w-full grow">
                           <h3 className="text-xl font-bold">{sub?.name}</h3>
                           <p className="line-clamp-3 w-full break-all   text-sm">
                             {sub?.description}

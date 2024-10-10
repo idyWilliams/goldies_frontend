@@ -159,7 +159,8 @@ const Page = () => {
                           type="checkbox"
                           name="agree"
                           id="agree"
-                          checked
+                          defaultChecked
+                          // checked
                           className="form-checkbox h-4 w-4 checked:bg-goldie-300 checked:hover:bg-neutral-800 focus:ring-neutral-800 checked:focus:ring-neutral-800"
                         />
                         <span className="text-sm">Keep me signed in</span>

@@ -17,40 +17,26 @@ if (typeof window !== "undefined") {
   user = JSON.parse(localStorage.getItem("user") || "{}");
 }
 
-export const getCategoriesUser = async () => {
+export const getPaginatedCategories = async (
+  pageNum: number,
+  limitNum: number,
+) => {
   const response = await instance.get(
-    `/category/get_all_category`,
-
-    {
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
-    },
-  );
-  return response.data;
-};
-export const getCategoryUser = async (categoryId: string) => {
-  const response = await instance.get(
-    `/category/get_category/${categoryId}`,
-
-    {
-      headers: {
-        Authorization: `Bearer ${user.token}`,
-      },
-    },
+    `/category/get_all_category?page=${pageNum}&limit=${limitNum}`,
   );
   return response.data;
 };
 export const getAllCategories = async () => {
-  const response = await instance.get(
-    `/category/get_all_category`,
+  const response = await instance.get(`/category/get_all_category`);
+  return response.data;
+};
 
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    },
-  );
+// export const getCategoryUser = async (categoryId: string) => {
+//   const response = await instance.get(`/category/get_category/${categoryId}`);
+//   return response.data;
+// };
+export const getCategory = async (categoryId: string | null) => {
+  const response = await instance.get(`/category/get_category/${categoryId}`);
   return response.data;
 };
 
@@ -73,15 +59,6 @@ export const editCategory = async (data: EditCategory) => {
       },
     },
   );
-  return response.data;
-};
-
-export const getCategory = async (categoryId: string | null) => {
-  const response = await instance.get(`/category/get_category/${categoryId}`, {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
   return response.data;
 };
 

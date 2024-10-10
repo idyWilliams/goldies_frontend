@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import useBoundStore from "@/zustand/store";
 import CategorySlugSkeleton from "./CategorySlugSkeleton";
+import { categories } from "@/utils/cakeCategories";
 
 const schema = yup.object().shape({
   categoryName: yup.string().required("Category name is required"),
@@ -85,6 +86,14 @@ export default function CategoryForm() {
         },
   });
 
+  // MUTATION HOOK TO FETCH A CATEGORY FROM API IF NOT FOUND IN STORE
+  const { data, error, isPending, isSuccess, isFetching, refetch } = useQuery({
+    queryKey: ["categories", categoryId],
+    queryFn: () => getCategory(categoryId),
+    enabled: !isNewCreate && !activeCategory,
+    // initialData: () => activeCategory && activeCategory,
+  });
+
   // SET STATE TO DISABLE SUBMISSION BUTTON WHEN FORM FIELDS ARE INVALID
   useEffect(() => {
     setIsValid(isValid);
@@ -98,14 +107,6 @@ export default function CategoryForm() {
       }
     }
   }, [setFormRef]);
-
-  // MUTATION HOOK TO FETCH A CATEGORY FROM API IF NOT FOUND IN STORE
-  const { data, error, isPending, isSuccess, isFetching, refetch } = useQuery({
-    queryKey: ["categories", categoryId],
-    queryFn: () => getCategory(categoryId),
-    enabled: !isNewCreate && !activeCategory,
-    // initialData: () => activeCategory && activeCategory,
-  });
 
   setIsFetchingCategory(false);
   // useEffect(() => {
@@ -122,18 +123,35 @@ export default function CategoryForm() {
   // MUTATION HOOK TO ADD NEW CATEGORY
   const newCategory = useMutation({
     mutationFn: createCategory,
-    onSuccess: (data) => {
+    onMutate: async (variable) => {
+      console.log(variable);
+      await queryClient.cancelQueries({ queryKey: ["categories"] });
+      const previousCategories = queryClient.getQueryData(["categgories"]);
+      console.log(previousCategories);
+
+      queryClient.setQueryData(
+        ["categories"],
+        (old: { categories: []; [x: string]: any }) => ({
+          ...old,
+          categories: [...old.categories, variable],
+        }),
+      );
+      return { previousCategories };
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+
+    onSuccess: () => {
+      // queryClient.invalidateQueries({ queryKey: ["categories"] });
       router.push("/admin/manage-categories");
-      toast.success(data.message);
-      setImageUrl("");
-      reset();
-      setActiveCategory(null);
     },
-    onError(error) {
+
+    onError: (error, newCategory, context) => {
+      queryClient.setQueryData(["todos"], context?.previousCategories);
       console.error(error);
-      toast.error(error.message);
     },
+    mutationKey: ["addCategory"],
   });
 
   // MUTATION HOOK TO EDIT EXSITING CATEGORY
@@ -142,16 +160,16 @@ export default function CategoryForm() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
       router.push("/admin/manage-categories");
-      toast.success(data.message);
-      setImageUrl("");
-      reset();
-      setActiveCategory(null);
+      // toast.success(data.message);
+      // setImageUrl("");
+      // reset();
+      // setActiveCategory(null);
 
       // router.push("/admin/manage-categories");
     },
     onError(error) {
       console.error(error);
-      toast.error(error.message);
+      // toast.error(error.message);
     },
   });
 
@@ -208,7 +226,7 @@ export default function CategoryForm() {
 
   // FORM SUBMISSION FOR CREATING NEW OR UPDATING EXISTING CATEGORY
   const onSubmit = async (data: CategoryProps) => {
-    setSubmitStatus("submittingCategory");
+    setSubmitStatus("submitting");
 
     const category = {
       name: data.categoryName,
@@ -230,7 +248,17 @@ export default function CategoryForm() {
       }
 
       if (pathName.endsWith("/create")) {
-        newCategory.mutate(category);
+        newCategory
+          .mutateAsync(category)
+          .then((data) => {
+            toast.success(data.message);
+            setImageUrl("");
+            reset();
+            setActiveCategory(null);
+          })
+          .catch((error) => {
+            toast.error(error);
+          });
       } else {
         editActiveCategory.mutate({
           category: category,
