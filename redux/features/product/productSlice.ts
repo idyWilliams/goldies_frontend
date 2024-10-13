@@ -17,7 +17,7 @@ export interface ProductState {
   productList: ICake[];
   cart: ICart;
   favorites: ICart;
-  toastMessage: string | null; 
+  toastMessage: string | null; // Add this line
 }
 
 const initialState: ProductState = {
@@ -27,7 +27,7 @@ const initialState: ProductState = {
       ? JSON.parse(localStorage.getItem("cart") || "{}")
       : {},
   favorites: {},
-  toastMessage: null, 
+  toastMessage: null, // Add this line
 };
 
 export const productSlice = createSlice({
@@ -51,22 +51,6 @@ export const productSlice = createSlice({
       );
     },
     // Reducer to add products to cart
-    // addProductToCart: (
-    //   state,
-    //   action: PayloadAction<{ id: string | number }>,
-    // ) => {
-    //   const product = state.productList.find(
-    //     (product) => product.id === action.payload.id,
-    //   );
-    //   if (product && !state.cart[action.payload.id]) {
-    //     product.quantity = 1;
-    //     state.cart[action.payload.id] = product;
-    //     toast.success(`${product?.name} added to cart`);
-    //   } else {
-    //     toast.info(`${product?.name} already in cart`);
-    //     localStorage.setItem("cart", JSON.stringify(state.cart));
-    //   }
-    // },
     addProductToCart: (
       state,
       action: PayloadAction<{ id: string | number }>,
@@ -74,21 +58,15 @@ export const productSlice = createSlice({
       const product = state.productList.find(
         (product) => product.id === action.payload.id,
       );
-
-        if (product && !state.cart[action.payload.id]) {
-          product.quantity = 1;
-          state.cart[action.payload.id] = product;
-          state.toastMessage = `${product?.name} added to cart`;
-        } else {
-          state.toastMessage = `${product?.name} already in cart`;
-          localStorage.setItem("cart", JSON.stringify(state.cart));
-        }
+      if (product && !state.cart[action.payload.id]) {
+        product.quantity = 1;
+        state.cart[action.payload.id] = product;
+        toast.success(`${product?.name} added to cart`);
+      } else {
+        toast.info(`${product?.name} already in cart`);
+        localStorage.setItem("cart", JSON.stringify(state.cart));
+      }
     },
- resetToastMessage: (state: any) => {
-        state.toastMessage= null
-      },
-
-
     // Reducer to add products to favs
     addProductToFavorites: (
       state,
@@ -146,7 +124,6 @@ export const {
   deleteProductFromCart,
   incrementProductQty,
   decrementProductQty,
-   resetToastMessage,
 } = productSlice.actions;
 
 export default productSlice.reducer;

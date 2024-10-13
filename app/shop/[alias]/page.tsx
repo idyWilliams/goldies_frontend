@@ -14,7 +14,7 @@ import {
   addProductToCart,
   decrementProductQty,
   incrementProductQty,
-  resetToastMessage,
+  // resetToastMessage,
 } from "@/redux/features/product/productSlice";
 import { cakeProducts1, cakeTimes } from "@/utils/cakeData";
 import { addSlugToCakes } from "@/helper";
@@ -33,8 +33,7 @@ import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { toast, Toaster } from "sonner";
-import carrot from "../../../public/assets/carrot.jpeg";
+import { Toaster } from "sonner";
 
 const cakeSizes = [
   { value: "6-round", label: "6″ round serves 10 - 12" },
@@ -97,9 +96,9 @@ function CakeDetailsPage({ params }: any) {
   const router = useRouter();
   const dispatch = useDispatch();
   const cart = useSelector((state: RootState) => state.product.cart);
-  const toastMessage = useSelector(
-    (state: RootState) => state.product.toastMessage,
-  );
+  // const toastMessage = useSelector(
+  //   (state: RootState) => state.product.toastMessage,
+  // );
   const [time, setTime] = useState("");
   const [message, setMessage] = useState("");
   const [age, setAge] = useState("");
@@ -153,24 +152,23 @@ function CakeDetailsPage({ params }: any) {
     }
   }, [getProduct]);
 
-  useEffect(() => {
-    if (toastMessage) {
-      toast(
-        <div className="flex items-center p-3 gap-2">
-          <Image
-            src={getProduct?.imageUrl?.src}
-            alt={getProduct?.name}
-            width={40}
-            height={40}
-          />
-          <strong>{toastMessage}</strong>
+  // useEffect(() => {
+  //   if (toastMessage) {
+  //     toast(
+  //       <div className="flex items-center gap-2 p-3">
+  //         <Image
+  //           src={getProduct?.imageUrl?.src}
+  //           alt={getProduct?.name}
+  //           width={40}
+  //           height={40}
+  //         />
+  //         <strong>{toastMessage}</strong>
+  //       </div>,
+  //     );
 
-        </div>,
-      );
-
-      dispatch(resetToastMessage());
-    }
-  }, [toastMessage, dispatch]);
+  //     dispatch(resetToastMessage());
+  //   }
+  // }, [toastMessage, dispatch, getProduct?.imageUrl?.src, getProduct?.name]);
 
   // if (loading) {
   //   return <div>Loading...</div>;
@@ -350,33 +348,27 @@ function CakeDetailsPage({ params }: any) {
                   </div>
                   <div className="grid grid-cols-2 gap-3 after:grid ">
                     <button
-                      onClick={handleClick}
-                      type="submit"
-                      className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
-                    >
-                      <div>
-                        <Toaster
-                          toastOptions={{
-                            unstyled: true,
-                            style: {
-                              background: "black",
-                              fontSize: "15px",
-                              color: "yellow"
-                            },
-                          }}
-                          position="top-right"
-                          expand={true}
-                          // richColors
-                        />
-                      </div>
-                      Add to cart
-                    </button>
-                    <button
                       type="button"
                       className="cursor-pointer bg-neutral-300 px-4 py-2 text-neutral-900"
                     >
                       Buy now
                     </button>
+                    <button
+                      onClick={handleClick}
+                      type="submit"
+                      className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
+                     >
+                      <div>
+                        <Toaster
+                          
+                          position="top-right"
+                          expand={true}
+                          richColors
+                        />
+                      </div>
+                      Add to cart
+                    </button>
+                    
                   </div>
                 </form>
               )}
