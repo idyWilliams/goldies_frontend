@@ -17,9 +17,6 @@ import { RootState } from "@/redux/store";
 import Image from "next/image";
 // import RedVelvet from "../../public/assets/red-velvet-cake.webp";
 // import Chocolate from "../../public/assets/birthday-cake.webp";
-import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
-
 
 const schema = yup.object().shape({
   firstName: yup.string().required("First name is required"),
@@ -36,7 +33,6 @@ const schema = yup.object().shape({
 });
 
 const Page = () => {
-
   const cart = useSelector((state: RootState) => state.product.cart);
   const [country, setCountry] = useState("");
   const [phone, setPhone] = useState("");
@@ -63,8 +59,8 @@ const Page = () => {
   console.log(cart, Object.values(cart));
 
   const handleClick = () => {
-    console.log('billing data', cart )
-  }
+    console.log("billing data", cart);
+  };
 
   return (
     <>
@@ -419,7 +415,9 @@ const Page = () => {
                           <div className="flex justify-between ">
                             <div className="">
                               <h3>{item.name}</h3>
-                              <span className="">({item.quantity} Quantity)</span>
+                              <span className="">
+                                ({item.quantity} Quantity)
+                              </span>
                             </div>
                             <div className=" ">
                               <span className=" ">&euro; {item.maxPrice}</span>
