@@ -70,8 +70,8 @@ const ShopPage = () => {
   };
 
   const searchParams = useSearchParams();
-  const cat = searchParams.get("cat");
-  // console.log("cat is", cat);
+  const cat = searchParams.get("categories");
+  console.log("cat is", cat);
 
   const handleFilter = () => {
     setCakes(
@@ -90,18 +90,18 @@ const ShopPage = () => {
   }, []);
 
   useEffect(() => {
-  if (cat) {
-    const cate = addSlugToCakes(cakeProducts1)?.filter(
-      (product: any) => product?.category?.toLowerCase() === cat
-    );
-    setCakes((prevCakes) => (JSON.stringify(prevCakes) !== JSON.stringify(cate) ? cate : prevCakes));
-  } else {
-    setCakes((prevCakes) => (JSON.stringify(prevCakes) !== JSON.stringify(cakesProducts) ? cakesProducts : prevCakes));
-  }
-  console.log("updated");
-}, [cat, cakesProducts]);
+    if (cat) {
+      const cate = addSlugToCakes(cakeProducts1)?.filter(
+        (product: any) => product?.category?.toLowerCase() === cat,
+        // product?.subcategory?.toLowerCase() === subcategory,
+      );
+      setCakes(cate);
+    } else {
+      setCakes(cakesProducts);
+    }
 
-
+    console.log("updated");
+  }, [cat]);
 
   console.log("currentPage", query);
 
@@ -147,7 +147,9 @@ const ShopPage = () => {
                 <div className="items-center justify-between lg:flex">
                   <h3 className="text-2xl font-bold text-black">
                     {" "}
+                    {/* {"" ? captalizedName("") : "All Cakes"} */}
                     {cat ? captalizedName(cat) : "All Cakes"}
+                    {/* {cat} */}
                   </h3>
                   {/* MOBILE PRODUCT DISPLAY */}
                   <span className="text-sm text-neutral-500 lg:text-base">

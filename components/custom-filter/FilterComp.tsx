@@ -36,13 +36,7 @@ const FilterComp = ({
     queryKey: ["all categories"],
   });
 
-  useEffect(() => {
-    if (!isPending && isSuccess) {
-      setCategories(data?.categories);
-    } else {
-      setCategories([]);
-    }
-  }, [isPending, isSuccess, data]);
+
 
   const handleInput = (e: any) => {
     set_minValue(e.minValue);
@@ -92,6 +86,14 @@ const FilterComp = ({
     }
   };
 
+    useEffect(() => {
+      if (!isPending && isSuccess) {
+        setCategories(data?.categories);
+      } else {
+        setCategories([]);
+      }
+    }, [isPending, isSuccess, data]);
+
   useEffect(() => {
     if (category) {
       setCategories((prevcat: any) =>
@@ -111,12 +113,12 @@ const FilterComp = ({
       <div className="space-y-3">
         
         <div>
-          {isPending
-            ? Array.from({ length: 3 }).map((_, index) => (
+          {isPending ?
+             Array.from({ length: 3 }).map((_, index) => (
                 <div
                   className="mb-3 animate-pulse border-t border-gray-200 pt-3"
                   key={index}
-                >
+                 >
                   <div className="flex items-center">
                     <div className="h-5 w-2/3 rounded-md bg-gray-300"></div>
                     <div className="ml-3 h-5 w-5 rounded-full bg-gray-300"></div>
@@ -146,7 +148,7 @@ const FilterComp = ({
                       className={`mb-3 mt-3 w-full space-y-4 overflow-hidden pl-1.5 duration-300 ${isOpen ? "block" : "hidden"}`}
                     >
                       {cat?.subCategories?.map((sub: any, subindex: number) => (
-                        // <label
+                          // <label
                         //   htmlFor={sub?.value}
                         //   className="flex items-center gap-2"
                         //   key={index}
