@@ -73,7 +73,7 @@ export default function Page() {
               className="absolute left-0 top-0 -z-10 h-full w-full object-cover object-center"
             />
           </div>
-          <div className="bg-neutral-300">
+          <div className=" bg-neutral-300">
             <div className="mx-auto grid gap-5 px-4 py-10 md:grid-cols-[300px_1fr] lg:w-[800px] lg:pt-40 xl:w-[1000px]">
               <div className="flex flex-col justify-center bg-black px-10 pb-14 pt-10 md:rounded-md">
                 <h3 className="text-[24px] font-bold text-white">
@@ -115,7 +115,7 @@ export default function Page() {
                   className="mx-auto mt-20 hidden h-auto w-[80%] opacity-40 md:block"
                 />
               </div>
-              <div className="bg-white px-4 py-8 md:rounded-md xl:px-10">
+              <div className=" bg-white px-4 py-8 md:rounded-md xl:px-10">
                 <h3 className="mb-5 text-center text-[24px] font-bold text-black">
                   Contact Us
                 </h3>

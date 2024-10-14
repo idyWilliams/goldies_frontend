@@ -92,7 +92,7 @@ const Header = () => {
     setIsLogin(Boolean(JSON.parse(localStorage.getItem("isLogin") as string)));
 
     console.log(storedUser, "useehehe");
-  }, []);
+  }, [setAuth, setIsLogin]);
   console.log(isLogin, "isLogged", auth);
 
   // // SESSION CHECKER

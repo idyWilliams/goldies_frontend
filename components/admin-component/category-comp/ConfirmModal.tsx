@@ -4,27 +4,98 @@ import Goldie from "../../../public/assets/goldis-gold-logo.png";
 import Image from "next/image";
 import { CloseSquare } from "iconsax-react";
 import { ModalProps } from "@/utils/categoryTypes";
+import useBoundStore from "@/zustand/store";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteCategory, deleteSubCategory } from "@/services/hooks/category";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
-// Example data that matches the CatWithCategory type
-const catData = {
-  cat: "Persian",
-  isCategory: true,
-};
+const ConfirmModal: React.FC<ModalProps> = ({ catOrSub }) => {
+  const router = useRouter();
+  const queryClient = useQueryClient();
 
-// Example data that matches the SubWithSubcategory type
-const subData = {
-  sub: "Sports",
-  isSubcategory: true,
-};
+  const setShowSub = useBoundStore((state) => state.setShowSub);
 
-const ConfirmModal: React.FC<ModalProps> = ({
-  actionType,
-  catOrSub,
-  setShowModal,
-  handleConfirm,
-}) => {
-  const handleCloseModal = () => {
+  const setShowModal = useBoundStore((state) => state.setShowModal);
+
+  const actionType = useBoundStore((state) => state.actionType);
+  const setActionType = useBoundStore((state) => state.setActionType);
+
+  const activeCategory = useBoundStore((state) => state.activeCategory);
+  const setActiveCategory = useBoundStore((state) => state.setActiveCategory);
+  const refetchCategory = useBoundStore((state) => state.refetchCategory);
+
+  const activeSubcategory = useBoundStore((state) => state.activeSubcategory);
+  const setActiveSubcategory = useBoundStore(
+    (state) => state.setActiveSubcategory,
+  );
+
+  const deleteActiveCategory = useMutation({
+    mutationFn: deleteCategory,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+    onError: (error) => {
+      toast.error("There was an error deleting data");
+      console.error(error);
+    },
+  });
+
+  const deleteSubcategory = useMutation({
+    mutationFn: deleteSubCategory,
+    onSuccess: () => {
+      refetchCategory && refetchCategory();
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
+    },
+    onError: (error) => {
+      toast.error("There was an error deleting data");
+      console.error(error);
+    },
+  });
+
+  const handleConfirm = () => {
+    if (actionType == "delete") {
+      try {
+        if (catOrSub.isCategory) {
+          deleteActiveCategory.mutate(activeCategory?._id, {
+            onSuccess: () => {
+              toast.success("category deleted");
+              setShowModal(false);
+              setActiveCategory(null);
+              setActionType("");
+            },
+          });
+        } else {
+          deleteSubcategory.mutate(activeSubcategory?._id, {
+            onSuccess: () => {
+              setShowModal(false);
+              setActiveSubcategory(null);
+              toast.success("Subcategory deleted");
+              setActionType("");
+            },
+          });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    } else if (actionType == "edit") {
+      if (catOrSub.isCategory) {
+        router.push(
+          `/admin/manage-categories/${activeCategory?.categorySlug}?categoryId=${activeCategory?._id}`,
+        );
+      } else if (!catOrSub.isCategory) {
+        setShowSub(true);
+      }
+
+      setActionType("");
+      setShowModal(false);
+    }
+  };
+
+  const handleClose = () => {
     setShowModal(false);
+    catOrSub.isCategory ? setActiveCategory(null) : setActiveSubcategory(null);
+    setActionType("");
   };
 
   return (
@@ -39,7 +110,7 @@ const ConfirmModal: React.FC<ModalProps> = ({
 
           <span
             className="cursor-pointer text-goldie-300"
-            onClick={handleCloseModal}
+            onClick={handleClose}
           >
             <CloseSquare size={24} />
           </span>
@@ -47,10 +118,10 @@ const ConfirmModal: React.FC<ModalProps> = ({
         <div className="px-4 py-5">
           <p className="leading-7 text-white">
             {actionType === "edit" &&
-              `Are you sure you want to edit ${catOrSub?.cat || catOrSub?.sub} ${(catOrSub?.isCategory && "category") || (catOrSub?.isSubcategory && "subcategory")}? Editing this ${(catOrSub?.isCategory && "category") || (catOrSub?.isSubcategory && "subcategory")} means you will overwrite the previous ${(catOrSub?.isCategory && "category") || (catOrSub?.isSubcategory && "subcategory")} information.`}
+              `Are you sure you want to edit ${catOrSub.isCategory ? `${activeCategory?.name} category` : `${activeSubcategory?.name} subcategory`}? Editing this ${catOrSub?.isCategory ? "category" : "subcategory"} means you will overwrite the previous ${catOrSub?.isCategory ? "category" : "subcategory"} information.`}
 
             {actionType === "delete" &&
-              `Are you sure you want to delete ${catOrSub?.cat || catOrSub?.sub} ${(catOrSub?.isCategory && "category") || (catOrSub?.isSubcategory && "subcategory")}? Deleting this ${(catOrSub?.isCategory && "category") || (catOrSub?.isSubcategory && "subcategory")} means you will ${catOrSub?.isCategory ? "remove the category, products and subcategories under it and can't be undone" : "remove the subcategory and products under it and can't be undone."}`}
+              `Are you sure you want to delete ${catOrSub.isCategory ? `${activeCategory?.name} category` : `${activeSubcategory?.name} subcategory`}? Deleting this ${catOrSub?.isCategory ? "category" : "subcategory"} means you will remove the ${catOrSub?.isCategory && "category, "}products and subcategories under it and can't be undone`}
           </p>
 
           <div className="mt-5 space-x-3">
@@ -62,7 +133,7 @@ const ConfirmModal: React.FC<ModalProps> = ({
                 (actionType === "delete" && "Yes, Delete")}
             </button>
             <button
-              onClick={handleCloseModal}
+              onClick={handleClose}
               className="cursor-pointer rounded-md bg-red-600 px-4 py-1.5 text-sm text-neutral-50"
             >
               No, Cancel

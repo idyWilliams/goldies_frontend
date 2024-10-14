@@ -2,6 +2,7 @@ import MilestoneCakes from "../public/assets/milestone-cake.webp";
 import KidsCakes from "../public/assets/kid-cake.webp";
 import CupCakes from "../public/assets/cupcake.webp";
 import WeddingCakes from "../public/assets/wedding-cake.webp";
+import cs from "../public/assets/AT0213_coconut-cream-cake_s4x3.webp";
 
 export const categories = [
   {
@@ -102,4 +103,37 @@ export const categories = [
   //     { label: "Themed Wedding Cakes", value: "themed_wedding_cakes" },
   //   ],
   // },
+];
+
+export const selectedCategory = {
+  category: "Milestone Cakes",
+  categorySlug: "milestone-cakes",
+  description:
+    "Milestone cakes commemorate significant life events and achievements.",
+  image: cs,
+  status: "active",
+  subcategories: [
+    "Birthday Cakes",
+    "Anniversary Cakes",
+    "Graduation Cakes",
+    "Baby Shower Cakes",
+    "Retirement Cakes",
+  ],
+};
+
+export const subcategoriesArray = [
+  {
+    parentCategory: "dh2dh2",
+    subCategoryName: "Anniversary Cakes",
+    description: "j2djd",
+    status: "active",
+    image: cs,
+  },
+  {
+    parentCategory: "dh2dh2",
+    subCategoryName: "Baby Shower Cakes",
+    description: "j2djd",
+    status: "inactive",
+    image: cs,
+  },
 ];
