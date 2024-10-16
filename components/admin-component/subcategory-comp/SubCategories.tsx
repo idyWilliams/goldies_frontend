@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/helper/cn";
@@ -11,10 +11,14 @@ import { Edit, Trash } from "iconsax-react";
 import EachElement from "@/helper/EachElement";
 import { getColumns } from "./SubcategoriesColumns";
 import SubCategoriesSkeleton from "./SubCategoriesSkeleton";
+import Placeholder from "../../../public/assets/placeholder3.png";
+import { handleImageLoad } from "@/helper/handleImageLoad";
 
 const SubCategories = () => {
   const pathname = usePathname();
   const isNewCreate = pathname.endsWith("/create");
+
+  const [isLoaded, setIsLoaded] = useState<{ [id: string]: boolean }>({});
 
   const category = useBoundStore((state) => state.activeCategory);
   const setShowSub = useBoundStore((state) => state.setShowSub);
@@ -23,42 +27,34 @@ const SubCategories = () => {
     (state) => state.setActiveSubcategory,
   );
   const setActionType = useBoundStore((state) => state.setActionType);
-
   const setShowModal = useBoundStore((state) => state.setShowModal);
-  const isFetchingCategory = useBoundStore((state) => state.isFetchingCategory);
+  // const isFetchingCategory = useBoundStore((state) => state.isFetchingCategory);
 
   const handleAddSubcategory = () => {
     setShowSub(true);
   };
 
   const handleEdit = (item: any) => {
+    console.log("handle edit ran");
+
     setActiveSubcategory(item);
     setActionType("edit");
     setShowModal(true);
   };
 
   const handleDelete = (item: any) => {
+    console.log("handle delete ran");
+
     setActiveSubcategory(item);
     setActionType("delete");
     setShowModal(true);
   };
 
-  const columns = getColumns(handleEdit, handleDelete);
+  const columns = getColumns(handleEdit, handleDelete, isLoaded, setIsLoaded);
 
   if (isNewCreate) return;
-  if (!isNewCreate && isFetchingCategory) {
-    return (
-      <div className="mt-5 border-t pt-5">
-        <SubCategoriesSkeleton />
-      </div>
-    );
-  }
 
-  if (
-    !isNewCreate &&
-    !isFetchingCategory &&
-    category?.subCategories?.length < 1
-  ) {
+  if (category?.subCategories && category?.subCategories?.length < 1) {
     return (
       <EmptyStateCard
         className="mt-6 p-4"
@@ -81,11 +77,7 @@ const SubCategories = () => {
     );
   }
 
-  if (
-    !isNewCreate &&
-    !isFetchingCategory &&
-    category?.subCategories?.length >= 1
-  ) {
+  if (category?.subCategories?.length >= 1) {
     const subcategories = category?.subCategories;
 
     return (
@@ -112,13 +104,27 @@ const SubCategories = () => {
                 className="flex items-center justify-between bg-white p-3"
               >
                 <div className="grid grid-cols-[60px_1fr] items-center gap-2">
+                  {!isLoaded[sub?._id] && (
+                    <Image
+                      src={Placeholder}
+                      alt="placeholder"
+                      placeholder="blur"
+                      priority
+                      width={60}
+                      height={50}
+                      className="aspect-square h-[50px] w-full object-cover object-center"
+                    />
+                  )}
+
                   <Image
                     src={sub?.image}
                     alt={sub?.name}
                     width={60}
                     height={50}
-                    className="h-[50px] w-full object-cover object-center"
+                    className={`aspect-square h-[50px] w-full object-cover object-center  ${isLoaded[sub?._id] ? "opacity-100" : "opacity-0"} `}
+                    onLoad={() => handleImageLoad(sub?._id, setIsLoaded)}
                   />
+
                   <div>
                     <h3 className="text-sm font-bold md:text-base">
                       {sub?.name}

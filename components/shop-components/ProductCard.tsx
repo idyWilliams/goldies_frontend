@@ -1,6 +1,5 @@
 import Image from "next/image";
-import { Heart, ShoppingCart } from "iconsax-react";
-import Img from "../public/assets/banana-cake-with-cinnamon-cream-102945-1.jpeg";
+import { Heart } from "iconsax-react";
 import { useState } from "react";
 import Link from "next/link";
 import { addProductToCart } from "@/redux/features/product/productSlice";
@@ -11,7 +10,7 @@ import { RootState } from "@/redux/store";
 import { cn } from "@/helper/cn";
 import { Tooltip } from "react-tooltip";
 import StarRating from "../StarRating";
-import Logo from "../../public/assets/goldis-gold-logo.png";
+import Placeholder from "../../public/assets/placeholder3.png";
 
 export default function ProductCard({ data }: { data: any }) {
   const [fav, setFav] = useState(false);
@@ -38,21 +37,27 @@ export default function ProductCard({ data }: { data: any }) {
   return (
     <div className="w-full rounded-[10px] border border-neutral-100 bg-white p-2 shadow-[0_0_30px_-10px_rgba(0,0,0,0.1)]">
       <figure className="relative mb-3 h-[230px] w-full overflow-hidden rounded-[5px]">
-        <Link href={`/shop/${data?.slug}`}>
+        <Link
+          href={`/shop/${data?.slug}`}
+          className="relative inline-block h-full w-full overflow-hidden"
+        >
           {!isLoaded && (
             <Image
-              src={Logo}
+              src={Placeholder}
               alt="placeholder for image"
+              fill
               placeholder="blur"
-              className="h-full w-full object-cover object-center"
+              sizes="(max-width: 1024px) 33vw"
+              className="object-cover object-center"
             />
           )}
 
           <Image
             src={data?.imageUrl}
             alt={data?.name}
-            placeholder="blur"
-            className={`h-full w-full object-cover object-center ${isLoaded ? "opacity-100" : "opacity-0"}`}
+            fill
+            sizes="(max-width: 1440px) 33vw"
+            className={`object-cover object-center ${isLoaded ? "opacity-100" : "opacity-0"}`}
             onLoad={() => setIsLoaded(true)}
           />
         </Link>

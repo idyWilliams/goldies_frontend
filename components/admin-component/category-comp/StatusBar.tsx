@@ -7,8 +7,6 @@ type StatusBarProps = {
 };
 
 const StatusBar: React.FC<StatusBarProps> = ({ status, className }) => {
-  console.log(status);
-
   return (
     <div
       className={cn(

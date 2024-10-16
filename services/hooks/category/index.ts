@@ -31,10 +31,6 @@ export const getAllCategories = async () => {
   return response.data;
 };
 
-// export const getCategoryUser = async (categoryId: string) => {
-//   const response = await instance.get(`/category/get_category/${categoryId}`);
-//   return response.data;
-// };
 export const getCategory = async (categoryId: string | null) => {
   const response = await instance.get(`/category/get_category/${categoryId}`);
   return response.data;
@@ -50,9 +46,12 @@ export const createCategory = async (data: Category) => {
 };
 
 export const editCategory = async (data: EditCategory) => {
+  const category = { ...data };
+  const categoryId = data.categoryId;
+  delete category.categoryId;
   const response = await instance.put(
-    `/category/edit_category/${data.categoryId}`,
-    data.category,
+    `/category/edit_category/${categoryId}`,
+    category,
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import BreadCrumbs from "@/components/BreadCrumbs";
@@ -9,37 +9,54 @@ import EachElement from "@/helper/EachElement";
 import { getCategory } from "@/services/hooks/category";
 import Image from "next/image";
 import Link from "next/link";
-import Logo from "../../../../public/assets/goldis-gold-logo.png";
+import PlaceholderImage from "../../../../public/assets/placeholder3.png";
 import UserCategorySkeleton from "@/components/shop-components/category/UserCategorySkeleton";
+import useBoundStore from "@/zustand/store";
+import { Category, SubCategory } from "@/services/types";
+import { Button } from "@/components/ui/button";
 
-type CategoryType = {
-  [x: string]: any;
-  image?: "";
-  description?: "";
-  _id?: "";
-};
+import { handleImageLoad } from "@/helper/handleImageLoad";
 
-const Page = ({ params }: any) => {
+const Page = () => {
   const searchParams = useSearchParams();
   const categoryId = searchParams.get("id") || "";
-  const catStatus = searchParams.get("status");
-  const [isLoaded, setIsLoaded] = useState<boolean>(false);
-  const [isCatLoaded, setisCatLoaded] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState<{ [id: string]: boolean }>({});
+  const category = useBoundStore((state) => state.activeCategory);
+  const setCategory = useBoundStore((state) => state.setActiveCategory);
+  const setSubCategory = useBoundStore((state) => state.setActiveSubcategory);
 
-  const [category, setCategory] = useState<CategoryType | null>(null);
-
-  const { data, status, isLoading } = useQuery({
+  const { data, isSuccess, isError, error, isPending } = useQuery({
     queryKey: ["category", categoryId],
-    queryFn: () => getCategory(categoryId),
-    enabled: !!categoryId && catStatus === "true",
+    queryFn: async () => getCategory(categoryId),
+    initialData: category && category,
+    // staleTime: 60 * 1000,
   });
 
-  useEffect(() => {
-    if (status === "success") {
-      console.log(data);
-      setCategory(data?.category);
+  const categoryData: Category | null = useMemo(() => {
+    if (isSuccess) {
+      return data?.category?.status && data?.category;
     }
-  }, [status, data]);
+    return null;
+  }, [isSuccess, data?.category]);
+
+  useEffect(() => {
+    if (isSuccess && categoryData) {
+      setCategory(categoryData);
+    }
+  }, [categoryData, isSuccess, setCategory]);
+
+  useEffect(() => {
+    if (isError) {
+      console.error(error?.message);
+    }
+  }, [error?.message, isError]);
+
+  const handleSubCategory = useCallback(
+    (activeSubCat: SubCategory) => {
+      setSubCategory(activeSubCat);
+    },
+    [setSubCategory],
+  );
 
   return (
     <Layout>
@@ -67,25 +84,37 @@ const Page = ({ params }: any) => {
           />
         </div>
       </div>
-      {isLoading && <UserCategorySkeleton />}
-      {status === "success" && category && (
+      {isPending && !category && <UserCategorySkeleton />}
+      {isError && !category && (
+        <p className="flex  h-[550px] w-full items-center justify-center">
+          There was an error getting the Categories
+        </p>
+      )}
+
+      {}
+
+      {category && (
         <>
           <div className="wrapper relative mx-auto h-[200px] w-full py-6 md:my-[16px] md:w-[calc(100%_-_30px)]">
-            <div className="absolute left-0 top-0 z-20 flex h-full w-full flex-col justify-center bg-gradient-to-r from-[#221b0fee] to-[rgba(17,17,17,0.8)] px-4 ">
-              <h1 className="text-2xl font-semibold text-goldie-300 md:text-3xl lg:text-5xl">
+            <div className="absolute left-0 top-0 z-20 flex h-full w-full flex-col justify-center gap-2  bg-categories px-4 pr-20">
+              {/* <h2 className="font-bold text-goldie-100">Product Category</h2> */}
+              <h1 className="text-lg font-semibold text-goldie-300 sm:text-2xl lg:text-4xl">
                 {category?.name}
               </h1>
-              <p className="text-[#f8eeb9]">{category?.description}</p>
+              <p className="text-goldie-75 max-w-[650px] text-xs sm:text-base">
+                {category?.description}
+              </p>
             </div>
 
-            {!isCatLoaded && (
+            {!isLoaded[category?._id] && (
               <Image
-                src={Logo}
+                src={PlaceholderImage}
                 alt="placeholder"
                 placeholder="blur"
                 priority
                 fill
-                className="absolute left-0 top-0 object-cover"
+                sizes="(max-width: 1440px) 33vw"
+                className="object-cover object-center "
               />
             )}
             <Image
@@ -93,58 +122,102 @@ const Page = ({ params }: any) => {
               alt={category?.name}
               fill
               priority
-              className={`absolute left-0 top-0 object-cover object-center ${isCatLoaded ? "opacity-100" : "opacity-0"} `}
-              onLoad={() => setisCatLoaded(true)}
+              className={`absolute left-0 top-0 object-cover object-center ${isLoaded[category?._id] ? "opacity-100" : "opacity-0"} `}
+              onLoad={() => handleImageLoad(category?._id, setIsLoaded)}
             />
           </div>
 
-          <div className="wrapper grid gap-4 py-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6 xl:px-[2%]">
-            <EachElement
-              of={category?.subCategories}
-              render={(sub: any, index: number) => {
-                if (!sub.status) return;
-                return (
-                  <div
-                    key={index}
-                    className=" relative h-[270px] w-full bg-neutral-100 xl:h-[300px]"
-                  >
-                    <figure className="relative z-10 mx-auto flex h-full w-11/12 items-end pb-3 xl:pb-3">
-                      <div className="box-border flex min-h-[180px] w-full flex-col items-start justify-between bg-black bg-opacity-40 p-4 text-white backdrop-blur-sm  ">
-                        <div className=" w-full grow">
-                          <h3 className="text-xl font-bold">{sub?.name}</h3>
-                          <p className="line-clamp-3 w-full break-all   text-sm">
-                            {sub?.description}
-                          </p>
+          {category?.subCategories && category?.subCategories.length < 1 && (
+            <p className="flex  h-[576px] w-full items-center justify-center text-xl xl:h-[636PX]">
+              There are no SubCategories to display
+            </p>
+          )}
+
+          {category?.subCategories && category?.subCategories.length > 0 && (
+            <div className="wrapper mb-28 grid  gap-4 py-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6 xl:px-[2%]">
+              <EachElement
+                of={category?.subCategories}
+                render={(sub: any) => {
+                  if (!sub.status) return;
+                  return (
+                    <div
+                      key={sub?._id}
+                      className=" relative h-[270px] w-full  xl:h-[300px]"
+                    >
+                      <div className="absolute left-0 top-0 -z-20 flex h-full w-full flex-col justify-center gap-2 bg-gradient-to-r from-black/20 to-black/20 px-4 "></div>
+                      <figure className="relative z-10 mx-auto flex h-full w-11/12 items-end pb-3 xl:pb-3">
+                        <div className="box-border flex min-h-[180px] w-full flex-col items-start justify-between bg-black bg-opacity-40 p-4 text-white backdrop-blur-sm  ">
+                          <div className=" w-full grow">
+                            <h3 className="text-xl font-bold sm:text-2xl">
+                              {sub?.name}
+                            </h3>
+                            <p className="line-clamp-3 w-full break-all   text-sm text-[#D9D9D9] ">
+                              {sub?.description}
+                            </p>
+                          </div>
+                          <Button
+                            className=" mt-3  flex w-full items-center justify-center  rounded-md bg-goldie-300 p-2 text-center text-neutral-900 hover:bg-goldie-200 xl:p-3"
+                            onClick={() => handleSubCategory(sub)}
+                          >
+                            <Link
+                              href={`/shop?cat=${encodeURIComponent(category?.name?.toLowerCase())}&sub=${encodeURIComponent(sub?.name?.toLowerCase())}`}
+                              className="inline-block w-full text-center font-bold"
+                            >
+                              Buy now
+                            </Link>
+                          </Button>
                         </div>
-                        <Link
-                          href={`/shop?cat=${encodeURIComponent(category?.name?.toLowerCase())}&sub=${encodeURIComponent(sub?.name?.toLowerCase())}`}
-                          className=" mt-3 block w-full rounded-md bg-goldie-300 p-2  text-center text-neutral-900 xl:p-3"
-                        >
-                          Buy now
-                        </Link>
-                      </div>
-                    </figure>
-                    {!isLoaded && (
+                      </figure>
+
+                      {/* {!isLoaded[category?._id] && (
+                        <Image
+                          src={PlaceholderImage}
+                          alt="placeholder"
+                          placeholder="blur"
+                          priority
+                          fill
+                          sizes="(max-width: 1440px) 33vw"
+                          className="-z-50 object-cover object-center "
+                        />
+                      )} */}
+
+                      {!isLoaded[sub?._id] && (
+                        <Image
+                          src={PlaceholderImage}
+                          alt="placeholder"
+                          placeholder="blur"
+                          priority
+                          fill
+                          sizes="(max-width: 1440px) 33vw"
+                          className="-z-50 object-cover object-center"
+                        />
+                      )}
+
                       <Image
-                        src={Logo}
-                        alt="placeholder"
-                        placeholder="blur"
+                        src={sub?.image || ""}
+                        alt={sub?.name}
                         fill
-                        className="absolute left-0 top-0 object-cover"
+                        priority
+                        className={`-z-50 object-cover object-center ${isLoaded[category?._id] ? "opacity-100" : "opacity-0"} `}
+                        onLoad={() =>
+                          handleImageLoad(category?._id, setIsLoaded)
+                        }
                       />
-                    )}
-                    <Image
-                      src={sub?.image || ""}
-                      alt={sub?.name}
-                      fill
-                      className={`absolute left-0 top-0 object-cover ${isLoaded ? "opacity-100" : "opacity-0"} `}
-                      onLoad={() => setIsLoaded(true)}
-                    />
-                  </div>
-                );
-              }}
-            />
-          </div>
+
+                      {/* <Image
+                        src={sub?.image || ""}
+                        alt={sub?.name}
+                        fill
+                        sizes="(max-width: 1440px) 33vw"
+                        className={`-z-50 object-cover object-center ${isLoaded[sub?._id] ? "opacity-100" : "opacity-0"} `}
+                        onLoad={() => handleImageLoad(sub?._id, setIsLoaded)}
+                      /> */}
+                    </div>
+                  );
+                }}
+              />
+            </div>
+          )}
         </>
       )}
     </Layout>

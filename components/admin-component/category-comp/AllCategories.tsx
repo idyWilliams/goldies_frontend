@@ -1,42 +1,83 @@
 "use client";
 import EmptyStateCard from "@/components/admin-component/category-comp/EmptyStateCard";
-import { Edit, Trash } from "iconsax-react";
-import React, { useEffect, useState } from "react";
-import EachElement from "@/helper/EachElement";
-import Image from "next/image";
-import StatusBar from "@/components/admin-component/category-comp/StatusBar";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getAllCategories } from "@/services/hooks/category";
+import { getPaginatedCategories } from "@/services/hooks/category";
 import useBoundStore from "@/zustand/store";
 import ManageCategoriesSkeleton from "./ManageCategoriesSkeleton";
 import { Category } from "@/services/types";
-import Logo from "../../../public/assets/goldis-gold-logo.png";
+import { chunkArray } from "@/helper/chunkArray";
+import AdminPagination from "../AdminPagination";
+import CategoriesCards from "./CategoriesCards";
 
-const AllCategories = () => {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [isLastLoaded, setIsLastLoaded] = useState(false);
-  const [isClamped, setIsClamped] = useState<boolean>(true);
+const limit = 8;
 
-  const allCategories = useBoundStore((state) => state.categories);
+const AllCategories = ({ cat }: any) => {
   const setAllCategories = useBoundStore((state) => state.setCategories);
   const setActiveCategory = useBoundStore((state) => state.setActiveCategory);
+  const setShowModal = useBoundStore((state) => state.setShowModal);
+  const setActionType = useBoundStore((state) => state.setActionType);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [currentData, setCurrentData] = useState<Category[] | null>(null);
 
-  const { data, isSuccess, isError, error, isFetching, isPending } = useQuery({
-    queryKey: ["categories"],
-    queryFn: getAllCategories,
+  useEffect(() => {
+    setActiveCategory(null);
+  }, [setActiveCategory]);
+
+  const {
+    data,
+    isSuccess,
+    isError,
+    error,
+    isPending,
+    // refetch,
+    // isStale,
+  } = useQuery({
+    queryKey: ["categories", 1, 50],
+    queryFn: async () => getPaginatedCategories(1, 50),
+    initialData: cat,
+    // staleTime: 60 * 1000,
   });
+
+  function getCatArr(
+    arr: Category[],
+    limit: number,
+    pagFxn: any,
+    setCatArr: any,
+  ) {
+    const reversedCats = [...arr].reverse();
+    setCatArr(reversedCats);
+    const paginatedArr = pagFxn(reversedCats, limit);
+    return paginatedArr;
+  }
+
+  const categoriesArr = useCallback(getCatArr, []);
+
+  const categories = useMemo(() => {
+    if (isSuccess) {
+      return data?.categories;
+    } else return null;
+  }, [isSuccess, data?.categories]);
 
   useEffect(() => {
     if (isSuccess) {
-      const reversedCategories =
-        data?.categories && [...data?.categories].reverse();
-
-      setAllCategories(reversedCategories);
+      const paginatedCats = categoriesArr(
+        categories,
+        limit,
+        chunkArray,
+        setAllCategories,
+      );
+      setTotalPages(paginatedCats.length);
+      setCurrentData(paginatedCats[currentPage - 1]);
     }
-  }, [isSuccess, setAllCategories, isFetching, data?.categories]);
+  }, [isSuccess, categories, categoriesArr, currentPage, setAllCategories]);
 
-  const setShowModal = useBoundStore((state) => state.setShowModal);
-  const setActionType = useBoundStore((state) => state.setActionType);
+  useEffect(() => {
+    if (isError) {
+      console.error(error?.message);
+    }
+  }, [isError, error?.message]);
 
   const handleEdit = (item: any) => {
     setActiveCategory(item);
@@ -52,146 +93,39 @@ const AllCategories = () => {
 
   return (
     <>
-      {isPending && <ManageCategoriesSkeleton />}
+      {isPending && !currentData && <ManageCategoriesSkeleton />}
 
-      {isError && (
+      {isError && !currentData && (
         <p className="flex h-[75dvh] w-full items-center justify-center">
           There was an error fetching data: {error.message}
         </p>
       )}
 
-      {isSuccess && !isFetching && allCategories?.length < 1 && (
+      {currentData && currentData.length < 1 && (
         <EmptyStateCard
           url="/admin/manage-categories/create"
           className="h-[60vh] bg-transparent"
           titleClassName="font-semibold text-center text-xl"
           buttonText={"Add Category"}
           buttonClassName="bg-neutral-900 text-goldie-300"
-          // handleClick={handleAddNewCategory}
           title={"No categories added yet"}
         />
       )}
 
-      {isSuccess && (
-        <div className="grid gap-5 md:grid-cols-2">
-          <EachElement
-            of={allCategories}
-            render={(item: any, index: number) => (
-              <div key={item._id} className="rounded-md bg-white p-4">
-                <div className=" grid items-center gap-2 sm:grid-cols-[150px_1fr]">
-                  <div className="relative h-[150px]">
-                    {index === 0 && !isLastLoaded && (
-                      <Image
-                        src={Logo}
-                        alt="placeholder"
-                        placeholder="blur"
-                        priority
-                        fill
-                        sizes="(max-width: 1440px) 33vw"
-                        className="absolute left-0 top-0 rounded-md object-cover"
-                      />
-                    )}
-                    {index === 0 && (
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        fill
-                        sizes="(max-width: 1440px) 33vw"
-                        className={`absolute left-0 top-0 rounded-md object-cover object-center ${isLoaded ? "opacity-100" : "opacity-0"} `}
-                        onLoad={() => {
-                          setIsLastLoaded(true);
-                        }}
-                      />
-                    )}
+      {currentData && currentData.length > 0 && (
+        <CategoriesCards
+          currentData={currentData}
+          handleEdit={handleEdit}
+          handleDelete={handleDelete}
+        />
+      )}
 
-                    {!isLoaded && index !== 0 && (
-                      <Image
-                        src={Logo}
-                        alt="placeholder"
-                        placeholder="blur"
-                        priority
-                        fill
-                        sizes="(max-width: 1440px) 33vw"
-                        className="absolute left-0 top-0 rounded-md object-cover"
-                      />
-                    )}
-
-                    {index !== 0 && (
-                      <Image
-                        src={item?.image}
-                        alt={item?.name}
-                        fill
-                        sizes="(max-width: 1440px) 33vw"
-                        className={`rounded-md object-cover object-center ${isLoaded ? "opacity-100" : "opacity-0"} `}
-                        onLoad={() => {
-                          setIsLoaded(true);
-                        }}
-                      />
-                    )}
-                  </div>
-                  <div className="py-1.5">
-                    <div className="mb-1 flex items-center justify-between">
-                      <StatusBar status={item?.status} />
-                      <div className="inline-flex items-center gap-3">
-                        <span
-                          onClick={() => handleEdit(item)}
-                          className="cursor-pointer text-blue-600 hover:text-blue-400"
-                        >
-                          <Edit size={24} />
-                        </span>
-                        <span
-                          onClick={() => handleDelete(item)}
-                          className="cursor-pointer text-red-600 hover:text-red-400"
-                        >
-                          <Trash size={24} />
-                        </span>
-                      </div>
-                    </div>
-                    <h3 className="">
-                      <span className="font-semibold">Category:&nbsp;</span>
-                      {item?.name}
-                    </h3>
-                    <p className="mt-1">
-                      <span className="  font-semibold">
-                        Description:&nbsp;
-                      </span>
-                      <span
-                        className={` ${isClamped ? "line-clamp-3" : "line-clamp-none"} break-all `}
-                        onClick={() => setIsClamped((old) => !old)}
-                      >
-                        {item?.description}
-                      </span>
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-4 space-y-2">
-                  <h3 className="font-semibold">Subcategories</h3>
-                  {!item?.subCategories ||
-                    (item?.subCategories?.length < 1 && (
-                      <p>There are no subcategories </p>
-                    ))}
-                  {item?.subCategories?.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {item?.subCategories && (
-                        <EachElement
-                          of={item?.subCategories}
-                          render={(subcategory: any, index: number) => (
-                            <span
-                              key={index}
-                              className="inline-block rounded-md bg-goldie-300 p-2 px-2.5 text-sm capitalize text-neutral-900 xl:text-base"
-                            >
-                              {subcategory.name}
-                            </span>
-                          )}
-                        />
-                      )}
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-          />
-        </div>
+      {totalPages > 1 && (
+        <AdminPagination
+          totalPage={totalPages}
+          page={currentPage}
+          setPage={setCurrentPage}
+        />
       )}
     </>
   );

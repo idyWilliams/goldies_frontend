@@ -17,7 +17,6 @@ import FilterSidebar from "@/components/custom-filter/FilterSideBar";
 import { chunkArray } from "@/helper/chunkArray";
 import Pagination from "@/components/custom-filter/Pagination";
 import ProductCard from "@/components/shop-components/ProductCard";
-import { useSearchParams } from "next/navigation";
 import { captalizedName } from "@/helper/nameFormat";
 
 let itemsPerPage = 6;
@@ -27,7 +26,6 @@ const ShopPage = () => {
   const [query, setQuery] = useState<any>();
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
   const [showFilter, setShowFilter] = useState(false);
-  const cakesProducts = addSlugToCakes(cakeProducts1);
   const [selectedOptions, setSelectedOptions] = useState<any>([
     "Birthday Cakes",
   ]);
