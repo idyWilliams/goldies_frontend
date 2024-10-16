@@ -1,5 +1,5 @@
 import { cn } from "@/helper/cn";
-import React, { act } from "react";
+import React from "react";
 import Goldie from "../../../public/assets/goldis-gold-logo.png";
 import Image from "next/image";
 import { CloseSquare } from "iconsax-react";
@@ -36,8 +36,6 @@ const ConfirmModal: React.FC<ModalProps> = ({ catOrSub }) => {
 
   const activeCategory = useBoundStore((state) => state.activeCategory);
   const setActiveCategory = useBoundStore((state) => state.setActiveCategory);
-  // const setCategories = useBoundStore((state) => state.setCategories);
-  // const refetchCategory = useBoundStore((state) => state.refetchCategory);
 
   const activeSubcategory = useBoundStore((state) => state.activeSubcategory);
   const setActiveSubcategory = useBoundStore(
@@ -88,15 +86,11 @@ const ConfirmModal: React.FC<ModalProps> = ({ catOrSub }) => {
     mutationFn: deleteSubCategory,
 
     onMutate: async (variable) => {
-      console.log(variable);
-      console.log(categoryId);
-
       await queryClient.cancelQueries({ queryKey: ["categories", categoryId] });
       const previousCategory = queryClient.getQueryData([
         "categories",
         categoryId,
       ]);
-      console.log(previousCategory);
 
       if (!previousCategory) return;
 
@@ -104,7 +98,6 @@ const ConfirmModal: React.FC<ModalProps> = ({ catOrSub }) => {
         ["categories", categoryId],
         (old: SubCatQueryDataType) => {
           const newData = optimisticSubCatUpdate("delete", old, variable);
-          console.log(newData);
 
           return { ...newData };
         },
@@ -112,14 +105,14 @@ const ConfirmModal: React.FC<ModalProps> = ({ catOrSub }) => {
       return { previousCategory };
     },
 
-    onSettled: (variable) => {
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["categories", categoryId] });
       setShowModal(false);
       setActionType("");
       setActiveSubcategory(null);
     },
 
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success("Category succesfully deleted");
     },
 

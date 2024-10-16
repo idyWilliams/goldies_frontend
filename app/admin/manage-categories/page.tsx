@@ -1,11 +1,8 @@
-import React, { Suspense } from "react";
+import React from "react";
 import CategoryHeader from "@/components/admin-component/category-comp/CategoryHeader";
-
 import AllCategories from "@/components/admin-component/category-comp/AllCategories";
 import CatAndSubCatModals from "@/components/admin-component/category-comp/CatAndSubCatModals";
 import { getAllCategories } from "@/services/hooks/category";
-import { toast } from "react-toastify";
-import { errorMonitor } from "events";
 
 const Page = async () => {
   let data;

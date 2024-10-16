@@ -10,7 +10,6 @@ import StatusBar from "../category-comp/StatusBar";
 import { Edit, Trash } from "iconsax-react";
 import EachElement from "@/helper/EachElement";
 import { getColumns } from "./SubcategoriesColumns";
-import SubCategoriesSkeleton from "./SubCategoriesSkeleton";
 import Placeholder from "../../../public/assets/placeholder3.png";
 import { handleImageLoad } from "@/helper/handleImageLoad";
 
@@ -28,23 +27,18 @@ const SubCategories = () => {
   );
   const setActionType = useBoundStore((state) => state.setActionType);
   const setShowModal = useBoundStore((state) => state.setShowModal);
-  // const isFetchingCategory = useBoundStore((state) => state.isFetchingCategory);
 
   const handleAddSubcategory = () => {
     setShowSub(true);
   };
 
   const handleEdit = (item: any) => {
-    console.log("handle edit ran");
-
     setActiveSubcategory(item);
     setActionType("edit");
     setShowModal(true);
   };
 
   const handleDelete = (item: any) => {
-    console.log("handle delete ran");
-
     setActiveSubcategory(item);
     setActionType("delete");
     setShowModal(true);
