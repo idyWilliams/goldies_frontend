@@ -47,7 +47,7 @@ const CategoriesCards = ({
                   fill
                   sizes="(max-width: 1440px) 33vw"
                   className={`rounded-md object-cover object-center ${isLoaded[item._id] ? "opacity-100" : "opacity-0"} `}
-                  onLoad={() => handleImageLoad(item?._id, setIsLoaded)}
+                  onLoad={() => handleImageLoad(item._id, setIsLoaded)}
                 />
               </div>
               <div className="py-1.5">
@@ -94,14 +94,17 @@ const CategoriesCards = ({
                   {item?.subCategories && (
                     <EachElement
                       of={item?.subCategories}
-                      render={(subcategory: any, index: number) => (
-                        <span
-                          key={index}
-                          className="inline-block rounded-md bg-goldie-300 p-2 px-2.5 text-sm capitalize text-neutral-900 xl:text-base"
-                        >
-                          {subcategory.name}
-                        </span>
-                      )}
+                      render={(subcategory: any, index: number) => {
+                        if (index > 5) return;
+                        return (
+                          <span
+                            key={index}
+                            className="inline-block rounded-md bg-goldie-300 p-2 px-2.5 text-sm capitalize text-neutral-900 xl:text-base"
+                          >
+                            {subcategory.name}
+                          </span>
+                        );
+                      }}
                     />
                   )}
                 </div>

@@ -74,6 +74,8 @@ export const deleteCategory = async (categoryId: CategoryId) => {
 };
 
 export const createSubCategory = async (data: SubCategory) => {
+  // console.log(accessToken);
+
   const response = await instance.post(
     "/subcategory/create_subcategory",
     data,

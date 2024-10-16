@@ -1,23 +1,21 @@
 import Image from "next/image";
-import cs from "../../../public/assets/AT0213_coconut-cream-cake_s4x3.webp";
 import { createColumnHelper } from "@tanstack/react-table";
 import { SubategoriesColumns } from "@/utils/categoryTypes";
 import StatusBar from "@/components/admin-component/category-comp/StatusBar";
 import { Edit, Trash } from "iconsax-react";
 import Placeholder from "../../../public/assets/placeholder3.png";
-import { handleImageLoad } from "@/helper/handleImageLoad";
-// import { handleImageLoad } from "@/helper/handleImageLoad";
-
-type LoadedState = { [key: string]: boolean };
-
-type SetLoadedType = React.Dispatch<React.SetStateAction<LoadedState>>;
+import {
+  handleImagesLoad,
+  LoadedState,
+  SetLoadedType,
+} from "@/helper/handleImageLoad";
 
 const columnHelper = createColumnHelper<SubategoriesColumns>();
 
 export const getColumns = (
   onEdit: (item: any) => void,
   onDelete: (item: any) => void,
-  isLoaded: { [key: string]: boolean },
+  isLoadedMemoized: LoadedState,
   setIsLoaded: SetLoadedType,
 ) => {
   const columns = [
@@ -26,7 +24,7 @@ export const getColumns = (
       cell: (info) => {
         return (
           <div className="h-[80px] w-[100px]">
-            {!isLoaded[info.cell.row.original?._id] && (
+            {!isLoadedMemoized[info.cell.row.original?._id] && (
               <Image
                 src={Placeholder}
                 alt="placeholder"
@@ -43,9 +41,9 @@ export const getColumns = (
               alt={info.cell.row.original?.name}
               width={150}
               height={150}
-              className={`h-[80px] w-[100px] object-cover object-center  ${isLoaded[info.cell.row.original?._id] ? "opacity-100" : "opacity-0"} `}
+              className={`h-[80px] w-[100px] object-cover object-center  ${isLoadedMemoized[info.cell.row.original?._id] ? "opacity-100" : "opacity-0"} `}
               onLoad={() =>
-                handleImageLoad(info.cell.row.original?._id, setIsLoaded)
+                handleImagesLoad(info.cell.row.original?._id, setIsLoaded)
               }
             />
           </div>
@@ -73,17 +71,22 @@ export const getColumns = (
       cell: (info) => (
         <div className="space-x-2">
           <span
-            onClick={() => onEdit(info.cell.row.original)}
-            className="cursor-pointer text-blue-600 hover:text-blue-400"
+            onClick={(e) => {
+              e.stopPropagation();
+
+              onEdit(info.cell.row.original);
+            }}
+            className="cursor-pointer text-blue-600 "
           >
             <Edit size={24} />
           </span>
 
           <span
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
               onDelete(info.cell.row.original);
             }}
-            className="cursor-pointer text-red-600 hover:text-red-400"
+            className="cursor-pointer text-red-600 "
           >
             <Trash size={24} />
           </span>

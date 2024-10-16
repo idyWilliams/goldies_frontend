@@ -44,10 +44,10 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
       .mutateAsync({ ...data, email })
       .then((res: any) => {
         console.log(res);
-        setIsLogin(false);
-        localStorage.setItem("isLogin", JSON.stringify(true));
         localStorage.removeItem("accessToken");
         localStorage.removeItem("admin");
+        setIsLogin(false);
+        localStorage.setItem("isLogin", JSON.stringify(true));
         localStorage.setItem(
           "admin",
           JSON.stringify({ token: res?.token, admin: res?.admin }),

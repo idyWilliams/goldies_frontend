@@ -1,7 +1,21 @@
-type LoadedState = { [key: string]: boolean };
+export type LoadedState = { [key: string]: boolean };
 
-type SetLoadedType = React.Dispatch<React.SetStateAction<LoadedState>>;
+export type SetLoadedType = React.Dispatch<React.SetStateAction<LoadedState>>;
 
-export const handleImageLoad = (id: string, setLoaded: SetLoadedType) => {
-  setLoaded((prev) => ({ ...prev, [id]: true }));
+export const handleImagesLoad = (
+  isloaded: LoadedState,
+  setIsLoaded: SetLoadedType,
+) => {
+  for (const id in isloaded) {
+    setIsLoaded((prev) => {
+      if (!prev[id]) {
+        return { ...prev, [id]: true };
+      }
+      return prev;
+    });
+  }
+};
+
+export const handleImageLoad = (id: string, setIsLoaded: SetLoadedType) => {
+  setIsLoaded((prev) => ({ ...prev, [id]: true }));
 };

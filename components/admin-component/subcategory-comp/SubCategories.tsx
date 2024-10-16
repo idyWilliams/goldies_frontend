@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/helper/cn";
@@ -12,12 +12,26 @@ import EachElement from "@/helper/EachElement";
 import { getColumns } from "./SubcategoriesColumns";
 import Placeholder from "../../../public/assets/placeholder3.png";
 import { handleImageLoad } from "@/helper/handleImageLoad";
+import { Category, SubCategory } from "@/services/types";
+import { getCatorSubArr } from "@/utils/getCatorSubArr";
+import { chunkArray } from "@/helper/chunkArray";
+import AdminPagination from "../AdminPagination";
+
+const limit = 5;
 
 const SubCategories = () => {
   const pathname = usePathname();
   const isNewCreate = pathname.endsWith("/create");
 
   const [isLoaded, setIsLoaded] = useState<{ [id: string]: boolean }>({});
+
+  const isLoadedMemoized = useMemo(() => isLoaded, [isLoaded]);
+  // const isLoadedMemoized = useMemo(() => isLoaded, [isLoaded]);
+
+  const [subCats, setSubCats] = useState<SubCategory[] | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
+  const [currentData, setCurrentData] = useState<Category[] | null>(null);
 
   const category = useBoundStore((state) => state.activeCategory);
   const setShowSub = useBoundStore((state) => state.setShowSub);
@@ -27,6 +41,25 @@ const SubCategories = () => {
   );
   const setActionType = useBoundStore((state) => state.setActionType);
   const setShowModal = useBoundStore((state) => state.setShowModal);
+
+  const paginateSubCats = useCallback(getCatorSubArr, []);
+
+  const subCategoryArr = useMemo(() => {
+    if (category?.subCategories?.length > 0) return category?.subCategories;
+  }, [category?.subCategories]);
+
+  useEffect(() => {
+    if (subCategoryArr) {
+      const paginatedSubCatArr = paginateSubCats(
+        subCategoryArr,
+        limit,
+        chunkArray,
+        setSubCats,
+      );
+      setTotalPages(paginatedSubCatArr.length);
+      setCurrentData(paginatedSubCatArr[currentPage - 1]);
+    }
+  }, [currentPage, paginateSubCats, subCategoryArr]);
 
   const handleAddSubcategory = () => {
     setShowSub(true);
@@ -44,7 +77,12 @@ const SubCategories = () => {
     setShowModal(true);
   };
 
-  const columns = getColumns(handleEdit, handleDelete, isLoaded, setIsLoaded);
+  const columns = getColumns(
+    handleEdit,
+    handleDelete,
+    isLoadedMemoized,
+    setIsLoaded,
+  );
 
   if (isNewCreate) return;
 
@@ -71,9 +109,7 @@ const SubCategories = () => {
     );
   }
 
-  if (category?.subCategories?.length >= 1) {
-    const subcategories = category?.subCategories;
-
+  if (currentData && currentData.length >= 1) {
     return (
       <div className="mt-5 border-t pt-5">
         <div className="mb-3 flex items-center justify-between">
@@ -91,7 +127,7 @@ const SubCategories = () => {
         {/* SUBCATEGORIES LIST FOR MOBILE */}
         <div className="grid gap-2 sm:grid-cols-2 md:hidden">
           <EachElement
-            of={subcategories}
+            of={currentData}
             render={(sub: any, index: number) => (
               <div
                 key={index}
@@ -151,10 +187,18 @@ const SubCategories = () => {
           <ProductTable
             showSearchBar={false}
             columns={columns}
-            Tdata={subcategories}
+            Tdata={currentData}
             filteredTabs={[]}
           />
         </div>
+
+        {totalPages > 1 && (
+          <AdminPagination
+            totalPage={totalPages}
+            page={currentPage}
+            setPage={setCurrentPage}
+          />
+        )}
       </div>
     );
   }
