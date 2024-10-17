@@ -153,12 +153,12 @@ const CakeCategory = () => {
                         onLoad={() => setIsLoaded(true)}
                       />
 
-                      <div className="flex min-h-[180px] flex-col items-start justify-between bg-black bg-opacity-10 p-4 backdrop-blur-md">
-                        <div className="w-full grow">
-                          <h3 className="font-bold text-white">
+                      <div className="flex min-h-[180px] w-full flex-col items-start justify-between bg-black bg-opacity-10 p-4 backdrop-blur-[6.353761196136475px]">
+                        <div className="flex w-full grow flex-col gap-2">
+                          <h3 className="text-[32px] font-bold text-white">
                             {cake?.name || ""}
                           </h3>
-                          <p className="line-clamp-3 break-all text-white">
+                          <p className="line-clamp-3 break-all text-lg text-white">
                             {cake?.description || ""}
                           </p>
                         </div>
