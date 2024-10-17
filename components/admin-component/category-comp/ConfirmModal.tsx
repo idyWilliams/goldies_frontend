@@ -8,11 +8,24 @@ import useBoundStore from "@/zustand/store";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteCategory, deleteSubCategory } from "@/services/hooks/category";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+  optimisticCategoryUpdate,
+  optimisticSubCatUpdate,
+} from "@/utils/optimisticCategoryUpdate";
+import { QueryDataType } from "./CategoryForm";
+import { Category } from "@/services/types";
+
+type SubCatQueryDataType = {
+  [x: string]: any;
+  category: Category;
+};
 
 const ConfirmModal: React.FC<ModalProps> = ({ catOrSub }) => {
   const router = useRouter();
   const queryClient = useQueryClient();
+  const queryParams = useSearchParams();
+  const categoryId = queryParams.get("categoryId");
 
   const setShowSub = useBoundStore((state) => state.setShowSub);
 
@@ -23,7 +36,6 @@ const ConfirmModal: React.FC<ModalProps> = ({ catOrSub }) => {
 
   const activeCategory = useBoundStore((state) => state.activeCategory);
   const setActiveCategory = useBoundStore((state) => state.setActiveCategory);
-  const refetchCategory = useBoundStore((state) => state.refetchCategory);
 
   const activeSubcategory = useBoundStore((state) => state.activeSubcategory);
   const setActiveSubcategory = useBoundStore(
@@ -32,53 +44,100 @@ const ConfirmModal: React.FC<ModalProps> = ({ catOrSub }) => {
 
   const deleteActiveCategory = useMutation({
     mutationFn: deleteCategory,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+
+    onMutate: async (variable) => {
+      await queryClient.cancelQueries({ queryKey: ["categories", 1, 50] });
+      const previousCategories = queryClient.getQueryData([
+        "categories",
+        1,
+        50,
+      ]);
+
+      queryClient.setQueryData(["categories", 1, 50], (old: QueryDataType) => {
+        const newData = optimisticCategoryUpdate("delete", old, variable);
+
+        return { ...newData };
+      });
+      return { previousCategories };
     },
-    onError: (error) => {
-      toast.error("There was an error deleting data");
+
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories", 1, 50] });
+      setShowModal(false);
+      setActionType("");
+      setActiveCategory(null);
+    },
+
+    onSuccess: () => {
+      toast.success("Category succesfully deleted");
+    },
+
+    onError: (error, newCategory, context) => {
+      queryClient.setQueryData(
+        ["categories", 1, 50],
+        context?.previousCategories,
+      );
       console.error(error);
+      toast.error("There was an error deleting  category");
     },
   });
 
   const deleteSubcategory = useMutation({
     mutationFn: deleteSubCategory,
-    onSuccess: () => {
-      refetchCategory && refetchCategory();
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
+
+    onMutate: async (variable) => {
+      await queryClient.cancelQueries({ queryKey: ["categories", categoryId] });
+      const previousCategory = queryClient.getQueryData([
+        "categories",
+        categoryId,
+      ]);
+
+      if (!previousCategory) return;
+
+      queryClient.setQueryData(
+        ["categories", categoryId],
+        (old: SubCatQueryDataType) => {
+          const newData = optimisticSubCatUpdate("delete", old, variable);
+
+          return { ...newData };
+        },
+      );
+      return { previousCategory };
     },
-    onError: (error) => {
-      toast.error("There was an error deleting data");
+
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories", categoryId] });
+      setShowModal(false);
+      setActionType("");
+      setActiveSubcategory(null);
+    },
+
+    onSuccess: () => {
+      toast.success("Category succesfully deleted");
+    },
+
+    onError: (error, newCategory, context) => {
+      queryClient.setQueryData(
+        ["categories", categoryId],
+        context?.previousCategory,
+      );
       console.error(error);
+      toast.error("There was an error deleting  category");
     },
   });
 
   const handleConfirm = () => {
-    if (actionType == "delete") {
+    if (actionType === "delete") {
       try {
         if (catOrSub.isCategory) {
-          deleteActiveCategory.mutate(activeCategory?._id, {
-            onSuccess: () => {
-              toast.success("category deleted");
-              setShowModal(false);
-              setActiveCategory(null);
-              setActionType("");
-            },
-          });
+          deleteActiveCategory.mutate(activeCategory?._id);
         } else {
-          deleteSubcategory.mutate(activeSubcategory?._id, {
-            onSuccess: () => {
-              setShowModal(false);
-              setActiveSubcategory(null);
-              toast.success("Subcategory deleted");
-              setActionType("");
-            },
-          });
+          deleteSubcategory.mutate(activeSubcategory?._id);
         }
       } catch (error) {
         console.error(error);
       }
-    } else if (actionType == "edit") {
+    } else if (actionType === "edit") {
       if (catOrSub.isCategory) {
         router.push(
           `/admin/manage-categories/${activeCategory?.categorySlug}?categoryId=${activeCategory?._id}`,
@@ -86,7 +145,6 @@ const ConfirmModal: React.FC<ModalProps> = ({ catOrSub }) => {
       } else if (!catOrSub.isCategory) {
         setShowSub(true);
       }
-
       setActionType("");
       setShowModal(false);
     }

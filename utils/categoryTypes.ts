@@ -44,6 +44,7 @@ export type SubcategoriesProps = {
 }[];
 
 export type SubategoriesColumns = {
+  [x: string]: any;
   image: any;
   name: string;
   description: string;

@@ -1,7 +1,5 @@
 import React from "react";
 import CategoryHeader from "@/components/admin-component/category-comp/CategoryHeader";
-
-import AllCategories from "@/components/admin-component/category-comp/AllCategories";
 import CatAndSubCatModals from "@/components/admin-component/category-comp/CatAndSubCatModals";
 import CategoryForm from "@/components/admin-component/category-comp/CategoryForm";
 import SubCategories from "@/components/admin-component/subcategory-comp/SubCategories";
