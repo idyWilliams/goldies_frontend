@@ -37,7 +37,7 @@ const CategoriesCards = ({
                     priority
                     fill
                     sizes="(max-width: 1440px) 33vw"
-                    className="absolute left-0 top-0 rounded-md object-cover"
+                    className="absolute left-0 top-0 animate-pulse rounded-md object-cover"
                   />
                 )}
 

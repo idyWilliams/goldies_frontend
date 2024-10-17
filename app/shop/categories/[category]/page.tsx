@@ -101,7 +101,7 @@ const Page = () => {
               <h1 className="text-lg font-semibold text-goldie-300 sm:text-2xl lg:text-4xl">
                 {category?.name}
               </h1>
-              <p className="text-goldie-75 max-w-[650px] text-xs sm:text-base">
+              <p className="max-w-[650px] text-xs text-goldie-75 sm:text-base">
                 {category?.description}
               </p>
             </div>
@@ -114,7 +114,7 @@ const Page = () => {
                 priority
                 fill
                 sizes="(max-width: 1440px) 33vw"
-                className="object-cover object-center "
+                className="animate-pulse object-cover object-center"
               />
             )}
             <Image
@@ -169,18 +169,6 @@ const Page = () => {
                         </div>
                       </figure>
 
-                      {/* {!isLoaded[category?._id] && (
-                        <Image
-                          src={PlaceholderImage}
-                          alt="placeholder"
-                          placeholder="blur"
-                          priority
-                          fill
-                          sizes="(max-width: 1440px) 33vw"
-                          className="-z-50 object-cover object-center "
-                        />
-                      )} */}
-
                       {!isLoaded[sub?._id] && (
                         <Image
                           src={PlaceholderImage}
@@ -189,7 +177,7 @@ const Page = () => {
                           priority
                           fill
                           sizes="(max-width: 1440px) 33vw"
-                          className="-z-50 object-cover object-center"
+                          className="-z-50 animate-pulse object-cover object-center"
                         />
                       )}
 

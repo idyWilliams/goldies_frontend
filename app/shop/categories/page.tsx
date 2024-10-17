@@ -125,7 +125,7 @@ const Page = () => {
                             priority
                             fill
                             sizes="(max-width: 1440px) 33vw"
-                            className="object-cover object-center duration-300 group-hover:scale-110"
+                            className="animate-pulse object-cover object-center"
                           />
                         )}
 

@@ -48,7 +48,7 @@ export default function ProductCard({ data }: { data: any }) {
               fill
               placeholder="blur"
               sizes="(max-width: 1024px) 33vw"
-              className="object-cover object-center"
+              className="animate-pulse object-cover object-center"
             />
           )}
 
