@@ -116,7 +116,7 @@ const CakeCategory = () => {
                           sizes="(max-width: 1024px) 33vw"
                           priority
                           placeholder="blur"
-                          className="object-cover object-center"
+                          className="animate-pulse object-cover object-center"
                         />
                       </div>
                     );
@@ -140,7 +140,7 @@ const CakeCategory = () => {
                           sizes="(max-width: 1024px) 33vw"
                           priority
                           fill
-                          className="absolute left-0 top-0 object-cover object-center"
+                          className="absolute left-0 top-0 animate-pulse object-cover object-center"
                         />
                       )}
 

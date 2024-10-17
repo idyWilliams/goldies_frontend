@@ -32,7 +32,7 @@ export const getColumns = (
                 priority
                 width={60}
                 height={50}
-                className="h-[80px] w-[100px] object-cover object-center"
+                className="h-[80px] w-[100px] animate-pulse object-cover object-center"
               />
             )}
 
