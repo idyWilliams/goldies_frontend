@@ -23,6 +23,7 @@ const CakeCategory = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [categories, setCategories] = useState<Category[] | null>(null);
   const setAllCategories = useBoundStore((state) => state.setCategories);
+  const setActiveCategory = useBoundStore((state) => state.setActiveCategory);
 
   const { data, isError, error, isSuccess, isPending, isStale, refetch } =
     useQuery({
@@ -72,6 +73,10 @@ const CakeCategory = () => {
     setAllCategories,
   ]);
 
+  // const getCategory = (item) => {
+  //   setActiveCategory(item);
+  // };
+
   return (
     <section className="py-10">
       {/* HEADIng */}
@@ -99,7 +104,7 @@ const CakeCategory = () => {
           <div className="wrapper w-full gap-3 space-y-5 sm:flex sm:w-min sm:grid-cols-2 sm:space-x-5 sm:space-y-0 lg:grid lg:w-full lg:grid-cols-3 lg:space-x-0 xl:gap-7">
             {(isPending ||
               (isError && !categories) ||
-              (categories && categories?.length < 1)) && (
+              (isSuccess && categories && categories?.length < 1)) && (
               <>
                 <EachElement
                   of={new Array(3).fill(null)}
@@ -125,7 +130,7 @@ const CakeCategory = () => {
               </>
             )}
 
-            {categories && categories?.length > 0 && (
+            {isSuccess && categories && categories?.length > 0 && (
               <EachElement
                 of={categories}
                 render={(cake: CategoriesType, index: any) => {
