@@ -65,8 +65,10 @@ const Page = () => {
         reset();
       })
       .catch((err: any) => {
-        console.log(err);
-        toast.error(err.message);
+         console.log(err);
+         console.log(err.message);
+         console.log(err.response.data.message);
+         toast.error(err.response.data.message);
       });
   };
 
