@@ -13,7 +13,7 @@ export const getProducts = async (data: any) => {
 };
 
 export const fetchProducts = async (category: string, subcategory?: string) => {
-  const response = await instance.get(`/product/get_all_product?category=${category}&subcategory=${subcategory}`);
+    const response = await instance.get(`/product/get_all_product?category=${category}&subcategory=${subcategory}`);
   return response.data; 
 };
 

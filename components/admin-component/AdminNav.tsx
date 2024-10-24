@@ -45,38 +45,17 @@ import {
 } from "@/components/ui/card";
 import AuthContext from "@/context/AuthProvider";
 
-
-
-
 export default function AdminNav() {
+  const router = useRouter();
+  const authContext = useContext(AuthContext);
+  // @ts-ignore
+  const { setIsLogin } = authContext;
+
   const [sticky, setSticky] = useState(false);
   const [open, setIsOpen] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
   const [currentTime, setCurrentTime] = useState(moment().format("H:mm"));
-  const router = useRouter();
-  const [admin, setAdmin] = useState<any | null>(null)
-  // @ts-ignore
-    const { isLogin, auth, setIsLogin, setAuth } = useContext(AuthContext);
-
-  const logOut = () => {
-    setIsLogin(false);
-    setAuth({});
-    localStorage.removeItem("admin");
-    localStorage.removeItem("accessToken");
-    localStorage.setItem("isLogin", JSON.stringify(false));
-    setAdmin(null);
-  };
-  
-  useEffect(() => {
-    const storedAdmin = JSON.parse(localStorage.getItem("admin") as string);
-    setAdmin(storedAdmin?.admin);
-    setAuth(storedAdmin);
-    setIsLogin(Boolean(JSON.parse(localStorage.getItem("isLogin") as string)));
-
-    console.log(storedAdmin, "useehehe");
-  }, []);
-  console.log(isLogin, "isLogged", auth);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -94,6 +73,15 @@ export default function AdminNav() {
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const logOut = async () => {
+    setIsLogin(false);
+    localStorage.setItem("isLogin", JSON.stringify(false));
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("admin");
+    router.push("/admin-sign-in");
+  };
+
   return (
     <>
       <ToastContainer />
@@ -175,12 +163,7 @@ export default function AdminNav() {
             >
               <FaRegUserCircle size={20} />{" "}
               <span className="hidden text-sm md:inline-flex md:items-center md:gap-3">
-                {!isLogin ? (
-                  <span>Guest</span>
-                ) : (
-                    <span>{admin.email}</span>
-                )}
-                {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
+                Account {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
               </span>
             </button>
             {isOpen && (
@@ -213,28 +196,13 @@ export default function AdminNav() {
                   </span>
                 </div>
                 <div className="my-2 border-b border-black border-opacity-50"></div>
-
-                {isLogin ? (
-                  // <Link
-                  //   href={`/`}
-                  //   className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
-                  // >
-                  //   Logout
-                  // </Link>
-                  <Button
-                    onClick={logOut}
-                    className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
-                   >
-                    Logout
-                  </Button>
-                ) : (
-                  <Link
-                    href={`/admin-sign-in`}
-                    className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
-                  >
-                    Sign In
-                  </Link>
-                )}
+                <span
+                  className="flex w-full cursor-pointer items-center justify-center rounded-sm bg-black  px-7 py-2.5 text-center text-sm  text-[#E4D064] duration-300 hover:bg-neutral-950"
+                  role="button"
+                  onClick={() => logOut()}
+                >
+                  Logout
+                </span>
               </MenuPopup>
             )}
           </div>

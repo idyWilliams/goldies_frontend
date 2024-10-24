@@ -36,8 +36,6 @@ const FilterComp = ({
     queryKey: ["all categories"],
   });
 
-
-
   const handleInput = (e: any) => {
     set_minValue(e.minValue);
     set_maxValue(e.maxValue);
@@ -51,6 +49,7 @@ const FilterComp = ({
     set_minValue(min);
     set_maxValue(max);
     setSelectedOptions([]);
+
     console.log("clicked");
   };
 
@@ -59,41 +58,80 @@ const FilterComp = ({
     set_maxValue(values.max);
   };
 
-  // const handleSelectedItem = (e: any, val: string) => {
-  //   const name = e.target.name;
-  //   const value = e.target.value;
-  //   const isChecked = e.target.checked;
-  //   // setSelectedOptions(value);
-  //   setSelectedOptions((value: any) => {
-  //     return [...value, { checked: isChecked, value: name }];
-  //   });
-  //   // setSelectedOptions((prev: any) =>
-  //   //   prev?.filter((item: any) => item?.value !== val),
-  //   // );
-  //   console.log(name, value, isChecked, "value");
+  // const handleSelectedItem = (label: string, isChecked: boolean) => {
+  //   if (isChecked) {
+  //     setSelectedOptions((prevSelectedItems: any) => [
+  //       ...prevSelectedItems,
+  //       label,
+  //     ]);
+  //   } else {
+  //     setSelectedOptions((prevSelectedItems: any) =>
+  //       prevSelectedItems.filter((item: any) => item !== label),
+  //     );
+  //   }
   // };
 
   const handleSelectedItem = (label: string, isChecked: boolean) => {
+    const searchParams = new URLSearchParams(window.location.search); // Get current query params
+
+    console.log(`Subcategory: ${label}, Checked: ${isChecked}`);
+
     if (isChecked) {
-      setSelectedOptions((prevSelectedItems: any) => [
-        ...prevSelectedItems,
-        label?.toLowerCase(),
-      ]);
+      // When the checkbox is checked, add the label to the state
+      setSelectedOptions((prevSelectedItems: any) => {
+        const updatedItems = [...prevSelectedItems, label];
+
+        console.log("Updated Selected Items (Checked):", updatedItems);
+
+        // Update the subcategory parameter in the URL
+        searchParams.set("sub", updatedItems.join(","));
+        console.log("Updated Query Params (Checked):", searchParams.toString());
+
+        // Update the URL without reloading the page
+        window.history.replaceState(
+          {},
+          "",
+          `${window.location.pathname}?${searchParams}`,
+        );
+
+        return updatedItems;
+      });
     } else {
-      setSelectedOptions((prevSelectedItems: any) =>
-        prevSelectedItems.filter((item: any) => item !== label),
-      );
+      // When the checkbox is unchecked, remove the label from the state
+      setSelectedOptions((prevSelectedItems: any) => {
+        const updatedItems = prevSelectedItems.filter(
+          (item: any) => item !== label,
+        );
+
+        console.log("Updated Selected Items (Unchecked):", updatedItems);
+
+        // Update the subcategory parameter in the URL
+        searchParams.set("sub", updatedItems.join(","));
+        console.log(
+          "Updated Query Params (Unchecked):",
+          searchParams.toString(),
+        );
+
+        // Update the URL without reloading the page
+        window.history.replaceState(
+          {},
+          "",
+          `${window.location.pathname}?${searchParams}`,
+        );
+
+        return updatedItems;
+      });
     }
   };
 
-    useEffect(() => {
-      if (!isPending && isSuccess) {
-        setCategories(data?.categories);
-      } else {
-        setCategories([]);
-      }
-    }, [isPending, isSuccess, data]);
-
+  useEffect(() => {
+    if (!isPending && isSuccess) {
+      setCategories(data?.categories);
+    } else {
+      setCategories([]);
+    }
+  }, [isPending, isSuccess, data]);
+  // data?.categories
   useEffect(() => {
     if (category) {
       setCategories((prevcat: any) =>
@@ -106,18 +144,18 @@ const FilterComp = ({
       setOpenIndex(0);
       setSelectedOptions((prev: any) => [...prev]);
     }
-  }, [category, subcategory, setSelectedOptions]);
+  }, [category, subcategory, setSelectedOptions, data?.categories]);
+
   return (
     <div className="w-full">
       <div className="space-y-3">
-        
         <div>
-          {isPending ?
-             Array.from({ length: 3 }).map((_, index) => (
+          {isPending ? 
+            Array.from({ length: 3 }).map((_, index) => (
                 <div
                   className="mb-3 animate-pulse border-t border-gray-200 pt-3"
                   key={index}
-                 >
+                >
                   <div className="flex items-center">
                     <div className="h-5 w-2/3 rounded-md bg-gray-300"></div>
                     <div className="ml-3 h-5 w-5 rounded-full bg-gray-300"></div>
@@ -147,7 +185,7 @@ const FilterComp = ({
                       className={`mb-3 mt-3 w-full space-y-4 overflow-hidden pl-1.5 duration-300 ${isOpen ? "block" : "hidden"}`}
                     >
                       {cat?.subCategories?.map((sub: any, subindex: number) => (
-                          // <label
+                        // <label
                         //   htmlFor={sub?.value}
                         //   className="flex items-center gap-2"
                         //   key={index}

@@ -346,7 +346,7 @@ export const cakeProducts1 = [
     available: false,
     bestSeller: false,
     category: "Kid's Cake",
-    subcategory: "cola cake",
+    subcategory: "Superhero Cakes",
     type: "pre-order",
   },
   {
