@@ -13,7 +13,8 @@ import { cn } from "@/helper/cn";
 import { useMutation } from "@tanstack/react-query";
 import { loginUser } from "@/services/hooks/user-auth";
 import AuthContext from "@/context/AuthProvider";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
+import { Toaster, toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 const validationSchema = yup.object().shape({
@@ -65,7 +66,9 @@ const Page = () => {
         reset();
       })
       .catch((err: any) => {
-         console.log(err);
+         
+        
+        console.log(err);
          console.log(err.message);
          console.log(err.response.data.message);
          toast.error(err.response.data.message);
@@ -75,6 +78,9 @@ const Page = () => {
   return (
     <Layout>
       <div className="mt-[64px]" />
+      
+      
+      <Toaster richColors position="top-right" expand={true} />
 
       <section className="py-10">
         <div className="wrapper">
