@@ -4,11 +4,12 @@ import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
 import { getUser } from "@/services/hooks/users";
 import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
+import { toast, Toaster } from "sonner";
 
 const schema = yup.object().shape({
   firstName: yup.string().required("First name is required"),
@@ -20,8 +21,8 @@ const schema = yup.object().shape({
     .min(6, "Valid Phone Number must be at least 6 characters")
     .max(15, "Valid Phone Number must not exceed 12 characters"),
   address: yup.string().required("Shipping address is required"),
-  state: yup.string().required("Shipping address is required"),
-  country: yup.string().required("Shipping address is required"),
+  state: yup.string().required("State is required"),
+  country: yup.string().required("Country is required"),
 });
 
 const AccountInfo = () => {
@@ -31,6 +32,7 @@ const AccountInfo = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
 
   const {
     reset,
@@ -41,54 +43,51 @@ const AccountInfo = () => {
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
 
-  const getAUser = useMutation({
-    mutationFn: getUser,
-  });
-
-  useEffect(() => {
-    const handleUser = async () => {
+const getAUser = useMutation({
+  mutationFn: getUser,
+});
+  const handleUser = useCallback(
+    async (token: string | null) => {
       try {
-        const response = await getAUser.mutateAsync();
-
-        console.log("Full API response:", response);
-
+        // @ts-ignore
+        const response = await getAUser.mutateAsync(token);
         if (response && response.user) {
           const userData = response.user;
           localStorage.setItem("user", JSON.stringify(userData));
-          // @ts-ignore
-          localStorage.setItem("accessToken", userData.token);
-
           console.log("User data from response:", userData);
-
           setValue("firstName", userData.firstName);
           setValue("lastName", userData.lastName);
           setValue("email", userData.email);
-          setValue(
-            "address",
-            "3, Alade Yusuf Street, Epetedo B/stop, Abaranje Road, Ikotun, Lagos.",
-          );
-          setValue("state", "Lagos");
-          setValue("country", "Nigeria");
-          setPhone("+2348089134442");
+          setValue("address", "");
+          setValue("state", "");
+          setValue("country", "");
+          setPhone("+234800000000");
         } else {
           console.log("No response data");
         }
-      } catch (error: any) {
-        console.error("Error fetching user data: ", error);
-        toast.error(error.message);
+      } catch (error) {
+        console.error("Error response: ", error);
+        toast.error("Session expired. Please log in again.");
       }
-    };
-    handleUser();
-  }, [getAUser, setValue]);
+    },
+    [setValue],
+    // getAUser,
+  ); 
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    console.log("token is", token);
+    handleUser(token); 
+  }, [handleUser]); 
 
   const handleSave = (data: any) => {
     console.log(data);
-    reset();
+    toast.success("Account information updated successfully");
+    console.log("Form errors:", errors);
   };
-
   return (
     <div className="">
       <div className="mb-4 border-b border-neutral-200 pb-4">
+        <Toaster richColors position="top-right" expand={true} />
         <h2 className="text-xl font-semibold">Account Information</h2>
         <p>This is your default shipping information</p>
       </div>
@@ -182,12 +181,22 @@ const AccountInfo = () => {
             <span className="mb-1 inline-block text-sm font-medium">
               Country
             </span>
-            <CountryDropdown
-              value={country}
-              onChange={setCountry}
-              classes={cn(
-                "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
-                errors.country && "border-red-600 focus:border-red-600",
+            <Controller
+              name="country"
+              control={control}
+              rules={{ required: "Country is required" }}
+              render={({ field }) => (
+                <CountryDropdown
+                  value={field.value || country}
+                  onChange={(val) => {
+                    field.onChange(val);
+                    setCountry(val); 
+                  }}
+                  classes={cn(
+                    "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
+                    errors.country && "border-red-600 focus:border-red-600",
+                  )}
+                />
               )}
             />
             {errors?.country && (
@@ -220,6 +229,7 @@ const AccountInfo = () => {
               <p className="text-red-600">{errors?.state?.message}</p>
             )}
           </label>
+
           <label htmlFor="address" className="block w-full md:col-span-2">
             <span className="mb-1 inline-block text-sm font-medium">
               Shipping address
@@ -227,19 +237,34 @@ const AccountInfo = () => {
             <textarea
               {...register("address")}
               id="address"
+              placeholder={
+                !address
+                  ? "3, Alade Yusuf Street, Epetedo B/stop, Abaranje Road, Ikotun, Lagos"
+                  : ""
+              }
+              onFocus={() => setAddress("")}
+              onBlur={(e) => {
+                if (!e.target.value)
+                  setAddress(
+                    "3, Alade Yusuf Street, Epetedo B/stop, Abaranje Road, Ikotun, Lagos",
+                  );
+              }}
               className={cn(
                 "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
                 errors.address && "border-red-600 focus:border-red-600",
               )}
             />
             {errors?.address && (
-              <p className="text-red-600">{errors?.email?.message}</p>
+              <p className="text-red-600">{errors?.address.message}</p>
             )}
           </label>
         </div>
 
         <div className="mt-7 flex items-center justify-start gap-3">
-          <button className="rounded border border-neutral-900 bg-neutral-900 px-5 py-2.5 text-goldie-300">
+          <button
+            type="submit"
+            className="rounded border border-neutral-900 bg-neutral-900 px-5 py-2.5 text-goldie-300"
+          >
             Save changes
           </button>
           <button className="rounded border border-red-600 px-5 py-2.5 font-medium text-red-600">
