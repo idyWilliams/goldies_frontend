@@ -7,7 +7,7 @@ import { ModalProps } from "@/utils/categoryTypes";
 import useBoundStore from "@/zustand/store";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteCategory, deleteSubCategory } from "@/services/hooks/category";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   optimisticCategoryUpdate,
@@ -15,6 +15,7 @@ import {
 } from "@/utils/optimisticCategoryUpdate";
 import { QueryDataType } from "./CategoryForm";
 import { Category } from "@/services/types";
+import { toast } from "sonner";
 
 type SubCatQueryDataType = {
   [x: string]: any;

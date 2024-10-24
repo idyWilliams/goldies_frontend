@@ -1,14 +1,30 @@
 import instance from "@/services/api";
 
+let accessToken = "";
+let user: { token?: string } = {};
+
+if (typeof window !== "undefined") {
+  accessToken = localStorage.getItem("accessToken") || "";
+  user = JSON.parse(localStorage.getItem("user") || "{}");
+}
+
 // CREATE PRODUCT
-export const createProduct = async (data: any) => {
-  const response = await instance.post("/product/create_product", data);
+export const createNewProduct = async (data: any) => {
+  const response = await instance.post("/product/create_product", data, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
   return response.data;
 };
 
 // GET ALL PRODUCTS
 export const getProducts = async (data: any) => {
   const response = await instance.get("/product/get_all_products", data);
+  return response.data;
+};
+export const getAllProducts = async () => {
+  const response = await instance.get("/product/get_all_products");
   return response.data;
 };
 
