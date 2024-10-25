@@ -89,7 +89,7 @@ export interface GetUserResponse {
   token:string
 }
 export interface Category {
-  [X: string]: any;
+  [x: string]: any;
   name: string;
   description: string;
   image: string;
@@ -97,6 +97,7 @@ export interface Category {
   status: boolean;
 }
 export interface SubCategory {
+  [x: string]: any;
   name: string;
   description: string;
   image: string;
@@ -108,9 +109,8 @@ export interface CategoryId {
   categoryId: string | null;
 }
 
-export interface EditCategory {
-  category: Category;
-  categoryId: string;
+export interface EditCategory extends Category {
+  categoryId?: string;
 }
 
 export interface SubCategoryId {

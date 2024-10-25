@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { cn } from "@/helper/cn";
 import { GalleryImport } from "iconsax-react";
 import { CategoryImageProps } from "@/utils/categoryTypes";
+import Placeholder from "../../../public/assets/placeholder3.png";
 
 export default function CategoryImage({
   register,
@@ -11,6 +12,7 @@ export default function CategoryImage({
   setImageUrl,
 }: CategoryImageProps) {
   const [dragging, setDragging] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   const handleDragEnter = (e: any) => {
     e.preventDefault();
@@ -83,12 +85,25 @@ export default function CategoryImage({
 
       {imageUrl && (
         <div className="group relative flex h-[250px] w-full flex-col items-center justify-center overflow-hidden rounded-md md:h-[350px] xl:h-[250px]">
+          {!isLoaded && (
+            <Image
+              src={Placeholder}
+              alt="placeholder"
+              placeholder="blur"
+              priority
+              fill
+              sizes="(max-width: 1440px) 33vw"
+              className="animate-pulse object-cover object-center duration-300 group-hover:scale-110"
+            />
+          )}
+
           <Image
             src={imageUrl}
             alt="upload-image"
-            width={200}
-            height={300}
-            className="h-full w-full object-cover"
+            fill
+            sizes="(max-width: 1440px) 33vw"
+            className={`object-cover object-center  ${isLoaded ? "opacity-100" : "opacity-0"} `}
+            onLoad={() => setIsLoaded(true)}
           />
 
           <div className="absolute left-0 top-0 flex h-full w-full flex-col items-center justify-center gap-2 bg-black bg-opacity-25 opacity-0 duration-300 group-hover:opacity-100">

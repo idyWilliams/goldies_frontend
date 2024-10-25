@@ -1,4 +1,5 @@
 "use client";
+import AuthContext from "@/context/AuthProvider";
 import {
   Cake,
   Category2,
@@ -8,15 +9,28 @@ import {
   ShoppingBag,
 } from "iconsax-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import React from "react";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useContext } from "react";
 import { BsHandbagFill } from "react-icons/bs";
 import { CiLogout } from "react-icons/ci";
 import { IoPeopleOutline } from "react-icons/io5";
 import { RiFolderAddFill, RiHome5Fill } from "react-icons/ri";
 
 export default function AdminSideBar() {
+  const router = useRouter();
   const pathname = usePathname();
+  const authContext = useContext(AuthContext);
+  // @ts-ignore
+  const { setIsLogin } = authContext;
+
+  const logOut = async () => {
+    setIsLogin(false);
+    localStorage.setItem("isLogin", JSON.stringify(false));
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("admin");
+    router.push("/admin-sign-in");
+  };
+
   return (
     <>
       <section className="z-50 hidden h-screen w-full flex-col bg-black py-4 lg:flex lg:pt-24">
@@ -73,6 +87,7 @@ export default function AdminSideBar() {
 
           <span
             className={`flex items-center gap-2 whitespace-nowrap text-sm text-neutral-500 duration-300 hover:text-goldie-300`}
+            onClick={() => logOut()}
           >
             <CiLogout size={20} />
             Logout

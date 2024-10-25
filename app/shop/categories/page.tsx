@@ -1,69 +1,54 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { getPaginatedCategories } from "@/services/hooks/category";
+import React, { useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getAllCategories } from "@/services/hooks/category";
 import Link from "next/link";
 import BreadCrumbs from "@/components/BreadCrumbs";
 import Layout from "@/components/Layout";
 import UserCategoriesSkeleton from "@/components/shop-components/category/UserCategoriesSkeleton";
 import EachElement from "@/helper/EachElement";
 import Image from "next/image";
-import Logo from "../../../public/assets/goldis-gold-logo.png";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-} from "@/components/ui/pagination";
-import { Button } from "@/components/ui/button";
-import { RxCaretLeft, RxCaretRight } from "react-icons/rx";
-import { twMerge } from "tailwind-merge";
-
-type AllCategoriesType = {
-  [x: string]: any;
-  image?: "";
-  description?: "";
-  _id?: "";
-};
-const limit: number = 15;
+import Placeholder from "../../../public/assets/placeholder3.png";
+import useBoundStore from "@/zustand/store";
+import { Category } from "@/services/types";
+import { handleImageLoad } from "@/helper/handleImageLoad";
 
 const Page = () => {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [allCategories, setAllCategories] = useState<
-    AllCategoriesType[] | null
-  >(null);
-  const [page, setPage] = useState<number>(1);
+  const [isLoaded, setIsLoaded] = useState<{ [id: string]: boolean }>({});
+  const allCategories = useBoundStore((state) => state.categories);
+  const setAllCategories = useBoundStore((state) => state.setCategories);
+  const setActiveCategory = useBoundStore((state) => state.setActiveCategory);
 
-  const { data, status, isFetching } = useQuery({
-    queryKey: ["categories", page, limit],
-    queryFn: async () => getPaginatedCategories(page, limit),
-    placeholderData: keepPreviousData,
+  const { data, isSuccess, isError, error, isPending } = useQuery({
+    queryKey: ["categories"],
+    queryFn: getAllCategories,
+    initialData: allCategories && allCategories,
+    // staleTime: 60 * 1000,
   });
 
-  useEffect(() => {
-    if (status === "success") {
-      console.log(data);
-      setAllCategories(data?.categories);
+  const categories: Category[] | null = useMemo(() => {
+    if (isSuccess) {
+      const reversedCategories = data?.categories
+        ? [...data?.categories].reverse().filter((cat) => cat?.status === true)
+        : [];
+      return reversedCategories;
+    } else {
+      return null;
     }
-  }, [status, data]);
+  }, [isSuccess, data?.categories]);
 
-  const handleNext = () => {
-    if (data?.currentPage === data?.totalPages) return;
+  useEffect(() => {
+    if (categories && isSuccess) {
+      setAllCategories(categories);
+    }
 
-    setPage((curPage) => curPage + 1);
-    window.scroll(0, 0);
-  };
-  const handlePrev = () => {
-    if (data?.currentPage === 1) return;
+    if (isError) {
+      console.error(error?.message);
+    }
+  }, [isSuccess, isError, setAllCategories, error?.message, categories]);
 
-    setPage((curPage) => curPage - 1);
-    window.scroll(0, 0);
-  };
-
-  const handlePaginateClick = (page: number) => {
-    if (data?.currentPage === page) return;
-
-    setPage(page);
-    window.scroll(0, 0);
+  const handleCategory = (category: Category) => {
+    setActiveCategory(category);
   };
 
   return (
@@ -95,115 +80,68 @@ const Page = () => {
       <div className="wrapper ">
         <div className="py-6">
           <h3 className="text-2xl font-semibold">Product Categories</h3>
-          {status === "pending" && <UserCategoriesSkeleton />}
+          {isPending && !allCategories && <UserCategoriesSkeleton />}
+          {isError && !allCategories && (
+            <p className="flex  w-full items-center justify-center">
+              There was an error getting the Categories
+            </p>
+          )}
+          {isSuccess && allCategories && allCategories.length < 1 && (
+            <p className="flex  h-[576px] w-full items-center justify-center text-xl xl:h-[636PX]">
+              There are no Categories to display
+            </p>
+          )}
 
-          {status === "success" && allCategories && (
+          {allCategories && allCategories.length > 1 && (
             <div className="mt-5 grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
               <EachElement
                 of={allCategories}
-                render={(cat: any, index: number) => {
+                render={(cat: any) => {
                   if (!cat.status) return;
                   return (
                     <Link
                       href={`/shop/categories/${cat.name}?id=${cat?._id}&status=${cat?.status}`}
-                      key={index}
-                      className="group relative h-[270px] w-full overflow-hidden capitalize text-neutral-500 xl:h-[300px]"
+                      key={cat?._id}
+                      className="group"
                     >
-                      <span className="absolute left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-black bg-opacity-50">
-                        <span
-                          aria-label={cat.name || ""}
-                          className="text-xl font-bold text-white"
-                        >
-                          {cat.name || ""}
+                      <div
+                        className="relative h-[270px] w-full overflow-hidden capitalize text-neutral-500 xl:h-[300px]"
+                        onClick={() => handleCategory(cat)}
+                      >
+                        <span className="absolute left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-black bg-opacity-50">
+                          <span
+                            aria-label={cat.name || ""}
+                            className="text-xl font-bold text-white"
+                          >
+                            {cat.name || ""}
+                          </span>
                         </span>
-                      </span>
 
-                      {!isLoaded && (
+                        {!isLoaded[cat?._id] && (
+                          <Image
+                            src={Placeholder}
+                            alt="placeholder"
+                            placeholder="blur"
+                            priority
+                            fill
+                            sizes="(max-width: 1440px) 33vw"
+                            className="animate-pulse object-cover object-center"
+                          />
+                        )}
+
                         <Image
-                          src={Logo}
-                          alt="placeholder"
-                          placeholder="blur"
-                          priority
+                          src={cat?.image || ""}
+                          alt={cat?.name || ""}
                           fill
                           sizes="(max-width: 1440px) 33vw"
-                          className="absolute left-0 top-0 object-cover"
+                          className={`object-cover object-center  ${isLoaded[cat?._id] ? "opacity-100 duration-300 group-hover:scale-110" : "opacity-0"} `}
+                          onLoad={() => handleImageLoad(cat?._id, setIsLoaded)}
                         />
-                      )}
-
-                      <Image
-                        src={cat?.image || ""}
-                        alt={cat?.name || ""}
-                        fill
-                        sizes="(max-width: 1440px) 33vw"
-                        className={`absolute left-0 top-0 object-cover  ${isLoaded ? "opacity-100 duration-300 group-hover:scale-110" : "opacity-0"} `}
-                        onLoad={() => setIsLoaded(true)}
-                      />
+                      </div>
                     </Link>
                   );
                 }}
               />
-            </div>
-          )}
-
-          {data?.totalPages > 1 && (
-            <div className="mt-10 flex w-full flex-col items-center gap-4 bg-white px-4 py-3 sm:px-6">
-              <Pagination className="">
-                <PaginationContent className="gap-2">
-                  <PaginationItem className="flex items-center  justify-center">
-                    <span
-                      className={`flex items-center justify-center ${data?.currentPage === 1 ? "cursor-not-allowed" : ""}`}
-                    >
-                      <Button
-                        disabled={data?.currentPage === 1}
-                        className={twMerge(
-                          "inline-flex h-7 w-7 items-center justify-center rounded-full bg-neutral-100 text-neutral-800 disabled:text-neutral-400",
-                        )}
-                        onClick={() => handlePrev()}
-                      >
-                        <span>
-                          <RxCaretLeft size={32} />
-                        </span>
-                      </Button>
-                    </span>
-                  </PaginationItem>
-
-                  <EachElement
-                    of={new Array(data?.totalPages).fill(null)}
-                    render={(item: any, index: number) => {
-                      return (
-                        <PaginationItem>
-                          <Button
-                            className={twMerge(
-                              "inline-flex h-7 w-7 items-center justify-center rounded-full bg-neutral-100 text-neutral-800",
-                              data?.currentPage === index + 1 &&
-                                "bg-goldie-300 text-black",
-                            )}
-                            onClick={() => handlePaginateClick(index + 1)}
-                          >
-                            {index + 1}
-                          </Button>
-                        </PaginationItem>
-                      );
-                    }}
-                  />
-
-                  <PaginationItem className=" flex items-center  justify-center  p-1">
-                    <Button
-                      disabled={data?.currentPage === data?.totalPages}
-                      className={twMerge(
-                        "inline-flex h-7 w-7 items-center justify-center rounded-full bg-neutral-100 text-neutral-800 disabled:text-neutral-400",
-                      )}
-                      onClick={() => handleNext()}
-                    >
-                      <span className="">
-                        <RxCaretRight size={32} />
-                      </span>
-                    </Button>
-                  </PaginationItem>
-                </PaginationContent>
-              </Pagination>
-
-              {isFetching && <span>Loading....</span>}
             </div>
           )}
         </div>
