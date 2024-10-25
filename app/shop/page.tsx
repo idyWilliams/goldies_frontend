@@ -61,7 +61,7 @@ const ShopPage = () => {
       const cakeMinPrices = cakes?.map((s: any) => s?.minPrice);
       return Math.trunc(Math?.min(...cakeMinPrices));
     }
-    return 0; // or any default value
+    return 0; 
   };
 
   const max = () => {
@@ -69,7 +69,7 @@ const ShopPage = () => {
       const cakeMaxPrices = cakes?.map((s: any) => s?.maxPrice);
       return Math.trunc(Math?.max(...cakeMaxPrices));
     }
-    return 100; // or any default value
+    return 100; 
   };
 
   const searchParams = useSearchParams();
