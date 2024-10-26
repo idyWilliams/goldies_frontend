@@ -22,10 +22,7 @@ import {
   UserCirlceAdd,
 } from "iconsax-react";
 import moment from "moment";
-import { CiSearch } from "react-icons/ci";
 import { useRouter } from "next/navigation";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import {
   Popover,
   PopoverContent,
@@ -44,6 +41,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import AuthContext from "@/context/AuthProvider";
+import { Toaster } from "../ui/sonner";
 
 export default function AdminNav() {
   const router = useRouter();
@@ -84,7 +82,7 @@ export default function AdminNav() {
 
   return (
     <>
-      <ToastContainer />
+      <Toaster richColors position="top-right" expand={true} />
       <nav
         className={`${sticky ? "shadow-[0_0_50px_rgba(0,0,0,0.5)] lg:fixed" : "lg:absolute"} sticky left-0 top-0  z-[999] w-full bg-black py-3`}
       >

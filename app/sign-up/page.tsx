@@ -108,10 +108,6 @@ const Page = () => {
   return (
     <Layout>
       <div className="mt-[64px]" />
-      
-      
-      <Toaster richColors position="top-right" expand={true} />
-
       <section className="py-10">
         <div className="wrapper">
           <div className="flex flex-col items-center sm:mx-auto sm:w-[500px] sm:border sm:bg-white sm:p-6 sm:shadow-lg">

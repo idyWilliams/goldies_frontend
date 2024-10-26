@@ -7,7 +7,7 @@ import "react-phone-input-2/lib/style.css";
 import { useCallback, useEffect, useState } from "react";
 import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
 import { getUser } from "@/services/hooks/users";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 // import { toast } from "react-toastify";
 import { toast, Toaster } from "sonner";
 
@@ -29,10 +29,10 @@ const AccountInfo = () => {
   const [phone, setPhone] = useState("");
   const [country, setCountry] = useState("");
   const [state, setState] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
+  const [user, setUser] = useState<any>(null);
+  // const [lastName, setLastName] = useState("");
+  // const [email, setEmail] = useState("");
+  // const [address, setAddress] = useState("");
 
   const {
     reset,
@@ -41,53 +41,45 @@ const AccountInfo = () => {
     setValue,
     handleSubmit,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(schema) });
-
-const getAUser = useMutation({
-  mutationFn: getUser,
-});
-  const handleUser = useCallback(
-    async (token: string | null) => {
-      try {
-        // @ts-ignore
-        const response = await getAUser.mutateAsync(token);
-        if (response && response.user) {
-          const userData = response.user;
-          localStorage.setItem("user", JSON.stringify(userData));
-          console.log("User data from response:", userData);
-          setValue("firstName", userData.firstName);
-          setValue("lastName", userData.lastName);
-          setValue("email", userData.email);
-          setValue("address", "");
-          setValue("state", "");
-          setValue("country", "");
-          setPhone("+234800000000");
-        } else {
-          console.log("No response data");
-        }
-      } catch (error) {
-        console.error("Error response: ", error);
-        toast.error("Session expired. Please log in again.");
-      }
+    getValues,
+  } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      firstName: user?.firstName || "taiwo",
+      lastName: user?.lastName || "",
+      email: user?.email || "",
     },
-    [setValue],
-    // getAUser,
-  ); 
+  });
+
   useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    console.log("token is", token);
-    handleUser(token); 
-  }, [handleUser]); 
+    const storedUser = JSON.parse(localStorage.getItem("user") as string);
+    setUser(storedUser.user);
+      console.log("stored is", storedUser.user);
+  }, []);
+  console.log("data is", user);
+  
+  useEffect(() => {
+    console.log("reset ", user)
+    
+    reset({
+      firstName: user?.firstName || "taiwo",
+      lastName: user?.lastName || "",
+      email: user?.email || "",
+      
+    });
+  }, [user, reset]);
+
+  console.log("values ", getValues(), "user: ", user);
 
   const handleSave = (data: any) => {
     console.log(data);
     toast.success("Account information updated successfully");
     console.log("Form errors:", errors);
   };
+
   return (
     <div className="">
       <div className="mb-4 border-b border-neutral-200 pb-4">
-        <Toaster richColors position="top-right" expand={true} />
         <h2 className="text-xl font-semibold">Account Information</h2>
         <p>This is your default shipping information</p>
       </div>
@@ -101,7 +93,7 @@ const getAUser = useMutation({
               {...register("firstName")}
               type="text"
               id="firstName"
-              defaultValue={firstName}
+              // defaultValue={firstName}
               className={cn(
                 "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
                 errors.firstName && "border-red-600 focus:border-red-600",
@@ -119,7 +111,7 @@ const getAUser = useMutation({
               {...register("lastName")}
               type="text"
               id="lastName"
-              defaultValue={lastName}
+              // defaultValue={lastName}
               className={cn(
                 "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
                 errors.lastName && "border-red-600 focus:border-red-600",
@@ -137,7 +129,7 @@ const getAUser = useMutation({
               {...register("email")}
               type="email"
               id="email"
-              defaultValue={email}
+              // defaultValue={email}
               className={cn(
                 "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
                 errors.email && "border-red-600 focus:border-red-600",
@@ -190,7 +182,7 @@ const getAUser = useMutation({
                   value={field.value || country}
                   onChange={(val) => {
                     field.onChange(val);
-                    setCountry(val); 
+                    setCountry(val);
                   }}
                   classes={cn(
                     "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
@@ -237,18 +229,7 @@ const getAUser = useMutation({
             <textarea
               {...register("address")}
               id="address"
-              placeholder={
-                !address
-                  ? "3, Alade Yusuf Street, Epetedo B/stop, Abaranje Road, Ikotun, Lagos"
-                  : ""
-              }
-              onFocus={() => setAddress("")}
-              onBlur={(e) => {
-                if (!e.target.value)
-                  setAddress(
-                    "3, Alade Yusuf Street, Epetedo B/stop, Abaranje Road, Ikotun, Lagos",
-                  );
-              }}
+              placeholder="Enter your address"
               className={cn(
                 "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
                 errors.address && "border-red-600 focus:border-red-600",

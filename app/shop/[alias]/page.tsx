@@ -357,18 +357,9 @@ function CakeDetailsPage({ params }: any) {
                       onClick={handleClick}
                       type="submit"
                       className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
-                     >
-                      <div>
-                        <Toaster
-                          
-                          position="top-right"
-                          expand={true}
-                          richColors
-                        />
-                      </div>
+                    >
                       Add to cart
                     </button>
-                    
                   </div>
                 </form>
               )}

@@ -68,10 +68,6 @@ const Page = () => {
   return (
     <Layout>
       <div className="mt-[64px]">
-
-
-        <Toaster richColors position="top-right" expand={true} />
-
         <section className="py-10">
           <div className='"wrapper"'>
             {adminLogin.isSuccess ? (
