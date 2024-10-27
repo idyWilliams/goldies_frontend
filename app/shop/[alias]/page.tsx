@@ -14,6 +14,7 @@ import {
   addProductToCart,
   decrementProductQty,
   incrementProductQty,
+  // resetToastMessage,
 } from "@/redux/features/product/productSlice";
 import { cakeProducts1, cakeTimes } from "@/utils/cakeData";
 import { addSlugToCakes } from "@/helper";
@@ -32,6 +33,7 @@ import Link from "next/link";
 import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Toaster } from "sonner";
 
 const cakeSizes = [
   { value: "6-round", label: "6″ round serves 10 - 12" },
@@ -72,14 +74,16 @@ export type SelectOptionType = {
 } | null;
 
 const schema = yup.object().shape({
-  sizes: yup.string().required(),
-  toppings: yup.string().required(),
-  message: yup.string().required(),
+  sizes: yup.string().required("Size is required"),
+  toppings: yup.string().required("Topping is required"),
+  cakeTimes: yup.string().required("cakeTimes is required"),
+  message: yup.string().required("Input any additional info"),
 });
 
 interface FormValues {
   sizes: string;
   toppings: string;
+  cakeTimes: string;
   message: string;
 }
 
@@ -94,12 +98,20 @@ function CakeDetailsPage({ params }: any) {
   const router = useRouter();
   const dispatch = useDispatch();
   const cart = useSelector((state: RootState) => state.product.cart);
+  // const toastMessage = useSelector(
+  //   (state: RootState) => state.product.toastMessage,
+  // );
   const [time, setTime] = useState("");
   const [message, setMessage] = useState("");
   const [age, setAge] = useState("");
-  const { register, handleSubmit, control } = useForm({
+  const { register, handleSubmit, control, formState: { errors }, } = useForm({
     resolver: yupResolver(schema),
   });
+
+    // register,
+    // handleSubmit,
+    
+    // reset,
 
   // const handleChange = (event: SelectChangeEvent) => {
   //   setAge(event.target.value as string);
@@ -129,11 +141,19 @@ function CakeDetailsPage({ params }: any) {
     }
   }
 
-  const handleClick = () => {
-    dispatch(addProductToCart({ id: getProduct.id }));
-    console.log(getProduct.id);
-    // setShapes(null)
-  };
+  // const handleClick = () => {
+  //   console.log(getProduct.id);
+  //   // setShapes(null)
+  // };
+  const handleClick = handleSubmit((data) => {
+    if (data.sizes && data.toppings && data.cakeTimes && data.message) {
+      dispatch(addProductToCart({ id: getProduct.id }));
+      console.log(getProduct.id);
+    } else {
+      console.error("Please fill in all required fields before adding to cart.");
+    }
+  });
+
 
   // console.log(shapes, "shapes")
 
@@ -147,6 +167,24 @@ function CakeDetailsPage({ params }: any) {
     }
   }, [getProduct]);
 
+  // useEffect(() => {
+  //   if (toastMessage) {
+  //     toast(
+  //       <div className="flex items-center gap-2 p-3">
+  //         <Image
+  //           src={getProduct?.imageUrl?.src}
+  //           alt={getProduct?.name}
+  //           width={40}
+  //           height={40}
+  //         />
+  //         <strong>{toastMessage}</strong>
+  //       </div>,
+  //     );
+
+  //     dispatch(resetToastMessage());
+  //   }
+  // }, [toastMessage, dispatch, getProduct?.imageUrl?.src, getProduct?.name]);
+
   // if (loading) {
   //   return <div>Loading...</div>;
   // }
@@ -159,13 +197,13 @@ function CakeDetailsPage({ params }: any) {
     ...theme,
     colors: {
       ...theme.colors,
-      primary25: "hotpink",
+      // primary25: "hotpink",
       primary: "black",
     },
   });
 
   const onSubmit = (data: any) => {
-    console.log(data);
+    console.log("cake data is ",data);
   };
 
   return (
@@ -255,50 +293,108 @@ function CakeDetailsPage({ params }: any) {
                 >
                   <div className="mt-4 space-y-3">
                     <label htmlFor="size" className="block w-full">
-                      <span className="mb-1.5 inline-block after:inline-block after:text-red-600 after:content-['*']">
+                      <span className="mb-1.5 inline-block after:inline-block after:text-red-600 after:content-['*'] ">
                         Size
                       </span>
                       <Controller
                         control={control}
                         name="sizes"
-                        render={({ field: { value, onChange } }) => {
+                        render={({ field: { value, onChange, ref } }) => {
                           console.log(value, "vavav");
 
                           return (
                             <Select
                               options={cakeSizes}
-                              // value={value}
-                              onChange={onChange}
+                              value={cakeSizes.find(
+                                (option) => option.value === value,
+                              )}
+                              onChange={(selected) => onChange(selected?.value)}
+                              ref={ref}
                               theme={selectTheme}
                             />
                           );
                         }}
                       />
+                      {errors.sizes && (
+                        <p className="text-red-500">{errors.sizes.message}</p>
+                      )}
                     </label>
                     <label htmlFor="toppings" className="block w-full">
                       <span className="mb-1.5 inline-block after:inline-block after:text-red-600 after:content-['*']">
                         Toppings
                       </span>
-                      <Select options={toppings} theme={selectTheme} />
+                      {/* <Select options={toppings} theme={selectTheme} /> */}
+                      <Controller
+                        control={control}
+                        name="toppings"
+                        render={({ field: { value, onChange, ref } }) => {
+                          console.log(value, "vavav");
+
+                          return (
+                            <Select
+                              options={toppings}
+                              value={toppings.find(
+                                (option) => option.value === value,
+                              )}
+                              onChange={(selected) => onChange(selected?.value)}
+                              ref={ref}
+                              theme={selectTheme}
+                            />
+                          );
+                        }}
+                      />
+                      {errors.toppings && (
+                        <p className="text-red-500">
+                          {errors.toppings.message}
+                        </p>
+                      )}
                     </label>
-                    <label htmlFor="duration" className="block w-full">
-                      <span className="mb-1.5 inline-block after:inline-block after:text-red-600 after:content-['*']">
+                    <label htmlFor="cakeTimes" className="block w-full">
+                      <span className="mb-1.5 inline-block after:inline-block after:text-red-600 after:content-['*'] ">
                         When do you need your cake?
                       </span>
-                      <Select theme={selectTheme} options={cakeTimes} />
+                      {/* <Select theme={selectTheme} options={cakeTimes} /> */}
+                      <Controller
+                        control={control}
+                        name="cakeTimes"
+                        render={({ field: { value, onChange, ref } }) => {
+                          console.log(value, "vavav");
+
+                          return (
+                            <Select
+                              options={cakeTimes}
+                              value={cakeTimes.find(
+                                (option) => option.value === value,
+                              )}
+                              onChange={(selected) => onChange(selected?.value)}
+                              ref={ref}
+                              theme={selectTheme}
+                            />
+                          );
+                        }}
+                      />
                       <p className="mt-1 text-sm">
                         48hours is the minimum time required for all cake orders
                       </p>
+                      {errors.cakeTimes && (
+                        <p className="text-red-500">
+                          {errors.cakeTimes.message}
+                        </p>
+                      )}
                     </label>
                     <label htmlFor="message" className="block w-full">
                       <span className="mb-1.5 inline-block">
                         Additional Cake Details
                       </span>
                       <textarea
+                        {...register("message")}
                         name="message"
                         id="message"
                         className="form-textarea h-[120px] w-full rounded-lg border-2 border-neutral-900 focus:border-neutral-900 focus:ring-neutral-900"
                       ></textarea>
+                      {errors.message && (
+                        <p className="text-red-500">{errors.message.message}</p>
+                      )}
                     </label>
                   </div>
                   <div className="my-3 inline-flex gap-3">
@@ -323,19 +419,19 @@ function CakeDetailsPage({ params }: any) {
                       </span>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
-                      <button
-                        onClick={handleClick}
-                      type="submit"
-                      className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
-                    >
-                      Add to cart
-                    </button>
+                  <div className="grid grid-cols-2 gap-3 after:grid ">
                     <button
                       type="button"
                       className="cursor-pointer bg-neutral-300 px-4 py-2 text-neutral-900"
                     >
                       Buy now
+                    </button>
+                    <button
+                      onClick={handleClick}
+                      type="submit"
+                      className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
+                    >
+                      Add to cart
                     </button>
                   </div>
                 </form>

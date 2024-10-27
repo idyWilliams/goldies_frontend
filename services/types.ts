@@ -86,6 +86,7 @@ export interface GetUserResponse {
   // data: any;
   user: User;
   message: string;
+  token:string
 }
 export interface Category {
   [x: string]: any;
