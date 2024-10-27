@@ -10,7 +10,7 @@ const UserCategoriesSkeleton = () => {
         <EachElement
           of={new Array(8).fill(null)}
           render={(item: any, index: number) => (
-            <div className=" relative h-[270px] w-full bg-neutral-100 xl:h-[300px]">
+            <div className=" relative  w-full bg-neutral-100 xl:h-[300px]">
               <Skeleton className="absolute left-0 top-0 h-full w-full rounded-none " />
             </div>
           )}
@@ -20,17 +20,17 @@ const UserCategoriesSkeleton = () => {
         <EachElement
           of={new Array(6).fill(null)}
           render={(item: any, index: number) => (
-            <div className=" relative h-[270px] w-full bg-neutral-100 xl:h-[300px]">
+            <div className=" relative h-[270px] w-full bg-neutral-100">
               <Skeleton className="absolute left-0 top-0 h-full w-full rounded-none " />
             </div>
           )}
         />
       </div>
-      <div className="mt-5 hidden gap-4 sm:grid  sm:grid-cols-2 md:gap-6 lg:hidden ">
+      <div className="mt-5 hidden gap-4 sm:grid sm:grid-cols-2 md:gap-6 lg:hidden ">
         <EachElement
           of={new Array(4).fill(null)}
           render={(item: any, index: number) => (
-            <div className=" relative h-[270px] w-full bg-neutral-100 xl:h-[300px]">
+            <div className=" relative h-[270px] w-full bg-neutral-100 ">
               <Skeleton className="absolute left-0 top-0 h-full w-full rounded-none " />
             </div>
           )}

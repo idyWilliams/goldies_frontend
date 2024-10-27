@@ -7,15 +7,15 @@ import { Category } from "@/services/types";
 
 export interface CategorySlice {
   isValid: boolean | null;
-  isFetchingCategory: boolean;
-  categories: Category[] | [];
+  // isPending: boolean;
+  categories: Category[] | null;
   activeCategory: Category | null;
   categoryFormRef: RefObject<HTMLFormElement> | null;
   refetchCategory: (() => Promise<QueryObserverResult<any, Error>>) | null;
   setIsValid: (value: boolean) => void;
-  setIsFetchingCategory: (value: boolean) => void;
+  // setIsPending: (value: boolean) => void;
   setCategoryFormRef: (value: RefObject<HTMLFormElement> | null) => void;
-  setCategories: (allCategories: Category[]) => void;
+  setCategories: (allCategories: Category[] | null) => void;
   setActiveCategory: (category: Category | null) => void;
   setRefetchCategory: (
     refetchFn: () => Promise<QueryObserverResult<any, Error>>,
@@ -28,14 +28,14 @@ export const categoryStoreSlice: StateCreator<
   [],
   CategorySlice
 > = (set) => ({
-  isFetchingCategory: false,
+  // isPending: false,
   isValid: false,
-  categories: [],
+  categories: null,
   activeCategory: null,
   categoryFormRef: null,
   refetchCategory: null, // Store the refetch function
   setIsValid: (value) => set({ isValid: value }),
-  setIsFetchingCategory: (value) => set({ isFetchingCategory: value }),
+  // setIsPending: (value) => set({ isPending: value }),
   setCategories: (allCategories) => set({ categories: allCategories }),
   setActiveCategory: (category) => set({ activeCategory: category }),
   setCategoryFormRef: (value) => set({ categoryFormRef: value }),

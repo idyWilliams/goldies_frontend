@@ -23,7 +23,13 @@ import {
 } from "@/services/hooks/category";
 import useBoundStore from "@/zustand/store";
 import { toast } from "react-toastify";
-import { SubCategory } from "@/services/types";
+import { Category, SubCategory } from "@/services/types";
+import { optimisticSubCatUpdate } from "@/utils/optimisticCategoryUpdate";
+
+type SubCatQueryDataType = {
+  [x: string]: any;
+  category: Category;
+};
 
 const schema = yup.object().shape({
   // parentCategory: yup.string().required("Parent category is required"),
@@ -45,6 +51,7 @@ const CreateSubategory = () => {
   const queryClient = useQueryClient();
   const queryParams = useSearchParams();
   const categoryId = queryParams.get("categoryId");
+
   const [imageUrl, setImageUrl] = useState<string>("");
 
   const activeSubcategory = useBoundStore((state) => state.activeSubcategory);
@@ -54,7 +61,7 @@ const CreateSubategory = () => {
   const setShowSub = useBoundStore((state) => state.setShowSub);
   const showSub = useBoundStore((state) => state.showSub);
   const refetchCategory = useBoundStore((state) => state.refetchCategory);
-  const isFetchingCategory = useBoundStore((state) => state.isFetchingCategory);
+  // const isFetchingCategory = useBoundStore((state) => state.isFetchingCategory);
 
   const {
     control,
@@ -99,26 +106,92 @@ const CreateSubategory = () => {
   // MUTATION HOOK TO ADD NEW SUBCATEGORY
   const newSubCategory = useMutation({
     mutationFn: createSubCategory,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
-      refetchCategory && refetchCategory();
+
+    onMutate: async (variable) => {
+      await queryClient.cancelQueries({ queryKey: ["categories", categoryId] });
+      const previousCategory = queryClient.getQueryData([
+        "categories",
+        categoryId,
+      ]);
+      console.log(previousCategory);
+
+      if (!previousCategory) return;
+
+      queryClient.setQueryData(
+        ["categories", categoryId],
+        (old: SubCatQueryDataType) => {
+          const newData = optimisticSubCatUpdate("create", old, variable);
+          console.log(newData);
+
+          return { ...newData };
+        },
+      );
+      return { previousCategory };
     },
-    onError(error) {
+
+    onSettled: (variable) => {
+      queryClient.invalidateQueries({ queryKey: ["categories", categoryId] });
+    },
+
+    onSuccess: (data) => {
+      setShowSub(false);
+      toast.success("Subcategory succesfully created");
+    },
+
+    onError: (error, newCategory, context) => {
+      queryClient.setQueryData(
+        ["categories", categoryId],
+        context?.previousCategory,
+      );
       console.error(error);
-      toast.error(error.message);
+      toast.error("There was an error creating this Subcategory");
     },
   });
 
   // MUTATION HOOK TO EDIT EXSITING SUBCATEGORY
   const editActiveSubcategory = useMutation({
     mutationFn: editSubCategory,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
-      refetchCategory && refetchCategory();
+    onMutate: async (variable) => {
+      console.log(variable);
+      console.log(categoryId);
+
+      await queryClient.cancelQueries({ queryKey: ["categories", categoryId] });
+      const previousCategory = queryClient.getQueryData([
+        "categories",
+        categoryId,
+      ]);
+      console.log(previousCategory);
+
+      if (!previousCategory) return;
+
+      queryClient.setQueryData(
+        ["categories", categoryId],
+        (old: SubCatQueryDataType) => {
+          const newData = optimisticSubCatUpdate("edit", old, variable);
+          console.log(newData);
+
+          return { ...newData };
+        },
+      );
+      return { previousCategory };
     },
-    onError(error) {
+
+    onSettled: (variable) => {
+      queryClient.invalidateQueries({ queryKey: ["categories", categoryId] });
+    },
+
+    onSuccess: (data) => {
+      setShowSub(false);
+      toast.success("Subcategory succesfully updated");
+    },
+
+    onError: (error, newCategory, context) => {
+      queryClient.setQueryData(
+        ["categories", categoryId],
+        context?.previousCategory,
+      );
       console.error(error);
-      toast.error(error.message);
+      toast.error("There was an error updating this Subcategory");
     },
   });
 
@@ -179,34 +252,15 @@ const CreateSubategory = () => {
         subcategory.image = imageURL;
       }
       if (!activeSubcategory) {
-        newSubCategory.mutate(subcategory, {
-          onSuccess: () => {
-            reset();
-            setImageUrl("");
-            setActiveSubcategory(null);
-            !isFetchingCategory && setShowSub(false);
-            toast.success(data.message);
-          },
-        });
+        newSubCategory.mutate(subcategory);
       } else {
         const updatedSubCategory = { ...subcategory };
         delete updatedSubCategory.categoryId;
 
-        editActiveSubcategory.mutate(
-          {
-            subCategory: updatedSubCategory,
-            subCategoryId: activeSubcategory?._id,
-          },
-          {
-            onSuccess: () => {
-              reset();
-              setImageUrl("");
-              setActiveSubcategory(null);
-              !isFetchingCategory && setShowSub(false);
-              toast.success(data.message);
-            },
-          },
-        );
+        editActiveSubcategory.mutate({
+          subCategory: updatedSubCategory,
+          subCategoryId: activeSubcategory?._id,
+        });
       }
     } catch (error) {
       console.error(error);

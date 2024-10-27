@@ -20,6 +20,7 @@ import MenuPopup from "./MenuPopup";
 import { useDispatch } from "react-redux";
 import { setProducts } from "@/redux/features/product/productSlice";
 import { IoCartOutline } from "react-icons/io5";
+import Logo from "../public/assets/goldis-logo.png";
 import AuthContext from "@/context/AuthProvider";
 import { Button } from "./ui/button";
 import { jwtDecode } from "jwt-decode";
@@ -150,7 +151,8 @@ const Header = () => {
             </span>
             <Link href="/" className="relative">
               <Image
-                src="/assets/goldis-logo.png"
+                src={Logo}
+                priority
                 className="w-[130px]"
                 width={175}
                 height={92}
