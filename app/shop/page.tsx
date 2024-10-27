@@ -29,15 +29,9 @@ const ShopPage = () => {
   const [query, setQuery] = useState<any>();
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
   const [showFilter, setShowFilter] = useState(false);
-<<<<<<< HEAD
   const cakesProducts = addSlugToCakes(cakeProducts1);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [cat, setCat] = useState<string>('')
-=======
-  const [selectedOptions, setSelectedOptions] = useState<any>([
-    "Birthday Cakes",
-  ]);
->>>>>>> f37be65bc0653aa1f2264ec50b21a1a585f29d7d
 
   const handleNext = () => {
     if (currentPageIndex !== chunkArray(cakes, itemsPerPage).length) {
