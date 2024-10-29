@@ -11,7 +11,6 @@ import MobileNav from "./MobileNav";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { VscAccount } from "react-icons/vsc";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { BiHeart, BiStore } from "react-icons/bi";
@@ -34,6 +33,7 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { cn } from "@/helper/cn";
+import { Toaster } from "sonner";
 
 const Header = () => {
   const [show, setShow] = useState(false);
@@ -137,7 +137,7 @@ const Header = () => {
 
   return (
     <>
-      <ToastContainer />
+        <Toaster richColors position="top-right" expand={true} />
       <header
         className={`${sticky ? "fixed shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "absolute border-b border-neutral-900"} left-0 top-0 z-[999] flex  w-full items-center bg-goldie-300 py-3 lg:h-20`}
       >
