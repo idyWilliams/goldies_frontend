@@ -3,17 +3,10 @@ import CategoryHeader from "@/components/admin-component/category-comp/CategoryH
 import AllCategories from "@/components/admin-component/category-comp/AllCategories";
 import CatAndSubCatModals from "@/components/admin-component/category-comp/CatAndSubCatModals";
 import { getAllCategories } from "@/services/hooks/category";
+import getApiResponse from "@/helper/getApiResponse";
 
 const Page = async () => {
-  let data;
-  let error = null;
-
-  try {
-    data = await getAllCategories();
-  } catch (err) {
-    error = err;
-    console.error(error);
-  }
+  const { data, error } = await getApiResponse({ apiHook: getAllCategories });
   return (
     <section>
       <section className="min-h-screen w-full bg-neutral-100 px-4 py-4">

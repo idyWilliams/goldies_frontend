@@ -46,6 +46,8 @@ const AllCategories = ({ cat }: any) => {
     pagFxn: any,
     setCatArr: any,
   ) {
+   
+
     const reversedCats = [...arr].reverse();
     setCatArr(reversedCats);
     const paginatedArr = pagFxn(reversedCats, limit);
