@@ -10,7 +10,7 @@ import { getUser } from "@/services/hooks/users";
 import { useMutation, useQuery } from "@tanstack/react-query";
 // import { toast } from "react-toastify";
 import { toast, Toaster } from "sonner";
-// import { useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const schema = yup.object().shape({
   firstName: yup.string().required("First name is required"),
@@ -31,7 +31,7 @@ const AccountInfo = () => {
   const [country, setCountry] = useState("");
   const [state, setState] = useState("");
   const [user, setUser] = useState<any>(null);
-  // const router = useRouter();
+  const router = useRouter();
   // const [lastName, setLastName] = useState("");
   // const [email, setEmail] = useState("");
   // const [address, setAddress] = useState("");
@@ -61,7 +61,7 @@ const AccountInfo = () => {
 
     } else {
       toast.error('Session expired! Please log in again')
-      // router.push("/sign-in")
+      router.push("/sign-in")
     }
   }, []);
   console.log("data is", user);
