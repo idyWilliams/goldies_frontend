@@ -40,6 +40,7 @@ const Header = () => {
   const [sticky, setSticky] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  // @ts-ignore
   const cart = useSelector((state: RootState) => state.product.cart);
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
@@ -56,11 +57,10 @@ const Header = () => {
   // Handle User logout
   const logOut = () => {
     setIsLogin(false);
-    setAuth({});
     localStorage.removeItem("user");
     localStorage.removeItem("accessToken");
     localStorage.setItem("isLogin", JSON.stringify(false));
-    setUser(null);
+    router.push('/sign-in')
   };
 
   useEffect(() => {
@@ -137,7 +137,7 @@ const Header = () => {
 
   return (
     <>
-        <Toaster richColors position="top-right" expand={true} />
+      <Toaster richColors position="top-right" expand={true} />
       <header
         className={`${sticky ? "fixed shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "absolute border-b border-neutral-900"} left-0 top-0 z-[999] flex  w-full items-center bg-goldie-300 py-3 lg:h-20`}
       >
@@ -258,21 +258,13 @@ const Header = () => {
                     </Link>
                   </div>
                   <div className="my-2 border-b border-black border-opacity-50"></div>
-                  {isLogin ? (
-                    <Button
-                      onClick={logOut}
-                      className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
-                    >
-                      Logout
-                    </Button>
-                  ) : (
-                    <Link
-                      href={`/sign-in`}
-                      className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
-                    >
-                      Sign In
-                    </Link>
-                  )}
+                  <span
+                    className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
+                    role="button"
+                    onClick={() => logOut()}
+                  >
+                    Logout
+                  </span>
                 </MenuPopup>
               )}
             </div>
