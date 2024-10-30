@@ -25,6 +25,7 @@ const validationSchema = yup.object().shape({
 const Page = () => {
   // @ts-ignore
   const { setIsLogin } = useContext(AuthContext);
+  const [isChecked, setIsChecked] = useState(false)
   const router = useRouter();
   const [visible, setVisible] = useState(false);
   const [password, setPassword] = useState("");
@@ -89,7 +90,7 @@ const Page = () => {
             <div className="mb-4 mt-6 text-center">
               <h1 className="mb-1 text-2xl font-bold capitalize">Sign In</h1>
               <p className="text-balance text-neutral-600">
-                Welcom Back! Sign in to continue
+                Welcome Back! Sign in to continue
               </p>
             </div>
             <div className="w-full">
@@ -147,15 +148,19 @@ const Page = () => {
                 <div className="flex items-center justify-between">
                   <label htmlFor="agree" className="flex items-center gap-3">
                     <input
+                      checked={isChecked}
+                      onChange={(e) => setIsChecked(e.target.checked)}
                       type="checkbox"
                       name="agree"
                       id="agree"
-                      checked
-                      className="form-checkbox h-4 w-4 checked:bg-goldie-300 checked:hover:bg-neutral-800 focus:ring-neutral-800 checked:focus:ring-neutral-800"
+                      // checked
+                      className="form-checkbox h-4 w-4 checked:bg-goldie-300
+                       checked:hover:bg-neutral-800 focus:ring-neutral-800 
+                       checked:focus:ring-neutral-800, " 
                     />
                     <span className="text-sm">Keep me signed in</span>
                   </label>
-
+                  
                   <Link
                     href="/forgot-password"
                     className="text-sm hover:text-goldie-400"
