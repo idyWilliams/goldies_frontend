@@ -5,6 +5,7 @@ import { MultiSelect } from "react-multi-select-component";
 import CreateProductLayout from "@/components/admin-component/create-product/CreateProductLayout";
 import AnimatedMulti from "@/components/admin-component/CustomSelect";
 import { MultiValue } from "react-select";
+import AdminAuth from "@/components/admin-component/AdminAuth";
 // import { useSearchParams } from "next/navigation";
 // import { productList } from "@/utils/adminData";
 

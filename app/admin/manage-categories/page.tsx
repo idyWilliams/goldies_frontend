@@ -4,6 +4,7 @@ import AllCategories from "@/components/admin-component/category-comp/AllCategor
 import CatAndSubCatModals from "@/components/admin-component/category-comp/CatAndSubCatModals";
 import { getAllCategories } from "@/services/hooks/category";
 import getApiResponse from "@/helper/getApiResponse";
+import AdminAuth from "@/components/admin-component/AdminAuth";
 
 const Page = async () => {
   const { data, error } = await getApiResponse({ apiHook: getAllCategories });
@@ -23,5 +24,4 @@ const Page = async () => {
     </section>
   );
 };
-
 export default Page;
