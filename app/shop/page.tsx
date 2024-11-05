@@ -29,8 +29,11 @@ const ShopPage = () => {
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
   const [showFilter, setShowFilter] = useState(false);
   const cakesProducts = addSlugToCakes(cakeProducts1);
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  // const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [cat, setCat] = useState<string>("");
+  const [selectedOptions, setSelectedOptions] = useState<any>([
+    "Birthday Cakes",
+  ]);
 
   const handleNext = () => {
     if (currentPageIndex !== chunkArray(cakes, itemsPerPage).length) {
@@ -114,7 +117,7 @@ const ShopPage = () => {
       );
     }
     console.log("updated");
-  }, [cat]);
+  }, [cat, cakesProducts]);
 
   console.log("currentPage", query);
 
