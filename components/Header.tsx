@@ -56,7 +56,10 @@ const Header = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("accessToken");
     localStorage.setItem("isLogin", JSON.stringify(false));
-    router.push('/sign-in')
+
+    if (pathname.includes("/my-account") || pathname.includes("/my-orders")) {
+      router.push("/sign-in");
+    }
   };
 
   useEffect(() => {
@@ -120,8 +123,7 @@ const Header = () => {
   //     }
   //   } catch (error) {
   //     if (
-  //       (!storedSession?.token && !pathname.includes("/sign-in")) ||
-  //       !pathname.includes("/sign-up")
+  //       (!storedSession?.token && !pathname.includes("/sign-in")) || !pathname.includes("/sign-up");
   //     ) {
   //       console.error("Error checking session:", pathname.includes("/sign-in"));
 
@@ -254,13 +256,21 @@ const Header = () => {
                     </Link>
                   </div>
                   <div className="my-2 border-b border-black border-opacity-50"></div>
-                  <span
-                    className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
-                    role="button"
-                    onClick={() => logOut()}
-                  >
-                    Logout
-                  </span>
+                  {isLogin ? (
+                    <Button
+                      className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
+                      onClick={() => logOut()}
+                    >
+                      Logout
+                    </Button>
+                  ) : (
+                    <Button
+                      className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
+                      onClick={() => router.push("/sign-in")}
+                    >
+                      Sign In
+                    </Button>
+                  )}
                 </MenuPopup>
               )}
             </div>
