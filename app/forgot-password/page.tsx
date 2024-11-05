@@ -37,7 +37,6 @@ export default function Page() {
 
   const onSubmit = async (data: any) => {
     console.log(data);
-
     submitEmail
       .mutateAsync({ email: data.email })
       .then((res: any) => {
@@ -49,7 +48,7 @@ export default function Page() {
       })
       .catch((err: any) => {
         console.error(err);
-        toast.error(err.message);
+        toast.error(err?.response?.data?.message || err?.message);
       });
   };
 
