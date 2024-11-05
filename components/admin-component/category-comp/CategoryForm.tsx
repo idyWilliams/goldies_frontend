@@ -26,7 +26,7 @@ import {
   getCategory,
 } from "@/services/hooks/category";
 import { CategoryProps } from "@/utils/categoryTypes";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import useBoundStore from "@/zustand/store";
 import CategorySlugSkeleton from "./CategorySlugSkeleton";

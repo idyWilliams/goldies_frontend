@@ -7,7 +7,7 @@ import { ModalProps } from "@/utils/categoryTypes";
 import useBoundStore from "@/zustand/store";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteCategory, deleteSubCategory } from "@/services/hooks/category";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   optimisticCategoryUpdate,

@@ -8,8 +8,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 import { BiArrowBack } from "react-icons/bi";
-import { toast } from "react-toastify";
 import { Button } from "./ui/button";
+import { toast } from "sonner";
 
 export default function PasswordReset({ password }: { password: string }) {
   const router = useRouter();

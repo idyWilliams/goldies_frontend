@@ -29,7 +29,7 @@ import { chunkArray } from "@/helper/chunkArray";
 import Pagination from "@/components/custom-filter/Pagination";
 import { initials } from "@/helper/initials";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import AuthContext from "@/context/AuthProvider";
 import { getUsers } from "@/services/hooks/admin-auth";
 import moment from "moment";
