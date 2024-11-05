@@ -1,8 +1,6 @@
 "use client";
-
 import Link from "next/link";
 import Image from "next/image";
-import CartIcon from "../public/assets/cart.png";
 import { BsList, BsX, BsXLg } from "react-icons/bs";
 import { useContext, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
@@ -10,12 +8,10 @@ import { useRouter } from "next/navigation";
 import MobileNav from "./MobileNav";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { ToastContainer, toast } from "react-toastify";
-import { VscAccount } from "react-icons/vsc";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { BiHeart, BiStore } from "react-icons/bi";
 import { FaRegUserCircle } from "react-icons/fa";
-import { Ghost, Menu, ShoppingCart } from "iconsax-react";
+import { Ghost } from "iconsax-react";
 import MenuPopup from "./MenuPopup";
 import { useDispatch } from "react-redux";
 import { setProducts } from "@/redux/features/product/productSlice";
@@ -23,7 +19,7 @@ import { IoCartOutline } from "react-icons/io5";
 import Logo from "../public/assets/goldis-logo.png";
 import AuthContext from "@/context/AuthProvider";
 import { Button } from "./ui/button";
-import { jwtDecode } from "jwt-decode";
+// import { jwtDecode } from "jwt-decode";
 import {
   Dialog,
   DialogContent,
@@ -137,7 +133,7 @@ const Header = () => {
 
   return (
     <>
-        <Toaster richColors position="top-right" expand={true} />
+      <Toaster richColors position="top-right" expand={true} />
       <header
         className={`${sticky ? "fixed shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "absolute border-b border-neutral-900"} left-0 top-0 z-[999] flex  w-full items-center bg-goldie-300 py-3 lg:h-20`}
       >
