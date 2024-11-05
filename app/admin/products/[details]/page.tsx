@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { productList } from "@/utils/adminData";
 import ProductImages from "@/components/admin-component/ProductImages";
+import AdminAuth from "@/components/admin-component/AdminAuth";
 
 type Data = {
   id: number;

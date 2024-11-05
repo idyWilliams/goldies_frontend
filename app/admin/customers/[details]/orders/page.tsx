@@ -1,4 +1,5 @@
 "use client";
+import AdminAuth from "@/components/admin-component/AdminAuth";
 import CustomerOrder from "@/components/admin-component/CustomerOrder";
 import { usePathname } from "next/navigation";
 import React from "react";

@@ -12,7 +12,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import "react-phone-input-2/lib/style.css";
 import { cn } from "@/helper/cn";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 const schema = yup.object().shape({
   name: yup.string().required("name is required"),

@@ -26,7 +26,7 @@ import {
   getCategory,
 } from "@/services/hooks/category";
 import { CategoryProps } from "@/utils/categoryTypes";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import useBoundStore from "@/zustand/store";
 import CategorySlugSkeleton from "./CategorySlugSkeleton";
@@ -76,15 +76,9 @@ export default function CategoryForm() {
 
   const category = useBoundStore((state) => state.activeCategory);
   const setCategory = useBoundStore((state) => state.setActiveCategory);
-  const setCategories = useBoundStore((state) => state.setCategories);
   const [imageUrl, setImageUrl] = useState<string>(function () {
     return category ? category?.image : "";
   });
-
-  const subCategory = useBoundStore((state) => state.activeSubcategory);
-  const setSubCategory = useBoundStore((state) => state.setActiveSubcategory);
-  const subCategories = useBoundStore((state) => state.subCategories);
-  const setSubCategories = useBoundStore((state) => state.setSubCategories);
 
   const setFormRef = useBoundStore((state) => state.setCategoryFormRef);
   const setSubmitStatus = useBoundStore((state) => state.setSubmitStatus);
@@ -95,9 +89,6 @@ export default function CategoryForm() {
     category: category ? category : null,
     message: "Category fetched successfully",
   };
-
-  // const setIsPending = useBoundStore((state) => state.setIsPending);
-  // const isFetchingCategory = useBoundStore((state) => state.isFetchingCategory);
 
   // ADD FORM REF FOR USE IN THE CATEGORY HEADER BUTTON TO TRIGGER SUBMISSION
   useEffect(() => {

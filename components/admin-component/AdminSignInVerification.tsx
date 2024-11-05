@@ -22,6 +22,7 @@ const validationSchema = yup.object().shape({
 
 const AdminSignInVerification = ({ email }: { email: string }) => {
   const authContext = useContext(AuthContext);
+
   // @ts-ignore
   const { setIsLogin } = authContext;
 
@@ -46,7 +47,7 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
         console.log(res);
         localStorage.removeItem("accessToken");
         localStorage.removeItem("admin");
-        setIsLogin(false);
+        setIsLogin(true);
         localStorage.setItem("isLogin", JSON.stringify(true));
         localStorage.setItem(
           "admin",

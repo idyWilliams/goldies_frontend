@@ -12,10 +12,10 @@ export const getCatorSubArr = (
   arr: any[],
   limit: number,
   pagFxn: any,
-  setCatArr: any,
+  setCatOrSubArr: any,
 ) => {
   const reversedCats = [...arr].reverse();
-  setCatArr(reversedCats);
+  setCatOrSubArr(reversedCats);
   const paginatedArr = pagFxn(reversedCats, limit);
   return paginatedArr;
 };

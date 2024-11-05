@@ -13,7 +13,7 @@ import { cn } from "@/helper/cn";
 import { useMutation } from "@tanstack/react-query";
 import { loginUser } from "@/services/hooks/user-auth";
 import AuthContext from "@/context/AuthProvider";
-// import { toast } from "react-toastify";
+// import { toast } from "sonner";
 import { Toaster, toast } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -25,6 +25,7 @@ const validationSchema = yup.object().shape({
 const Page = () => {
   // @ts-ignore
   const { setIsLogin } = useContext(AuthContext);
+  const [isChecked, setIsChecked] = useState(false);
   const router = useRouter();
   const [visible, setVisible] = useState(false);
   const [password, setPassword] = useState("");
@@ -66,12 +67,10 @@ const Page = () => {
         reset();
       })
       .catch((err: any) => {
-         
-        
         console.log(err);
-         console.log(err.message);
-         console.log(err.response.data.message);
-         toast.error(err.response.data.message);
+        console.log(err.message);
+        console.log(err.response.data.message);
+        toast.error(err.response.data.message);
       });
   };
 
@@ -89,7 +88,7 @@ const Page = () => {
             <div className="mb-4 mt-6 text-center">
               <h1 className="mb-1 text-2xl font-bold capitalize">Sign In</h1>
               <p className="text-balance text-neutral-600">
-                Welcom Back! Sign in to continue
+                Welcome Back! Sign in to continue
               </p>
             </div>
             <div className="w-full">
@@ -147,11 +146,15 @@ const Page = () => {
                 <div className="flex items-center justify-between">
                   <label htmlFor="agree" className="flex items-center gap-3">
                     <input
+                      checked={isChecked}
+                      onChange={(e) => setIsChecked(e.target.checked)}
                       type="checkbox"
                       name="agree"
                       id="agree"
-                      checked
-                      className="form-checkbox h-4 w-4 checked:bg-goldie-300 checked:hover:bg-neutral-800 focus:ring-neutral-800 checked:focus:ring-neutral-800"
+                      // checked
+                      className="checked:focus:ring-neutral-800, form-checkbox h-4 w-4
+                       checked:bg-goldie-300 checked:hover:bg-neutral-800 
+                       focus:ring-neutral-800 "
                     />
                     <span className="text-sm">Keep me signed in</span>
                   </label>

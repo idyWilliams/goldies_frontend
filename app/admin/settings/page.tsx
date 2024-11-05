@@ -10,6 +10,7 @@ import Reset from "../../../public/assets/reset-password.svg";
 import Image from "next/image";
 import { cn } from "@/helper/cn";
 import SuccessModal from "@/components/admin-component/settings-comp/SuccessModal";
+import AdminAuth from "@/components/admin-component/AdminAuth";
 
 const tabs = [
   {

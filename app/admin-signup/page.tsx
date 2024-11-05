@@ -11,14 +11,17 @@ import Link from "next/link";
 import { cn } from "@/helper/cn";
 import { useMutation } from "@tanstack/react-query";
 import { createAdmin } from "@/services/hooks/admin-auth";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import AuthContext from "@/context/AuthProvider";
 import AdminSignUpVerification from "@/components/admin-component/AdminSignUpVerification";
 import { CgSpinner } from "react-icons/cg";
+import { useAdminStore } from "@/zustand/adminStore/adminStore";
 
 const validationSchema = yup.object().shape({
   email: yup.string().required("Email is required"),
+  userName: yup.string().required("userName is required"),
   password: yup.string().required("Password is required"),
+  confirmPassword: yup.string().required("Confirm Password is required").oneOf([yup.ref('password')], 'Passwords must match')
 });
 
 const AdminSignUp = () => {
@@ -29,8 +32,10 @@ const AdminSignUp = () => {
   const [noSubmit, setNoSubmit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [canSubmit, setCanSubmit] = useState(false);
+  const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [refCode, setRefCode] = useState<string | null>("");
+  const { updateAdmin } = useAdminStore();
 
   const newAdmin = useMutation({
     mutationFn: createAdmin,
@@ -51,24 +56,39 @@ const AdminSignUp = () => {
   };
 
   const onSubmit = async (data: any) => {
+    setUserName(data.userName)
     setEmail(data.email);
     setLoading(true);
     setCanSubmit(true);
     try {
       const res = await newAdmin.mutateAsync({
+        userName: data.userName,
         email: data.email,
         password: data.password,
         refCode: refCode as string,
       });
       console.log(res);
-      localStorage.setItem("adminEmail", data.email);
-      setIsLogin(true);
-      localStorage.setItem("isLogin", JSON.stringify(true));
-      localStorage.setItem(
-        "admin",
-        JSON.stringify({ token: res?.token, admin: res?.admin }),
-      );
-      localStorage.setItem("accessToken", res?.token);
+
+        const adminData: any = {
+          userName: data.userName,
+          email: data.email,
+      };
+      // @ts-ignore
+      updateAdmin({ userName: data.userName, email: data.email });
+      console.log('Admin State after update:', useAdminStore.getState().admin);
+      console.log('data is', data);
+
+      // localStorage.setItem("adminEmail", data.email);
+      // setIsLogin(true);
+      // localStorage.setItem("isLogin", JSON.stringify(true));
+      // localStorage.setItem(
+      //   "admin",
+      //   JSON.stringify({ token: res?.token, admin: res?.admin }),
+      // );
+      // localStorage.setItem("accessToken", res?.token);
+      
+      
+      
       // reset();
     } catch (err: any) {
       console.log(err);
@@ -123,6 +143,29 @@ const AdminSignUp = () => {
                     className="flex flex-col gap-5 md:grid-cols-2"
                     onSubmit={handleSubmit(onSubmit)}
                   >
+                    <label htmlFor="userName" className="md:col-span-2">
+                      <span className="mb-1 inline-block text-md capitalize">
+                        User Name
+                      </span>
+                      <input
+                        {...register("userName")}
+                        type="text"
+                        id="userName"
+                        placeholder="Enter your username"
+                        className={cn(
+                          "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
+                          errors?.userName
+                            ? "border border-red-600 focus:border-red-600 focus:ring-0"
+                            : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
+                        )}
+                      />
+                      {errors?.userName && (
+                        <p className="text-red-600">
+                          {errors?.userName?.message}
+                        </p>
+                      )}
+                    </label>
+
                     <label htmlFor="email" className="md:col-span-2">
                       <span className="mb-1 inline-block font-medium capitalize">
                         Email Address
@@ -140,7 +183,7 @@ const AdminSignUp = () => {
                         id="email"
                         name="email"
                         placeholder="abegundetimilehin@gmail.com"
-                        defaultValue={email}
+                        // defaultValue={email}
                         value={email}
                       />
                       {errors?.email && (
@@ -149,6 +192,7 @@ const AdminSignUp = () => {
                         </p>
                       )}
                     </label>
+
                     <label
                       htmlFor="password"
                       className="relative md:col-span-2"
@@ -187,6 +231,45 @@ const AdminSignUp = () => {
                         </p>
                       )}
                     </label>
+                    <label
+                      htmlFor="confirmPassword"
+                      className="relative md:col-span-2"
+                    >
+                      <span className="mb-1 inline-block font-medium capitalize">
+                        Confirm Password
+                      </span>
+                      <div className="relative">
+                        <input
+                          {...register("confirmPassword")}
+                          type={visible ? "text" : "confirmPassword"}
+                          className={cn(
+                            "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
+                            errors?.confirmPassword
+                              ? "border border-red-600 focus:border-red-600 focus:ring-0"
+                              : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
+                          )}
+                          id="confirmPassword"
+                          name="confirmPassword"
+                          placeholder="Confirm Password"
+                        />
+                        <span
+                          onClick={handleToggle}
+                          className="absolute bottom-[14px] right-3 cursor-pointer text-neutral-800"
+                        >
+                          {visible ? (
+                            <BsEyeSlash size={20} />
+                          ) : (
+                            <AiOutlineEye size={20} />
+                          )}
+                        </span>
+                      </div>
+                      {errors?.confirmPassword && (
+                        <p className={cn("mt-1 text-sm text-red-600")}>
+                          {errors.confirmPassword?.message}
+                        </p>
+                      )}
+                      </label>
+
                     <label
                       htmlFor="agree"
                       className="flex items-center gap-3 md:col-span-2"

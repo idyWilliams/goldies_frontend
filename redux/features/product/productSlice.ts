@@ -3,7 +3,7 @@ import { ICake } from "@/types/products";
 import { cakeProducts1 } from "@/utils/cakeData";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-// import { toast } from "react-toastify";
+// import { toast } from "sonner";
 import { toast } from "sonner";
 
 const cakes = addSlugToCakes(cakeProducts1);

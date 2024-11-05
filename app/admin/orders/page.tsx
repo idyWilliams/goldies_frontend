@@ -24,6 +24,7 @@ import MobileProductCard from "@/components/admin-component/MobileProductCard";
 import MobileOrderCard from "@/components/admin-component/MobileOrderCard";
 import OrderDetailsModal from "@/components/admin-component/OrderDetailsModal";
 import { useRouter } from "next/navigation";
+import AdminAuth from "@/components/admin-component/AdminAuth";
 
 type Product = {
   id: string;

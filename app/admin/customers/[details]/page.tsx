@@ -1,4 +1,5 @@
 "use client";
+import AdminAuth from "@/components/admin-component/AdminAuth";
 import CustomerOrder from "@/components/admin-component/CustomerOrder";
 import BillingInfo from "@/components/admin-component/customers/BillingInfo";
 import ContactInfo from "@/components/admin-component/customers/ContactInfo";

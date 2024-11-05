@@ -41,18 +41,32 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import AuthContext from "@/context/AuthProvider";
+import { useAdminStore } from "@/zustand/adminStore/adminStore";
 
 export default function AdminNav() {
   const router = useRouter();
   const authContext = useContext(AuthContext);
   // @ts-ignore
   const { setIsLogin } = authContext;
-
   const [sticky, setSticky] = useState(false);
   const [open, setIsOpen] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
   const [currentTime, setCurrentTime] = useState(moment().format("H:mm"));
+ const { admin } = useAdminStore(); 
+  const [adminName, setAdminName] = useState<string | null>(null);
+  
+  // Load admin name on page load
+ useEffect(() => {
+   if (admin) {
+     setAdminName(admin.userName); 
+     console.log("Admin from Zustand:", admin);
+   }
+ }, [admin]);
+  
+ useEffect(() => {
+  console.log('Rehydrated admin state:', admin); 
+}, [admin]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -159,7 +173,8 @@ export default function AdminNav() {
             >
               <FaRegUserCircle size={20} />{" "}
               <span className="hidden text-sm md:inline-flex md:items-center md:gap-3">
-                Account {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
+                {adminName ? adminName : "Account"}
+                {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
               </span>
             </button>
             {isOpen && (
