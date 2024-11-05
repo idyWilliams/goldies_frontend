@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation";
 import MobileNav from "./MobileNav";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-// import { ToastContainer, toast } from "react-toastify";
 import { VscAccount } from "react-icons/vsc";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { BiHeart, BiStore } from "react-icons/bi";

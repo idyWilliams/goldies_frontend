@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import Link from "next/link";
 import Image from "next/image";
 import Img from "../public/assets/goldis-gold-logo.png";
@@ -15,7 +15,7 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCategories } from "@/services/hooks/category";
 import { fetchSubCategories } from "@/services/hooks/category";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 const Footer = () => {
   const [categories, setCategories] = useState<any[]>([]);
@@ -23,7 +23,7 @@ const Footer = () => {
 
   const { data, isPending, isSuccess } = useQuery({
     queryFn: fetchCategories,
-    queryKey: ['all categories']
+    queryKey: ["all categories"],
   });
 
   useEffect(() => {
@@ -32,9 +32,6 @@ const Footer = () => {
     } else {
       setCategories([]);
     }
-
-    
-    
   }, [isPending, isSuccess, data]);
 
   return (

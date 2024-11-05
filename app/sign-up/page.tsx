@@ -12,7 +12,6 @@ import Link from "next/link";
 import { cn } from "@/helper/cn";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createUser, loginUser } from "@/services/hooks/user-auth";
-// import { toast } from "react-toastify";
 import AuthContext from "@/context/AuthProvider";
 import { Toaster, toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -70,8 +69,6 @@ const Page = () => {
         reset();
       })
       .catch((err: any) => {
-        
-        
         console.log(err);
         console.log(err.message);
         console.log(err.response.data.message);
