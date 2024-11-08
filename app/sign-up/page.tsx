@@ -93,13 +93,12 @@ const Page = () => {
           console.log(res);
           setAuth(res);
           autoLogin(data);
+          reset();
         })
         .catch((err: any) => {
           console.log(err);
-          toast.success(err.message);
+          toast.error(err?.response?.data?.message || err.message);
         });
-
-      reset();
     } else {
       setNoSubmit(true);
       setLoading(false);
