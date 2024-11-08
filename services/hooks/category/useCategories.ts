@@ -16,24 +16,11 @@ const useCategories = () => {
     enabled: !categories,
   });
 
-  // const memoisedCategories = useMemo(() => {
-  //   if (isSuccess) {
-  //     return data?.categories;
-  //   } else return null;
-  // }, [isSuccess, data?.categories]);
-
   const memoisedCategories = useMemo(() => {
     if (isSuccess) {
-      if (pathname.includes("admin")) {
-        return data?.categories;
-      } else {
-        const categories = data?.categories?.filter(
-          (category: Category) => category?.status === true,
-        );
-        return categories;
-      }
+      return data?.categories;
     } else return null;
-  }, [isSuccess, data?.categories, pathname]);
+  }, [isSuccess, data?.categories]);
 
   useEffect(() => {
     if (isSuccess && memoisedCategories) {

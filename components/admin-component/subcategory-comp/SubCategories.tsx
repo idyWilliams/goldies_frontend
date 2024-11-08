@@ -25,7 +25,6 @@ const SubCategories = () => {
 
   const [isLoaded, setIsLoaded] = useState<{ [id: string]: boolean }>({});
 
-  const isLoadedMemoized = useMemo(() => isLoaded, [isLoaded]);
   // const isLoadedMemoized = useMemo(() => isLoaded, [isLoaded]);
 
   const [subCats, setSubCats] = useState<SubCategory[] | null>(null);
@@ -77,12 +76,7 @@ const SubCategories = () => {
     setShowModal(true);
   };
 
-  const columns = getColumns(
-    handleEdit,
-    handleDelete,
-    isLoadedMemoized,
-    setIsLoaded,
-  );
+  const columns = getColumns(handleEdit, handleDelete, isLoaded, setIsLoaded);
 
   if (isNewCreate) return;
 

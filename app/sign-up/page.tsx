@@ -12,8 +12,8 @@ import Link from "next/link";
 import { cn } from "@/helper/cn";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createUser, loginUser } from "@/services/hooks/user-auth";
-import { toast } from "react-toastify";
 import AuthContext from "@/context/AuthProvider";
+import { Toaster, toast } from "sonner";
 import { useRouter } from "next/navigation";
 
 const validationSchema = yup.object().shape({
@@ -70,7 +70,9 @@ const Page = () => {
       })
       .catch((err: any) => {
         console.log(err);
-        toast.error(err.message);
+        console.log(err.message);
+        console.log(err.response.data.message);
+        toast.error(err.response.data.message);
       });
   };
 
@@ -103,7 +105,6 @@ const Page = () => {
   return (
     <Layout>
       <div className="mt-[64px]" />
-
       <section className="py-10">
         <div className="wrapper">
           <div className="flex flex-col items-center sm:mx-auto sm:w-[500px] sm:border sm:bg-white sm:p-6 sm:shadow-lg">

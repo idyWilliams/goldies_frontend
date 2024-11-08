@@ -9,6 +9,7 @@ export interface User {
 }
 export interface Admin {
   id: string;
+  userName: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -51,6 +52,7 @@ export interface ResetPassword {
 
 // Interfaces for the admin signup and invite admin
 export interface CreateAdmin {
+  userName: string;
   email: string;
   refCode: string;
   password: string;
@@ -86,6 +88,7 @@ export interface GetUserResponse {
   // data: any;
   user: User;
   message: string;
+  token:string
 }
 export interface Category {
   [x: string]: any;

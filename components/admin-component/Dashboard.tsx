@@ -42,6 +42,9 @@ const Overviews = [
 
 export default function Dashboard() {
   const router = useRouter();
+
+  console.log(Date.now());
+
   return (
     <>
       <section className="mb-5 w-full bg-goldie-300 px-4 py-6 pt-[24px] lg:bg-white lg:p-4 lg:pt-6">

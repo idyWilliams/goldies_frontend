@@ -6,15 +6,12 @@ import { cn } from "@/helper/cn";
 import { forgotPassword } from "@/services/hooks/user-auth";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
-import { log } from "console";
 import { Key } from "iconsax-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { AiOutlineEye } from "react-icons/ai";
 import { BiArrowBack } from "react-icons/bi";
-import { BsEyeSlash } from "react-icons/bs";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import * as yup from "yup";
 
 const schema = yup.object().shape({

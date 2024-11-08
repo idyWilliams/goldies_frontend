@@ -5,12 +5,11 @@ console.log("Current NODE_ENV:", process.env.NODE_ENV);
 export let BASEURL: string | undefined;
 switch (process.env.NODE_ENV) {
   case "production":
-    BASEURL = process.env.NEXT_PUBLIC_API_BASE_URL;
+    BASEURL = process.env.NEXT_PUBLIC_PRODUCTION_API_BASE_URL;
     console.log("Production Environment");
     break;
   default:
-    BASEURL = process.env.NEXT_PUBLIC_SERVER_HOST;
-    console.log("Development Environment");
+    BASEURL = process.env.NEXT_PUBLIC_API_BASE_URL;
     break;
 }
 

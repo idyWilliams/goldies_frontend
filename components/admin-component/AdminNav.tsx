@@ -22,10 +22,7 @@ import {
   UserCirlceAdd,
 } from "iconsax-react";
 import moment from "moment";
-import { CiSearch } from "react-icons/ci";
 import { useRouter } from "next/navigation";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import {
   Popover,
   PopoverContent,
@@ -44,18 +41,32 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import AuthContext from "@/context/AuthProvider";
+import { useAdminStore } from "@/zustand/adminStore/adminStore";
 
 export default function AdminNav() {
   const router = useRouter();
   const authContext = useContext(AuthContext);
   // @ts-ignore
   const { setIsLogin } = authContext;
-
   const [sticky, setSticky] = useState(false);
   const [open, setIsOpen] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
   const [currentTime, setCurrentTime] = useState(moment().format("H:mm"));
+ const { admin } = useAdminStore(); 
+  const [adminName, setAdminName] = useState<string | null>(null);
+  
+  // Load admin name on page load
+ useEffect(() => {
+   if (admin) {
+     setAdminName(admin.userName); 
+     console.log("Admin from Zustand:", admin);
+   }
+ }, [admin]);
+  
+ useEffect(() => {
+  console.log('Rehydrated admin state:', admin); 
+}, [admin]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -84,7 +95,6 @@ export default function AdminNav() {
 
   return (
     <>
-      <ToastContainer />
       <nav
         className={`${sticky ? "shadow-[0_0_50px_rgba(0,0,0,0.5)] lg:fixed" : "lg:absolute"} sticky left-0 top-0  z-[999] w-full bg-black py-3`}
       >
@@ -163,7 +173,8 @@ export default function AdminNav() {
             >
               <FaRegUserCircle size={20} />{" "}
               <span className="hidden text-sm md:inline-flex md:items-center md:gap-3">
-                Account {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
+                {adminName ? adminName : "Account"}
+                {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
               </span>
             </button>
             {isOpen && (

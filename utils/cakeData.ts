@@ -311,8 +311,8 @@ export const cakeProducts1 = [
     weight: "1.5kg",
     available: true,
     bestSeller: true,
-    category: "Milestone Cakes",
-    subcategory: "Birthday Cakes",
+    category: "Cupcake",
+    subcategory: "sxassccsa",
     type: "available",
   },
   {
@@ -328,8 +328,8 @@ export const cakeProducts1 = [
     weight: "1.8kg",
     available: true,
     bestSeller: false,
-    category: "Kids' Cakes",
-    subcatergory: "Princess Cakes",
+    category: "Cupcake",
+    subcategory: "Cartoon Character Cakes",
     type: "available",
   },
   {
@@ -345,6 +345,8 @@ export const cakeProducts1 = [
     weight: "1.2kg",
     available: false,
     bestSeller: false,
+    category: "Kid's Cake",
+    subcategory: "Superhero Cakes",
     type: "pre-order",
   },
   {
@@ -367,6 +369,8 @@ export const cakeProducts1 = [
     weight: "1.5kg",
     available: true,
     bestSeller: true,
+    category: "Kid's Cake",
+    subcategory: "pine cake",
     type: "available",
   },
   {
@@ -382,6 +386,8 @@ export const cakeProducts1 = [
     weight: "1.2kg",
     available: true,
     bestSeller: false,
+    category: "Vanilla Cakes",
+    subcategory: "Smooth cake",
     type: "available",
   },
   {
@@ -405,6 +411,8 @@ export const cakeProducts1 = [
     weight: "1.8kg",
     available: true,
     bestSeller: false,
+    category: "Vanilla Cakes",
+    subcategory: "new subcategory",
     type: "pre-order",
   },
   {
@@ -427,6 +435,8 @@ export const cakeProducts1 = [
     weight: "1.5kg",
     available: false,
     bestSeller: false,
+    category: "Cupcake",
+    subcategory: "Princess Cakes",
     type: "pre-order",
   },
   {
@@ -450,6 +460,8 @@ export const cakeProducts1 = [
     weight: "1kg",
     available: true,
     bestSeller: true,
+    category: "Kid's Cake",
+    subcategory: "Pineapple Cake",
     type: "pre-order",
   },
 ];

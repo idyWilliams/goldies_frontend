@@ -28,6 +28,11 @@ export const getAllProducts = async () => {
   return response.data;
 };
 
+export const fetchProducts = async (category: string, subcategory?: string) => {
+    const response = await instance.get(`/product/get_all_product?category=${category}&subcategory=${subcategory}`);
+  return response.data; 
+};
+
 // GET A PRODUCT
 export const getProduct = async (productId: string) => {
   const response = await instance.get(`/product/get_product/${productId}`);

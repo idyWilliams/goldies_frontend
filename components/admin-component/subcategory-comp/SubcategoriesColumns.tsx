@@ -5,7 +5,7 @@ import StatusBar from "@/components/admin-component/category-comp/StatusBar";
 import { Edit, Trash } from "iconsax-react";
 import Placeholder from "../../../public/assets/placeholder3.png";
 import {
-  handleImagesLoad,
+  handleImageLoad,
   LoadedState,
   SetLoadedType,
 } from "@/helper/handleImageLoad";
@@ -15,7 +15,7 @@ const columnHelper = createColumnHelper<SubategoriesColumns>();
 export const getColumns = (
   onEdit: (item: any) => void,
   onDelete: (item: any) => void,
-  isLoadedMemoized: LoadedState,
+  isLoaded: LoadedState,
   setIsLoaded: SetLoadedType,
 ) => {
   const columns = [
@@ -23,29 +23,47 @@ export const getColumns = (
       id: "SubImage",
       cell: (info) => {
         return (
-          <div className="h-[80px] w-[100px]">
-            {!isLoadedMemoized[info.cell.row.original?._id] && (
+          <div className="relative h-[80px] w-[100px]">
+            {/* {!isLoaded[info.cell.row.original?._id] && (
               <Image
                 src={Placeholder}
                 alt="placeholder"
                 placeholder="blur"
                 priority
-                width={60}
-                height={50}
-                className="h-[80px] w-[100px] animate-pulse object-cover object-center"
+                fill
+                className="absolute left-0 top-0 -z-10 animate-pulse object-cover object-center"
               />
-            )}
+            )} */}
+            {/* ${isLoaded[info.cell.row.original?._id] ? "opacity-100" : "opacity-0"} */}
+
+            <Image
+              src={Placeholder}
+              alt="placeholder"
+              placeholder="blur"
+              priority
+              width={150}
+              height={150}
+              className=" animate-pulse object-cover object-center"
+            />
 
             <Image
               src={info.cell.row.original?.image}
               alt={info.cell.row.original?.name}
-              width={150}
-              height={150}
-              className={`h-[80px] w-[100px] object-cover object-center  ${isLoadedMemoized[info.cell.row.original?._id] ? "opacity-100" : "opacity-0"} `}
-              onLoad={() =>
-                handleImagesLoad(info.cell.row.original?._id, setIsLoaded)
-              }
+              fill
+              className={` object-cover object-center   `}
             />
+
+            {/* <Image
+              src={info.cell.row.original?.image}
+              alt={info.cell.row.original?.name}
+              // width={150}
+              // height={150}
+              fill
+              className={` object-cover object-center   ${isLoaded[info.cell.row.original?._id] ? "opacity-100" : "opacity-0"}`}
+              onLoad={() =>
+                handleImageLoad(info.cell.row.original?._id, setIsLoaded)
+              }
+            /> */}
           </div>
         );
       },

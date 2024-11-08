@@ -12,7 +12,7 @@ import Link from "next/link";
 import { cn } from "@/helper/cn";
 import { useMutation } from "@tanstack/react-query";
 import AuthContext from "@/context/AuthProvider";
-import { toast } from "react-toastify";
+import { Toaster, toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import AdminSignInVerification from "@/components/admin-component/AdminSignInVerification";
@@ -57,7 +57,9 @@ const Page = () => {
       })
       .catch((err: any) => {
         console.log(err);
-        toast.error(err.message);
+        console.log(err.message);
+        console.log(err.response.data.message);
+        toast.error(err.response.data.message);
       });
   };
 

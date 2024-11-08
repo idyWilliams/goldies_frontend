@@ -9,7 +9,7 @@ import { cakeProducts1 } from "@/utils/cakeData";
 import { addSlugToCakes } from "@/helper";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { ArrowDown2, Shuffle } from "iconsax-react";
 import FilterComp from "@/components/custom-filter/FilterComp";
 import { IoList } from "react-icons/io5";
@@ -18,6 +18,8 @@ import { chunkArray } from "@/helper/chunkArray";
 import Pagination from "@/components/custom-filter/Pagination";
 import ProductCard from "@/components/shop-components/ProductCard";
 import { captalizedName } from "@/helper/nameFormat";
+import { useQuery } from "@tanstack/react-query";
+import { fetchProducts } from "@/services/hooks/products";
 
 let itemsPerPage = 6;
 
@@ -26,9 +28,9 @@ const ShopPage = () => {
   const [query, setQuery] = useState<any>();
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
   const [showFilter, setShowFilter] = useState(false);
-  const [selectedOptions, setSelectedOptions] = useState<any>([
-    "Birthday Cakes",
-  ]);
+  const cakesProducts = addSlugToCakes(cakeProducts1);
+  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
+  const [cat, setCat] = useState<string>('')
 
   const handleNext = () => {
     if (currentPageIndex !== chunkArray(cakes, itemsPerPage).length) {
@@ -69,6 +71,25 @@ const ShopPage = () => {
     return 100; // or any default value
   };
 
+  // const searchParams = useSearchParams();
+  // const cat = '';
+  // console.log("cat is", cat);
+
+  const handleFilter = () => {
+    const queryString = window.location.search;
+    const searchParams = new URLSearchParams(queryString);
+    const category = searchParams.get("cat") || "";
+    const subcategory = searchParams.get("sub");
+    setCat(category);
+
+    console.log("Category:", category, "Subcategory:", subcategory);
+    setCakes(
+      cakes?.filter((cake: any) =>
+        selectedOptions?.includes(cake?.subcategory?.toLowerCase()),
+      ),
+    );
+  };
+
   useEffect(() => {
     AOS.init({
       duration: 1000,
@@ -77,20 +98,44 @@ const ShopPage = () => {
     });
   }, []);
 
+  useEffect(() => {
+    if (cat) {
+      const cate = addSlugToCakes(cakeProducts1)?.filter(
+        (product: any) => product?.category?.toLowerCase() === cat,
+      );
+      setCakes((prevCakes) =>
+        JSON.stringify(prevCakes) !== JSON.stringify(cate) ? cate : prevCakes,
+      );
+    } else {
+      setCakes((prevCakes) =>
+        JSON.stringify(prevCakes) !== JSON.stringify(cakesProducts)
+          ? cakesProducts
+          : prevCakes,
+      );
+    }
+    console.log("updated");
+  }, [cat, cakesProducts]);
+
   console.log("currentPage", query);
 
-  useEffect(() => {
-    const queryString = window.location.search;
-    const searchParams = new URLSearchParams(queryString);
-    setQuery({ cat: searchParams.get("cat"), sub: searchParams.get("sub") });
-
-    console.log(
-      queryString,
-      "query",
-      searchParams.get("cat"),
-      searchParams.get("sub"),
-    );
-  }, []);
+  // useEffect(() => {
+  //   const queryString = window.location.search;
+  //   console.log("window is", window.location.search);
+  //   const searchParams = new URLSearchParams(queryString);
+  //   // setQuery({ cat: searchParams.get("cat"), sub: searchParams.get("sub") });
+  //   const category = searchParams.get("cat");
+  //   const subcategory = searchParams.get("sub");
+  //   // setQuery(category ? category : "");
+  //   setQuery({ cat: category, sub: subcategory });
+  //   console.log(
+  //     queryString,
+  //     "query",
+  //     searchParams.get("cat"),
+  //     searchParams.get("sub"),
+  //     "category", category,
+  //     "subcategory", subcategory,
+  //   );
+  // }, [setQuery]);
 
   return (
     <>
@@ -119,8 +164,11 @@ const ShopPage = () => {
                 <div className="items-center justify-between lg:flex">
                   <h3 className="text-2xl font-bold text-black">
                     {" "}
-                    {"" ? captalizedName("") : "All Cakes"}
+                    {/* {"" ? captalizedName("") : "All Cakes"} */}
+                    {cat ? captalizedName(cat) : "All Cakes"}
+                    {/* {cat} */}
                   </h3>
+                  {/* MOBILE PRODUCT DISPLAY */}
                   <span className="text-sm text-neutral-500 lg:text-base">
                     Showing {currentPageIndex} - {itemsPerPage} of{" "}
                     {cakes?.length} results
@@ -165,19 +213,13 @@ const ShopPage = () => {
                       </span>
                       Filter
                     </span>
-
-                    <span
-                      className="cursor-pointer"
-                      onClick={() => setShowFilter(false)}
-                    >
-                      <BsX size={24} />
-                    </span>
                   </div>
                   <FilterComp
                     min={min()}
                     max={max()}
                     setSelectedOptions={setSelectedOptions}
                     selectedOptions={selectedOptions}
+                    onFilter={handleFilter}
                     category={query?.cat}
                     subcategory={query?.sub}
                   />
@@ -187,7 +229,8 @@ const ShopPage = () => {
                     <div className="items-center justify-between lg:flex">
                       <h3 className="text-2xl font-bold text-black">
                         {" "}
-                        {query?.cat ? captalizedName(query?.cat) : "All Cakes"}
+                        {/* {query?.cat ? captalizedName(query?.cat) : "All Cakes"} */}
+                        {cat ? captalizedName(cat) : "All Cakes"}
                       </h3>
                       <span className="text-sm text-neutral-500 lg:text-base">
                         Showing {currentPageIndex} - {itemsPerPage} of{" "}
@@ -241,6 +284,7 @@ const ShopPage = () => {
                 max={max()}
                 setSelectedOptions={setSelectedOptions}
                 selectedOptions={selectedOptions}
+                onFilter={handleFilter}
                 category={query?.cat}
                 subcategory={query?.sub}
               />
