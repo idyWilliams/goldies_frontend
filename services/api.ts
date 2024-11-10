@@ -10,7 +10,7 @@ switch (process.env.NODE_ENV) {
     break;
   default:
     BASEURL = process.env.NEXT_PUBLIC_API_BASE_URL;
-    console.log("Development Environment");
+    console.log("Development Environment", BASEURL);
     break;
 }
 
@@ -25,10 +25,11 @@ const instance = axios.create({
   baseURL: BASEURL,
   headers: {
     "Content-type": "application/json",
-    "x-access-token": accessToken,
-    Token: `Bearer ${accessToken}`,
+    // "x-access-token": accessToken,
+    // Token: `Bearer ${accessToken}`,
     Authorization: `Bearer ${accessToken}`,
   },
+  withCredentials: true,
 });
 
 export default instance;
