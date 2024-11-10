@@ -9,14 +9,14 @@ import {
 
 // INVITE ADMIN
 export const inviteAdmin = async (data: InviteAdmin) => {
-  const response = await instance.post("/admin/invite_admin", data);
+  const response = await instance.post("/admin/invite", data);
   return response.data;
 };
 
 // CREATE AN ADMIN
 export const createAdmin = async (data: CreateAdmin) => {
   const response = await instance.post(
-    `/admin/admin_auth?refCode=${data.refCode}`,
+    `/admin/signup?refCode=${data.refCode}`,
     { email: data.email, password: data.password },
   );
   return response.data;
@@ -24,13 +24,13 @@ export const createAdmin = async (data: CreateAdmin) => {
 
 // ADMIN LOGIN
 export const loginAdmin = async (data: LoginAdmin) => {
-  const response = await instance.post("/admin/admin_auth", data);
+  const response = await instance.post("/admin/login", data);
   return response.data;
 };
 
 // OTP
 export const verifyOTP = async (data: VerificationOtp) => {
-  const response = await instance.post("/admin/verify_otp", data);
+  const response = await instance.post("/admin/verify", data);
   return response.data;
 };
 

@@ -27,6 +27,10 @@ const Page = () => {
   const router = useRouter();
   const [visible, setVisible] = useState(false);
   const [email, setEmail] = useState<string>("");
+  const authContext = useContext(AuthContext);
+
+  // @ts-ignore
+  const { setIsLogin } = authContext;
 
   const adminLogin = useMutation({
     mutationFn: loginAdmin,
@@ -53,6 +57,17 @@ const Page = () => {
       .mutateAsync(data)
       .then((res: any) => {
         console.log("res: ", res.data);
+
+        // localStorage.removeItem("accessToken");
+        // localStorage.removeItem("admin");
+        // setIsLogin(true);
+        // localStorage.setItem("isLogin", JSON.stringify(true));
+        // localStorage.setItem(
+        //   "admin",
+        //   JSON.stringify({ token: res?.token, admin: res?.admin }),
+        // );
+        // localStorage.setItem("accessToken", res?.token);
+        // router.push("/admin");
         reset();
       })
       .catch((err: any) => {
