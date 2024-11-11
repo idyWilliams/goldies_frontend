@@ -6,7 +6,7 @@ export let BASEURL: string | undefined;
 switch (process.env.NODE_ENV) {
   case "production":
     BASEURL = process.env.NEXT_PUBLIC_PRODUCTION_API_BASE_URL;
-    console.log("Production Environment");
+    console.log("Production Environment:", BASEURL);
     break;
   default:
     BASEURL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -29,6 +29,12 @@ const instance = axios.create({
     Authorization: `Bearer ${accessToken}`,
   },
   withCredentials: true,
+});
+
+// Optional: Log Axios instance configuration for debugging
+console.log("Axios Instance Configuration:", {
+  baseURL: BASEURL,
+  headers: instance.defaults.headers,
 });
 
 export default instance;

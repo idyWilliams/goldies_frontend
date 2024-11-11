@@ -24,7 +24,7 @@ export const createAdmin = async (data: CreateAdmin) => {
 
 // ADMIN LOGIN
 export const loginAdmin = async (data: LoginAdmin) => {
-  const response = await instance.post("/admin/admin_auth", data);
+  const response = await instance.post("/admin/login", data);
   return response.data;
 };
 
