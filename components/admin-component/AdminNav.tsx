@@ -47,26 +47,25 @@ export default function AdminNav() {
   const router = useRouter();
   const authContext = useContext(AuthContext);
   // @ts-ignore
-  const { setIsLogin } = authContext;
+  const { isLogin, setIsLogin } = authContext;
   const [sticky, setSticky] = useState(false);
   const [open, setIsOpen] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
   const [currentTime, setCurrentTime] = useState(moment().format("H:mm"));
- const { admin } = useAdminStore(); 
-  const [adminName, setAdminName] = useState<string | null>(null);
-  
-  // Load admin name on page load
- useEffect(() => {
-   if (admin) {
-     setAdminName(admin.userName); 
-     console.log("Admin from Zustand:", admin);
-   }
- }, [admin]);
-  
- useEffect(() => {
-  console.log('Rehydrated admin state:', admin); 
-}, [admin]);
+  const admin = JSON.parse(localStorage.getItem("admin") as string);
+
+  // // Load admin name on page load
+  // useEffect(() => {
+  //   if (admin) {
+  //     setAdminName(admin.userName);
+  //     console.log("Admin from Zustand:", admin);
+  //   }
+  // }, [admin]);
+
+  // useEffect(() => {
+  //   console.log("Rehydrated admin state:", admin);
+  // }, [admin]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -92,6 +91,12 @@ export default function AdminNav() {
     localStorage.removeItem("admin");
     router.push("/admin-sign-in");
   };
+
+  useEffect(() => {
+    const isLoggedIn = JSON.parse(localStorage.getItem("isLogin") as string);
+    console.log(isLoggedIn, admin?.userName, "shsh");
+    setIsLogin(JSON.parse(localStorage.getItem("isLogin") as string));
+  }, [admin?.userName, setIsLogin]);
 
   return (
     <>
@@ -172,8 +177,8 @@ export default function AdminNav() {
               className="flex items-center gap-2 border-l border-goldie-300 border-opacity-40 pl-4 text-goldie-300"
             >
               <FaRegUserCircle size={20} />{" "}
-              <span className="hidden text-sm md:inline-flex md:items-center md:gap-3">
-                {adminName ? adminName : "Account"}
+              <span className="hidden text-sm capitalize md:inline-flex md:items-center md:gap-3">
+                {isLogin && admin?.userName ? admin?.userName : "Account"}
                 {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
               </span>
             </button>
