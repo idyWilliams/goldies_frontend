@@ -25,8 +25,8 @@ const instance = axios.create({
   baseURL: BASEURL,
   headers: {
     "Content-type": "application/json",
-    "x-access-token": accessToken,
-    Token: `Bearer ${accessToken}`,
+    // "x-access-token": accessToken,
+    // Token: `Bearer ${accessToken}`,
     Authorization: `Bearer ${accessToken}`,
   },
 });
