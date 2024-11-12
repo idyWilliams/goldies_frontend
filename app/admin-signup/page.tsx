@@ -64,6 +64,8 @@ const AdminSignUp = () => {
     setEmail(data.email);
     setLoading(true);
     setCanSubmit(true);
+    console.log("data is", data);
+
     try {
       const res = await newAdmin.mutateAsync({
         userName: data.userName,
@@ -73,13 +75,8 @@ const AdminSignUp = () => {
       });
       console.log(res);
 
-      const adminData: any = {
-        userName: data.userName,
-        email: data.email,
-      };
       // @ts-ignore
       updateAdmin({ userName: data.userName, email: data.email });
-      console.log("Admin State after update:", useAdminStore.getState().admin);
       console.log("data is", data);
 
       // localStorage.setItem("adminEmail", data.email);
@@ -339,193 +336,199 @@ const AdminSignUp = () => {
             </Link>
           </div>
 
-          {/*   {newAdmin.isSuccess ? (
-          <AdminSignUpVerification email={email} />
+          {newAdmin.isSuccess ? (
+            <AdminSignUpVerification email={email} />
           ) : (
-            <></>
-          )} */}
-          <div className="flex w-full max-w-md flex-col items-center border bg-white px-6 py-12 shadow-lg sm:mx-auto sm:w-[440px]">
-            <div className="mb-8 text-center">
-              <h1 className="mb-1 text-xl font-bold capitalize">
-                Create your admin account
-              </h1>
-            </div>
-            <div className="mx-8 w-full">
-              <form
-                id="signup"
-                className="flex flex-col gap-5 md:grid-cols-2"
-                onSubmit={handleSubmit(onSubmit)}
-              >
-                <label htmlFor="userName" className="md:col-span-2">
-                  <span className="text-md mb-1 inline-block capitalize">
-                    User Name
-                  </span>
-                  <input
-                    {...register("userName")}
-                    type="text"
-                    id="userName"
-                    placeholder="Your username"
-                    className={cn(
-                      "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
-                      errors?.userName
-                        ? "border border-red-600 focus:border-red-600 focus:ring-0"
-                        : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
-                    )}
-                  />
-                  {errors?.userName && (
-                    <p className="text-red-600">{errors?.userName?.message}</p>
-                  )}
-                </label>
-
-                <label htmlFor="email" className="md:col-span-2">
-                  <span className="mb-1 inline-block font-medium capitalize">
-                    Email Address
-                  </span>
-                  <input
-                    {...register("email")}
-                    type="email"
-                    className={cn(
-                      "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
-                      errors?.email
-                        ? "border border-red-600 focus:border-red-600 focus:ring-0"
-                        : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
-                    )}
-                    disabled
-                    id="email"
-                    name="email"
-                    placeholder="Your email"
-                    // defaultValue={email}
-                    value={email}
-                  />
-                  {errors?.email && (
-                    <p className={cn("mt-1 text-sm text-red-600")}>
-                      {errors.email?.message}
-                    </p>
-                  )}
-                </label>
-
-                <label htmlFor="password" className="relative md:col-span-2">
-                  <span className="mb-1 inline-block font-medium capitalize">
-                    Password
-                  </span>
-                  <div className="relative">
-                    <input
-                      {...register("password")}
-                      type={visible ? "text" : "password"}
-                      className={cn(
-                        "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
-                        errors?.password
-                          ? "border border-red-600 focus:border-red-600 focus:ring-0"
-                          : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
+            <>
+              <div className="flex w-full max-w-md flex-col items-center border bg-white px-6 py-12 shadow-lg sm:mx-auto sm:w-[440px]">
+                <div className="mb-8 text-center">
+                  <h1 className="mb-1 text-xl font-bold capitalize">
+                    Create your admin account
+                  </h1>
+                </div>
+                <div className="mx-8 w-full">
+                  <form
+                    id="signup"
+                    className="flex flex-col gap-5 md:grid-cols-2"
+                    onSubmit={handleSubmit(onSubmit)}
+                  >
+                    <label htmlFor="userName" className="md:col-span-2">
+                      <span className="text-md mb-1 inline-block capitalize">
+                        User Name
+                      </span>
+                      <input
+                        {...register("userName")}
+                        type="text"
+                        id="userName"
+                        placeholder="Your username"
+                        className={cn(
+                          "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
+                          errors?.userName
+                            ? "border border-red-600 focus:border-red-600 focus:ring-0"
+                            : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
+                        )}
+                      />
+                      {errors?.userName && (
+                        <p className="text-red-600">
+                          {errors?.userName?.message}
+                        </p>
                       )}
-                      id="password"
-                      name="password"
-                      placeholder="Your password"
-                    />
-                    <span
-                      onClick={handleToggle}
-                      className="absolute bottom-[14px] right-3 cursor-pointer text-neutral-800"
+                    </label>
+
+                    <label htmlFor="email" className="md:col-span-2">
+                      <span className="mb-1 inline-block font-medium capitalize">
+                        Email Address
+                      </span>
+                      <input
+                        {...register("email")}
+                        type="email"
+                        className={cn(
+                          "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
+                          errors?.email
+                            ? "border border-red-600 focus:border-red-600 focus:ring-0"
+                            : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
+                        )}
+                        disabled
+                        id="email"
+                        name="email"
+                        placeholder="Your email"
+                        // defaultValue={email}
+                        value={email}
+                      />
+                      {errors?.email && (
+                        <p className={cn("mt-1 text-sm text-red-600")}>
+                          {errors.email?.message}
+                        </p>
+                      )}
+                    </label>
+
+                    <label
+                      htmlFor="password"
+                      className="relative md:col-span-2"
                     >
-                      {visible ? (
-                        <BsEyeSlash size={20} />
-                      ) : (
-                        <AiOutlineEye size={20} />
+                      <span className="mb-1 inline-block font-medium capitalize">
+                        Password
+                      </span>
+                      <div className="relative">
+                        <input
+                          {...register("password")}
+                          type={visible ? "text" : "password"}
+                          className={cn(
+                            "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
+                            errors?.password
+                              ? "border border-red-600 focus:border-red-600 focus:ring-0"
+                              : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
+                          )}
+                          id="password"
+                          name="password"
+                          placeholder="Your password"
+                        />
+                        <span
+                          onClick={handleToggle}
+                          className="absolute bottom-[14px] right-3 cursor-pointer text-neutral-800"
+                        >
+                          {visible ? (
+                            <BsEyeSlash size={20} />
+                          ) : (
+                            <AiOutlineEye size={20} />
+                          )}
+                        </span>
+                      </div>
+                      {errors?.password && (
+                        <p className={cn("mt-1 text-sm text-red-600")}>
+                          {errors.password?.message}
+                        </p>
                       )}
-                    </span>
-                  </div>
-                  {errors?.password && (
-                    <p className={cn("mt-1 text-sm text-red-600")}>
-                      {errors.password?.message}
-                    </p>
-                  )}
-                </label>
-                <label
-                  htmlFor="confirmPassword"
-                  className="relative md:col-span-2"
-                >
-                  <span className="mb-1 inline-block font-medium capitalize">
-                    Confirm Password
-                  </span>
-                  <div className="relative">
-                    <input
-                      {...register("confirmPassword")}
-                      type={visible ? "text" : "confirmPassword"}
-                      className={cn(
-                        "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
-                        errors?.confirmPassword
-                          ? "border border-red-600 focus:border-red-600 focus:ring-0"
-                          : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
-                      )}
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      placeholder="Confirm Password"
-                    />
-                    <span
-                      onClick={handleToggle}
-                      className="absolute bottom-[14px] right-3 cursor-pointer text-neutral-800"
+                    </label>
+                    <label
+                      htmlFor="confirmPassword"
+                      className="relative md:col-span-2"
                     >
-                      {visible ? (
-                        <BsEyeSlash size={20} />
-                      ) : (
-                        <AiOutlineEye size={20} />
+                      <span className="mb-1 inline-block font-medium capitalize">
+                        Confirm Password
+                      </span>
+                      <div className="relative">
+                        <input
+                          {...register("confirmPassword")}
+                          type={visible ? "text" : "confirmPassword"}
+                          className={cn(
+                            "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
+                            errors?.confirmPassword
+                              ? "border border-red-600 focus:border-red-600 focus:ring-0"
+                              : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
+                          )}
+                          id="confirmPassword"
+                          name="confirmPassword"
+                          placeholder="Confirm Password"
+                        />
+                        <span
+                          onClick={handleToggle}
+                          className="absolute bottom-[14px] right-3 cursor-pointer text-neutral-800"
+                        >
+                          {visible ? (
+                            <BsEyeSlash size={20} />
+                          ) : (
+                            <AiOutlineEye size={20} />
+                          )}
+                        </span>
+                      </div>
+                      {errors?.confirmPassword && (
+                        <p className={cn("mt-1 text-sm text-red-600")}>
+                          {errors.confirmPassword?.message}
+                        </p>
                       )}
-                    </span>
-                  </div>
-                  {errors?.confirmPassword && (
-                    <p className={cn("mt-1 text-sm text-red-600")}>
-                      {errors.confirmPassword?.message}
-                    </p>
-                  )}
-                </label>
+                    </label>
 
-                <label
-                  htmlFor="agree"
-                  className="flex items-center gap-3 md:col-span-2"
-                >
-                  <input
-                    type="checkbox"
-                    name="agree"
-                    id="agree"
-                    checked={isChecked}
-                    onChange={(e) => setIsChecked(e.target.checked)}
-                    className={cn(
-                      "form-checkbox h-4 w-4 checked:bg-neutral-800 checked:hover:bg-neutral-800 focus:ring-neutral-800 checked:focus:ring-neutral-800",
-                      noSubmit && "border-red-600 animate-in",
-                    )}
-                  />
-                  <span className="text-sm">
-                    I agree with the{" "}
-                    <span className="cursor-pointer text-goldie-300">
-                      terms of service
-                    </span>{" "}
-                    and{" "}
-                    <span className="cursor-pointer text-goldie-300">
-                      privacy policy
-                    </span>
-                  </span>
-                </label>
-                <Button
-                  disabled={newAdmin.isPending}
-                  className="col-span-2 mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300"
-                >
-                  {newAdmin.isPending ? (
-                    <div className="flex items-center justify-center gap-3">
-                      <CgSpinner className="animate-spin" size={20} />
-                      Loading...
-                    </div>
-                  ) : (
-                    "Sign Up"
-                  )}
-                </Button>
-                <p className="col-span-2 text-center">
-                  Already have an account?{" "}
-                  <Link href="/sign-in" className="text-goldie-300">
-                    Sign In
-                  </Link>
-                </p>
-              </form>
-            </div>
-          </div>
+                    <label
+                      htmlFor="agree"
+                      className="flex items-center gap-3 md:col-span-2"
+                    >
+                      <input
+                        type="checkbox"
+                        name="agree"
+                        id="agree"
+                        checked={isChecked}
+                        onChange={(e) => setIsChecked(e.target.checked)}
+                        className={cn(
+                          "form-checkbox h-4 w-4 checked:bg-neutral-800 checked:hover:bg-neutral-800 focus:ring-neutral-800 checked:focus:ring-neutral-800",
+                          noSubmit && "border-red-600 animate-in",
+                        )}
+                      />
+                      <span className="text-sm">
+                        I agree with the{" "}
+                        <span className="cursor-pointer text-goldie-300">
+                          terms of service
+                        </span>{" "}
+                        and{" "}
+                        <span className="cursor-pointer text-goldie-300">
+                          privacy policy
+                        </span>
+                      </span>
+                    </label>
+                    <Button
+                      disabled={newAdmin.isPending}
+                      className="col-span-2 mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300"
+                    >
+                      {newAdmin.isPending ? (
+                        <div className="flex items-center justify-center gap-3">
+                          <CgSpinner className="animate-spin" size={20} />
+                          Loading...
+                        </div>
+                      ) : (
+                        "Sign Up"
+                      )}
+                    </Button>
+                    <p className="col-span-2 text-center">
+                      Already have an account?{" "}
+                      <Link href="/sign-in" className="text-goldie-300">
+                        Sign In
+                      </Link>
+                    </p>
+                  </form>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </section>
     </>

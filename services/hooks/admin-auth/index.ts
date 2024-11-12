@@ -17,7 +17,7 @@ export const inviteAdmin = async (data: InviteAdmin) => {
 export const createAdmin = async (data: CreateAdmin) => {
   const response = await instance.post(
     `/admin/signup?refCode=${data.refCode}`,
-    { email: data.email, password: data.password },
+    { email: data.email, password: data.password, userName:data?.userName },
   );
   return response.data;
 };

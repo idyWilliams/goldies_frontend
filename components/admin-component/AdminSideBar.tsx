@@ -1,5 +1,6 @@
 "use client";
 import AuthContext from "@/context/AuthProvider";
+import { log } from "console";
 import {
   Cake,
   Category2,
@@ -7,6 +8,7 @@ import {
   Home2,
   Setting2,
   ShoppingBag,
+  UserAdd,
 } from "iconsax-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -22,6 +24,8 @@ export default function AdminSideBar() {
   const authContext = useContext(AuthContext);
   // @ts-ignore
   const { setIsLogin } = authContext;
+  const role = JSON.parse(localStorage.getItem("admin") as string).role;
+  console.log(role, "myrole");
 
   const logOut = async () => {
     setIsLogin(false);
@@ -77,6 +81,15 @@ export default function AdminSideBar() {
             <Category2 size="20" />
             Manage Categories
           </Link>
+          {role === "super_admin" && (
+            <Link
+              href={"/admin/invite"}
+              className={`flex items-center gap-2 whitespace-nowrap text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/manage-categories") ? "text-goldie-300" : "text-neutral-500"}`}
+            >
+              <UserAdd size="20" />
+              Invite Admin
+            </Link>
+          )}
           <Link
             href={"/admin/settings"}
             className={`flex items-center gap-2 whitespace-nowrap text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/settings") ? "text-goldie-300" : "text-neutral-500"}`}

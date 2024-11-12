@@ -8,7 +8,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { dataTagSymbol, useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import AuthContext from "../../context/AuthProvider";
+import AuthContext, { useAuth } from "../../context/AuthProvider";
 import { useRouter } from "next/navigation";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import {
@@ -28,8 +28,7 @@ const validationSchema = yup.object().shape({
 
 const AdminSignUpVerification = ({ email }: { email: string }) => {
   const router = useRouter();
-  //@ts-ignore
-  const { setAuth } = useContext(AuthContext);
+  const { setIsLogin, setRole, setAuth } = useAuth();
   const sendOtp = useMutation({
     mutationFn: verifyOTP,
   });
@@ -46,17 +45,32 @@ const AdminSignUpVerification = ({ email }: { email: string }) => {
 
   const onSubmit = async (data: any) => {
     console.log(data);
-    try {
-      // Send OTP to mail
-      const otpVerify = await sendOtp.mutateAsync({
+    sendOtp
+      .mutateAsync({
         otp: data.otp,
         email,
+      })
+      .then((res: any) => {
+        console.log(res);
+        // UPDATE THE AUTH PROVIDER
+        setIsLogin(true);
+        setRole(res?.admin?.role);
+        setAuth({ token: res?.token, ...res?.admin });
+
+        // UPDATE LOCALSTORAGE
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("admin");
+        localStorage.setItem("isLogin", JSON.stringify(true));
+        localStorage.setItem(
+          "admin",
+          JSON.stringify({ token: res?.token, ...res?.admin }),
+        );
+        localStorage.setItem("accessToken", res?.token);
+        router.push("/admin");
+      })
+      .catch((err: any) => {
+        toast.error(err.message);
       });
-      router.push("/admin");
-      console.log(otpVerify?.res);
-    } catch (err: any) {
-      toast.error(err.message);
-    }
   };
 
   return (

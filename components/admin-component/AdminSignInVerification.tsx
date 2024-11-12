@@ -13,7 +13,7 @@ import {
 import { Controller, useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import AuthContext from "@/context/AuthProvider";
+import AuthContext, { useAuth } from "@/context/AuthProvider";
 import { verifyOTP } from "@/services/hooks/admin-auth";
 
 const validationSchema = yup.object().shape({
@@ -21,10 +21,7 @@ const validationSchema = yup.object().shape({
 });
 
 const AdminSignInVerification = ({ email }: { email: string }) => {
-  const authContext = useContext(AuthContext);
-
-  // @ts-ignore
-  const { setIsLogin } = authContext;
+  const { setIsLogin, setRole, setAuth } = useAuth();
 
   const router = useRouter();
   const otpVerify = useMutation({
@@ -45,7 +42,12 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
       .mutateAsync({ ...data, email })
       .then((res: any) => {
         console.log(res);
+        // UPDATE THE AUTH PROVIDER
         setIsLogin(true);
+        setRole(res?.admin?.role);
+        setAuth({ token: res?.token, ...res?.admin });
+
+        // UPDATE LOCALSTORAGE
         localStorage.removeItem("accessToken");
         localStorage.removeItem("admin");
         localStorage.setItem("isLogin", JSON.stringify(true));
