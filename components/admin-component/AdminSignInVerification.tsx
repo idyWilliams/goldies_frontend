@@ -45,13 +45,13 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
       .mutateAsync({ ...data, email })
       .then((res: any) => {
         console.log(res);
+        setIsLogin(true);
         localStorage.removeItem("accessToken");
         localStorage.removeItem("admin");
-        setIsLogin(true);
         localStorage.setItem("isLogin", JSON.stringify(true));
         localStorage.setItem(
           "admin",
-          JSON.stringify({ token: res?.token, admin: res?.admin }),
+          JSON.stringify({ token: res?.token, ...res?.admin }),
         );
         localStorage.setItem("accessToken", res?.token);
         router.push("/admin");
