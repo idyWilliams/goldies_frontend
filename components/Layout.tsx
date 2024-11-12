@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import Footer from "./Footer";
 import Header from "./Header";
-import { jwtDecode } from "jwt-decode";
+// import { jwtDecode } from "jwt-decode";
 import AuthContext from "@/context/AuthProvider";
 import { useRouter } from "next/navigation";
 

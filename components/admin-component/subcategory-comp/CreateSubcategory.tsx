@@ -22,7 +22,7 @@ import {
   getSubCategory,
 } from "@/services/hooks/category";
 import useBoundStore from "@/zustand/store";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { Category, SubCategory } from "@/services/types";
 import { optimisticSubCatUpdate } from "@/utils/optimisticCategoryUpdate";
 

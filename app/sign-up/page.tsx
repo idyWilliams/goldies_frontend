@@ -1,7 +1,7 @@
 "use client";
 import Layout from "@/components/Layout";
 import React, { useContext, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { RiUserSharedLine } from "react-icons/ri";
 import { Button } from "@/components/ui/button";
 import * as yup from "yup";
@@ -12,16 +12,18 @@ import Link from "next/link";
 import { cn } from "@/helper/cn";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createUser, loginUser } from "@/services/hooks/user-auth";
-// import { toast } from "react-toastify";
 import AuthContext from "@/context/AuthProvider";
 import { Toaster, toast } from "sonner";
 import { useRouter } from "next/navigation";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 const validationSchema = yup.object().shape({
   firstName: yup.string().required("Firstname is required"),
   lastName: yup.string().required("Lastname is required"),
   email: yup.string().required("Email is required"),
   password: yup.string().required("Password is required"),
+  phoneNumber: yup.string().required("Phone number is required"),
 });
 
 const Page = () => {
@@ -44,6 +46,7 @@ const Page = () => {
     handleSubmit,
     formState: { errors },
     reset,
+    control,
   } = useForm({
     resolver: yupResolver(validationSchema),
   });
@@ -70,8 +73,6 @@ const Page = () => {
         reset();
       })
       .catch((err: any) => {
-        
-        
         console.log(err);
         console.log(err.message);
         console.log(err.response.data.message);
@@ -92,13 +93,12 @@ const Page = () => {
           console.log(res);
           setAuth(res);
           autoLogin(data);
+          reset();
         })
         .catch((err: any) => {
           console.log(err);
-          toast.success(err.message);
+          toast.error(err?.response?.data?.message || err.message);
         });
-
-      reset();
     } else {
       setNoSubmit(true);
       setLoading(false);
@@ -194,6 +194,35 @@ const Page = () => {
                   {errors?.email && (
                     <p className={cn("mt-1 text-sm text-red-600")}>
                       {errors.email?.message}
+                    </p>
+                  )}
+                </label>
+                <label htmlFor="phoneNumber" className="md:col-span-2">
+                  <span className="mb-1 inline-block font-medium capitalize">
+                    Phone Number
+                  </span>
+                  <Controller
+                    name="phoneNumber"
+                    control={control}
+                    rules={{ required: true }}
+                    render={({ field: { value, onChange } }) => (
+                      <PhoneInput
+                        country={"ng"}
+                        value={value}
+                        onChange={onChange}
+                        countryCodeEditable={false}
+                        inputProps={{
+                          name: "phone",
+                          id: "phone",
+                          className: `pl-12 w-full rounded-sm border-none bg-gray-100 focus:border focus:border-black focus:ring-black`,
+                        }}
+                        defaultErrorMessage="Phone number is required"
+                      />
+                    )}
+                  />
+                  {errors?.phoneNumber && (
+                    <p className={cn("mt-1 text-sm text-red-600")}>
+                      {errors.phoneNumber?.message}
                     </p>
                   )}
                 </label>

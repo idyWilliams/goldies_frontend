@@ -1,8 +1,6 @@
 "use client";
-
 import Link from "next/link";
 import Image from "next/image";
-import CartIcon from "../public/assets/cart.png";
 import { BsList, BsX, BsXLg } from "react-icons/bs";
 import { useContext, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
@@ -10,12 +8,10 @@ import { useRouter } from "next/navigation";
 import MobileNav from "./MobileNav";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-// import { ToastContainer, toast } from "react-toastify";
-import { VscAccount } from "react-icons/vsc";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { BiHeart, BiStore } from "react-icons/bi";
 import { FaRegUserCircle } from "react-icons/fa";
-import { Ghost, Menu, ShoppingCart } from "iconsax-react";
+import { Ghost } from "iconsax-react";
 import MenuPopup from "./MenuPopup";
 import { useDispatch } from "react-redux";
 import { setProducts } from "@/redux/features/product/productSlice";
@@ -23,7 +19,7 @@ import { IoCartOutline } from "react-icons/io5";
 import Logo from "../public/assets/goldis-logo.png";
 import AuthContext from "@/context/AuthProvider";
 import { Button } from "./ui/button";
-import { jwtDecode } from "jwt-decode";
+// import { jwtDecode } from "jwt-decode";
 import {
   Dialog,
   DialogContent,
@@ -60,7 +56,10 @@ const Header = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("accessToken");
     localStorage.setItem("isLogin", JSON.stringify(false));
-    router.push('/sign-in')
+
+    if (pathname.includes("/my-account") || pathname.includes("/my-orders")) {
+      router.push("/sign-in");
+    }
   };
 
   useEffect(() => {
@@ -124,8 +123,7 @@ const Header = () => {
   //     }
   //   } catch (error) {
   //     if (
-  //       (!storedSession?.token && !pathname.includes("/sign-in")) ||
-  //       !pathname.includes("/sign-up")
+  //       (!storedSession?.token && !pathname.includes("/sign-in")) || !pathname.includes("/sign-up");
   //     ) {
   //       console.error("Error checking session:", pathname.includes("/sign-in"));
 
@@ -258,13 +256,21 @@ const Header = () => {
                     </Link>
                   </div>
                   <div className="my-2 border-b border-black border-opacity-50"></div>
-                  <span
-                    className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
-                    role="button"
-                    onClick={() => logOut()}
-                  >
-                    Logout
-                  </span>
+                  {isLogin ? (
+                    <Button
+                      className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
+                      onClick={() => logOut()}
+                    >
+                      Logout
+                    </Button>
+                  ) : (
+                    <Button
+                      className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
+                      onClick={() => router.push("/sign-in")}
+                    >
+                      Sign In
+                    </Button>
+                  )}
                 </MenuPopup>
               )}
             </div>

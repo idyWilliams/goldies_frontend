@@ -7,7 +7,7 @@ import React, { ReactNode, useState } from "react";
 import { useForm, FieldError, Controller } from "react-hook-form";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import * as yup from "yup";
 
 const schema = yup.object().shape({

@@ -19,8 +19,8 @@ import { AiOutlineEye } from "react-icons/ai";
 import { BiArrowBack } from "react-icons/bi";
 import { BsEyeSlash } from "react-icons/bs";
 import ReactPasswordChecklist from "react-password-checklist";
-import { toast } from "react-toastify";
 import * as yup from "yup";
+import { toast } from "sonner";
 
 const schema = yup.object().shape({
   newPassword: yup.string().required("New password is required"),

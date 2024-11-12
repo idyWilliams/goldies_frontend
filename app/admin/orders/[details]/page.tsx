@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import img from "../../../../public/assets/AT0213_coconut-cream-cake_s4x3.jpg";
 import { orderList } from "@/utils/adminData";
+import AdminAuth from "@/components/admin-component/AdminAuth";
 
 export default function Page({ params }: any) {
   const [order, setOrder] = useState<any>();

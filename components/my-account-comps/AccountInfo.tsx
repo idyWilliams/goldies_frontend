@@ -8,7 +8,7 @@ import { useCallback, useEffect, useState } from "react";
 import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
 import { getUser } from "@/services/hooks/users";
 import { useMutation, useQuery } from "@tanstack/react-query";
-// import { toast } from "react-toastify";
+// import { toast } from "sonner";
 import { toast, Toaster } from "sonner";
 import { useRouter } from "next/navigation";
 
@@ -56,24 +56,22 @@ const AccountInfo = () => {
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user") as string);
     if (storedUser) {
-          setUser(storedUser.user);
-          console.log("stored is", storedUser.user);
-
+      setUser(storedUser.user);
+      console.log("stored is", storedUser.user);
     } else {
-      toast.error('Session expired! Please log in again')
-      router.push("/sign-in")
+      toast.error("Session expired! Please log in again");
+      router.push("/sign-in");
     }
   }, []);
   console.log("data is", user);
-  
+
   useEffect(() => {
-    console.log("reset ", user)
-    
+    console.log("reset ", user);
+
     reset({
       firstName: user?.firstName || "",
       lastName: user?.lastName || "",
       email: user?.email || "",
-      
     });
   }, [user, reset]);
 
