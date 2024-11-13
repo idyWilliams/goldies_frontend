@@ -75,10 +75,10 @@ const Page = () => {
             <AiOutlineUserAdd size={30} />
           </span>
         </span>
-        <div className="mb-4 mt-6 text-center">
+        <div className="mb-12 mt-6 text-center">
           <h1 className="mb-1 text-2xl font-bold capitalize">Invite Admin</h1>
           <p className="text-balance text-neutral-600">
-            Not yet an Admin? Request access
+            A link will be sent to the provided email to request admin access
           </p>
         </div>
         <div className="mx-8 w-full">
@@ -123,15 +123,6 @@ const Page = () => {
                 "Send Invite"
               )}
             </Button>
-
-            <p className="col-span-2 text-center">
-              <Link
-                href="/"
-                className="text-neutral-600 underline underline-offset-4"
-              >
-                Back to Dashboard
-              </Link>
-            </p>
           </form>
         </div>
       </div>

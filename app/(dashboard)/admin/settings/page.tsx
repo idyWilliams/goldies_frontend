@@ -77,7 +77,7 @@ export default function Page() {
               </div>
               <div
                 className={twMerge(
-                  "flex w-[820px] translate-x-0 items-end justify-around duration-300",
+                  "flex w-[820px] translate-x-0 items-start justify-around duration-300",
                   selectedTab === 1 && "-translate-x-1/2",
                 )}
               >

@@ -23,7 +23,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <Toaster richColors position="top-right" expand={true} />
+      <Toaster richColors position="bottom-right" expand={true} />
       <AdminNav />
       <div className="grid w-full lg:grid-cols-[200px_1fr]">
         <>
