@@ -1,15 +1,10 @@
 "use client";
-import Image, { StaticImageData } from "next/image";
 import BreadCrumbs from "@/components/BreadCrumbs";
-import Link from "next/link";
-import Head from "next/head";
-import Layout from "@/components/Layout";
-import { BsDash, BsPlus, BsX } from "react-icons/bs";
 import { cakeProducts1 } from "@/utils/cakeData";
 import { addSlugToCakes } from "@/helper";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowDown2, Shuffle } from "iconsax-react";
 import FilterComp from "@/components/custom-filter/FilterComp";
 import { IoList } from "react-icons/io5";
@@ -18,8 +13,8 @@ import { chunkArray } from "@/helper/chunkArray";
 import Pagination from "@/components/custom-filter/Pagination";
 import ProductCard from "@/components/shop-components/ProductCard";
 import { captalizedName } from "@/helper/nameFormat";
-import { useQuery } from "@tanstack/react-query";
-import { fetchProducts } from "@/services/hooks/products";
+// import { useQuery } from "@tanstack/react-query";
+// import { fetchProducts } from "@/services/hooks/products";
 
 let itemsPerPage = 6;
 
