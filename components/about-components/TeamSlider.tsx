@@ -1,9 +1,9 @@
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from "swiper/modules";
-import Team1 from "../../public/assets/about-us/team-1.png";
-import Team2 from "../../public/assets/about-us/team-2.png";
-import Team3 from "../../public/assets/about-us/team-3.png";
+import Team1 from "@/public/assets/about-us/team-1.png";
+import Team2 from "@/public/assets/about-us/team-2.png";
+import Team3 from "@/public/assets/about-us/team-3.png";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";

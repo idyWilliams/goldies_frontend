@@ -13,11 +13,14 @@ const AdminAuth = <P extends object>(WrappedComponent: FC<P>) => {
     if (authContext === undefined) {
       throw new Error("AuthContext must be used within an AuthProvider");
     }
-    const { isLogin, setIsLogin } = authContext;
+    const { isLogin, setIsLogin, setAuth, setRole } = authContext;
 
     useEffect(() => {
       const isLoggedIn = localStorage.getItem("isLogin");
       const isAuthenticated = isLoggedIn && JSON.parse(isLoggedIn);
+      const admin = JSON.parse(localStorage.getItem("admin") as string);
+      const isLoggedIn = JSON.parse(localStorage.getItem("isLogin") as string);
+      const isAuthenticated = admin && isLoggedIn;
 
       setIsLogin(isAuthenticated);
 
@@ -25,7 +28,7 @@ const AdminAuth = <P extends object>(WrappedComponent: FC<P>) => {
         router.push("/admin-sign-in");
         return;
       }
-    }, [isLogin, setIsLogin, router, pathname]);
+    }, [isLogin, setIsLogin, router, pathname, setRole, setAuth]);
 
     return isLogin && <WrappedComponent {...(props as P)} />;
   };

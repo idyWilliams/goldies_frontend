@@ -1,5 +1,5 @@
 // "use client";
-import Layout from "@/components/Layout";
+import Layout from "@/app/(landing)/layout";
 import { Sms } from "iconsax-react";
 import Link from "next/link";
 import { BiArrowBack } from "react-icons/bi";

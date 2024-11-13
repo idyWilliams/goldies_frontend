@@ -1,7 +1,7 @@
 import React from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import Image from "next/image";
-import Logo from "../../../public/assets/goldis-gold-logo.png";
+import Logo from "@/public/assets/goldis-gold-logo.png";
 import EachElement from "@/helper/EachElement";
 
 const UserCategorySkeleton = () => {

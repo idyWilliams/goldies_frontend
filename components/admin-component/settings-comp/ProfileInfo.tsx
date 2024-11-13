@@ -1,9 +1,10 @@
 "use client";
 import { cn } from "@/helper/cn";
+import { initials } from "@/helper/initials";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Profile } from "iconsax-react";
 import { startsWith } from "lodash-es";
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { useForm, FieldError, Controller } from "react-hook-form";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
@@ -11,16 +12,14 @@ import { toast } from "sonner";
 import * as yup from "yup";
 
 const schema = yup.object().shape({
-  fullName: yup.string().required("Fullname is required"),
+  userName: yup.string().required("Fullname is required"),
   email: yup.string().required("Email is required").email("Email is invalid"),
-  phone: yup
-    .string()
-    .required("Valid Phone Number is required")
-    .min(6, "Valid Phone Number must be at least 6 characters")
-    .max(15, "Valid Phone Number must not exceed 12 characters"),
 });
+
 export default function ProfileInfo() {
   const [phone, setPhone] = useState("");
+  const admin = JSON.parse(localStorage.getItem("admin") as string);
+
   const {
     register,
     handleSubmit,
@@ -40,29 +39,38 @@ export default function ProfileInfo() {
     setPhone("");
   };
 
+  useEffect(() => {
+    reset({
+      userName: admin?.userName,
+      email: admin?.email,
+    });
+  }, [admin?.email, admin?.userName, reset]);
+
   return (
     <section className="w-full px-2 lg:w-[48%]">
       <>
         <div className="mt-5 inline-flex h-10 w-10 items-center justify-center rounded-full bg-black text-main">
-          <span className="items-center justify-center">JD</span>
+          <span className="items-center justify-center">
+            {initials(admin?.userName)}
+          </span>
         </div>
-        <p className="my-3 font-semibold">John Doe</p>
+        <p className="my-3 font-semibold">{admin?.userName}</p>
         <form className="space-y-5" onSubmit={handleSubmit(handleSave)}>
-          <label htmlFor="fullName" className="block">
-            <span className="mb-1 inline-block">Full name</span>
+          <label htmlFor="userName" className="block">
+            <span className="mb-1 inline-block">Username</span>
             <input
-              {...register("fullName")}
+              {...register("userName")}
               type="text"
               autoComplete="off"
-              id="fullName"
+              id="userName"
               placeholder="Your full name"
               className={cn(
                 "form-input w-full rounded-sm border-none bg-gray-100 focus:border focus:border-black focus:ring-black",
-                errors.fullName && "border-red-600",
+                errors.userName && "border-red-600",
               )}
             />
-            {errors.fullName && (
-              <p className="text-red-600">{errors.fullName.message}</p>
+            {errors.userName && (
+              <p className="text-red-600">{errors.userName.message}</p>
             )}
           </label>
           <label htmlFor="email" className="block">
@@ -78,37 +86,6 @@ export default function ProfileInfo() {
             {errors.email && (
               <p className="text-red-600">{errors.email.message}</p>
             )}
-          </label>
-          <label htmlFor="phoneNumber" className="block">
-            <span className="mb-1 inline-block">Phone number</span>
-            <Controller
-              name="phone"
-              control={control}
-              rules={{ required: true }}
-              render={({ field: { value, onChange } }) => (
-                <PhoneInput
-                  country={"ng"}
-                  value={phone || value}
-                  // {...register("phone")}
-                  onChange={(phoneNumber) => {
-                    setPhone(phoneNumber);
-                    onChange(phoneNumber);
-                  }}
-                  inputProps={{
-                    name: "phone",
-
-                    id: "phone",
-                    className:
-                      "pl-12 w-full rounded-sm border-none bg-gray-100 focus:border focus:border-black focus:ring-black",
-                  }}
-                  defaultErrorMessage="Phone number is required"
-                />
-              )}
-            />
-
-            {/* {errors.phone && (
-              <p className="text-red-600">{errors.phone.message}</p>
-            )} */}
           </label>
           <div className="mb-6 mt-10 grid grid-cols-2 gap-8 lg:mb-0">
             <button

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { cn } from "@/helper/cn";
 import { GalleryImport } from "iconsax-react";
 import { CategoryImageProps } from "@/utils/categoryTypes";
-import Placeholder from "../../../public/assets/placeholder3.png";
+import Placeholder from "@/public/assets/placeholder3.png";
 
 export default function CategoryImage({
   register,

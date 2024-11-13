@@ -5,12 +5,12 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import Image from "next/image";
-import Spotify from "../../public/assets/about-us/spotify.png";
-import Edge from "../../public/assets/about-us/edge.png";
-import Google from "../../public/assets/about-us/google.png";
-import Microsoft from "../../public/assets/about-us/microsoft.png";
-import Airbnb from "../../public/assets/about-us/airbnb.png";
-import Slack from "../../public/assets/about-us/slack.png";
+import Spotify from "@/public/assets/about-us/spotify.png";
+import Edge from "@/public/assets/about-us/edge.png";
+import Google from "@/public/assets/about-us/google.png";
+import Microsoft from "@/public/assets/about-us/microsoft.png";
+import Airbnb from "@/public/assets/about-us/airbnb.png";
+import Slack from "@/public/assets/about-us/slack.png";
 
 const brands = [Google, Slack, Edge, Spotify, Microsoft, Airbnb];
 

@@ -2,7 +2,7 @@
 import Hero from "@/components/Hero";
 import CakeCategory from "@/components/CakeCategory";
 import Testimonials from "@/components/Testimonials";
-import Layout from "@/components/Layout";
+import Layout from "@/app/(landing)/layout";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useEffect } from "react";
