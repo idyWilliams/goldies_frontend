@@ -1,5 +1,5 @@
 "use client";
-import Layout from "@/components/Layout";
+import Layout from "@/app/(landing)/layout";
 import React, { useContext } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";

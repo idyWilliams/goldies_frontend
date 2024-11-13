@@ -5,7 +5,7 @@ import { BsThreeDots } from "react-icons/bs";
 import { recentOrders } from "./Orders";
 import { chunkArray } from "@/helper/chunkArray";
 import Image from "next/image";
-import img from "../../public/assets/banana-cake-with-cinnamon-cream-102945-1.jpeg";
+import img from "@/public/assets/banana-cake-with-cinnamon-cream-102945-1.jpeg";
 import { addSlugToCakes } from "@/helper";
 import { savedItems } from "@/utils/cakeData";
 import Link from "next/link";

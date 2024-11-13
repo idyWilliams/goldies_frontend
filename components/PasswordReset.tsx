@@ -1,5 +1,5 @@
 "use client";
-import Layout from "@/components/Layout";
+import Layout from "@/app/(landing)/layout";
 import AuthContext from "@/context/AuthProvider";
 import { loginUser } from "@/services/hooks/user-auth";
 import { useMutation } from "@tanstack/react-query";

@@ -10,7 +10,7 @@ import { RootState } from "@/redux/store";
 import { cn } from "@/helper/cn";
 import { Tooltip } from "react-tooltip";
 import StarRating from "../StarRating";
-import Placeholder from "../../public/assets/placeholder3.png";
+import Placeholder from "@/public/assets/placeholder3.png";
 
 export default function ProductCard({ data }: { data: any }) {
   const [fav, setFav] = useState(false);

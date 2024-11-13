@@ -3,7 +3,7 @@ import { handleImageLoad } from "@/helper/handleImageLoad";
 import Image from "next/image";
 import React, { useState } from "react";
 import StatusBar from "./StatusBar";
-import Placeholder from "../../../public/assets/placeholder3.png";
+import Placeholder from "@/public/assets/placeholder3.png";
 import { Edit, Trash } from "iconsax-react";
 import { Category } from "@/services/types";
 

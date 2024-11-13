@@ -1,6 +1,6 @@
 import { cn } from "@/helper/cn";
 import React from "react";
-import Goldie from "../../../public/assets/goldis-gold-logo.png";
+import Goldie from "@/public/assets/goldis-gold-logo.png";
 import Image from "next/image";
 import { CloseSquare } from "iconsax-react";
 import { ModalProps } from "@/utils/categoryTypes";

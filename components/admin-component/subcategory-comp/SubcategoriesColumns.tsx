@@ -3,7 +3,7 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { SubategoriesColumns } from "@/utils/categoryTypes";
 import StatusBar from "@/components/admin-component/category-comp/StatusBar";
 import { Edit, Trash } from "iconsax-react";
-import Placeholder from "../../../public/assets/placeholder3.png";
+import Placeholder from "@/public/assets/placeholder3.png";
 import {
   handleImageLoad,
   LoadedState,

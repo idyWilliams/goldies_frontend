@@ -10,7 +10,7 @@ import StatusBar from "../category-comp/StatusBar";
 import { Edit, Trash } from "iconsax-react";
 import EachElement from "@/helper/EachElement";
 import { getColumns } from "./SubcategoriesColumns";
-import Placeholder from "../../../public/assets/placeholder3.png";
+import Placeholder from "@/public/assets/placeholder3.png";
 import { handleImageLoad } from "@/helper/handleImageLoad";
 import { Category, SubCategory } from "@/services/types";
 import { getCatorSubArr } from "@/utils/getCatorSubArr";
