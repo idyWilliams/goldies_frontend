@@ -24,13 +24,15 @@ export const getProducts = async (data: any) => {
   return response.data;
 };
 export const getAllProducts = async () => {
-  const response = await instance.get("/product/get_all_products");
+  const response = await instance.get("/product/get_all_product");
   return response.data;
 };
 
 export const fetchProducts = async (category: string, subcategory?: string) => {
-    const response = await instance.get(`/product/get_all_product?category=${category}&subcategory=${subcategory}`);
-  return response.data; 
+  const response = await instance.get(
+    `/product/get_all_product?category=${category}&subcategory=${subcategory}`,
+  );
+  return response.data;
 };
 
 // GET A PRODUCT

@@ -29,6 +29,8 @@ import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import MenuPopup from "@/components/MenuPopup";
 import ProductSortBy from "@/components/admin-component/ProductSortBy";
 import AdminAuth from "@/components/admin-component/AdminAuth";
+import { useQuery } from "@tanstack/react-query";
+import { getAllProducts } from "@/services/hooks/products";
 
 type Product = {
   id: string;
@@ -77,6 +79,13 @@ export default function Page() {
   const handleAddNew = () => {
     router.push(`/admin/create-products`);
   };
+
+  const allProducts = useQuery({
+    queryKey: ["allProducts"],
+    queryFn: getAllProducts,
+  });
+
+  console.log(allProducts?.data);
 
   useEffect(() => {
     const sortProducts = (type: string) => {

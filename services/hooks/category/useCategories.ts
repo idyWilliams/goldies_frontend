@@ -10,7 +10,7 @@ const useCategories = () => {
   const { data, isSuccess, isError, error, isPending } = useQuery({
     queryKey: ["categories"],
     queryFn: getAllCategories,
-    enabled: !categories,
+    initialData: categories,
   });
 
   const memoisedCategories = useMemo(() => {

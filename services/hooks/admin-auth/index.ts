@@ -6,6 +6,7 @@ import {
   VerificationOtp,
   Users,
 } from "@/services/types";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 // INVITE ADMIN
 export const inviteAdmin = async (data: InviteAdmin) => {
@@ -38,4 +39,11 @@ export const verifyOTP = async (data: VerificationOtp) => {
 export const getUsers = async () => {
   const response = await instance.get("/user/get_all_users");
   return response.data;
+};
+
+export const adminLogOut = async (router: AppRouterInstance) => {
+  localStorage.setItem("isLogin", JSON.stringify(false));
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("admin");
+  router.push("/admin-sign-in");
 };

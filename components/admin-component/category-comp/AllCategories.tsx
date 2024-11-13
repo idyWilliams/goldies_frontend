@@ -36,7 +36,7 @@ const AllCategories = ({ cat }: any) => {
   } = useQuery({
     queryKey: ["categories", 1, 50],
     queryFn: async () => getPaginatedCategories(1, 50),
-    // initialData: cat,
+    initialData: cat,
     // staleTime: 60 * 1000,
   });
 
