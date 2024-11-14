@@ -42,12 +42,13 @@ import {
 } from "@/components/ui/card";
 import { useAdminStore } from "@/zustand/adminStore/adminStore";
 import { adminLogOut } from "@/services/hooks/admin-auth";
+import AuthContext, { useAuth } from "@/context/AuthProvider";
 
 export default function AdminNav() {
   const router = useRouter();
 
   // @ts-ignore
-  const { isLogin, setIsLogin } = authContext;
+  const { isLogin, setIsLogin } = useAuth();
   const [sticky, setSticky] = useState(false);
   const [open, setIsOpen] = useState(false);
   const [isOpen, setOpen] = useState(false);
