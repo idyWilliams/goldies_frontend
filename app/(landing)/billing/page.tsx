@@ -99,8 +99,8 @@ const Page = () => {
 
     const callbackUrl =
       process.env.NODE_ENV === "development"
-        ? "http://localhost:3000/my-orders"
-        : "https://goldies-frontend.vercel.app/my-orders";
+        ? "http://localhost:7009/my-orders"
+        : "https://goldies-frontend-v3.vercel.app/my-orders";
 
     const paymentData = {
       firstName: data.firstName,
@@ -134,8 +134,8 @@ const Page = () => {
     console.log("Cart data", cart);
     const callbackUrl =
       process.env.NODE_ENV === "development"
-        ? "http://localhost:3000/my-orders"
-        : "https://goldies-frontend.vercel.app/my-orders";
+        ? "http://localhost:7009/my-orders"
+        : "https://goldies-frontend-v3.vercel.app/my-orders";
     const paymentData = {
       firstName: data.firstName,
       lastName: data.lastName,
