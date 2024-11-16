@@ -21,12 +21,17 @@ export const getPaginatedCategories = async (
   pageNum: number,
   limitNum: number,
 ) => {
+  console.log("ran on all categories mount");
+
   const response = await instance.get(
     `/category/get_all_category?page=${pageNum}&limit=${limitNum}`,
   );
   return response.data;
 };
+
 export const getAllCategories = async () => {
+  console.log("ran on server mount");
+
   const response = await instance.get(`/category/get_all_category`);
   return response.data;
 };

@@ -1,6 +1,5 @@
 "use client";
-import AuthContext from "@/context/AuthProvider";
-import { log } from "console";
+import { adminLogOut } from "@/services/hooks/admin-auth";
 import {
   Cake,
   Category2,
@@ -12,28 +11,16 @@ import {
 } from "iconsax-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useContext } from "react";
-import { BsHandbagFill } from "react-icons/bs";
+import React from "react";
 import { CiLogout } from "react-icons/ci";
 import { IoPeopleOutline } from "react-icons/io5";
-import { RiFolderAddFill, RiHome5Fill } from "react-icons/ri";
 
 export default function AdminSideBar() {
   const router = useRouter();
   const pathname = usePathname();
-  const authContext = useContext(AuthContext);
-  // @ts-ignore
-  const { setIsLogin } = authContext;
+
   const role = JSON.parse(localStorage.getItem("admin") as string).role;
   console.log(role, "myrole");
-
-  const logOut = async () => {
-    setIsLogin(false);
-    localStorage.setItem("isLogin", JSON.stringify(false));
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("admin");
-    router.push("/admin-sign-in");
-  };
 
   return (
     <>
@@ -100,7 +87,7 @@ export default function AdminSideBar() {
 
           <span
             className={`flex items-center gap-2 whitespace-nowrap text-sm text-neutral-500 duration-300 hover:text-goldie-300`}
-            onClick={() => logOut()}
+            onClick={() => adminLogOut(router)}
           >
             <CiLogout size={20} />
             Logout

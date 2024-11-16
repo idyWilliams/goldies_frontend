@@ -10,7 +10,6 @@ switch (process.env.NODE_ENV) {
     break;
   default:
     BASEURL = process.env.NEXT_PUBLIC_API_BASE_URL;
-    console.log("Development Environment", BASEURL);
     break;
 }
 

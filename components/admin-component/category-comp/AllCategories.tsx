@@ -55,13 +55,13 @@ const AllCategories = ({ cat }: any) => {
   const categoriesArr = useCallback(getCatArr, []);
 
   const categories = useMemo(() => {
-    if (isSuccess) {
+    if (data?.categories) {
       return data?.categories;
     } else return null;
-  }, [isSuccess, data?.categories]);
+  }, [data?.categories]);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (categories) {
       const paginatedCats = categoriesArr(
         categories,
         limit,

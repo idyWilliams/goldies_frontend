@@ -52,7 +52,7 @@ const SubCategories = () => {
       const paginatedSubCatArr = paginateSubCats(
         subCategoryArr,
         limit,
-        chunkArray,
+
         setSubCats,
       );
       setTotalPages(paginatedSubCatArr.length);

@@ -40,14 +40,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import AuthContext from "@/context/AuthProvider";
 import { useAdminStore } from "@/zustand/adminStore/adminStore";
+import { adminLogOut } from "@/services/hooks/admin-auth";
+import AuthContext, { useAuth } from "@/context/AuthProvider";
 
 export default function AdminNav() {
   const router = useRouter();
-  const authContext = useContext(AuthContext);
+
   // @ts-ignore
-  const { isLogin, setIsLogin } = authContext;
+  const { isLogin, setIsLogin } = useAuth();
   const [sticky, setSticky] = useState(false);
   const [open, setIsOpen] = useState(false);
   const [isOpen, setOpen] = useState(false);
@@ -84,19 +85,11 @@ export default function AdminNav() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const logOut = async () => {
-    setIsLogin(false);
-    localStorage.setItem("isLogin", JSON.stringify(false));
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("admin");
-    router.push("/admin-sign-in");
-  };
-
-  useEffect(() => {
-    const isLoggedIn = JSON.parse(localStorage.getItem("isLogin") as string);
-    console.log(isLoggedIn, admin?.userName, "shsh");
-    setIsLogin(JSON.parse(localStorage.getItem("isLogin") as string));
-  }, [admin?.userName, setIsLogin]);
+  // useEffect(() => {
+  //   const isLoggedIn = JSON.parse(localStorage.getItem("isLogin") as string);
+  //   console.log(isLoggedIn, admin?.userName, "shsh");
+  //   setIsLogin(JSON.parse(localStorage.getItem("isLogin") as string));
+  // }, [admin?.userName, setIsLogin]);
 
   return (
     <>
@@ -215,7 +208,7 @@ export default function AdminNav() {
                 <span
                   className="flex w-full cursor-pointer items-center justify-center rounded-sm bg-black  px-7 py-2.5 text-center text-sm  text-[#E4D064] duration-300 hover:bg-neutral-950"
                   role="button"
-                  onClick={() => logOut()}
+                  onClick={() => adminLogOut(router)}
                 >
                   Logout
                 </span>

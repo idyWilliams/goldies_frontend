@@ -1,3 +1,4 @@
+import { chunkArray } from "@/helper/chunkArray";
 import { Category, SubCategory } from "@/services/types";
 import React from "react";
 
@@ -11,11 +12,9 @@ import React from "react";
 export const getCatorSubArr = (
   arr: any[],
   limit: number,
-  pagFxn: any,
-  setCatOrSubArr: any,
+
+  setCatArr: any,
 ) => {
-  const reversedCats = [...arr].reverse();
-  setCatOrSubArr(reversedCats);
-  const paginatedArr = pagFxn(reversedCats, limit);
+  const paginatedArr = chunkArray(arr, limit);
   return paginatedArr;
 };
