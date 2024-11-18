@@ -40,33 +40,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useAdminStore } from "@/zustand/adminStore/adminStore";
 import { adminLogOut } from "@/services/hooks/admin-auth";
-import AuthContext, { useAuth } from "@/context/AuthProvider";
+import { useAuth } from "@/context/AuthProvider";
 
 export default function AdminNav() {
   const router = useRouter();
 
   // @ts-ignore
-  const { isLogin, setIsLogin } = useAuth();
   const [sticky, setSticky] = useState(false);
   const [open, setIsOpen] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
   const [currentTime, setCurrentTime] = useState(moment().format("H:mm"));
-  const admin = JSON.parse(localStorage.getItem("admin") as string);
-
-  // // Load admin name on page load
-  // useEffect(() => {
-  //   if (admin) {
-  //     setAdminName(admin.userName);
-  //     console.log("Admin from Zustand:", admin);
-  //   }
-  // }, [admin]);
-
-  // useEffect(() => {
-  //   console.log("Rehydrated admin state:", admin);
-  // }, [admin]);
+  const admin = JSON.parse(localStorage.getItem("admin") as string) || null;
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -84,12 +70,6 @@ export default function AdminNav() {
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  // useEffect(() => {
-  //   const isLoggedIn = JSON.parse(localStorage.getItem("isLogin") as string);
-  //   console.log(isLoggedIn, admin?.userName, "shsh");
-  //   setIsLogin(JSON.parse(localStorage.getItem("isLogin") as string));
-  // }, [admin?.userName, setIsLogin]);
 
   return (
     <>
@@ -171,7 +151,7 @@ export default function AdminNav() {
             >
               <FaRegUserCircle size={20} />{" "}
               <span className="hidden text-sm capitalize md:inline-flex md:items-center md:gap-3">
-                {isLogin && admin?.userName ? admin?.userName : "Account"}
+                {admin?.userName ? admin?.userName : "No username"}
                 {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
               </span>
             </button>

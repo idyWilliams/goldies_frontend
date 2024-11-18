@@ -19,7 +19,7 @@ export default function AdminSideBar() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const role = JSON.parse(localStorage.getItem("admin") as string).role;
+  const role = JSON.parse(localStorage.getItem("admin") as string)?.role;
   console.log(role, "myrole");
 
   return (

@@ -95,44 +95,6 @@ const Header = () => {
   }, [setAuth, setIsLogin]);
   console.log(isLogin, "isLogged", auth);
 
-  // // SESSION CHECKER
-  // useEffect(() => {
-  //   const SESSION_DURATION = 1 * 24 * 60 * 60 * 1000; // 24HRs in milliseconds
-  //   const storedSession = JSON.parse(localStorage.getItem("user") as string);
-
-  //   try {
-  //     const decodedToken: { iat: number; exp: number } = jwtDecode(
-  //       storedSession?.token,
-  //     );
-
-  //     const storedTimestamp = decodedToken?.exp * 1000;
-  //     const currentTime = new Date().getTime();
-  //     const sessionExpired = currentTime - storedTimestamp >= SESSION_DURATION;
-  //     console.log(sessionExpired, "Expired");
-
-  //     if (!sessionExpired) {
-  //       setIsLogin(true);
-  //     } else {
-  //       // Session has expired, logout the user
-  //       logOut();
-  //       setShowModal(true);
-
-  //       // Optionally, inform the user about the session expiry
-  //       alert("Your session has expired. Please log in again.");
-  //       router.push("/sign-in");
-  //     }
-  //   } catch (error) {
-  //     if (
-  //       (!storedSession?.token && !pathname.includes("/sign-in")) || !pathname.includes("/sign-up");
-  //     ) {
-  //       console.error("Error checking session:", pathname.includes("/sign-in"));
-
-  //       setShowModal(true);
-  //     }
-  //     // Handle the error (e.g., log it, show a user-friendly message)
-  //   }
-  // }, []);
-
   return (
     <>
       <Toaster richColors position="top-right" expand={true} />

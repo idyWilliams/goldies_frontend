@@ -18,7 +18,7 @@ import { RiFolderAddFill, RiHome5Fill } from "react-icons/ri";
 
 export default function MobileSideBar() {
   const pathname = usePathname();
-  const role = JSON.parse(localStorage.getItem("admin") as string).role;
+  const role = JSON.parse(localStorage.getItem("admin") as string)?.role;
 
   return (
     <>

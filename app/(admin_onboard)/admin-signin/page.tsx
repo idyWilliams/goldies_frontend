@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { RiUserSharedLine } from "react-icons/ri";
 import { Button } from "@/components/ui/button";
@@ -65,6 +65,9 @@ const Page = () => {
         toast.error(err?.response?.data?.message || err?.message);
       });
   };
+
+  // AUTO REDIRECT TO DASHBOARD IF TOKEN IS STILL VALID
+  useEffect(() => {}, []);
 
   return (
     <>

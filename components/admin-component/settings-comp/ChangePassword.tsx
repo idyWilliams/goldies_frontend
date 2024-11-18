@@ -4,7 +4,10 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactPasswordChecklist from "react-password-checklist";
 import * as yup from "yup";
-import SuccessModal from "./SuccessModal";
+import { useMutation } from "@tanstack/react-query";
+import { changeAdminPassword } from "@/services/hooks/admin-auth";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 const schema = yup.object().shape({
   oldPassword: yup.string().required("Old password is required"),
@@ -15,18 +18,18 @@ const schema = yup.object().shape({
     .required("Confirm Password is required"),
 });
 
-export default function ChangePassword({
-  showModal,
-  setShowModal,
-}: {
-  showModal: boolean;
-  setShowModal: any;
-}) {
+export default function ChangePassword() {
   const [eye1, setEye1] = useState(false);
   const [eye2, setEye2] = useState(false);
   const [eye3, setEye3] = useState(false);
   const [password, setPassword] = useState("");
   const [passwordAgain, setPasswordAgain] = useState("");
+  const admin = JSON.parse(localStorage.getItem("admin") as string) || null;
+
+  const updatePassword = useMutation({
+    mutationFn: changeAdminPassword,
+    mutationKey: ["updatePassword"],
+  });
 
   const toggleEye1 = () => {
     setEye1((prev: any) => !prev);
@@ -48,10 +51,34 @@ export default function ChangePassword({
   } = useForm({ resolver: yupResolver(schema) });
   // const password = watch("newPassword");
   // const confirm = watch("confirm");
-  console.log(password);
-  const handleSave = (data: any) => {
-    setShowModal(true);
-    console.log(data, errors);
+  // console.log(password);
+  const handleSave = async (data: any) => {
+    const { newPassword, oldPassword: currentPassword } = data;
+    console.log(
+      {
+        newPassword,
+        currentPassword,
+        id: admin?._id,
+      },
+      errors,
+      "DATA PASWOSSSS",
+    );
+
+    try {
+      const update = await updatePassword.mutateAsync({
+        newPassword,
+        currentPassword,
+        id: admin?._id,
+      });
+
+      toast.success("Password Updated!!!");
+
+      console.log(update);
+    } catch (error: any) {
+      console.log(error, "CHangePAsS");
+      // toast.error(error?.message);
+    }
+
     reset();
     setPassword("");
     setPasswordAgain("");

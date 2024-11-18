@@ -9,8 +9,6 @@ import Info from "@/public/assets/rafiki.svg";
 import Reset from "@/public/assets/reset-password.svg";
 import Image from "next/image";
 import { cn } from "@/helper/cn";
-import SuccessModal from "@/components/admin-component/settings-comp/SuccessModal";
-import AdminAuth from "@/components/admin-component/AdminAuth";
 
 const tabs = [
   {
@@ -34,9 +32,7 @@ export default function Page() {
     },
     {
       title: "Change Password",
-      content: (
-        <ChangePassword showModal={showModal} setShowModal={setShowModal} />
-      ),
+      content: <ChangePassword />,
     },
   ];
   return (
@@ -82,16 +78,14 @@ export default function Page() {
                 )}
               >
                 <ProfileInfo />
-                <ChangePassword
-                  showModal={showModal}
-                  setShowModal={setShowModal}
-                />
+                <ChangePassword />
               </div>
             </div>
             <div className="relative hidden h-full w-full lg:block">
               <Image
                 src={Info}
                 alt="illustrations"
+                priority
                 className={cn(
                   "absolute left-0 right-0 top-1/2 mx-auto w-2/3 -translate-y-1/2 opacity-0 duration-300",
                   selectedTab === 0 && "opacity-100",
@@ -100,6 +94,7 @@ export default function Page() {
               <Image
                 src={Reset}
                 alt="illustrations"
+                priority
                 className={cn(
                   "absolute left-0 right-0 top-1/2 mx-auto w-1/2 -translate-y-1/2 opacity-0 duration-300",
                   selectedTab === 1 && "opacity-100",
@@ -109,7 +104,6 @@ export default function Page() {
           </div>
         </div>
       </div>
-      <SuccessModal showModal={showModal} setShowModal={setShowModal} />
     </section>
   );
 }
