@@ -6,8 +6,9 @@ import ReactPasswordChecklist from "react-password-checklist";
 import * as yup from "yup";
 import { useMutation } from "@tanstack/react-query";
 import { changeAdminPassword } from "@/services/hooks/admin-auth";
-import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
+import { CgSpinner } from "react-icons/cg";
+import { Button } from "@/components/ui/button";
 
 const schema = yup.object().shape({
   oldPassword: yup.string().required("Old password is required"),
@@ -74,14 +75,15 @@ export default function ChangePassword() {
       toast.success("Password Updated!!!");
 
       console.log(update);
+
+      // CLEAR INPUT FIELDS ON SUCCESS UPDATE
+      reset();
+      setPassword("");
+      setPasswordAgain("");
     } catch (error: any) {
       console.log(error, "CHangePAsS");
-      // toast.error(error?.message);
+      toast.error(error?.response?.data?.message || error?.message);
     }
-
-    reset();
-    setPassword("");
-    setPasswordAgain("");
   };
   const handleCancel = () => {
     setPassword("");
@@ -174,15 +176,22 @@ export default function ChangePassword() {
               />
             )}
             <div className="mb-6 mt-10  grid  grid-cols-2 gap-8 lg:mb-0">
-              <button
-                className="items-center justify-center rounded-sm border border-red-500 bg-white px-3 py-2 text-sm text-red-500 lg:text-base"
-                onClick={handleCancel}
+              <Button
+                type="submit"
+                disabled={updatePassword?.isPending}
+                className="h-auto items-center justify-center gap-2 rounded-sm bg-black px-5 py-2 text-sm text-main lg:text-base"
               >
-                Cancel Changes
-              </button>
-              <button className="items-center justify-center rounded-sm bg-black px-5 py-2 text-sm text-main lg:text-base">
-                Save Changes
-              </button>
+                {updatePassword?.isPending ? (
+                  <>
+                    <span>
+                      <CgSpinner className="animate-spin" />
+                    </span>
+                    Saving...
+                  </>
+                ) : (
+                  "Save Changes"
+                )}
+              </Button>
             </div>
           </form>
         </>

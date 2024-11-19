@@ -2,28 +2,31 @@
 import Accordion from "@/components/Accordion";
 import ChangePassword from "@/components/admin-component/settings-comp/ChangePassword";
 import ProfileInfo from "@/components/admin-component/settings-comp/ProfileInfo";
-import { ArrowLeft, Lock1, Profile } from "iconsax-react";
+import { Lock1, Profile } from "iconsax-react";
 import React, { useState } from "react";
 import { twMerge } from "tailwind-merge";
 import Info from "@/public/assets/rafiki.svg";
 import Reset from "@/public/assets/reset-password.svg";
 import Image from "next/image";
 import { cn } from "@/helper/cn";
+import { useRouter } from "next/navigation";
 
 const tabs = [
   {
     label: "Profile Information",
     icon: <Profile />,
+    value: "profile",
   },
   {
     label: "Change Password",
     icon: <Lock1 />,
+    value: "change-password",
   },
 ];
 
 export default function Page() {
   const [selectedTab, setSelectedTab] = useState(0);
-  const [showModal, setShowModal] = useState(false);
+  const router = useRouter();
 
   const items = [
     {
@@ -35,6 +38,12 @@ export default function Page() {
       content: <ChangePassword />,
     },
   ];
+
+  const handleTab = (index: number, value: string) => {
+    setSelectedTab(index);
+    router.replace(`/admin/settings?tab=${encodeURIComponent(value)}`);
+  };
+
   return (
     <section>
       <div className="min-h-screen px-4 py-5 lg:bg-neutral-300 lg:px-8">
@@ -64,7 +73,7 @@ export default function Page() {
                       "mb-3 inline-flex cursor-pointer items-center gap-2 bg-neutral-100 px-3 py-2 text-black duration-300",
                       selectedTab === index && "bg-black text-goldie-300",
                     )}
-                    onClick={() => setSelectedTab(index)}
+                    onClick={() => handleTab(index, tab?.value)}
                   >
                     {tab.icon}
                     <h1 className="text-[14px] capitalize">{tab.label}</h1>

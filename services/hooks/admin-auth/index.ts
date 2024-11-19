@@ -58,7 +58,7 @@ export const changeAdminPassword = async (data: {
   id: string;
 }) => {
   const { id, currentPassword, newPassword } = data;
-  const response = await instance.post(`/admin/profile/${id}`, {
+  const response = await instance.put(`/admin/profile/${id}`, {
     currentPassword,
     newPassword,
   });
