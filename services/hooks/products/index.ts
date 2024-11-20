@@ -10,6 +10,8 @@ if (typeof window !== "undefined") {
 
 // CREATE PRODUCT
 export const createNewProduct = async (data: any) => {
+  console.log(accessToken);
+
   const response = await instance.post("/product/create_product", data, {
     headers: {
       Authorization: `Bearer ${accessToken}`,

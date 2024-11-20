@@ -18,6 +18,7 @@ import CreateProductHeader from "@/components/admin-component/create-product/Cre
 import CreatePdctNameAndDesc from "@/components/admin-component/create-product/CreatePdctNameAndDesc";
 import CreatePdctCatAndSubCat from "@/components/admin-component/create-product/CreatePdctCatAndSubCat";
 import CreatePdctType from "@/components/admin-component/create-product/CreatePdctType";
+import { useMediaQuery } from "react-responsive";
 
 interface ErrorResponse {
   message: string;
@@ -50,6 +51,8 @@ export default function Page() {
   const imagesRef = useRef<(File | null)[]>([null, null, null, null]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
+  const isMobile = useMediaQuery({ maxWidth: 768 });
+
   const submitProduct = useMutation({
     mutationFn: createNewProduct,
     onSettled: () => setIsSubmitting(false),
@@ -57,6 +60,8 @@ export default function Page() {
       toast.success(data.message);
       formRef.current?.reset();
       setCategory("");
+      setSubCategory([]);
+      setProductType("");
       setImages({
         image1: "",
         image2: "",
@@ -71,13 +76,13 @@ export default function Page() {
     onError: (error: AxiosError<ErrorResponse>) => {
       console.error(error);
       const resError = error.response?.data;
-      console.log(resError);
+      console.error(resError);
       toast.error(`Error: ${resError?.message}`);
     },
   });
 
   useEffect(() => {
-    if (productType === "available") {
+    if (productType !== "available") {
       setFlavours([]);
     }
   }, [productType]);
@@ -116,7 +121,7 @@ export default function Page() {
         name: sub.label,
         id: sub.id,
       })),
-      productType: formData.get("productType"),
+      productType: productType,
       images: [...imageArr],
       minPrice: Number(formData.get("priceFrom")),
       maxPrice: Number(formData.get("priceTo")),
@@ -127,16 +132,17 @@ export default function Page() {
     };
 
     console.log(data);
-    setIsSubmitting(false);
+    // setIsSubmitting(false);
     submitProduct.mutate(data, {
       onSettled: () => setIsSubmitting(false),
+      onSuccess: () => formData,
     });
   };
 
   return (
     <section className="p-6">
       <div className="hidden md:block">
-        <form onSubmit={createProduct} ref={formRef}>
+        <form ref={formRef} onSubmit={createProduct}>
           <CreateProductHeader isSubmitting={isSubmitting} />
           <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
 
@@ -161,11 +167,16 @@ export default function Page() {
               </div>
             </div>
             <div className="lg:mt-10 xl:mt-0">
-              <CreateProductImages
-                images={images}
-                setImages={setImages}
-                imagesRef={imagesRef}
-              />
+              <h1 className="mb-3 font-bold after:text-xl after:text-[#E10] after:content-['*']">
+                Product Images
+              </h1>
+              <div className="grid grid-cols-4 grid-rows-[180px] gap-4 rounded-md border border-neutral-300 p-4 xl:h-full xl:grid-cols-2">
+                <CreateProductImages
+                  images={images}
+                  setImages={setImages}
+                  imagesRef={imagesRef}
+                />
+              </div>
             </div>
             <div className="mt-10">
               <CreateProductPricing />
@@ -188,9 +199,17 @@ export default function Page() {
         </form>
       </div>
 
-      <div className="block md:hidden">
-        <CreateProductLayout />
-      </div>
+      {isMobile && (
+        <div className="block md:hidden">
+          <CreateProductLayout
+            isSubmitting={isSubmitting}
+            setIsSubmitting={setIsSubmitting}
+            images={images}
+            setImages={setImages}
+            imagesRef={imagesRef}
+          />
+        </div>
+      )}
     </section>
   );
 }

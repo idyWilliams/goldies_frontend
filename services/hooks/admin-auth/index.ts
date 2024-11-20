@@ -18,7 +18,7 @@ export const inviteAdmin = async (data: InviteAdmin) => {
 export const createAdmin = async (data: CreateAdmin) => {
   const response = await instance.post(
     `/admin/signup?refCode=${data.refCode}`,
-    { email: data.email, password: data.password, userName:data?.userName },
+    { email: data.email, password: data.password, userName: data?.userName },
   );
   return response.data;
 };
@@ -45,5 +45,5 @@ export const adminLogOut = async (router: AppRouterInstance) => {
   localStorage.setItem("isLogin", JSON.stringify(false));
   localStorage.removeItem("accessToken");
   localStorage.removeItem("admin");
-  router.push("/admin-sign-in");
+  router.push("/admin-signin");
 };
