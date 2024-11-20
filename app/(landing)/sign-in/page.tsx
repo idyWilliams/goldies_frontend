@@ -56,13 +56,13 @@ const Page = () => {
         console.log(res);
         setIsLogin(true);
         localStorage.setItem("isLogin", JSON.stringify(true));
-        localStorage.removeItem("accessToken");
+        localStorage.removeItem("userToken");
         localStorage.removeItem("user");
         localStorage.setItem(
           "user",
           JSON.stringify({ token: res?.token, user: res?.user }),
         );
-        localStorage.setItem("accessToken", res?.token);
+        localStorage.setItem("userToken", res?.token);
         router.push("/");
         reset();
       })

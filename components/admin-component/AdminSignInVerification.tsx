@@ -48,14 +48,14 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
         setAuth({ token: res?.token, ...res?.admin });
 
         // UPDATE LOCALSTORAGE
-        localStorage.removeItem("accessToken");
+        localStorage.removeItem("adminToken");
         localStorage.removeItem("admin");
         localStorage.setItem("isLogin", JSON.stringify(true));
         localStorage.setItem(
           "admin",
           JSON.stringify({ token: res?.token, ...res?.admin }),
         );
-        localStorage.setItem("accessToken", res?.token);
+        localStorage.setItem("adminToken", res?.token);
         router.push("/admin");
       })
       .catch((error: any) => {

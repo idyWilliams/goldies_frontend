@@ -17,8 +17,20 @@ export const ImageStorageUrl = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_API;
 let accessToken;
 
 if (typeof window !== "undefined") {
-  accessToken = localStorage.getItem("accessToken") || "";
+  // Check if the current URL includes '/admin'
+  const isAdmin =
+    window.location.pathname.startsWith("/admin/") ||
+    window.location.pathname === "/admin";
+
+  // Retrieve token based on the user role
+  accessToken = isAdmin
+    ? localStorage.getItem("adminToken") || ""
+    : localStorage.getItem("userToken") || "";
 }
+
+// if (typeof window !== "undefined") {
+//   accessToken = localStorage.getItem("accessToken") || "";
+// }
 
 const instance = axios.create({
   baseURL: BASEURL,

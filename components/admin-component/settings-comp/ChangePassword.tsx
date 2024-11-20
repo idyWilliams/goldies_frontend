@@ -9,6 +9,7 @@ import { changeAdminPassword } from "@/services/hooks/admin-auth";
 import { toast } from "sonner";
 import { CgSpinner } from "react-icons/cg";
 import { Button } from "@/components/ui/button";
+import useAdmin from "@/services/hooks/admin/use_admin";
 
 const schema = yup.object().shape({
   oldPassword: yup.string().required("Old password is required"),
@@ -25,7 +26,7 @@ export default function ChangePassword() {
   const [eye3, setEye3] = useState(false);
   const [password, setPassword] = useState("");
   const [passwordAgain, setPasswordAgain] = useState("");
-  const admin = JSON.parse(localStorage.getItem("admin") as string) || null;
+  const admin = useAdmin();
 
   const updatePassword = useMutation({
     mutationFn: changeAdminPassword,

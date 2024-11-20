@@ -51,7 +51,11 @@ export default function AdminNav() {
   const [isOpen, setOpen] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
   const [currentTime, setCurrentTime] = useState(moment().format("H:mm"));
-  const admin = JSON.parse(localStorage.getItem("admin") as string) || null;
+  let admin = null;
+
+  if (typeof window !== "undefined") {
+    admin = JSON.parse(localStorage.getItem("admin") as string) || null;
+  }
 
   useEffect(() => {
     const interval = setInterval(() => {

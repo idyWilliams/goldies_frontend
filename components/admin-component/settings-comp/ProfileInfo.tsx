@@ -2,6 +2,7 @@
 import { cn } from "@/helper/cn";
 import { initials } from "@/helper/initials";
 import { updateAdminProfile } from "@/services/hooks/admin-auth";
+import useAdmin from "@/services/hooks/admin/use_admin";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
 import { Profile } from "iconsax-react";
@@ -19,7 +20,7 @@ const schema = yup.object().shape({
 });
 
 export default function ProfileInfo() {
-  const admin = JSON.parse(localStorage.getItem("admin") as string);
+  const admin = useAdmin();
   const updateUserName = useMutation({
     mutationFn: updateAdminProfile,
     mutationKey: ["update + username"],
