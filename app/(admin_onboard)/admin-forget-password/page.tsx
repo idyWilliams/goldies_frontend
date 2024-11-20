@@ -10,10 +10,10 @@ import { useMutation } from "@tanstack/react-query";
 import { forgetAdminPassword } from "@/services/hooks/admin-auth";
 import { Sms } from "iconsax-react";
 import { BiArrowBack } from "react-icons/bi";
+import { toast } from "sonner";
 
 const validationSchema = yup.object().shape({
   email: yup.string().required("Email is required"),
-  password: yup.string().required("Password is required"),
 });
 
 const ForgetAdminPassword = () => {
@@ -32,19 +32,26 @@ const ForgetAdminPassword = () => {
     mutationKey: ["Admin Forget Password"],
   });
 
+  // Opens the user's default email application
+  const handleOpenEmailApp = () => {
+    window.location.href = "mailto:";
+  };
+
   const onSubmit = (data: any) => {
-    // setEmail(data.email);
-    // console.log("Submitted Data:", data);
-    // forgetPassword
-    //   .mutateAsync(data)
-    //   .then((res: any) => {
-    //     console.log("res: ", res.data);
-    //     reset();
-    //   })
-    //   .catch((err: any) => {
-    //     console.log(err, "Admin sign-in err");
-    //     toast.error(err?.response?.data?.message || err?.message);
-    //   });
+    const { email } = data;
+    setEmail(email);
+    console.log("Submitted Data:", data);
+    forgetPassword
+      .mutateAsync(data)
+      .then((res: any) => {
+        console.log("res: ", res.data);
+        reset();
+        toast.success(res?.message);
+      })
+      .catch((err: any) => {
+        console.log(err, "Admin sign-in err");
+        toast.error(err?.response?.data?.message || err?.message);
+      });
   };
 
   return (
@@ -63,7 +70,10 @@ const ForgetAdminPassword = () => {
             </p>
           </div>
 
-          <Button className="my-3 h-auto w-full rounded bg-neutral-900 py-2.5 text-sm text-goldie-300">
+          <Button
+            onClick={handleOpenEmailApp}
+            className="my-3 h-auto w-full rounded bg-neutral-900 py-2.5 text-sm text-goldie-300"
+          >
             Open email app
           </Button>
           <div className="mb-7 flex cursor-pointer items-center justify-center gap-1 text-sm text-neutral-500">
@@ -101,7 +111,6 @@ const ForgetAdminPassword = () => {
               className="grid gap-6"
               onSubmit={handleSubmit(onSubmit)}
             >
-              {/* Email */}
               <label htmlFor="email">
                 <span className="mb-1 inline-block font-medium capitalize">
                   Email address
@@ -128,7 +137,7 @@ const ForgetAdminPassword = () => {
                 className="mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300"
                 type="submit"
               >
-                {forgetPassword?.isPending ? "Loading...." : "Sign In"}
+                {forgetPassword?.isPending ? "Loading...." : "Forget Passw"}
               </Button>
             </form>
           </div>

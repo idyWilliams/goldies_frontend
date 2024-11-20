@@ -80,6 +80,12 @@ export const resetAdminPassword = async (data: {
   return response.data;
 };
 
+// GET ADMIN INFO
+export const getAdmin = async (id: string) => {
+  const response = await instance.get(`/admin/${id}`);
+  return response.data;
+};
+
 // LOGOUT ADMIN
 export const adminLogOut = async (router: AppRouterInstance) => {
   localStorage.setItem("isLogin", JSON.stringify(false));

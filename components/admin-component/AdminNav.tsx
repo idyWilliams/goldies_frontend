@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { FaRegUserCircle } from "react-icons/fa";
 import {
   IoIosArrowDown,
@@ -40,22 +40,25 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { adminLogOut } from "@/services/hooks/admin-auth";
+import { adminLogOut, getAdmin } from "@/services/hooks/admin-auth";
+import { useQuery } from "@tanstack/react-query";
+import useAdmin from "@/services/hooks/admin/use_admin";
 
 export default function AdminNav() {
+  const [admin, setAdmin] = useState<any>();
   const router = useRouter();
-
-  // @ts-ignore
   const [sticky, setSticky] = useState(false);
   const [open, setIsOpen] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
   const [currentTime, setCurrentTime] = useState(moment().format("H:mm"));
-  let admin = null;
+  const adminStored = useAdmin();
+  const { data, isPending, isError, isSuccess } = useQuery({
+    queryKey: ["admin"],
+    queryFn: () => getAdmin(adminStored?._id),
+  });
 
-  if (typeof window !== "undefined") {
-    admin = JSON.parse(localStorage.getItem("admin") as string) || null;
-  }
+  console.log(data, "adminsns");
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -73,6 +76,10 @@ export default function AdminNav() {
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    !isPending && isSuccess ? setAdmin(data?.admin) : setAdmin(null);
+  }, [data?.admin, isPending, isSuccess]);
 
   return (
     <>
@@ -154,7 +161,7 @@ export default function AdminNav() {
             >
               <FaRegUserCircle size={20} />{" "}
               <span className="hidden text-sm capitalize md:inline-flex md:items-center md:gap-3">
-                {admin?.userName ? admin?.userName : "No username"}
+                {isSuccess && admin ? admin?.userName : "No username"}
                 {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
               </span>
             </button>

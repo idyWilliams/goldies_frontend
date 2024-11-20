@@ -44,6 +44,7 @@ export default function ProfileInfo() {
         id: admin._id,
       });
       console.log(update);
+      localStorage.setItem("admin", JSON.stringify(update));
     } catch (error) {}
     reset();
     // toast.success("Account information updated successfully");
