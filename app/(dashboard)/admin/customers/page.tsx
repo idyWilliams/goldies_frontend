@@ -11,19 +11,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import ProductTable from "@/components/admin-component/ProductTable";
-import {
-  Add,
-  ArrowDown,
-  ArrowDown2,
-  Data,
-  Edit,
-  Eye,
-  Trash,
-  User,
-} from "iconsax-react";
-import MobileProductCard from "@/components/admin-component/MobileProductCard";
-import MobileOrderCard from "@/components/admin-component/MobileOrderCard";
-import OrderDetailsModal from "@/components/admin-component/OrderDetailsModal";
 import { useRouter } from "next/navigation";
 import { chunkArray } from "@/helper/chunkArray";
 import Pagination from "@/components/custom-filter/Pagination";

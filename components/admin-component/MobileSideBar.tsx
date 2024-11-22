@@ -10,7 +10,7 @@ import {
 } from "iconsax-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BsHandbagFill } from "react-icons/bs";
 import { CiLogout } from "react-icons/ci";
 import { IoPeopleOutline } from "react-icons/io5";
@@ -18,7 +18,14 @@ import { RiFolderAddFill, RiHome5Fill } from "react-icons/ri";
 
 export default function MobileSideBar() {
   const pathname = usePathname();
-  const role = JSON.parse(localStorage.getItem("admin") as string).role;
+  const [role, setRole] = useState("");
+
+  useEffect(() => {
+    const storedAdmin =
+      JSON.parse(localStorage.getItem("admin") as string) || null;
+
+    setRole(storedAdmin ? storedAdmin?.role : null);
+  }, []);
 
   return (
     <>

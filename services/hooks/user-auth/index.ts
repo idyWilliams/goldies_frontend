@@ -6,6 +6,7 @@ import {
   ResetPassword,
   LoginAdmin,
 } from "@/services/types";
+import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 // CREATE A USER
 export const createUser = async (data: CreateUser) => {
@@ -38,3 +39,10 @@ export const resetPassword = async (data: ResetPassword) => {
   return response.data;
 };
 
+// LOGOUT ADMIN
+export const userLogOut = async (router: AppRouterInstance) => {
+  localStorage.setItem("isLogin", JSON.stringify(false));
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("user");
+  router.push("/sign-in");
+};

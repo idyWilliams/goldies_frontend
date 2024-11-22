@@ -36,14 +36,14 @@ export default function PasswordReset({ password }: { password: string }) {
         console.log(res);
         setIsLogin(true);
         localStorage.setItem("isLogin", JSON.stringify(true));
-        localStorage.removeItem("accessToken");
+        localStorage.removeItem("userToken");
         localStorage.removeItem("user");
         localStorage.removeItem("email");
         localStorage.setItem(
           "user",
           JSON.stringify({ token: res?.token, user: res?.user }),
         );
-        localStorage.setItem("accessToken", res?.token);
+        localStorage.setItem("userToken", res?.token);
         router.push("/");
       })
       .catch((err: any) => {

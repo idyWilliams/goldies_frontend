@@ -1,7 +1,10 @@
 "use client";
 import { cn } from "@/helper/cn";
 import { initials } from "@/helper/initials";
+import { updateAdminProfile } from "@/services/hooks/admin-auth";
+import useAdmin from "@/services/hooks/admin/use_admin";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation } from "@tanstack/react-query";
 import { Profile } from "iconsax-react";
 import { startsWith } from "lodash-es";
 import React, { ReactNode, useEffect, useState } from "react";
@@ -17,8 +20,11 @@ const schema = yup.object().shape({
 });
 
 export default function ProfileInfo() {
-  const [phone, setPhone] = useState("");
-  const admin = JSON.parse(localStorage.getItem("admin") as string);
+  const admin = useAdmin();
+  const updateUserName = useMutation({
+    mutationFn: updateAdminProfile,
+    mutationKey: ["update + username"],
+  });
 
   const {
     register,
@@ -27,16 +33,25 @@ export default function ProfileInfo() {
     control,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) });
-  const handleSave = (data: any) => {
-    console.log(data);
+
+  // HANDLE SUBMIT
+  const handleSave = async (data: any) => {
+    const { userName } = data;
+    console.log({ userName, id: admin._id });
+    try {
+      const update = await updateUserName.mutateAsync({
+        userName,
+        id: admin._id,
+      });
+      console.log(update);
+      localStorage.setItem("admin", JSON.stringify(update));
+    } catch (error) {}
     reset();
-    setPhone("");
-    toast.success("Account information updated successfully");
+    // toast.success("Account information updated successfully");
   };
   const handleCancel = () => {
     console.log("click cancelled");
     reset();
-    setPhone("");
   };
 
   useEffect(() => {
@@ -80,21 +95,15 @@ export default function ProfileInfo() {
               type="email"
               autoComplete="off"
               id="email"
+              disabled
               placeholder="Your email"
-              className="form-input w-full rounded-sm border-none bg-gray-100 focus:border focus:border-black focus:ring-black"
+              className="form-input w-full cursor-not-allowed rounded-sm border-none bg-gray-100 focus:border focus:border-black focus:ring-black disabled:text-neutral-500"
             />
             {errors.email && (
               <p className="text-red-600">{errors.email.message}</p>
             )}
           </label>
           <div className="mb-6 mt-10 grid grid-cols-2 gap-8 lg:mb-0">
-            <button
-              type="button"
-              className="items-center justify-center rounded-sm border border-red-500 bg-white px-3 py-2 text-sm text-red-500 lg:text-base"
-              onClick={handleCancel}
-            >
-              Cancel Changes
-            </button>
             <button
               type="submit"
               className="items-center justify-center rounded-sm bg-black px-5 py-2 text-sm text-main lg:text-base"

@@ -41,6 +41,52 @@ export const getUsers = async () => {
   return response.data;
 };
 
+// ADMIN PROFILE UPDATE
+export const updateAdminProfile = async (data: {
+  userName: string;
+  id: string;
+}) => {
+  const { id, userName } = data;
+  const response = await instance.put(`/admin/profile/${id}`, { userName });
+  return response.data;
+};
+
+// ADMIN CHANGE PASSWORD
+export const changeAdminPassword = async (data: {
+  currentPassword: string;
+  newPassword: string;
+  id: string;
+}) => {
+  const { id, currentPassword, newPassword } = data;
+  const response = await instance.put(`/admin/profile/${id}`, {
+    currentPassword,
+    newPassword,
+  });
+  return response.data;
+};
+
+// ADMIN FORGET PASSWORD
+export const forgetAdminPassword = async (data: { email: string }) => {
+  const response = await instance.post("/admin/forgot-password", data);
+  return response.data;
+};
+
+// ADMIN RESET PASSWORD
+export const resetAdminPassword = async (data: {
+  token: string;
+  newPassword: string;
+}) => {
+  const response = await instance.post("/admin/reset-password", data);
+  return response.data;
+};
+
+// GET ADMIN INFO
+export const getAdmin = async (id: string) => {
+  const response = await instance.get(`/admin/${id}`);
+  return response.data;
+};
+
+// LOGOUT ADMIN
 export const adminLogOut = async (router: AppRouterInstance) => {
   localStorage.setItem("isLogin", JSON.stringify(false));
   localStorage.removeItem("accessToken");

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { FaRegUserCircle } from "react-icons/fa";
 import {
   IoIosArrowDown,
@@ -40,33 +40,25 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useAdminStore } from "@/zustand/adminStore/adminStore";
-import { adminLogOut } from "@/services/hooks/admin-auth";
-import AuthContext, { useAuth } from "@/context/AuthProvider";
+import { adminLogOut, getAdmin } from "@/services/hooks/admin-auth";
+import { useQuery } from "@tanstack/react-query";
+import useAdmin from "@/services/hooks/admin/use_admin";
 
 export default function AdminNav() {
+  const [admin, setAdmin] = useState<any>();
   const router = useRouter();
-
-  // @ts-ignore
-  const { isLogin, setIsLogin } = useAuth();
   const [sticky, setSticky] = useState(false);
   const [open, setIsOpen] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
   const [currentTime, setCurrentTime] = useState(moment().format("H:mm"));
-  const admin = JSON.parse(localStorage.getItem("admin") as string);
+  const adminStored = useAdmin();
+  const { data, isPending, isError, isSuccess } = useQuery({
+    queryKey: ["admin"],
+    queryFn: () => getAdmin(adminStored?._id),
+  });
 
-  // // Load admin name on page load
-  // useEffect(() => {
-  //   if (admin) {
-  //     setAdminName(admin.userName);
-  //     console.log("Admin from Zustand:", admin);
-  //   }
-  // }, [admin]);
-
-  // useEffect(() => {
-  //   console.log("Rehydrated admin state:", admin);
-  // }, [admin]);
+  console.log(data, "adminsns");
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -85,11 +77,9 @@ export default function AdminNav() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // useEffect(() => {
-  //   const isLoggedIn = JSON.parse(localStorage.getItem("isLogin") as string);
-  //   console.log(isLoggedIn, admin?.userName, "shsh");
-  //   setIsLogin(JSON.parse(localStorage.getItem("isLogin") as string));
-  // }, [admin?.userName, setIsLogin]);
+  useEffect(() => {
+    !isPending && isSuccess ? setAdmin(data?.admin) : setAdmin(null);
+  }, [data?.admin, isPending, isSuccess]);
 
   return (
     <>
@@ -171,7 +161,7 @@ export default function AdminNav() {
             >
               <FaRegUserCircle size={20} />{" "}
               <span className="hidden text-sm capitalize md:inline-flex md:items-center md:gap-3">
-                {isLogin && admin?.userName ? admin?.userName : "Account"}
+                {isSuccess && admin ? admin?.userName : "No username"}
                 {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
               </span>
             </button>
@@ -189,7 +179,7 @@ export default function AdminNav() {
                 <div className="">
                   <span
                     className="flex cursor-pointer items-center gap-2  whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
-                    onClick={() => router.push(`/admin/settings?tab=account`)}
+                    onClick={() => router.push(`/admin/settings?tab=profile`)}
                   >
                     <User size={20} />
                     My Account

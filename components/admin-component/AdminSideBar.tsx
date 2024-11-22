@@ -11,7 +11,7 @@ import {
 } from "iconsax-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { CiLogout } from "react-icons/ci";
 import { IoPeopleOutline } from "react-icons/io5";
 
@@ -19,8 +19,15 @@ export default function AdminSideBar() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const role = JSON.parse(localStorage.getItem("admin") as string).role;
+  const [role, setRole] = useState("");
   console.log(role, "myrole");
+
+  useEffect(() => {
+    const storedAdmin =
+      JSON.parse(localStorage.getItem("admin") as string) || null;
+
+    setRole(storedAdmin ? storedAdmin?.role : null);
+  }, []);
 
   return (
     <>

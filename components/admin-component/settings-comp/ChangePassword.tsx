@@ -4,7 +4,12 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import ReactPasswordChecklist from "react-password-checklist";
 import * as yup from "yup";
-import SuccessModal from "./SuccessModal";
+import { useMutation } from "@tanstack/react-query";
+import { changeAdminPassword } from "@/services/hooks/admin-auth";
+import { toast } from "sonner";
+import { CgSpinner } from "react-icons/cg";
+import { Button } from "@/components/ui/button";
+import useAdmin from "@/services/hooks/admin/use_admin";
 
 const schema = yup.object().shape({
   oldPassword: yup.string().required("Old password is required"),
@@ -15,18 +20,18 @@ const schema = yup.object().shape({
     .required("Confirm Password is required"),
 });
 
-export default function ChangePassword({
-  showModal,
-  setShowModal,
-}: {
-  showModal: boolean;
-  setShowModal: any;
-}) {
+export default function ChangePassword() {
   const [eye1, setEye1] = useState(false);
   const [eye2, setEye2] = useState(false);
   const [eye3, setEye3] = useState(false);
   const [password, setPassword] = useState("");
   const [passwordAgain, setPasswordAgain] = useState("");
+  const admin = useAdmin();
+
+  const updatePassword = useMutation({
+    mutationFn: changeAdminPassword,
+    mutationKey: ["updatePassword"],
+  });
 
   const toggleEye1 = () => {
     setEye1((prev: any) => !prev);
@@ -48,13 +53,38 @@ export default function ChangePassword({
   } = useForm({ resolver: yupResolver(schema) });
   // const password = watch("newPassword");
   // const confirm = watch("confirm");
-  console.log(password);
-  const handleSave = (data: any) => {
-    setShowModal(true);
-    console.log(data, errors);
-    reset();
-    setPassword("");
-    setPasswordAgain("");
+  // console.log(password);
+  const handleSave = async (data: any) => {
+    const { newPassword, oldPassword: currentPassword } = data;
+    console.log(
+      {
+        newPassword,
+        currentPassword,
+        id: admin?._id,
+      },
+      errors,
+      "DATA PASWOSSSS",
+    );
+
+    try {
+      const update = await updatePassword.mutateAsync({
+        newPassword,
+        currentPassword,
+        id: admin?._id,
+      });
+
+      toast.success("Password Updated!!!");
+
+      console.log(update);
+
+      // CLEAR INPUT FIELDS ON SUCCESS UPDATE
+      reset();
+      setPassword("");
+      setPasswordAgain("");
+    } catch (error: any) {
+      console.log(error, "CHangePAsS");
+      toast.error(error?.response?.data?.message || error?.message);
+    }
   };
   const handleCancel = () => {
     setPassword("");
@@ -147,15 +177,22 @@ export default function ChangePassword({
               />
             )}
             <div className="mb-6 mt-10  grid  grid-cols-2 gap-8 lg:mb-0">
-              <button
-                className="items-center justify-center rounded-sm border border-red-500 bg-white px-3 py-2 text-sm text-red-500 lg:text-base"
-                onClick={handleCancel}
+              <Button
+                type="submit"
+                disabled={updatePassword?.isPending}
+                className="h-auto items-center justify-center gap-2 rounded-sm bg-black px-5 py-2 text-sm text-main lg:text-base"
               >
-                Cancel Changes
-              </button>
-              <button className="items-center justify-center rounded-sm bg-black px-5 py-2 text-sm text-main lg:text-base">
-                Save Changes
-              </button>
+                {updatePassword?.isPending ? (
+                  <>
+                    <span>
+                      <CgSpinner className="animate-spin" />
+                    </span>
+                    Saving...
+                  </>
+                ) : (
+                  "Save Changes"
+                )}
+              </Button>
             </div>
           </form>
         </>
