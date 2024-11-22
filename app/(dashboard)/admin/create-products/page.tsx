@@ -1,14 +1,12 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import { MultiSelect } from "react-multi-select-component";
+
 import CreateProductLayout from "@/components/admin-component/create-product/CreateProductLayout";
-import { MultiValue } from "react-select";
-import useCategories from "@/services/hooks/category/useCategories";
-import { captalizedName } from "@/helper/nameFormat";
+
 import { uploadImageToFirebase } from "@/lib/utils";
 
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { createNewProduct, getAllProducts } from "@/services/hooks/products";
+import { useMutation } from "@tanstack/react-query";
+import { createNewProduct } from "@/services/hooks/products";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import CreateProductImages from "@/components/admin-component/create-product/CreateProductImages";
