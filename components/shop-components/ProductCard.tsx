@@ -12,6 +12,7 @@ import { Tooltip } from "react-tooltip";
 import StarRating from "../StarRating";
 import Placeholder from "@/public/assets/placeholder3.png";
 import useUserPdctStore from "@/zustand/userProductStore/store";
+import { DialogCloseButton } from "../DialogModal";
 
 export default function ProductCard({ data }: { data: any }) {
   const [previewFav, setPreviewFav] = useState(false);
@@ -22,6 +23,7 @@ export default function ProductCard({ data }: { data: any }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const addFavProducts = useUserPdctStore((state) => state.addFavProduct);
   const removeFavProducts = useUserPdctStore((state) => state.removeFavProduct);
+  const isLogin = JSON.parse(localStorage.getItem("isLogin") as string);
 
   const handleAddToCart = () => {
     const items = Object.values(cart);
@@ -113,18 +115,26 @@ export default function ProductCard({ data }: { data: any }) {
           <span
             className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-[5px] bg-black bg-opacity-50 text-goldie-300"
             onClick={() => addToSavedItems(data)}
-            // onClick={() => setFav((prev: any) => !prev)}
             onMouseEnter={() => setPreviewFav(true)}
             onMouseLeave={() => {
               if (fav) return;
               setPreviewFav(false);
             }}
           >
-            {/* {fav || previewFav ? ( */}
-            <Heart size={20} variant={fav || previewFav ? "Bold" : undefined} />
-            {/* ) : (
-              <Heart size={20} />
-            )} */}
+            {isLogin ? (
+              <Heart
+                size={20}
+                variant={fav || previewFav ? "Bold" : undefined}
+              />
+            ) : (
+              <DialogCloseButton>
+                <Heart
+                  size={20}
+                  variant={fav || previewFav ? "Bold" : undefined}
+                />
+              </DialogCloseButton>
+            )}
+            {/* <Heart size={20} variant={fav || previewFav ? "Bold" : undefined} /> */}
           </span>
         </div>
       </figure>

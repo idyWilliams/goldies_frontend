@@ -54,7 +54,7 @@ const Header = () => {
   const logOut = () => {
     setIsLogin(false);
     localStorage.removeItem("user");
-    localStorage.removeItem("accessToken");
+    localStorage.removeItem("userToken");
     localStorage.setItem("isLogin", JSON.stringify(false));
 
     if (pathname.includes("/my-account") || pathname.includes("/my-orders")) {
@@ -269,6 +269,7 @@ type ComponentProp = {
   content: string;
   action: () => void;
 };
+
 const SessionModal: React.FC<ComponentProp> = ({
   open,
   setOpen,

@@ -1,6 +1,6 @@
 "use client";
 import EmptyStateCard from "@/components/admin-component/category-comp/EmptyStateCard";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getPaginatedCategories } from "@/services/hooks/category";
 import useBoundStore from "@/zustand/store";
@@ -43,20 +43,6 @@ const AllCategories = ({ cat }: any) => {
   });
   console.log(data);
 
-  // function getCatArr(
-  //   arr: Category[],
-  //   limit: number,
-  //   pagFxn: any,
-  //   setCatArr: any,
-  // ) {
-  //   const reversedCats = [...arr].reverse();
-  //   setCatArr(reversedCats);
-  //   const paginatedArr = pagFxn(reversedCats, limit);
-  //   return paginatedArr;
-  // }
-
-  // const categoriesArr = useCallback(getCatArr, []);
-
   const QueryData = useMemo(() => {
     if (data) {
       return data;
@@ -70,12 +56,6 @@ const AllCategories = ({ cat }: any) => {
 
   useEffect(() => {
     if (QueryData) {
-      // const paginatedCats = categoriesArr(
-      //   categories,
-      //   limit,
-      //   chunkArray,
-      //   setAllCategories,
-      // );
       setAllCategories(QueryData.categories);
       setTotalPages(QueryData.totalPages);
       setCurrentData(QueryData.categories);
