@@ -74,6 +74,8 @@ export default function CategoryForm() {
   const categoryId = queryParams.get("categoryId");
   const formRef = useRef<HTMLFormElement | null>(null);
 
+  const page = useBoundStore((state) => state.page);
+  const limit = useBoundStore((state) => state.limit);
   const category = useBoundStore((state) => state.activeCategory);
   const setCategory = useBoundStore((state) => state.setActiveCategory);
   const [imageUrl, setImageUrl] = useState<string>(function () {
@@ -185,29 +187,36 @@ export default function CategoryForm() {
     mutationFn: createCategory,
 
     onMutate: async (variable) => {
-      await queryClient.cancelQueries({ queryKey: ["categories", 1, 50] });
+      await queryClient.cancelQueries({
+        queryKey: ["categories", page, limit],
+      });
       const previousCategories = queryClient.getQueryData([
         "categories",
         1,
         50,
       ]);
       if (!previousCategories) return;
-      queryClient.setQueryData(["categories", 1, 50], (old: QueryDataType) => {
-        const newData = optimisticCategoryUpdate("create", old, variable);
+      queryClient.setQueryData(
+        ["categories", page, limit],
+        (old: QueryDataType) => {
+          const newData = optimisticCategoryUpdate("create", old, variable);
 
-        return { ...newData };
-      });
+          return { ...newData };
+        },
+      );
 
       return { previousCategories };
     },
     onSettled: () => {
       const previousCategories = queryClient.getQueryData([
         "categories",
-        1,
-        50,
+        page,
+        limit,
       ]);
       if (previousCategories) {
-        queryClient.invalidateQueries({ queryKey: ["categories", 1, 50] });
+        queryClient.invalidateQueries({
+          queryKey: ["categories", page, limit],
+        });
       }
     },
 
@@ -219,7 +228,7 @@ export default function CategoryForm() {
     onError: (error, newCategory, context) => {
       if (context?.previousCategories) {
         queryClient.setQueryData(
-          ["categories", 1, 50],
+          ["categories", page, limit],
           context?.previousCategories,
         );
       }
@@ -235,29 +244,36 @@ export default function CategoryForm() {
 
     onMutate: async (variable) => {
       // if(!data?.category) return
-      await queryClient.cancelQueries({ queryKey: ["categories", 1, 50] });
+      await queryClient.cancelQueries({
+        queryKey: ["categories", page, limit],
+      });
       const previousCategories = queryClient.getQueryData([
         "categories",
-        1,
-        50,
+        page,
+        limit,
       ]);
       if (!previousCategories) return;
 
-      queryClient.setQueryData(["categories", 1, 50], (old: QueryDataType) => {
-        const newData = optimisticCategoryUpdate("edit", old, variable);
-        return { ...newData };
-      });
+      queryClient.setQueryData(
+        ["categories", page, limit],
+        (old: QueryDataType) => {
+          const newData = optimisticCategoryUpdate("edit", old, variable);
+          return { ...newData };
+        },
+      );
 
       return { previousCategories };
     },
     onSettled: () => {
       const previousCategories = queryClient.getQueryData([
         "categories",
-        1,
-        50,
+        page,
+        limit,
       ]);
       if (previousCategories) {
-        queryClient.invalidateQueries({ queryKey: ["categories", 1, 50] });
+        queryClient.invalidateQueries({
+          queryKey: ["categories", page, limit],
+        });
       }
     },
     onSuccess: () => {
@@ -268,7 +284,7 @@ export default function CategoryForm() {
     onError: (error, newCategory, context) => {
       if (context?.previousCategories) {
         queryClient.setQueryData(
-          ["categories", 1, 50],
+          ["categories", page, limit],
           context?.previousCategories,
         );
       }

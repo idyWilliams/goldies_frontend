@@ -117,7 +117,7 @@ export default function InformationAndPricing({
           <div className="">
             <h1 className="my-3 text-[14px] font-semibold ">Product Pricing</h1>
             <div className="flex h-full gap-4">
-              <label htmlFor="priceFrom" className="block">
+              <label htmlFor="minPrice" className="block">
                 <span className="mb-1 inline-block text-[12px] after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
                   Price From
                 </span>
@@ -138,7 +138,7 @@ export default function InformationAndPricing({
                   />
                 </div>
               </label>
-              <label htmlFor="priceTo" className="block">
+              <label htmlFor="maxPrice" className="block">
                 <span className="mb-1 inline-block text-[12px] after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
                   Price To
                 </span>

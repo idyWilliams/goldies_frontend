@@ -19,11 +19,6 @@ export default function ProductVariants({
   setAddOn,
   productType,
 }: ProductVariantsPropType) {
-  // const [shapes, setShapes] = useState([]);
-  // const [fillings, setFillings] = useState([]);
-  // const [sizes, setSizes] = useState([]);
-  // const [addOn, setAddOn] = useState([]);
-
   return (
     <section>
       <div>

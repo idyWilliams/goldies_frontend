@@ -24,64 +24,39 @@ const productStep = ["information", "variants", "images"];
 export default function CreateProductLayout({
   isSubmitting,
   setIsSubmitting,
-  images,
-  setImages,
-  imagesRef,
+  // images,
+  // setImages,
+  // imagesRef,
+  data,
 }: CreateProductMobilePropTypes) {
-  const [formValues, setFormValues] = useState<formValuesType>({
-    productName: "",
-    productDescription: "",
-    category: "",
-    productType: "",
-    maxPrice: 0,
-    minPrice: 0,
-  });
+  const {
+    formValues,
+    setFormValues,
+    handleChange,
+    images,
+    setImages,
+    imagesRef,
+    category,
+    categoryOptions,
+    subcatOptions,
+    multiSelect,
+  } = data;
 
-  // const [category, setCategory] = useState<string>("");
-  const [categoryData, setCategoryData] = useState<{
-    name: string;
-    id: string;
-  }>({ name: "", id: "" });
-
-  const [subCategory, setSubCategory] = useState<any[]>([]);
-  const [shapes, setShapes] = useState<[]>([]);
-  const [flavour, setFlavours] = useState<[]>([]);
-  const [sizes, setSizes] = useState<[]>([]);
-  const [addOn, setAddOn] = useState<[]>([]);
+  const {
+    categoryData,
+    subCategory,
+    setSubCategory,
+    shapes,
+    setShapes,
+    flavour,
+    setFlavours,
+    sizes,
+    setSizes,
+    addOn,
+    setAddOn,
+  } = multiSelect;
 
   const formRefMobile = useRef<HTMLFormElement>(null);
-
-  const handleChange = (e: any) => {
-    const { name, value } = e.target;
-    setFormValues((prev) => ({
-      ...prev,
-      [name]:
-        name === "maxPrice" || name === "minPrice" ? Number(value) : value,
-    }));
-  };
-
-  const { categories } = useCategories();
-  const category = formValues.category;
-
-  const { categoryOptions, subcategories } = useCategoryOptions({
-    categories,
-    category,
-  });
-
-  useEffect(() => {
-    if (category) {
-      console.log(category);
-
-      setSubCategory([]);
-      const activeCategory = categoryOptions?.find(
-        (option) => option.value === category,
-      );
-
-      if (activeCategory)
-        setCategoryData({ name: activeCategory.value, id: activeCategory.id });
-    }
-    if (!category) setSubCategory([]);
-  }, [category, setSubCategory, categoryOptions, setCategoryData]);
 
   const submitProductMobile = useMutation({
     mutationFn: createNewProduct,
@@ -120,7 +95,7 @@ export default function CreateProductLayout({
     if (formValues.productType !== "preorder") {
       setFlavours([]);
     }
-  }, [formValues.productType]);
+  }, [formValues.productType, setFlavours]);
 
   const createProductMobile = async (e: any) => {
     e.preventDefault();
@@ -150,7 +125,7 @@ export default function CreateProductLayout({
       name: formValues.productName,
       description: formValues.productDescription,
       category: categoryData,
-      subCategory: subCategory.map((sub: any) => ({
+      subCategory: [...subCategory].map((sub: any) => ({
         name: sub.label,
         id: sub.id,
       })),
@@ -166,9 +141,7 @@ export default function CreateProductLayout({
 
     console.log(data);
     // setIsSubmitting(false);
-    submitProductMobile.mutate(data, {
-      onSettled: () => setIsSubmitting(false),
-    });
+    submitProductMobile.mutate(data);
   };
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -181,11 +154,10 @@ export default function CreateProductLayout({
         return (
           <InformationAndPricing
             category={category}
-            setCategoryData={setCategoryData}
             subCategory={subCategory}
             setSubCategory={setSubCategory}
             categoryOptions={categoryOptions}
-            subcategories={subcategories}
+            subcategories={subcatOptions}
             formValues={formValues}
             handleChange={handleChange}
           />
@@ -206,11 +178,6 @@ export default function CreateProductLayout({
         );
       case 3:
         return (
-          // <ProductImages
-          //   images={images}
-          //   setImages={setImages}
-          //   mobileImgRef={mobileImgRef}
-          // />
           <section>
             <div>
               <div className="mt-6 grid h-full grid-cols-2 grid-rows-[repeat(2,200px)] gap-4">

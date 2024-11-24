@@ -1,5 +1,5 @@
 "use client";
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import AuthContext, { useAuth } from "@/context/AuthProvider";
 import { usePathname, useRouter } from "next/navigation";
 import { adminLogOut } from "@/services/hooks/admin-auth";
@@ -9,6 +9,7 @@ const AdminAuth = <P extends object>(WrappedComponent: FC<P>) => {
   const AdminAuthWrapper: FC<P> = (props) => {
     const router = useRouter();
     const pathname = usePathname();
+    const [isLogin, setIsLogin] = useState(false);
 
     useEffect(() => {
       const storedAdmin = JSON.parse(localStorage.getItem("admin") as string);
@@ -36,6 +37,7 @@ const AdminAuth = <P extends object>(WrappedComponent: FC<P>) => {
         // When admin session is still valid
         if (!sessionExpired) {
           console.log("Valid session admin");
+          setIsLogin(true);
 
           return;
         } else {
@@ -48,7 +50,7 @@ const AdminAuth = <P extends object>(WrappedComponent: FC<P>) => {
       }
     }, [pathname, router]);
 
-    return <WrappedComponent {...(props as P)} />;
+    return isLogin && <WrappedComponent {...(props as P)} />;
   };
   return AdminAuthWrapper;
 };

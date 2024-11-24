@@ -13,16 +13,21 @@ let accessToken = "";
 let user: { token?: string } = {};
 
 if (typeof window !== "undefined") {
-  accessToken = localStorage.getItem("accessToken") || "";
-  user = JSON.parse(localStorage.getItem("user") || "{}");
+  // Check if the current URL includes '/admin'
+  const isAdmin =
+    window.location.pathname.startsWith("/admin/") ||
+    window.location.pathname === "/admin";
+
+  // Retrieve token based on the user role
+  accessToken = isAdmin
+    ? localStorage.getItem("adminToken") || ""
+    : localStorage.getItem("userToken") || "";
 }
 
 export const getPaginatedCategories = async (
   pageNum: number,
   limitNum: number,
 ) => {
-  console.log("ran on all categories mount");
-
   const response = await instance.get(
     `/category/get_all_category?page=${pageNum}&limit=${limitNum}`,
   );
@@ -30,8 +35,6 @@ export const getPaginatedCategories = async (
 };
 
 export const getAllCategories = async () => {
-  console.log("ran on server mount");
-
   const response = await instance.get(`/category/get_all_category`);
   return response.data;
 };

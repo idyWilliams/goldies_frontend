@@ -6,37 +6,13 @@ import React, { useEffect, useMemo } from "react";
 import { MultiSelect } from "react-multi-select-component";
 
 const CreatePdctCatAndSubCat = ({
+  categoryOptions,
   category,
-  setCategoryData,
-  setCategory,
+  subcatOptions,
+  handleChange,
   subCategory,
   setSubCategory,
 }: CreatePdctCatAndSubCatPropType) => {
-  const { categories } = useCategories();
-
-  const { categoryOptions, subcategories } = useCategoryOptions({
-    categories,
-    category,
-  });
-
-  function setActiveCategory(value: string) {
-    if (value === "select_category") {
-      setCategory("");
-    } else setCategory(value);
-  }
-
-  useEffect(() => {
-    if (category) {
-      setSubCategory([]);
-      const activeCategory = categoryOptions?.find(
-        (option) => option.value === category,
-      );
-
-      if (activeCategory)
-        setCategoryData({ name: activeCategory.value, id: activeCategory.id });
-    }
-  }, [category, setSubCategory, categoryOptions, setCategoryData]);
-
   return (
     <div className="grid grid-cols-2 gap-4">
       <div className="mt-3 w-full">
@@ -48,10 +24,10 @@ const CreatePdctCatAndSubCat = ({
           id="category"
           name="category"
           className="form-select w-full rounded-md border-neutral-300 text-neutral-400"
-          onChange={(e: any) => setActiveCategory(e.target.value)}
+          onChange={handleChange}
           value={category}
         >
-          <option value={"select_category"}>Select category</option>
+          <option value={""}>Select category</option>
           {categoryOptions &&
             categoryOptions.map((option: any, index: number) => (
               <option
@@ -73,7 +49,7 @@ const CreatePdctCatAndSubCat = ({
         <div className={`${!category ? "cursor-not-allowed" : ""}`}>
           <MultiSelect
             disabled={!category}
-            options={subcategories}
+            options={subcatOptions}
             value={subCategory}
             labelledBy="Select subcategory"
             onChange={setSubCategory}

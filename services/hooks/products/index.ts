@@ -1,11 +1,17 @@
 import instance from "@/services/api";
 
 let accessToken = "";
-let user: { token?: string } = {};
 
 if (typeof window !== "undefined") {
-  accessToken = localStorage.getItem("accessToken") || "";
-  user = JSON.parse(localStorage.getItem("user") || "{}");
+  // Check if the current URL includes '/admin'
+  const isAdmin =
+    window.location.pathname.startsWith("/admin/") ||
+    window.location.pathname === "/admin";
+
+  // Retrieve token based on the user role
+  accessToken = isAdmin
+    ? localStorage.getItem("adminToken") || ""
+    : localStorage.getItem("userToken") || "";
 }
 
 // CREATE PRODUCT

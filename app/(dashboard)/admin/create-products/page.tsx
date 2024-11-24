@@ -17,6 +17,8 @@ import CreatePdctNameAndDesc from "@/components/admin-component/create-product/C
 import CreatePdctCatAndSubCat from "@/components/admin-component/create-product/CreatePdctCatAndSubCat";
 import CreatePdctType from "@/components/admin-component/create-product/CreatePdctType";
 import { useMediaQuery } from "react-responsive";
+import { formValuesType } from "@/types/products";
+import useFormValues from "@/services/hooks/category/useFormValues";
 
 interface ErrorResponse {
   message: string;
@@ -24,29 +26,35 @@ interface ErrorResponse {
 }
 
 export default function Page() {
-  const [category, setCategory] = useState<string>("");
-  const [categoryData, setCategoryData] = useState<{
-    name: string;
-    id: string;
-  }>({ name: "", id: "" });
+  const data = useFormValues();
+  const {
+    formValues,
+    setFormValues,
+    handleChange,
+    images,
+    setImages,
+    imagesRef,
+    category,
+    categoryOptions,
+    subcatOptions,
+    multiSelect,
+  } = data;
 
-  const [subCategory, setSubCategory] = useState<any[]>([]);
-  const [productType, setProductType] = useState("");
-
-  const [shapes, setShapes] = useState<[]>([]);
-  const [flavour, setFlavours] = useState<[]>([]);
-  const [sizes, setSizes] = useState<[]>([]);
-  const [addOn, setAddOn] = useState<[]>([]);
-
-  const [images, setImages] = useState<any>({
-    image1: "",
-    image2: "",
-    image3: "",
-    image4: "",
-  });
+  const {
+    categoryData,
+    subCategory,
+    setSubCategory,
+    shapes,
+    setShapes,
+    flavour,
+    setFlavours,
+    sizes,
+    setSizes,
+    addOn,
+    setAddOn,
+  } = multiSelect;
 
   const formRef = useRef<HTMLFormElement>(null);
-  const imagesRef = useRef<(File | null)[]>([null, null, null, null]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const isMobile = useMediaQuery({ maxWidth: 768 });
@@ -55,35 +63,43 @@ export default function Page() {
     mutationFn: createNewProduct,
     onSettled: () => setIsSubmitting(false),
     onSuccess: (data) => {
+      console.log("created product successfully");
+
       toast.success(data.message);
       formRef.current?.reset();
-      setCategory("");
+      setFormValues({
+        productName: "",
+        productDescription: "",
+        category: "",
+        productType: "",
+        maxPrice: 0,
+        minPrice: 0,
+      });
       setSubCategory([]);
-      setProductType("");
+      setFlavours([]);
+      setShapes([]);
+      setSizes([]);
+      setAddOn([]);
       setImages({
         image1: "",
         image2: "",
         image3: "",
         image4: "",
       });
-      setFlavours([]);
-      setShapes([]);
-      setSizes([]);
-      setAddOn([]);
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       console.error(error);
       const resError = error.response?.data;
       console.error(resError);
-      toast.error(`Error: ${resError?.message}`);
+      toast.error(`Error: ${resError?.message ? resError?.message : resError}`);
     },
   });
 
   useEffect(() => {
-    if (productType !== "available") {
+    if (formValues.productType !== "preorder") {
       setFlavours([]);
     }
-  }, [productType]);
+  }, [formValues.productType, setFlavours]);
 
   const createProduct = async (e: any) => {
     e.preventDefault();
@@ -112,17 +128,17 @@ export default function Page() {
     const imageArr = newImageArr.filter((url) => url !== null);
 
     const data = {
-      name: formData.get("productName"),
-      description: formData.get("productDescription"),
+      name: formValues.productName,
+      description: formValues.productDescription,
       category: categoryData,
       subCategory: [...subCategory].map((sub: any) => ({
         name: sub.label,
         id: sub.id,
       })),
-      productType: productType,
+      productType: formValues.productType,
       images: [...imageArr],
-      minPrice: Number(formData.get("priceFrom")),
-      maxPrice: Number(formData.get("priceTo")),
+      minPrice: Number(formValues.minPrice),
+      maxPrice: Number(formValues.maxPrice),
       shapes: [...shapes].map((shape: any) => shape.value),
       sizes: [...sizes].map((size: any) => size.value),
       flavour: [...flavour].map((filling: any) => filling.value),
@@ -131,10 +147,7 @@ export default function Page() {
 
     console.log(data);
     // setIsSubmitting(false);
-    submitProduct.mutate(data, {
-      onSettled: () => setIsSubmitting(false),
-      onSuccess: () => formData,
-    });
+    submitProduct.mutate(data);
   };
 
   return (
@@ -148,19 +161,24 @@ export default function Page() {
             <div className="">
               <h2 className="mb-3 font-bold">Product Information</h2>
               <div className="h-full rounded-md border border-neutral-300 p-4">
-                <CreatePdctNameAndDesc />
+                <CreatePdctNameAndDesc
+                  productName={formValues.productName}
+                  productDescription={formValues.productDescription}
+                  handleChange={handleChange}
+                />
 
                 <CreatePdctCatAndSubCat
+                  categoryOptions={categoryOptions}
                   category={category}
-                  setCategoryData={setCategoryData}
-                  setCategory={setCategory}
+                  subcatOptions={subcatOptions}
+                  handleChange={handleChange}
                   subCategory={subCategory}
                   setSubCategory={setSubCategory}
                 />
 
                 <CreatePdctType
-                  productType={productType}
-                  setProductType={setProductType}
+                  productType={formValues.productType}
+                  handleChange={handleChange}
                 />
               </div>
             </div>
@@ -177,7 +195,11 @@ export default function Page() {
               </div>
             </div>
             <div className="mt-10">
-              <CreateProductPricing />
+              <CreateProductPricing
+                maxPrice={formValues.maxPrice}
+                minPrice={formValues.minPrice}
+                handleChange={handleChange}
+              />
             </div>
 
             <div className="mt-10">
@@ -190,7 +212,7 @@ export default function Page() {
                 setFlavours={setFlavours}
                 addOn={addOn}
                 setAddOn={setAddOn}
-                productType={productType}
+                productType={formValues.productType}
               />
             </div>
           </div>
@@ -202,9 +224,10 @@ export default function Page() {
           <CreateProductLayout
             isSubmitting={isSubmitting}
             setIsSubmitting={setIsSubmitting}
-            images={images}
-            setImages={setImages}
-            imagesRef={imagesRef}
+            // images={images}
+            // setImages={setImages}
+            // imagesRef={imagesRef}
+            data={data}
           />
         </div>
       )}

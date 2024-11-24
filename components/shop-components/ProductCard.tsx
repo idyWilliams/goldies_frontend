@@ -11,13 +11,17 @@ import { cn } from "@/helper/cn";
 import { Tooltip } from "react-tooltip";
 import StarRating from "../StarRating";
 import Placeholder from "@/public/assets/placeholder3.png";
+import useUserPdctStore from "@/zustand/userProductStore/store";
 
 export default function ProductCard({ data }: { data: any }) {
+  const [previewFav, setPreviewFav] = useState(false);
   const [fav, setFav] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
   const cart = useSelector((state: RootState) => state.product?.cart);
   const [isLoaded, setIsLoaded] = useState(false);
+  const addFavProducts = useUserPdctStore((state) => state.addFavProduct);
+  const removeFavProducts = useUserPdctStore((state) => state.removeFavProduct);
 
   const handleAddToCart = () => {
     const items = Object.values(cart);
@@ -32,6 +36,17 @@ export default function ProductCard({ data }: { data: any }) {
   const handleBuyNow = () => {
     handleAddToCart();
     router.push("/cart");
+  };
+
+  const addToSavedItems = (data: any) => {
+    if (!fav) {
+      setFav(true);
+      addFavProducts(data);
+    } else {
+      setFav(false);
+      const productId = data.id?.toString();
+      removeFavProducts(productId);
+    }
   };
 
   return (
@@ -97,11 +112,19 @@ export default function ProductCard({ data }: { data: any }) {
 
           <span
             className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-[5px] bg-black bg-opacity-50 text-goldie-300"
-            onClick={() => setFav((prev: any) => !prev)}
-            onMouseEnter={() => setFav(true)}
-            onMouseLeave={() => setFav(false)}
+            onClick={() => addToSavedItems(data)}
+            // onClick={() => setFav((prev: any) => !prev)}
+            onMouseEnter={() => setPreviewFav(true)}
+            onMouseLeave={() => {
+              if (fav) return;
+              setPreviewFav(false);
+            }}
           >
-            {fav ? <Heart size={20} variant="Bold" /> : <Heart size={20} />}
+            {/* {fav || previewFav ? ( */}
+            <Heart size={20} variant={fav || previewFav ? "Bold" : undefined} />
+            {/* ) : (
+              <Heart size={20} />
+            )} */}
           </span>
         </div>
       </figure>

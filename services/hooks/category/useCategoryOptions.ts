@@ -18,7 +18,7 @@ const useCategoryOptions = ({ categories, category }: CatOptionsParamsType) => {
     }));
   }, [categories]);
 
-  const subcategories = useMemo(() => {
+  const subcatOptions = useMemo(() => {
     const selectedCategory = categoryOptions?.find(
       (option) => option.value === category,
     );
@@ -32,7 +32,7 @@ const useCategoryOptions = ({ categories, category }: CatOptionsParamsType) => {
       : [];
   }, [category, categoryOptions]);
 
-  return { categoryOptions, subcategories };
+  return { categoryOptions, subcatOptions };
 };
 
 export default useCategoryOptions;
