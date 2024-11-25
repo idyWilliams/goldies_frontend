@@ -764,7 +764,7 @@ const Page = () => {
                     </ul>
                     <ul className="flex flex-col gap-3 ">
                       <li>&euro;{orderTotal}</li>
-                      <li>&euro; deliveryFee</li>
+                      <li>&euro; {deliveryFee}</li>
                       <li>&euro;{orderTotal + deliveryFee}</li>
                     </ul>
                   </div>
