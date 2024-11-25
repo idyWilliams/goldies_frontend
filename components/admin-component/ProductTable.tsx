@@ -25,7 +25,8 @@ export default function ProductTable({
   const [selectedTabs, setSelectedTabs] = useState(filteredTabs[0]);
   const [chosenTab, setChosenTab] = useState(filteredTabs[0]);
   const [TData, setTData] = useState(Tdata);
-  const data = useMemo(() => TData, [TData]);
+  const [data, setData] = useState(TData);
+  // const data = useMemo(() => TData, [TData]);
   const [searchValue, setSearchValue] = useState("");
   const table = useReactTable({
     data,

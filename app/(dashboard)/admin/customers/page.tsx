@@ -2,7 +2,7 @@
 import AdminTable from "@/components/admin-component/AdminTable";
 import { customers } from "@/utils/adminData";
 import Image from "next/image";
-import React, { useContext, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { Column } from "react-table";
 import {
@@ -29,7 +29,7 @@ type Customer = {
   lastName: string;
   createdAt: string;
   orders: number;
-  contactNumber: number;
+  phoneNumber: number;
   amountSpent: number;
   action: string;
 };
@@ -41,6 +41,7 @@ interface ITableProps {
 }
 export default function Page() {
   const router = useRouter();
+  const [customers, setCustomers] = useState([]);
   // @ts-ignore
   const { setAuth } = useContext(AuthContext);
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
@@ -49,11 +50,13 @@ export default function Page() {
     queryKey: ["getUsers"],
     queryFn: getUsers,
   });
-  const customers = useMemo(() => {
+  useEffect(() => {
     if (isPending) {
-      return [];
+      setCustomers([]);
     } else if (isSuccess) {
-      return data?.users;
+      setCustomers(data?.users);
+    } else {
+      setCustomers([]);
     }
   }, [data, isPending, isSuccess]);
 
@@ -120,22 +123,23 @@ export default function Page() {
       header: () => <span>Date Onboarded</span>,
       footer: (info) => info.column.id,
     }),
-    // columnHelper.accessor((row) => row.contactNumber, {
-    //   id: "contactNumber",
-    //   cell: (info) => <span>+{info.getValue()}</span>,
-    //   header: () => <span>Contact Number </span>,
-    //   footer: (info) => info.column.id,
-    // }),
-    // columnHelper.accessor("orders", {
-    //   header: () => <span>Orders</span>,
-    //   footer: (info) => info.column.id,
-    // }),
-    // columnHelper.accessor((row) => row, {
-    //   id: "amountSpent",
-    //   cell: (info) => <span>&euro;{info.cell.row.original.amountSpent}</span>,
-    //   header: () => <span>Amount Spent</span>,
-    //   footer: (info) => info.column.id,
-    // }),
+    columnHelper.accessor((row) => row.phoneNumber, {
+      id: "contactNumber",
+      cell: (info) => <span>{info.row.original.phoneNumber || "N/A"}</span>,
+      header: () => <span>Contact Number </span>,
+      footer: (info) => info.column.id,
+    }),
+    columnHelper.accessor("orders", {
+      cell: (info) => <span>{info.row.original.orders ?? 0}</span>,
+      header: () => <span>Orders</span>,
+      footer: (info) => info.column.id,
+    }),
+    columnHelper.accessor((row) => row, {
+      id: "amountSpent",
+      cell: (info) => <span>&euro;{info.cell.row.original.amountSpent ?? 0}</span>,
+      header: () => <span>Amount Spent</span>,
+      footer: (info) => info.column.id,
+    }),
 
     columnHelper.accessor((row) => row, {
       id: "action",
@@ -156,17 +160,17 @@ export default function Page() {
       <section className="min-h-screen w-full bg-[#EFEFEF] px-4 py-6">
         <h1 className="text-lg font-extrabold uppercase">Customers</h1>
         <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
-
         <div className="hidden  md:block">
-          {isPending ? (
-            "loading..."
-          ) : (
+          {isPending && <div>Loading ... </div>}
+          {customers?.length >= 1 ? (
             <ProductTable
               columns={columns}
               Tdata={customers}
               statusType="customer"
               filteredTabs={[""]}
             />
+          ) : (
+            "No Data"
           )}
         </div>
         <div>
@@ -203,7 +207,7 @@ export default function Page() {
                               {item?.customerName}
                             </h3>
                             <span className="text-sm">
-                              +{item?.contactNumber}
+                              +{initials(item?.contactNumber)}
                             </span>
                           </div>
                           <div className="flex flex-col gap-2">
@@ -229,13 +233,17 @@ export default function Page() {
                             More Info
                           </button>
                         </div>
+                        <div>
+                          <span className="text-sm">
+                            Joined: {item?.dateOnboarded}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 );
               },
             )}
-
             <Pagination
               className="bg-transparent lg:hidden"
               onNext={handleNext}
