@@ -6,18 +6,28 @@ import { getAllCategories } from ".";
 const useCategories = () => {
   const categories = useBoundStore((state) => state.categories);
   const setCategories = useBoundStore((state) => state.setCategories);
+  const initialCategory = categories
+    ? {
+        categories: categories,
+        currentPage: 1,
+        error: false,
+        message: "Categories retrieved successfully",
+        totalCategories: 100,
+        totalPages: 1,
+      }
+    : null;
 
   const { data, isSuccess, isError, error, isPending } = useQuery({
-    queryKey: ["categories"],
+    queryKey: ["allCategories"],
     queryFn: getAllCategories,
-    initialData: categories,
+    placeholderData: initialCategory,
   });
 
   const memoisedCategories = useMemo(() => {
-    if (isSuccess) {
+    if (data?.categories) {
       return data?.categories;
     } else return null;
-  }, [isSuccess, data?.categories]);
+  }, [data?.categories]);
 
   useEffect(() => {
     if (isSuccess && memoisedCategories) {

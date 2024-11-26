@@ -6,7 +6,6 @@ import { getPaginatedCategories } from "@/services/hooks/category";
 import useBoundStore from "@/zustand/store";
 import ManageCategoriesSkeleton from "./ManageCategoriesSkeleton";
 import { Category } from "@/services/types";
-import { chunkArray } from "@/helper/chunkArray";
 import AdminPagination from "../AdminPagination";
 import CategoriesCards from "./CategoriesCards";
 
@@ -20,6 +19,9 @@ const AllCategories = ({ cat }: any) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [currentData, setCurrentData] = useState<Category[] | null>(null);
+  console.log(cat);
+  const setLimit = useBoundStore((state) => state.setLimit);
+  const setPage = useBoundStore((state) => state.setPage);
 
   useEffect(() => {
     setActiveCategory(null);
@@ -34,44 +36,51 @@ const AllCategories = ({ cat }: any) => {
     // refetch,
     // isStale,
   } = useQuery({
-    queryKey: ["categories", 1, 50],
-    queryFn: async () => getPaginatedCategories(1, 50),
+    queryKey: ["categories", currentPage, limit],
+    queryFn: async () => getPaginatedCategories(currentPage, limit),
     initialData: cat,
     // staleTime: 60 * 1000,
   });
+  console.log(data);
 
-  function getCatArr(
-    arr: Category[],
-    limit: number,
-    pagFxn: any,
-    setCatArr: any,
-  ) {
-    const reversedCats = [...arr].reverse();
-    setCatArr(reversedCats);
-    const paginatedArr = pagFxn(reversedCats, limit);
-    return paginatedArr;
-  }
+  // function getCatArr(
+  //   arr: Category[],
+  //   limit: number,
+  //   pagFxn: any,
+  //   setCatArr: any,
+  // ) {
+  //   const reversedCats = [...arr].reverse();
+  //   setCatArr(reversedCats);
+  //   const paginatedArr = pagFxn(reversedCats, limit);
+  //   return paginatedArr;
+  // }
 
-  const categoriesArr = useCallback(getCatArr, []);
+  // const categoriesArr = useCallback(getCatArr, []);
 
-  const categories = useMemo(() => {
-    if (data?.categories) {
-      return data?.categories;
+  const QueryData = useMemo(() => {
+    if (data) {
+      return data;
     } else return null;
-  }, [data?.categories]);
+  }, [data]);
 
   useEffect(() => {
-    if (categories) {
-      const paginatedCats = categoriesArr(
-        categories,
-        limit,
-        chunkArray,
-        setAllCategories,
-      );
-      setTotalPages(paginatedCats.length);
-      setCurrentData(paginatedCats[currentPage - 1]);
+    setPage(currentPage);
+    setLimit(limit);
+  }, [currentPage, setPage, setLimit]);
+
+  useEffect(() => {
+    if (QueryData) {
+      // const paginatedCats = categoriesArr(
+      //   categories,
+      //   limit,
+      //   chunkArray,
+      //   setAllCategories,
+      // );
+      setAllCategories(QueryData.categories);
+      setTotalPages(QueryData.totalPages);
+      setCurrentData(QueryData.categories);
     }
-  }, [isSuccess, categories, categoriesArr, currentPage, setAllCategories]);
+  }, [setAllCategories, QueryData]);
 
   useEffect(() => {
     if (isError) {

@@ -28,6 +28,8 @@ const ConfirmModal: React.FC<ModalProps> = ({ catOrSub }) => {
   const categoryId = queryParams.get("categoryId");
 
   const setShowSub = useBoundStore((state) => state.setShowSub);
+  const page = useBoundStore((state) => state.page);
+  const limit = useBoundStore((state) => state.limit);
 
   const setShowModal = useBoundStore((state) => state.setShowModal);
 
@@ -46,23 +48,28 @@ const ConfirmModal: React.FC<ModalProps> = ({ catOrSub }) => {
     mutationFn: deleteCategory,
 
     onMutate: async (variable) => {
-      await queryClient.cancelQueries({ queryKey: ["categories", 1, 50] });
+      await queryClient.cancelQueries({
+        queryKey: ["categories", page, limit],
+      });
       const previousCategories = queryClient.getQueryData([
         "categories",
         1,
         50,
       ]);
 
-      queryClient.setQueryData(["categories", 1, 50], (old: QueryDataType) => {
-        const newData = optimisticCategoryUpdate("delete", old, variable);
+      queryClient.setQueryData(
+        ["categories", page, limit],
+        (old: QueryDataType) => {
+          const newData = optimisticCategoryUpdate("delete", old, variable);
 
-        return { ...newData };
-      });
+          return { ...newData };
+        },
+      );
       return { previousCategories };
     },
 
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["categories", 1, 50] });
+      queryClient.invalidateQueries({ queryKey: ["categories", page, limit] });
       setShowModal(false);
       setActionType("");
       setActiveCategory(null);
@@ -74,7 +81,7 @@ const ConfirmModal: React.FC<ModalProps> = ({ catOrSub }) => {
 
     onError: (error, newCategory, context) => {
       queryClient.setQueryData(
-        ["categories", 1, 50],
+        ["categories", page, limit],
         context?.previousCategories,
       );
       console.error(error);

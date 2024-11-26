@@ -1,13 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 type CreatePdctTypePropType = {
   productType: string;
-  setProductType: React.Dispatch<React.SetStateAction<string>>;
+  handleChange: (e: any) => void;
 };
 
 const CreatePdctType = ({
   productType,
-  setProductType,
+  handleChange,
 }: CreatePdctTypePropType) => {
   return (
     <div className="mt-3 w-full">
@@ -18,10 +18,10 @@ const CreatePdctType = ({
         id="productType"
         name="productType"
         className="form-select w-full rounded-md border-neutral-300 text-neutral-400"
-        onChange={(e: any) => setProductType(e.target.value)}
+        onChange={handleChange}
         value={productType}
       >
-        <option className="" value={"select_category"}>
+        <option className="" value={""}>
           Select product type
         </option>
 

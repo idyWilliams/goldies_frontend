@@ -89,7 +89,7 @@ export const getAdmin = async (id: string) => {
 // LOGOUT ADMIN
 export const adminLogOut = async (router: AppRouterInstance) => {
   localStorage.setItem("isLogin", JSON.stringify(false));
-  localStorage.removeItem("accessToken");
+  localStorage.removeItem("adminToken");
   localStorage.removeItem("admin");
-  router.push("/admin-signin");
+  router.replace("/admin-signin");
 };

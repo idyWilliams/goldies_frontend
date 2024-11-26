@@ -14,6 +14,7 @@ import Slide3 from "../public/assets/slide-3.png";
 import Slide4 from "../public/assets/slide-4.jpeg";
 import Slide5 from "../public/assets/slide-5.jpeg";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const stats = [
   { value: "12000+", title: "Cakes Delivered" },
@@ -23,6 +24,8 @@ const stats = [
 
 const Hero = () => {
   const [isLoaded, setIsLoaded] = useState(false);
+  const router = useRouter();
+
   return (
     <>
       <Swiper
@@ -78,6 +81,10 @@ const Hero = () => {
               <Button
                 size="lg"
                 className="mt-6 bg-goldie-300 font-semibold text-black hover:bg-goldie-300"
+                onClick={() => {
+                  console.log("click order now button on slide 1");
+                  router.push("/shop");
+                }}
               >
                 Order Now
               </Button>
@@ -108,6 +115,10 @@ const Hero = () => {
               <Button
                 size="lg"
                 className="mt-6 bg-goldie-300 font-semibold text-black hover:bg-goldie-300"
+                onClick={() => {
+                  console.log("click order now button on slide 2");
+                  router.push("/shop");
+                }}
               >
                 Order Now
               </Button>
@@ -138,6 +149,10 @@ const Hero = () => {
               <Button
                 size="lg"
                 className="mt-6 bg-goldie-300 font-semibold text-black hover:bg-goldie-300"
+                onClick={() => {
+                  console.log("click order now button on slide 3");
+                  router.push("/shop");
+                }}
               >
                 Order Now
               </Button>
@@ -168,6 +183,10 @@ const Hero = () => {
               <Button
                 size="lg"
                 className="mt-6 bg-goldie-300 font-semibold text-black hover:bg-goldie-300"
+                onClick={() => {
+                  console.log("click order now button on slide 4");
+                  router.push("/shop");
+                }}
               >
                 Order Now
               </Button>
@@ -198,6 +217,10 @@ const Hero = () => {
               <Button
                 size="lg"
                 className="mt-6 bg-goldie-300 font-semibold text-black hover:bg-goldie-300"
+                onClick={() => {
+                  console.log("click order now button on slide 5");
+                  router.push("/shop");
+                }}
               >
                 Order Now
               </Button>

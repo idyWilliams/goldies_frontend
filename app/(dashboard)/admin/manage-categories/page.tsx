@@ -2,17 +2,20 @@ import React from "react";
 import CategoryHeader from "@/components/admin-component/category-comp/CategoryHeader";
 import AllCategories from "@/components/admin-component/category-comp/AllCategories";
 import CatAndSubCatModals from "@/components/admin-component/category-comp/CatAndSubCatModals";
-import { getAllCategories } from "@/services/hooks/category";
+import {
+  getAllCategories,
+  getPaginatedCategories,
+} from "@/services/hooks/category";
 
 const Page = async () => {
   let data;
   let error = null;
 
   try {
-    data = await getAllCategories();
+    data = await getPaginatedCategories(1, 8);
   } catch (err) {
     error = err;
-    console.error(error);
+    return;
   }
   return (
     <section>
