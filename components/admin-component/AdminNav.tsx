@@ -53,6 +53,8 @@ export default function AdminNav() {
   const [openSearch, setOpenSearch] = useState(false);
   const [currentTime, setCurrentTime] = useState(moment().format("H:mm"));
   const adminStored = useAdmin();
+  console.log(adminStored?._id);
+
   const { data, isPending, isError, isSuccess } = useQuery({
     queryKey: ["admin"],
     queryFn: () => getAdmin(adminStored?._id),

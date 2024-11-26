@@ -1,121 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import CustomSelect, { SelectOptionType } from "../CustomSelect";
 import { MultiSelect } from "react-multi-select-component";
+import useCategoryOptions from "@/services/hooks/category/useCategoryOptions";
+import useCategories from "@/services/hooks/category/useCategories";
+import { InformationAndPricingType } from "@/types/products";
 
-const milestoneSub = [
-  { label: "Birthday Cakes", value: "birthday_cakes" },
-  { label: "Anniversary Cakes", value: "anniversary_cakes" },
-  { label: "Graduation Cakes", value: "graduation_cakes" },
-  { label: "Baby Shower Cakes", value: "baby_shower_cakes" },
-  { label: "Retirement Cakes", value: "retirement_cakes" },
-];
-const kidsCakeSub = [
-  { label: "Cartoon Character Cakes", value: "cartoon_character_cakes" },
-  { label: "Princess Cakes", value: "princess_cakes" },
-  { label: "Superhero Cakes", value: "superhero_cakes" },
-  { label: "Animal Cakes", value: "animal_cakes" },
-  { label: "Fantasy Cakes", value: "fantasy_cakes" },
-];
-const cupCakeSub = [
-  { label: "Classic Cupcakes", value: "classic_cupcakes" },
-  { label: "Gourmet Cupcakes", value: "gourmet_cupcakes" },
-  { label: "Vegan Cupcakes", value: "vegan_cupcakes" },
-  { label: "Gluten-Free Cupcakes", value: "gluten_free_cupcakes" },
-  { label: "Seasonal Cupcakes", value: "seasonal_cupcakes" },
-];
-const weddingCakeSub = [
-  {
-    label: "Traditional Wedding Cakes",
-    value: "traditional_wedding_cakes",
-  },
-  { label: "Modern Wedding Cakes", value: "modern_wedding_cakes" },
-  { label: "Floral Wedding Cakes", value: "floral_wedding_cakes" },
-  { label: "Rustic Wedding Cakes", value: "rustic_wedding_cakes" },
-  { label: "Themed Wedding Cakes", value: "themed_wedding_cakes" },
-];
-
-const selectedSubCategory = (key: any) => {};
-
-const options = [
-  { label: "Milestone Cakes", value: "milestone cakes", disabled: false },
-  { label: "Kids' Cakes", value: "kids cakes" },
-  { label: "Cupcakes", value: "cupcakes", disabled: false },
-  { label: "Wedding Cakes", value: "wedding cakes" },
-];
-
-export default function InformationAndPricing() {
-  const [category, setCategory] = useState<any>();
-  const [subCategory, setSubCategory] = useState([]);
-
-  let sub;
-  switch (category && category) {
-    case "milestone cakes":
-      sub = (
-        <MultiSelect
-          disabled={category == null}
-          options={milestoneSub}
-          value={subCategory}
-          onChange={setSubCategory}
-          labelledBy="Select subcategory"
-        />
-      );
-      break;
-
-    case "kids cakes":
-      sub = (
-        <MultiSelect
-          disabled={category == null}
-          options={kidsCakeSub}
-          value={subCategory}
-          onChange={setSubCategory}
-          labelledBy="Select subcategory"
-        />
-      );
-      break;
-    case "cupcakes":
-      sub = (
-        <MultiSelect
-          disabled={category == null}
-          options={cupCakeSub}
-          value={subCategory}
-          onChange={setSubCategory}
-          labelledBy="Select subcategory"
-        />
-      );
-      break;
-    case "wedding cakes":
-      sub = (
-        <MultiSelect
-          disabled={category == null}
-          options={weddingCakeSub}
-          value={subCategory}
-          onChange={setSubCategory}
-          labelledBy="Select subcategory"
-        />
-      );
-      break;
-
-    default:
-      sub = (
-        <MultiSelect
-          disabled={true}
-          options={weddingCakeSub}
-          value={subCategory}
-          onChange={setSubCategory}
-          labelledBy="Select subcategory"
-          className="text-[10px]"
-        />
-      );
-      break;
-  }
-
-  const data = {
-    category: {
-      name: category,
-      subCategory: subCategory,
-    },
-  };
-
+export default function InformationAndPricing({
+  category,
+  subCategory,
+  setSubCategory,
+  categoryOptions,
+  subcategories,
+  formValues,
+  handleChange,
+}: InformationAndPricingType) {
   return (
     <section>
       <div>
@@ -126,6 +24,8 @@ export default function InformationAndPricing() {
             </span>
             <input
               name="productName"
+              value={formValues.productName}
+              onChange={handleChange}
               type="text"
               autoComplete="off"
               id="productName"
@@ -139,6 +39,8 @@ export default function InformationAndPricing() {
             </span>
             <textarea
               name="productDescription"
+              value={formValues.productDescription}
+              onChange={handleChange}
               autoComplete="off"
               id="productDescription"
               placeholder="Product Description"
@@ -153,38 +55,69 @@ export default function InformationAndPricing() {
               </h2>
 
               <select
-                name="category-m"
-                id="category-m"
-                className="form-select w-full rounded-md border-neutral-300 text-[10px] text-neutral-400"
-                onChange={(e: any) => setCategory(e.target.value)}
+                name="category"
                 value={category}
+                // value={category === "select_category" ? "" : category}
+                id="category"
+                className="form-select w-full rounded-md border-neutral-300 text-[12px] text-neutral-400"
+                onChange={handleChange}
               >
-                <option
-                  className=""
-                  value={"select_category"}
-                  // disabled
-                  // selected
-                >
-                  Select category
-                </option>
-                {options.map((option: any, index: number) => (
-                  <option key={index} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
+                <option value={""}>Select category</option>
+                {categoryOptions &&
+                  categoryOptions.map((option: any, index: number) => (
+                    <option
+                      disabled={option.disabled}
+                      key={option.id}
+                      value={option.value}
+                    >
+                      {option.label}
+                    </option>
+                  ))}
               </select>
             </div>
             <div className="mt-3 w-full">
-              <h2 className="mb-1 text-[12px] after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+              <h2
+                className={`${!category ? "opacity-50" : ""} mb-1 text-[12px] after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']`}
+              >
                 Subcategory
               </h2>
-              {sub}
+              <div className={`${!category ? "cursor-not-allowed" : ""}`}>
+                <MultiSelect
+                  disabled={!category}
+                  options={subcategories}
+                  value={subCategory}
+                  labelledBy="Select subcategory"
+                  onChange={setSubCategory}
+                  className={`${!category ? "pointer-events-none" : ""}`}
+                />
+              </div>
+            </div>
+
+            <div className="mt-3 w-full">
+              <h2 className="mb-1 text-[12px] after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+                Product Type
+              </h2>
+
+              <select
+                id="productType"
+                name="productType"
+                className="form-select w-full rounded-md border-neutral-300 text-xs text-neutral-400"
+                onChange={handleChange}
+                value={formValues.productType}
+              >
+                <option className="" value={""}>
+                  Select product type
+                </option>
+
+                <option value="preorder">Preorder</option>
+                <option value="available">Available</option>
+              </select>
             </div>
           </div>
           <div className="">
             <h1 className="my-3 text-[14px] font-semibold ">Product Pricing</h1>
             <div className="flex h-full gap-4">
-              <label htmlFor="priceFrom" className="block">
+              <label htmlFor="minPrice" className="block">
                 <span className="mb-1 inline-block text-[12px] after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
                   Price From
                 </span>
@@ -193,16 +126,19 @@ export default function InformationAndPricing() {
                     &euro;
                   </span>
                   <input
-                    name="priceFrom"
+                    name="minPrice"
                     type="number"
+                    value={formValues.minPrice === 0 ? "" : formValues.minPrice}
+                    min={0}
+                    onChange={handleChange}
                     autoComplete="off"
-                    id="priceFrom"
+                    id="minPrice"
                     placeholder="Price from"
                     className="w-full border-none bg-transparent pl-12 placeholder:text-[10px] focus:border-0 focus:ring-0"
                   />
                 </div>
               </label>
-              <label htmlFor="priceTo" className="block">
+              <label htmlFor="maxPrice" className="block">
                 <span className="mb-1 inline-block text-[12px] after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
                   Price To
                 </span>
@@ -211,10 +147,13 @@ export default function InformationAndPricing() {
                     &euro;
                   </span>
                   <input
-                    name="priceTo"
+                    name="maxPrice"
                     type="number"
+                    value={formValues.maxPrice === 0 ? "" : formValues.maxPrice}
+                    min={0}
+                    onChange={handleChange}
                     autoComplete="off"
-                    id="priceTo"
+                    id="maxPrice"
                     placeholder="Price to"
                     className="w-full border-none bg-transparent pl-12 placeholder:text-[10px] focus:border-0 focus:ring-0"
                   />

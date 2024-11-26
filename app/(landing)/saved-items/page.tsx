@@ -6,9 +6,13 @@ import { addSlugToCakes } from "@/helper";
 import { chunkArray } from "@/helper/chunkArray";
 import { cakeProducts1, savedItems } from "@/utils/cakeData";
 import React, { useState } from "react";
+import useUserPdctStore from "@/zustand/userProductStore/store";
 
 const Page = () => {
   let itemsPerPage = 6;
+  const favProducts = useUserPdctStore((state) => state.favProducts);
+  console.log(favProducts);
+
   const [cakes, setCakes] = useState<any[]>(addSlugToCakes(savedItems));
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
 

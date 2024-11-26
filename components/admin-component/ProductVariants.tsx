@@ -1,162 +1,24 @@
+import { ProductVariantsPropType } from "@/types/products";
+import {
+  cakeShapes,
+  cakeSizes,
+  fillingsList,
+  toppings,
+} from "@/utils/productDetails";
 import React, { useState } from "react";
 import { MultiSelect } from "react-multi-select-component";
 
-const fillingsList = [
-  {
-    label: "Chocolate",
-    value: "chocolate",
-  },
-  {
-    label: "Vanilla",
-    disabled: true,
-    value: "vanilla",
-  },
-  {
-    label: "Strawberry",
-    value: "strawberry",
-  },
-  {
-    label: "Lemon",
-    value: "lemon",
-  },
-  {
-    label: "Raspberry",
-    value: "raspberry",
-  },
-  {
-    label: "Caramel",
-    value: "caramel",
-  },
-  {
-    label: "Coffee",
-    value: "coffee",
-  },
-  {
-    label: "Peanut Butter",
-    value: "peanut-butter",
-  },
-  {
-    label: "Coconut",
-    value: "coconut",
-  },
-  {
-    label: "Mint",
-    value: "mint",
-  },
-  {
-    label: "Blueberry",
-    value: "blueberry",
-  },
-  {
-    label: "Cherry",
-    value: "cherry",
-  },
-  {
-    label: "Orange",
-    value: "orange",
-  },
-  {
-    label: "Hazelnut",
-    value: "hazelnut",
-  },
-  {
-    label: "Almond",
-    value: "almond",
-  },
-];
-const cakeShapes = [
-  {
-    label: "Round",
-    value: "round",
-  },
-  {
-    label: "Rectangular",
-    value: "rectangular",
-  },
-  {
-    label: "Square",
-    value: "square",
-  },
-  {
-    label: "Heart",
-    value: "heart",
-  },
-  {
-    label: "Star",
-    value: "star",
-  },
-  {
-    label: "Oval",
-    value: "oval",
-  },
-  {
-    label: "Petal",
-    value: "petal",
-  },
-  {
-    label: "Unicorn",
-    value: "unicorn",
-  },
-  {
-    label: "Tiered",
-    value: "tiered",
-  },
-  {
-    label: "Sheet",
-    value: "sheet",
-  },
-];
-const toppings = [
-  {
-    label: "Fresh Fruit",
-    value: "fresh_fruit",
-  },
-  {
-    label: "Chocolate Ganache",
-    value: "chocolate_ganache",
-  },
-  {
-    label: "Whipped Cream",
-    value: "whipped_cream",
-  },
-  {
-    label: "Toasted Nuts",
-    value: "toasted_nuts",
-  },
-  {
-    label: "Caramel Sauce",
-    value: "caramel_sauce",
-  },
-];
-const cakeSizes = [
-  {
-    label: "Mini",
-    value: "mini",
-  },
-  {
-    label: "Small",
-    value: "small",
-  },
-  {
-    label: "Medium",
-    value: "medium",
-  },
-  {
-    label: "Large",
-    value: "large",
-  },
-  {
-    label: "Extra Large",
-    value: "extra_large",
-  },
-];
-
-export default function ProductVariants() {
-  const [shapes, setShapes] = useState([]);
-  const [fillings, setFillings] = useState([]);
-  const [sizes, setSizes] = useState([]);
-  const [addOn, setAddOn] = useState([]);
-
+export default function ProductVariants({
+  shapes,
+  setShapes,
+  sizes,
+  setSizes,
+  flavour,
+  setFlavours,
+  addOn,
+  setAddOn,
+  productType,
+}: ProductVariantsPropType) {
   return (
     <section>
       <div>
@@ -187,16 +49,23 @@ export default function ProductVariants() {
               />
             </label>
             <label htmlFor="ProductFillings" className="block">
-              <span className="mb-1 inline-block text-[12px] after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
-                Product Fillings
+              <span
+                className={`${productType !== "preorder" ? "opacity-50" : ""} mb-1 inline-block text-[12px] after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']`}
+              >
+                Product Flavours
               </span>
-              <MultiSelect
-                className="text-[10px]"
-                options={fillingsList}
-                value={fillings}
-                onChange={setFillings}
-                labelledBy="Select fillings"
-              />
+              <div
+                className={`${productType !== "preorder" ? "cursor-not-allowed" : ""}`}
+              >
+                <MultiSelect
+                  className={`${productType !== "preorder" ? "pointer-events-none" : ""} text-[10px]`}
+                  disabled={productType !== "preorder"}
+                  options={fillingsList}
+                  value={flavour}
+                  onChange={setFlavours}
+                  labelledBy="Select fillings"
+                />
+              </div>
             </label>
             <label htmlFor="ProductToppings" className="block">
               <span className="mb-1 inline-block text-[12px] after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">

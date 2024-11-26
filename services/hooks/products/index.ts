@@ -1,15 +1,23 @@
 import instance from "@/services/api";
 
 let accessToken = "";
-let user: { token?: string } = {};
 
 if (typeof window !== "undefined") {
-  accessToken = localStorage.getItem("accessToken") || "";
-  user = JSON.parse(localStorage.getItem("user") || "{}");
+  // Check if the current URL includes '/admin'
+  const isAdmin =
+    window.location.pathname.startsWith("/admin/") ||
+    window.location.pathname === "/admin";
+
+  // Retrieve token based on the user role
+  accessToken = isAdmin
+    ? localStorage.getItem("adminToken") || ""
+    : localStorage.getItem("userToken") || "";
 }
 
 // CREATE PRODUCT
 export const createNewProduct = async (data: any) => {
+  console.log(accessToken);
+
   const response = await instance.post("/product/create_product", data, {
     headers: {
       Authorization: `Bearer ${accessToken}`,

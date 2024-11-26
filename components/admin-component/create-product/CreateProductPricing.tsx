@@ -1,11 +1,21 @@
 import React from "react";
 
-const CreateProductPricing = () => {
+type CreatePdctPricingPropType = {
+  maxPrice: number;
+  minPrice: number;
+  handleChange: (e: any) => void;
+};
+
+const CreateProductPricing = ({
+  maxPrice,
+  minPrice,
+  handleChange,
+}: CreatePdctPricingPropType) => {
   return (
     <>
       <h1 className="mb-3 font-bold">Product Pricing</h1>
       <div className="flex h-full w-full gap-4 rounded-md border border-neutral-300 p-4">
-        <label htmlFor="priceFrom" className="block flex-grow">
+        <label htmlFor="minPrice" className="block flex-grow">
           <span className="mb-1 inline-block after:ml-1 after:text-xl after:text-[#E10] after:content-['*']">
             Price From
           </span>
@@ -14,17 +24,20 @@ const CreateProductPricing = () => {
               &euro;
             </span>
             <input
-              name="priceFrom"
-              min={0}
+              name="minPrice"
               type="number"
+              value={minPrice === 0 ? "" : minPrice}
+              min={0}
+              step={0.01}
+              onChange={handleChange}
               autoComplete="off"
-              id="priceFrom"
+              id="minPrice"
               placeholder="Price ranges from"
               className="w-full border-none bg-transparent pl-12 focus:border-0 focus:ring-0"
             />
           </div>
         </label>
-        <label htmlFor="priceTo" className="block flex-grow">
+        <label htmlFor="maxPrice" className="block flex-grow">
           <span className="mb-1 inline-block after:ml-1 after:text-xl after:text-[#E10] after:content-['*']">
             Price To
           </span>
@@ -33,11 +46,14 @@ const CreateProductPricing = () => {
               &euro;
             </span>
             <input
-              name="priceTo"
+              name="maxPrice"
               type="number"
+              value={maxPrice === 0 ? "" : maxPrice}
               min={0}
+              step={0.01}
+              onChange={handleChange}
               autoComplete="off"
-              id="priceTo"
+              id="maxPrice"
               placeholder="Price ranges to"
               className="w-full border-none bg-transparent pl-12 focus:border-0 focus:ring-0"
             />
