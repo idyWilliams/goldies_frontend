@@ -1,6 +1,6 @@
 import { ProductImagesPropTypes } from "@/types/products";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 
 const CreateProductImages = ({
   images,
@@ -22,6 +22,9 @@ const CreateProductImages = ({
     const file = e.target.files && e.target.files[0];
     const name = e.target.name;
     // setImage1
+    console.log(file);
+    console.log(name);
+
     if (file) {
       const url = URL.createObjectURL(file);
       setImages((img: any) => {
@@ -33,6 +36,11 @@ const CreateProductImages = ({
     }
     imagesRef.current[fileIndex] = file;
   };
+
+  useEffect(() => {
+    console.log(images);
+    console.log(imagesRef);
+  }, [images, imagesRef]);
 
   return (
     <>
