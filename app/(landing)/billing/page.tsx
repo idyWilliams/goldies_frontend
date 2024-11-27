@@ -16,8 +16,14 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import Image from "next/image";
 import { toast } from "sonner";
-import { initPayment } from "@/services/hooks/payment";
+import {
+  detailsBillings,
+  initPayment,
+  orderCreate,
+  updateDetailsBillings,
+} from "@/services/hooks/payment";
 import { useMutation } from "@tanstack/react-query";
+
 const form1Schema = yup.object().shape({
   firstName: yup.string().required("First name is required"),
   lastName: yup.string().required("Last name is required"),
@@ -30,6 +36,7 @@ const form1Schema = yup.object().shape({
   address: yup.string().required("Shipping address is required"),
   city: yup.string().required("Shipping address is required"),
   country: yup.string().required("Shipping address is required"),
+  save: yup.boolean().default(false),
 });
 
 const form2Schema = yup.object().shape({
@@ -44,6 +51,7 @@ const form2Schema = yup.object().shape({
   address: yup.string().required("Shipping address is required"),
   city: yup.string().required("Shipping address is required"),
   country: yup.string().required("Shipping address is required"),
+  save: yup.boolean().default(false),
 });
 
 const Page = () => {
@@ -53,12 +61,31 @@ const Page = () => {
   const [phone1, setPhone1] = useState("");
   const [phone2, setPhone2] = useState("");
   const [selectedMethod, setSelectedMethod] = useState<string>("option1");
-  const form1 = useForm({ resolver: yupResolver(form1Schema) });
+  const [isBillingInfoSaved, setIsBillingInfoSaved] = useState(false);
+  // const form1 = useForm({ resolver: yupResolver(form1Schema) });
+  const form1 = useForm({
+    resolver: yupResolver(form1Schema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      city: "",
+      phoneNumber: "",
+      address: "",
+      country: "",
+      save: false, 
+    },
+  });
   const form2 = useForm({ resolver: yupResolver(form2Schema) });
   const [submitForm1, setSubmitForm1] = useState(true);
   const paymentInit = useMutation({
     mutationFn: initPayment,
   });
+  const billingDetails = useMutation({ mutationFn: detailsBillings });
+  const updateBillingDetails = useMutation({
+    mutationFn: updateDetailsBillings,
+  });
+  const createOrder = useMutation({ mutationFn: orderCreate });
   const {
     register,
     control,
@@ -69,12 +96,6 @@ const Page = () => {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(form1Schema),
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      city: "",
-    },
   });
 
   const handleSubmit = () => {
@@ -87,15 +108,17 @@ const Page = () => {
     }
   };
 
+  const deliveryFee = 50.5;
   const orderTotal = Object.values(cart).reduce((acc, current) => {
     return (
-      50.5 + acc + parseFloat(current.maxPrice) * (current.quantity as number)
+      deliveryFee + acc + parseFloat(current.maxPrice) * (current.quantity as number)
     );
   }, 0);
 
   const onSubmitForm1 = (data: any) => {
     console.log("Form 1 submitted:", data);
     console.log("Cart data", cart);
+    console.log("orderTotal", orderTotal);
 
     const callbackUrl =
       process.env.NODE_ENV === "development"
@@ -109,8 +132,95 @@ const Page = () => {
       amount: orderTotal,
       callbackUrl: callbackUrl,
     };
+    // console.log("Payment Data:", paymentData);
 
-    console.log("Payment Data:", paymentData);
+    const isSaveChecked = data.save;
+    // console.log("isSaveChecked is ", isSaveChecked);
+
+    const billingInfo = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      country: data.country,
+      cityOrTown: data.city,
+      streetAddress: data.address,
+      phoneNumber: data.phoneNumber,
+      defaultBillingInfo: true,
+    };
+
+    const ItemID = Object.values(cart).map((item) => item.id);
+    const orderInfo = {
+      orderedItems: ItemID,
+      fee: {
+        subTotal: orderTotal - deliveryFee,
+        total: orderTotal,
+        deliveryFee: deliveryFee,
+      },
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      country: data.country,
+      cityOrTown: data.city,
+      streetAddress: data.address,
+      phoneNumber: data.phoneNumber,
+    };
+
+    console.log("orderInfo: ", orderInfo);
+    createOrder
+      .mutateAsync(orderInfo)
+      .then((res: any) => {
+        if (!res?.error) {
+          const newOrder = {
+            name: "placeholder",
+            id: orderInfo.orderedItems.join(","),
+            date: new Date().toLocaleDateString(),
+            quantity: orderInfo.orderedItems.length,
+            price: orderInfo.fee.total.toFixed(2),
+            status: res?.data?.order?.orderStatus,
+            total: Number(orderInfo.fee.deliveryFee),
+            shippingFee: Number(orderInfo.fee.deliveryFee),
+          };
+          console.log("neworder", newOrder);
+          toast.success(res.message || "Order Successfully Created");
+        } else {
+          console.error("Order creation failed. Response:", res);
+          toast.error(res.message || "Failed to create order.");
+        }
+      })
+      .catch((err: any) => {
+        toast.error("An error occurred while creating the order.");
+        console.error("Order Error:", err.message);
+      });
+
+    if (isSaveChecked && isBillingInfoSaved) {
+      console.log("Updating billing info");
+      updateBillingDetails
+        .mutateAsync(billingInfo)
+        .then((res: any) => {
+          if (res?.success) {
+            toast.success("Account Successfully Updated");
+          }
+        })
+        .catch((err: any) => {
+          toast.error("An error occurred while updating the billing info.");
+          console.error("Update Error:", err.message);
+        });
+    } else if (isSaveChecked && !isBillingInfoSaved) {
+      console.log("Saving billing info");
+      billingDetails.mutateAsync(billingInfo)
+        .then((res: any) => {
+          if (res?.success) {
+            setIsBillingInfoSaved(true);
+            toast.success("Billing info saved successfully!");
+          }
+        })
+        .catch((err: any) => {
+        toast.error("An error occurred while saving the billing info.");
+        console.error("Save Error:", err.message);
+      })
+    } else if (!isSaveChecked) {
+      toast.error("'Save this Information' is not checked.");
+    }
 
     paymentInit
       .mutateAsync(paymentData)
@@ -143,15 +253,59 @@ const Page = () => {
       amount: orderTotal,
       callbackUrl: callbackUrl,
     };
-
     console.log("Payment Data:", paymentData);
 
+       const ItemID = Object.values(cart).map((item) => item.id);
+    const orderInfo = {
+      orderedItems: ItemID,
+      fee: {
+        subTotal: orderTotal - deliveryFee,
+        total: orderTotal,
+        deliveryFee: deliveryFee,
+      },
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      country: data.country,
+      cityOrTown: data.city,
+      streetAddress: data.address,
+      phoneNumber: data.phoneNumber,
+    };
+
+    console.log("orderInfo: ", orderInfo);
+
+     createOrder
+      .mutateAsync(orderInfo)
+      .then((res: any) => {
+        if (!res?.error) {
+          const newOrder = {
+            name: "placeholder",
+            id: orderInfo.orderedItems.join(","),
+            date: new Date().toLocaleDateString(),
+            quantity: orderInfo.orderedItems.length,
+            price: orderInfo.fee.total.toFixed(2),
+            status: res?.data?.order?.orderStatus,
+            total: Number(orderInfo.fee.deliveryFee),
+            shippingFee: Number(orderInfo.fee.deliveryFee),
+          };
+          console.log("neworder", newOrder);
+          toast.success(res.message || "Order Successfully Created");
+        } else {
+          console.error("Order creation failed. Response:", res);
+          toast.error(res.message || "Failed to create order.");
+        }
+      })
+      .catch((err: any) => {
+        toast.error("An error occurred while creating the order.");
+        console.error("Order Error:", err.message);
+      });
+    
     paymentInit
       .mutateAsync(paymentData)
       .then((res: any) => {
         if (res?.data?.authorization_url) {
           window.location.href = res?.data?.authorization_url;
-          toast.success("window pending");
+          toast.success("Redirecting...");
         } else {
           console.error("Failed to initialize payment.");
         }
@@ -161,11 +315,10 @@ const Page = () => {
         console.log(err.message);
       });
   };
+
   const handleOnchange = (event: any) => {
     setSelectedMethod(event.target.value);
   };
-
-  // console.log(cart, Object.values(cart));
 
   return (
     <>
@@ -278,7 +431,7 @@ const Page = () => {
                               render={({ field }) => (
                                 <PhoneInput
                                   {...field}
-                                  country={"ng"} // Adjust this if necessary for dynamic countries
+                                  country={"ng"}
                                   value={field.value || phone1}
                                   onChange={(phoneNumber) => {
                                     field.onChange(phoneNumber);
@@ -337,61 +490,56 @@ const Page = () => {
                     }}
                   />
                 </div>
+
+                <div className=" my-4">
+                  <label
+                    htmlFor="save"
+                    className="inline-flex items-center gap-2"
+                  >
+                    <input
+                      type="checkbox"
+                      id="save"
+                      {...form1.register("save")}
+                      className="form-checkbox rounded-sm checked:bg-neutral-900 checked:hover:bg-neutral-900 focus:ring-neutral-900 checked:focus:bg-neutral-900"
+                    />
+                    <span>Save this information</span>
+                  </label>
+                </div>
               </form>
 
-              <div className="flex flex-col gap-4">
+              <div className="mt-3 inline-flex flex-col space-y-2">
                 <label
-                  htmlFor="save"
+                  htmlFor="info"
                   className="inline-flex items-center gap-2"
                 >
                   <input
-                    type="checkbox"
-                    name="save"
-                    id="save"
+                    type="radio"
+                    name="options"
+                    id="option1"
+                    checked={selectedMethod === "option1"}
+                    value={"option1"}
+                    onChange={(e) => handleOnchange(e)}
                     className="form-checkbox rounded-sm checked:bg-neutral-900 checked:hover:bg-neutral-900 focus:ring-neutral-900 checked:focus:bg-neutral-900"
                   />
-                  <span>Save this information</span>
+                  <span>Same as billing address</span>
                 </label>
-                <div className="mt-3 inline-flex flex-col space-y-2">
-                  <label
-                    htmlFor="info"
-                    className="inline-flex items-center gap-2"
-                  >
-                    <input
-                      type="radio"
-                      name="options"
-                      id="option1"
-                      checked={selectedMethod === "option1"}
-                      value={"option1"}
-                      onChange={(e) => handleOnchange(e)}
-                      className="form-checkbox rounded-sm checked:bg-neutral-900 checked:hover:bg-neutral-900 focus:ring-neutral-900 checked:focus:bg-neutral-900"
-                    />
-                    <span>Same as billing address</span>
-                  </label>
-                  <label
-                    htmlFor="options"
-                    className="inline-flex items-center gap-2"
-                  >
-                    <input
-                      type="radio"
-                      name="options"
-                      id="option2"
-                      checked={selectedMethod === "option2"}
-                      value={"option2"}
-                      className="form-checkbox rounded-sm checked:bg-neutral-900 checked:hover:bg-neutral-900 focus:ring-neutral-900 checked:focus:bg-neutral-900"
-                      // onChange={() => setNewInfo(!newInfo)}
-                      onChange={(e) => handleOnchange(e)}
-                    />
-                    <span>Use different shipping address</span>
-                  </label>
-                </div>
+                <label
+                  htmlFor="options"
+                  className="inline-flex items-center gap-2"
+                >
+                  <input
+                    type="radio"
+                    name="options"
+                    id="option2"
+                    checked={selectedMethod === "option2"}
+                    value={"option2"}
+                    className="form-checkbox rounded-sm checked:bg-neutral-900 checked:hover:bg-neutral-900 focus:ring-neutral-900 checked:focus:bg-neutral-900"
+                    onChange={(e) => handleOnchange(e)}
+                  />
+                  <span>Use different shipping address</span>
+                </label>
               </div>
-              <div className="mt-8">
-                <h3 className="text-xl font-medium">Shipping method</h3>
-                <p className="text-neutral-500">
-                  This is the address where your product will be delivered
-                </p>
-              </div>
+
               <form id="form2">
                 <div>
                   <div className="h-min overflow-hidden">
@@ -402,6 +550,15 @@ const Page = () => {
                           selectedMethod === "option2" && "h-[610px]",
                         )}
                       >
+                        <div className="mt-8">
+                          <h3 className="text-xl font-medium">
+                            Shipping method
+                          </h3>
+                          <p className="text-neutral-500">
+                            This is the address where your product will be
+                            delivered
+                          </p>
+                        </div>
                         <EachElement
                           of={billingFormData}
                           render={(data: any, index: number) => {
@@ -483,7 +640,7 @@ const Page = () => {
                                     render={({ field }) => (
                                       <PhoneInput
                                         {...field}
-                                        country={"ng"} // Adjust this if necessary for dynamic countries
+                                        country={"ng"}
                                         value={field.value || phone2}
                                         onChange={(phoneNumber) => {
                                           field.onChange(phoneNumber);
@@ -607,8 +764,8 @@ const Page = () => {
                     </ul>
                     <ul className="flex flex-col gap-3 ">
                       <li>&euro;{orderTotal}</li>
-                      <li>&euro; 50.50</li>
-                      <li>&euro;{orderTotal + 50.5}</li>
+                      <li>&euro; {deliveryFee}</li>
+                      <li>&euro;{orderTotal + deliveryFee}</li>
                     </ul>
                   </div>
                 </div>

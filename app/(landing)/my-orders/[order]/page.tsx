@@ -9,6 +9,8 @@ import Image from "next/image";
 import ProductTable from "@/components/admin-component/ProductTable";
 import { createColumnHelper } from "@tanstack/react-table";
 import { recentOrders } from "@/utils/adminData";
+import { useQuery } from "@tanstack/react-query";
+import { getOrderByOrderId } from "@/services/hooks/payment";
 
 type MyOrderList = {
   id: number;
@@ -112,15 +114,79 @@ const columns = [
 const MyOrderDetails = ({ params }: { params: any }) => {
   const { order: id } = params;
   const [order, setOrder] = useState<any>();
+  const [isLoading, setIsLoading] = useState<boolean>(true); // To handle loading state
+  const [error, setError] = useState<string | null>(null); 
+  // const { data: orderById, isPending, isSuccess, isError, } = useQuery({
+  //   queryKey: ["Order By Id"],
+  //   // queryFn: getOrderByOrderId,
+  // });
 
-  useEffect(() => {
-    const orderDetails = recentOrders.find((order) => order?.id === id);
+  // console.log('orderbyId: ', orderById)
 
-    console.log(orderDetails);
+      //   const orderId = orderbyId.order.map((order: any) => ({
+      //   date: new Date(order.createdAt).toLocaleDateString(),
+      //   id: order._id,
+      //   name: order?.placeholder,
+      //   price: order?.fee?.total,
+      //   quantity: order?.orderedItems?.lengths,
+      //   shippingFee: order?.fee?.deliveryFee,
+      //   status: order?.orderStatus,
+        
+      // }))
 
-    setOrder(orderDetails);
-  }, [params, id]);
+      
+// {name: 'Strawberry Sponge Cake', id: 'B736383836hgdy73', date: '2024-05-06', price: '300.00', status: 'Pending', …}
+// date: "2024-05-06"
+// id: "B736383836hgdy73"
+// name: "Strawberry Sponge Cake"
+// price: "300.00"
+// quantity: 2
+// shippingFee: 5.5
+// status: "Pending"
+// total: 100
 
+  // useEffect(() => {
+  //   const orderDetails = recentOrders.find((order) => order?.id === id);
+
+  //   console.log(orderDetails);
+
+  //   setOrder(orderDetails);
+  // }, [params, id]);
+ useEffect(() => {
+   const fetchOrderDetails = async () => {
+     try {
+       setIsLoading(true);
+       const orderDetails = await getOrderByOrderId(id); // Fetch order details from API
+        console.log('orderDetails: ', orderDetails)
+       setOrder(orderDetails);
+       if (orderDetails.error) {
+         setError(orderDetails.message || "Failed to fetch order details.");
+       } else {
+         setOrder(orderDetails.order); 
+       }
+
+     } catch (err) {
+       setError("Failed to fetch order details.");
+     } finally {
+       setIsLoading(false);
+     }
+   };
+
+   fetchOrderDetails();
+ }, [id]);
+  
+  
+    if (isLoading) {
+      return <div>Loading...</div>;
+    }
+
+    // If there's an error, display the error message
+    if (error) {
+      return <div>{error}</div>;
+  }
+    if (!order) {
+      return <div>No order details available.</div>;
+    }
   return (
     <>
       <div className="mt-[64px]" />
@@ -146,23 +212,28 @@ const MyOrderDetails = ({ params }: { params: any }) => {
               <ul className="space-y-3">
                 <li>
                   <div className="flex items-center justify-between">
-                    <span>Order ID: #GOL{order?.id.slice(0, 4)}</span>
+                    {/* <span>Order ID: #GOL{order?.id.slice(0, 4)}</span> */}
+                    {order.orderId}
+
                     <span>
-                      <StatusColumn status={order?.status} />
+                      <StatusColumn status={order?.orderStatus} />
+                      {/* {order?.orderStatus} */}
                     </span>
                   </div>
                 </li>
                 <li>
                   <div className="flex items-center justify-between bg-goldie-50 px-1 py-2">
                     <span>Name</span>
-                    <span>John Doe</span>
+                    <span>
+                      {order?.firstName} {order?.lastName}
+                    </span>
                   </div>
                 </li>
                 <li>
                   <div className="flex items-center justify-between">
                     <span>Email</span>
                     <span>
-                      <span>johndoe@gmail.com</span>
+                      <span>{order?.email}</span>
                     </span>
                   </div>
                 </li>
@@ -170,14 +241,17 @@ const MyOrderDetails = ({ params }: { params: any }) => {
                   <div className="flex items-center justify-between bg-goldie-50 px-1 py-2">
                     <span>Contact No</span>
                     <span>
-                      <span>+449093746253</span>
+                      <span>{order?.phoneNumber}</span>
                     </span>
                   </div>
                 </li>
                 <li>
                   <div className="flex items-center justify-between">
                     <span>Order Date:</span>
-                    <span>{order?.date.replace(/-/g, "/")}</span>
+                    {/* <span>{order?.date.replace(/-/g, "/")}</span> */}
+                    <span>
+{new Date(order?.createdAt).toISOString().split('T')[0]}
+                    </span>
                   </div>
                 </li>
               </ul>
@@ -188,7 +262,8 @@ const MyOrderDetails = ({ params }: { params: any }) => {
                   <div className="flex flex-col  bg-goldie-50 px-1 py-2">
                     <h3 className="mb-1 font-medium">Billing Address</h3>
                     <p className="text-neutral-600">
-                      37 Wallenger Avenue, Romford, Essex, England, RM2 6EP
+                      {order?.streetAddress}, {order?.cityOrTown},
+                      {order?.country}
                     </p>
                   </div>
                 </li>
@@ -196,7 +271,8 @@ const MyOrderDetails = ({ params }: { params: any }) => {
                   <div className="flex flex-col">
                     <h3 className="mb-1 font-medium">Shipping Address</h3>
                     <p className="text-neutral-600">
-                      37 Wallenger Avenue, Romford, Essex, England, RM2 6EP
+                      {order?.streetAddress}, {order?.cityOrTown},
+                      {order?.country}
                     </p>
                   </div>
                 </li>
@@ -204,7 +280,7 @@ const MyOrderDetails = ({ params }: { params: any }) => {
             </div>
             <div className="rounded-md bg-white p-4">
               <ul className="space-y-3">
-                <li>
+                {/* <li>
                   <div className="flex items-center justify-between">
                     <div className="grid grid-cols-[80px_1fr] items-center gap-2">
                       <Image
@@ -221,7 +297,7 @@ const MyOrderDetails = ({ params }: { params: any }) => {
                     </div>
                     <span>€508.98</span>
                   </div>
-                </li>
+                </li> */}
                 <li>
                   <div className="flex items-center justify-between">
                     <div className="grid grid-cols-[80px_1fr] items-center gap-2">
@@ -260,7 +336,7 @@ const MyOrderDetails = ({ params }: { params: any }) => {
                   <div className="flex items-center justify-between bg-goldie-50 px-1 py-2">
                     <span>Price</span>
                     <span>
-                      <span>&euro;{order?.price}</span>
+                      <span>&euro;{order?.fee?.subTotal}</span>
                     </span>
                   </div>
                 </li>
@@ -268,7 +344,7 @@ const MyOrderDetails = ({ params }: { params: any }) => {
                   <div className="flex items-center justify-between">
                     <span>Tax</span>
                     <span>
-                      <span>&euro;{order?.shippingFee}</span>
+                      <span>&euro;{order?.fee?.deliveryFee}</span>
                     </span>
                   </div>
                 </li>
@@ -276,7 +352,7 @@ const MyOrderDetails = ({ params }: { params: any }) => {
                   <div className="flex items-center justify-between border-t bg-goldie-50 px-1 py-2">
                     <span>Total</span>
                     <span>
-                      <span>&euro;{order?.shippingFee + order?.price * 1}</span>
+                      <span>&euro;{order?.fee?.total}</span>
                     </span>
                   </div>
                 </li>
@@ -287,44 +363,53 @@ const MyOrderDetails = ({ params }: { params: any }) => {
             {/* ORDER DETAILS */}
             <div className="rounded-md bg-white p-5">
               <span className="font-semibold ">
-                Order ID : #GOL{order?.id?.slice(0, 4)}
+                {/* Order ID : #GOL{order?.id?.slice(0, 4)} */}
+                {order.orderId}
               </span>
 
               <div className="mt-3 flex justify-between">
                 <div className="flex flex-col gap-5">
                   <ul>
                     <li className="font-medium">Name</li>
-                    <li className="text-neutral-600">John Doe</li>
-                  </ul>{" "}
+                    <li className="text-neutral-600">
+                      {order?.firstName} {order?.lastName}
+                    </li>
+                  </ul>
                   <ul>
                     <li className="font-medium">Email</li>
-                    <li className="text-neutral-600">johndoe@gmail.com</li>
+                    <li className="text-neutral-600">{order?.email}</li>
                   </ul>
                   <ul>
                     <li className="font-medium">Billing Address</li>
                     <li className="text-neutral-600">
-                      37 Wallenger Avenue, Romford, Essex, England, RM2 6EP
+                      {order?.streetAddress}, {order?.cityOrTown},
+                      {order?.country}
                     </li>
                   </ul>
                   <ul>
                     <li className="font-medium">Shipping Address</li>
                     <li className="text-neutral-600">
-                      37 Wallenger Avenue, Romford, Essex, England, RM2 6EP
+                      {order?.streetAddress}, {order?.cityOrTown},
+                      {order?.country}
                     </li>
                   </ul>
                 </div>
                 <div className="flex flex-col gap-5">
                   <ul>
                     <li className="font-medium">Status</li>
-                    <li>{getStatus(order?.status)}</li>
+                    <li>{getStatus(order?.orderStatus)}</li>
+                    {/* <li>{order?.orderStatus}</li> */}
                   </ul>
                   <ul>
                     <li className="font-medium">Contact No</li>
-                    <li className="text-neutral-600">+449387645218</li>
+                    <li className="text-neutral-600">{order?.phoneNumber}</li>
                   </ul>
                   <ul>
                     <li className="font-medium">Order Date</li>
-                    <li className="text-neutral-600">{order?.date}</li>
+                    {/* <li className="text-neutral-600">{order?.date}</li> */}
+                    <li className="text-neutral-600">
+{new Date(order?.createdAt).toISOString().split('T')[0]}
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -343,15 +428,15 @@ const MyOrderDetails = ({ params }: { params: any }) => {
                 <div className="flex w-[300px] flex-col gap-3 bg-white p-4">
                   <div className="inline-flex items-center justify-between">
                     <span>Subtotal</span>
-                    <span>€608.98</span>
+                    <span>€{order.fee.subTotal}</span>
                   </div>
                   <div className="inline-flex items-center justify-between">
                     <span>Tax</span>
-                    <span>€50.50</span>
+                    <span>€{order.fee.deliveryFee}</span>
                   </div>
                   <div className="inline-flex items-center justify-between border-t pt-3">
                     <span>Total</span>
-                    <span>€659.48</span>
+                    <span>€{order.fee.total}</span>
                   </div>
                 </div>
               </div>
