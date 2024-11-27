@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Heart } from "iconsax-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { addProductToCart } from "@/redux/features/product/productSlice";
 import { useDispatch } from "react-redux";
@@ -12,6 +12,7 @@ import { Tooltip } from "react-tooltip";
 import StarRating from "../StarRating";
 import Placeholder from "@/public/assets/placeholder3.png";
 import useUserPdctStore from "@/zustand/userProductStore/store";
+import { DialogCloseButton } from "../DialogModal";
 
 export default function ProductCard({ data }: { data: any }) {
   const [previewFav, setPreviewFav] = useState(false);
@@ -22,6 +23,7 @@ export default function ProductCard({ data }: { data: any }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const addFavProducts = useUserPdctStore((state) => state.addFavProduct);
   const removeFavProducts = useUserPdctStore((state) => state.removeFavProduct);
+  const [isLogin, setIsLogin] = useState<boolean>();
 
   const handleAddToCart = () => {
     const items = Object.values(cart);
@@ -48,6 +50,13 @@ export default function ProductCard({ data }: { data: any }) {
       removeFavProducts(productId);
     }
   };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const isLogin = JSON.parse(localStorage.getItem("isLogin") as string);
+      setIsLogin(Boolean(isLogin));
+    }
+  }, []);
 
   return (
     <div className="w-full rounded-[10px] border border-neutral-100 bg-white p-2 shadow-[0_0_30px_-10px_rgba(0,0,0,0.1)]">
@@ -113,18 +122,26 @@ export default function ProductCard({ data }: { data: any }) {
           <span
             className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-[5px] bg-black bg-opacity-50 text-goldie-300"
             onClick={() => addToSavedItems(data)}
-            // onClick={() => setFav((prev: any) => !prev)}
             onMouseEnter={() => setPreviewFav(true)}
             onMouseLeave={() => {
               if (fav) return;
               setPreviewFav(false);
             }}
           >
-            {/* {fav || previewFav ? ( */}
-            <Heart size={20} variant={fav || previewFav ? "Bold" : undefined} />
-            {/* ) : (
-              <Heart size={20} />
-            )} */}
+            {isLogin ? (
+              <Heart
+                size={20}
+                variant={fav || previewFav ? "Bold" : undefined}
+              />
+            ) : (
+              <DialogCloseButton>
+                <Heart
+                  size={20}
+                  variant={fav || previewFav ? "Bold" : undefined}
+                />
+              </DialogCloseButton>
+            )}
+            {/* <Heart size={20} variant={fav || previewFav ? "Bold" : undefined} /> */}
           </span>
         </div>
       </figure>

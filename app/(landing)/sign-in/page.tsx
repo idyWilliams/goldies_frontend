@@ -24,7 +24,7 @@ const validationSchema = yup.object().shape({
 
 const Page = () => {
   // @ts-ignore
-  const { setIsLogin } = useContext(AuthContext);
+  const { setIsLogin, activePathRef } = useContext(AuthContext);
   const [isChecked, setIsChecked] = useState(false);
   const router = useRouter();
   const [visible, setVisible] = useState(false);
@@ -63,7 +63,9 @@ const Page = () => {
           JSON.stringify({ token: res?.token, user: res?.user }),
         );
         localStorage.setItem("userToken", res?.token);
-        router.push("/");
+        console.log(`/${activePathRef.current ? activePathRef.current : ""}`);
+
+        router.push(`${activePathRef.current ? activePathRef.current : ""}`);
         reset();
       })
       .catch((err: any) => {

@@ -1,4 +1,10 @@
-import { createContext, useContext, useState } from "react";
+import {
+  createContext,
+  MutableRefObject,
+  useContext,
+  useRef,
+  useState,
+} from "react";
 
 interface Auth {
   user?: any;
@@ -15,6 +21,7 @@ interface AuthContextType {
   setIsLogin: React.Dispatch<React.SetStateAction<boolean>>;
   role: "user" | "admin" | "super_admin" | null;
   setRole: (role: "user" | "admin" | "super_admin" | null) => void;
+  activePathRef: MutableRefObject<string>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -25,10 +32,19 @@ export const AuthProvider = ({ children }: IProps) => {
   const [role, setRole] = useState<"user" | "admin" | "super_admin" | null>(
     null,
   );
+  const activePathRef = useRef("");
 
   return (
     <AuthContext.Provider
-      value={{ auth, setAuth, isLogin, setIsLogin, role, setRole }}
+      value={{
+        auth,
+        setAuth,
+        isLogin,
+        setIsLogin,
+        role,
+        setRole,
+        activePathRef,
+      }}
     >
       {children}
     </AuthContext.Provider>
