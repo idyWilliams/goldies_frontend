@@ -89,7 +89,10 @@ const Header = () => {
     const storedUser = JSON.parse(localStorage.getItem("user") as string);
     setUser(storedUser?.user);
     setAuth(storedUser);
-    setIsLogin(Boolean(JSON.parse(localStorage.getItem("isLogin") as string)));
+    if (typeof window !== "undefined") {
+      const isLoggedIn = JSON.parse(localStorage.getItem("isLogin") as string);
+      setIsLogin(Boolean(isLoggedIn));
+    }
 
     console.log(storedUser, "useehehe");
   }, [setAuth, setIsLogin]);
