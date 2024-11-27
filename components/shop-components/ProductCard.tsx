@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Heart } from "iconsax-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { addProductToCart } from "@/redux/features/product/productSlice";
 import { useDispatch } from "react-redux";
@@ -23,7 +23,7 @@ export default function ProductCard({ data }: { data: any }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const addFavProducts = useUserPdctStore((state) => state.addFavProduct);
   const removeFavProducts = useUserPdctStore((state) => state.removeFavProduct);
-  const isLogin = JSON.parse(localStorage.getItem("isLogin") as string);
+  const [isLogin, setIsLogin] = useState<boolean>();
 
   const handleAddToCart = () => {
     const items = Object.values(cart);
@@ -50,6 +50,13 @@ export default function ProductCard({ data }: { data: any }) {
       removeFavProducts(productId);
     }
   };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const isLogin = JSON.parse(localStorage.getItem("isLogin") as string);
+      setIsLogin(Boolean(isLogin));
+    }
+  }, []);
 
   return (
     <div className="w-full rounded-[10px] border border-neutral-100 bg-white p-2 shadow-[0_0_30px_-10px_rgba(0,0,0,0.1)]">

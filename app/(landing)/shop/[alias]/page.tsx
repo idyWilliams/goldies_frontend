@@ -77,14 +77,14 @@ const schema = yup.object().shape({
   sizes: yup.string().required("Size is required"),
   toppings: yup.string().required("Topping is required"),
   cakeTimes: yup.string().required("cakeTimes is required"),
-  message: yup.string().required("Input any additional info"),
+  // message: yup.string().required("Input any additional info"),
 });
 
 interface FormValues {
   sizes: string;
   toppings: string;
   cakeTimes: string;
-  message: string;
+  // message: string;
 }
 
 function CakeDetailsPage({ params }: any) {
@@ -151,7 +151,7 @@ function CakeDetailsPage({ params }: any) {
   //   // setShapes(null)
   // };
   const handleClick = handleSubmit((data) => {
-    if (data.sizes && data.toppings && data.cakeTimes && data.message) {
+    if (data.sizes && data.toppings && data.cakeTimes) {
       dispatch(addProductToCart({ id: getProduct.id }));
       console.log(getProduct.id);
     } else {
@@ -393,14 +393,14 @@ function CakeDetailsPage({ params }: any) {
                         Additional Cake Details
                       </span>
                       <textarea
-                        {...register("message")}
+                        // {...register("message")}
                         name="message"
                         id="message"
                         className="form-textarea h-[120px] w-full rounded-lg border-2 border-neutral-900 focus:border-neutral-900 focus:ring-neutral-900"
                       ></textarea>
-                      {errors.message && (
+                      {/* {errors.message && (
                         <p className="text-red-500">{errors.message.message}</p>
-                      )}
+                      )} */}
                     </label>
                   </div>
                   <div className="my-3 inline-flex gap-3">

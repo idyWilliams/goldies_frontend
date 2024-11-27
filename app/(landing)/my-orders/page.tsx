@@ -5,69 +5,50 @@ import Pagination from "@/components/custom-filter/Pagination";
 import StatusColumn from "@/components/myOrdersComps/StatusColumn";
 import EachElement from "@/helper/EachElement";
 import { chunkArray } from "@/helper/chunkArray";
+import { getOrderByUser } from "@/services/hooks/payment";
 import { Order, recentOrders } from "@/utils/adminData";
+import { useQuery } from "@tanstack/react-query";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Eye } from "iconsax-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Tooltip } from "react-tooltip";
 
 const columnHelper = createColumnHelper<Order>();
 const columns = [
-  columnHelper.accessor((row) => row, {
-    id: "orderID",
-    header: () => <span>Order ID</span>,
-    cell: (info) => (
-      <span className="uppercase">
-        #GOL{info.cell.row.original.id.slice(0, 4)}
-      </span>
-    ),
+  columnHelper.accessor("id", {
+    header: "Order ID",
+    cell: (info) => <span>#GOL{info.getValue()?.slice(0, 4)}</span>,
   }),
-  columnHelper.accessor((row) => row, {
-    id: "orderDate",
-    header: () => <span>Order Date</span>,
-    cell: (info) => (
-      <span className="">{info.cell.row.original.date.replace(/-/g, "/")}</span>
-    ),
+  columnHelper.accessor("date", {
+    header: "Order Date",
+    cell: (info) => <span>{info.getValue()}</span>,
   }),
   columnHelper.accessor("quantity", {
-    header: () => <span>Qnty</span>,
-    cell: (info) => <div className="">{info.cell.row.original.quantity}</div>,
+    header: "Quantity",
+    cell: (info) => <span>{info.getValue()} products</span>,
   }),
   columnHelper.accessor("price", {
-    header: () => <span>Amount</span>,
-    cell: (info) => (
-      <div className="">&euro;{info.cell.row.original.price}</div>
-    ),
+    header: "Amount",
+    cell: (info) => <span>&euro;{info.getValue()}</span>,
   }),
   columnHelper.accessor("shippingFee", {
-    header: () => <span>Shipping</span>,
-    cell: (info) => (
-      <div className="">&euro;{info.cell.row.original.shippingFee}</div>
-    ),
+    header: "Shipping",
+    cell: (info) => <span>&euro;{info.getValue()}</span>,
   }),
   columnHelper.accessor("status", {
-    header: () => <span>Status</span>,
-    cell: (info) => <StatusColumn status={info.cell.row.original.status} />,
+    header: "Status",
+    cell: (info) => <StatusColumn status={info.getValue()} />,
   }),
   columnHelper.accessor((row) => row, {
     id: "action",
-    header: () => <div className="text-center">Action</div>,
+        header: () => <div className="text-center">Action</div>,
     cell: (info) => (
       <div className="flex justify-center text-neutral-600">
-        <Link
-          href={`/my-orders/${info.cell.row.original.id}`}
-          className="cursor-pointer"
-          id="my-anchor-element-id"
-        >
+        <Link href={`/my-orders/${info.cell.row.original.id}`}>
           <Eye />
         </Link>
-        <Tooltip
-          anchorSelect="#my-anchor-element-id"
-          content="view order"
-          place="left"
-        />
       </div>
     ),
   }),
@@ -81,18 +62,43 @@ const MyOrders = () => {
   const [myOrders, setMyOrders] = useState<Order[]>([]);
   const [selectedTabs, setSelectedTabs] = useState("All");
   const [filteredData, setFilteredData] = useState<Order[]>([]);
-  const handleTabClick = (status: string) => {
-    setSelectedTabs(status);
-    if (status === "All") {
-      setFilteredData(recentOrders);
-    } else {
-      setFilteredData(
-        recentOrders.filter(
-          (item) => item?.status.toLowerCase() === status.toLowerCase(),
-        ),
-      );
+  const { data: ordersResponse, isPending, isSuccess, isError, } = useQuery({
+    queryKey: ["orderByUser"],
+    queryFn: getOrderByUser,
+  });
+  
+  useEffect(() => {
+    if (ordersResponse?.userOrder) {
+      const transformedOrders = ordersResponse.userOrder.map((order: any) => ({
+        id: order._id, 
+        date: new Date(order?.createdAt).toISOString().split('T')[0], 
+        quantity: order.orderedItems.length, 
+        price: order.fee.total, 
+        shippingFee: order.fee.deliveryFee, 
+        status: order.orderStatus, 
+      }));
+
+      setMyOrders(transformedOrders);
+      setFilteredData(transformedOrders);
+      console.log("Transformed Orders:", transformedOrders);
+      // console.log("Filtered Data:", filteredData);
     }
-  };
+    
+  }, [ordersResponse]);
+
+  
+  const handleTabClick = (status: string) => {
+  setSelectedTabs(status);
+  if (status === "All") {
+    setFilteredData(recentOrders);
+  } else {
+    setFilteredData(
+      recentOrders.filter(
+        (order) => order.status.toLowerCase() === status.toLowerCase(),
+      ),
+    );
+  }
+};
 
   const handleNext = () => {
     if (currentPageIndex !== chunkArray(filteredData, itemsPerPage).length) {
@@ -117,10 +123,6 @@ const MyOrders = () => {
     }
   };
 
-  useEffect(() => {
-    setMyOrders(recentOrders);
-    setFilteredData(recentOrders);
-  }, []);
 
   return (
     <>
@@ -160,6 +162,7 @@ const MyOrders = () => {
                         <li>
                           <div className="flex items-center justify-between">
                             <span>Order ID: #GOL{order?.id.slice(0, 4)}</span>
+                            {/* <span>{orders.orderId}</span> */}
                             <span>
                               <StatusColumn status={order?.status} />
                             </span>
@@ -231,7 +234,7 @@ const MyOrders = () => {
           <div className="hidden lg:block">
             <ProductTable
               columns={columns}
-              Tdata={recentOrders}
+              Tdata={filteredData || []} 
               statusType="order"
               filteredTabs={["All", "Pending", "Delivered", "Cancelled"]}
             />
@@ -243,3 +246,5 @@ const MyOrders = () => {
 };
 
 export default MyOrders;
+
+
