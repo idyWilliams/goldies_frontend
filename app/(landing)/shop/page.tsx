@@ -9,12 +9,13 @@ import { ArrowDown2, Shuffle } from "iconsax-react";
 import FilterComp from "@/components/custom-filter/FilterComp";
 import { IoList } from "react-icons/io5";
 import FilterSidebar from "@/components/custom-filter/FilterSideBar";
-import { chunkArray } from "@/helper/chunkArray";
-import Pagination from "@/components/custom-filter/Pagination";
+
 import ProductCard from "@/components/shop-components/ProductCard";
 import { captalizedName } from "@/helper/nameFormat";
-// import { useQuery } from "@tanstack/react-query";
-// import { fetchProducts } from "@/services/hooks/products";
+import EachElement from "@/helper/EachElement";
+import useProducts from "@/services/hooks/products/useProducts";
+import AdminPagination from "@/components/admin-component/AdminPagination";
+import ShopPageSkeleton from "@/components/shop-components/ShopPageSkeleton";
 
 let itemsPerPage = 6;
 
@@ -26,29 +27,41 @@ const ShopPage = () => {
   const cakesProducts = addSlugToCakes(cakeProducts1);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [cat, setCat] = useState<string>("");
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [totalProducts, setTotalProducts] = useState<number>(0);
+  const startIndex =
+    totalProducts === 0 ? 0 : (currentPageIndex - 1) * itemsPerPage + 1;
+  const endIndex = Math.min(startIndex + itemsPerPage - 1, totalProducts);
 
-  const handleNext = () => {
-    if (currentPageIndex !== chunkArray(cakes, itemsPerPage).length) {
-      setCurrentPageIndex(currentPageIndex + 1);
-      window.scroll(0, 0);
-    } else {
-      return;
-    }
-  };
+  const { products, isPending } = useProducts(
+    currentPageIndex,
+    itemsPerPage,
+    setTotalPages,
+    setTotalProducts,
+  );
 
-  const handlePaginateClick = (index: number) => {
-    setCurrentPageIndex(index + 1);
-    window.scroll(0, 0);
-  };
+  // const handleNext = () => {
+  //   if (currentPageIndex !== chunkArray(cakes, itemsPerPage).length) {
+  //     setCurrentPageIndex(currentPageIndex + 1);
+  //     window.scroll(0, 0);
+  //   } else {
+  //     return;
+  //   }
+  // };
 
-  const handlePrev = () => {
-    if (currentPageIndex !== 1) {
-      setCurrentPageIndex(currentPageIndex - 1);
-      window.scroll(0, 0);
-    } else {
-      return;
-    }
-  };
+  // const handlePaginateClick = (index: number) => {
+  //   setCurrentPageIndex(index + 1);
+  //   window.scroll(0, 0);
+  // };
+
+  // const handlePrev = () => {
+  //   if (currentPageIndex !== 1) {
+  //     setCurrentPageIndex(currentPageIndex - 1);
+  //     window.scroll(0, 0);
+  //   } else {
+  //     return;
+  //   }
+  // };
 
   const min = () => {
     if (Array.isArray(cakes)) {
@@ -165,8 +178,7 @@ const ShopPage = () => {
                   </h3>
                   {/* MOBILE PRODUCT DISPLAY */}
                   <span className="text-sm text-neutral-500 lg:text-base">
-                    Showing {currentPageIndex} - {itemsPerPage} of{" "}
-                    {cakes?.length} results
+                    Showing {startIndex} - {endIndex} of {totalProducts} results
                   </span>
                 </div>
                 <div
@@ -180,15 +192,26 @@ const ShopPage = () => {
                 </div>
               </div>
 
+              {isPending && !products && <ShopPageSkeleton />}
+
               <div className="grid gap-8 sm:grid-cols-2 md:gap-5 lg:grid-cols-3 xl:hidden">
-                {chunkArray(cakes, itemsPerPage)[currentPageIndex - 1]?.map(
+                {/* {chunkArray(cakes, itemsPerPage)[currentPageIndex - 1]?.map(
                   (cake: any, index: any) => {
                     return <ProductCard data={cake} key={index} />;
-                  },
+                    },
+                    )} */}
+
+                {products && (
+                  <EachElement
+                    of={addSlugToCakes(products)}
+                    render={(item: any) => {
+                      return <ProductCard data={item} key={item._id} />;
+                    }}
+                  />
                 )}
               </div>
 
-              <Pagination
+              {/* <Pagination
                 className="lg:hidden"
                 onNext={handleNext}
                 onPrev={handlePrev}
@@ -196,7 +219,17 @@ const ShopPage = () => {
                 itemsPerPage={itemsPerPage}
                 currentPageIndex={currentPageIndex}
                 arr={cakes}
-              />
+              /> */}
+
+              <div className="xl:hidden">
+                {totalPages > 1 && (
+                  <AdminPagination
+                    totalPage={totalPages}
+                    page={currentPageIndex}
+                    setPage={setCurrentPageIndex}
+                  />
+                )}
+              </div>
 
               {/* DESKTOP PRODUCT DISPLAY */}
               <div className="hidden xl:grid xl:grid-cols-[300px_1fr] xl:items-start xl:gap-5">
@@ -228,8 +261,8 @@ const ShopPage = () => {
                         {cat ? captalizedName(cat) : "All Cakes"}
                       </h3>
                       <span className="text-sm text-neutral-500 lg:text-base">
-                        Showing {currentPageIndex} - {itemsPerPage} of{" "}
-                        {cakes?.length} results
+                        Showing {startIndex} - {endIndex} of {totalProducts}{" "}
+                        results
                       </span>
                     </div>
                     <div
@@ -242,25 +275,29 @@ const ShopPage = () => {
                       </span>
                     </div>
                   </div>
+
+                  {isPending && !products && <ShopPageSkeleton />}
+
                   <div className="grid grid-cols-3 gap-5">
-                    {chunkArray(cakes, itemsPerPage)[currentPageIndex - 1]?.map(
-                      (cake: any, index: any) => {
-                        return <ProductCard data={cake} key={index} />;
-                      },
+                    {products && (
+                      <EachElement
+                        of={addSlugToCakes(products)}
+                        render={(item: any) => {
+                          return <ProductCard data={item} key={item.id} />;
+                        }}
+                      />
                     )}
                   </div>
 
                   {cakes?.length < 1 && (
                     <div className="">No cake products found</div>
                   )}
-                  {cakes?.length >= 1 && (
-                    <Pagination
-                      onNext={handleNext}
-                      onPrev={handlePrev}
-                      onPaginateClick={handlePaginateClick}
-                      itemsPerPage={itemsPerPage}
-                      currentPageIndex={currentPageIndex}
-                      arr={cakes}
+
+                  {totalPages > 1 && (
+                    <AdminPagination
+                      totalPage={totalPages}
+                      page={currentPageIndex}
+                      setPage={setCurrentPageIndex}
                     />
                   )}
                 </div>
