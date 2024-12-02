@@ -191,8 +191,9 @@ const ShopPage = () => {
                   </span>
                 </div>
               </div>
-
-              {isPending && !products && <ShopPageSkeleton />}
+              <div className="xl:hidden">
+                {isPending && !products && <ShopPageSkeleton />}
+              </div>
 
               <div className="grid gap-8 sm:grid-cols-2 md:gap-5 lg:grid-cols-3 xl:hidden">
                 {/* {chunkArray(cakes, itemsPerPage)[currentPageIndex - 1]?.map(
