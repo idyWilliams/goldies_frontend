@@ -17,7 +17,6 @@ import CreatePdctNameAndDesc from "@/components/admin-component/create-product/C
 import CreatePdctCatAndSubCat from "@/components/admin-component/create-product/CreatePdctCatAndSubCat";
 import CreatePdctType from "@/components/admin-component/create-product/CreatePdctType";
 import { useMediaQuery } from "react-responsive";
-import { formValuesType } from "@/types/products";
 import useFormValues from "@/services/hooks/category/useFormValues";
 
 interface ErrorResponse {

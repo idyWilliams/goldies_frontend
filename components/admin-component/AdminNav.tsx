@@ -21,7 +21,6 @@ import {
   User,
   UserCirlceAdd,
 } from "iconsax-react";
-import moment from "moment";
 import { useRouter } from "next/navigation";
 import {
   Popover,
@@ -43,6 +42,7 @@ import {
 import { adminLogOut, getAdmin } from "@/services/hooks/admin-auth";
 import { useQuery } from "@tanstack/react-query";
 import useAdmin from "@/services/hooks/admin/use_admin";
+import CurrentTime from "./CurrentTime";
 
 export default function AdminNav() {
   const [admin, setAdmin] = useState<any>();
@@ -51,7 +51,6 @@ export default function AdminNav() {
   const [open, setIsOpen] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
-  const [currentTime, setCurrentTime] = useState(moment().format("H:mm"));
   const adminStored = useAdmin();
   console.log(adminStored?._id);
 
@@ -61,14 +60,6 @@ export default function AdminNav() {
   });
 
   console.log(data, "adminsns");
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(moment().format("H:mm")), 60000;
-    });
-
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -150,13 +141,9 @@ export default function AdminNav() {
             </Popover>
 
             <div className="hidden gap-3  sm:inline-flex">
-              <span className="text-sm font-normal text-goldie-300">
-                {moment().format("ddd D MMM")}
-              </span>
-              <span className="text-sm font-normal text-goldie-300">
-                {currentTime}
-              </span>
+              <CurrentTime text="text-goldie-300" />
             </div>
+
             <button
               onClick={() => setOpen((prev) => !prev)}
               className="flex items-center gap-2 border-l border-goldie-300 border-opacity-40 pl-4 text-goldie-300"
@@ -170,13 +157,7 @@ export default function AdminNav() {
             {isOpen && (
               <MenuPopup className="absolute -right-3 top-10 z-40 w-[190px] rounded-md bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
                 <div className="mb-2 flex items-center justify-start gap-3 border-b border-black border-opacity-20 p-2 pb-3 sm:hidden">
-                  <span className="text-sm font-normal text-black">
-                    {moment().format("ddd D MMM")}
-                  </span>
-                  <span>-</span>
-                  <span className="text-sm font-normal text-black">
-                    {currentTime}
-                  </span>
+                  <CurrentTime text="text-black" isOpen={isOpen} />
                 </div>
                 <div className="">
                   <span

@@ -82,7 +82,7 @@ export default function Page() {
 
   const allProducts = useQuery({
     queryKey: ["allProducts"],
-    queryFn: getAllProducts,
+    queryFn: async () => getAllProducts(1, 15),
   });
 
   console.log(allProducts?.data);

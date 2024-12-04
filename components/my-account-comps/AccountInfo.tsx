@@ -62,7 +62,7 @@ const AccountInfo = () => {
       toast.error("Session expired! Please log in again");
       router.push("/sign-in");
     }
-  }, []);
+  }, [router]);
   console.log("data is", user);
 
   useEffect(() => {
