@@ -31,8 +31,10 @@ export const getProducts = async (data: any) => {
   const response = await instance.get("/product/get_all_products", data);
   return response.data;
 };
-export const getAllProducts = async () => {
-  const response = await instance.get("/product/get_all_product");
+export const getAllProducts = async (page: number, limit: number) => {
+  const response = await instance.get(
+    `/product/get_all_product?page=${page}&limit=${limit}`,
+  );
   return response.data;
 };
 
@@ -61,5 +63,42 @@ export const updateProduct = async (data: any, productId: string) => {
 // DELETE PRODUCT
 export const deleteProduct = async (productId: string) => {
   const response = await instance.delete(`/product/edit_product/${productId}`);
+  return response.data;
+};
+
+export const addFavorites = async (productId: string) => {
+  const product = {
+    productId: productId,
+  };
+  const token = accessToken;
+
+  const response = await instance.post("/favorites/add", product, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+};
+
+export const removeFavorites = async (productId: string) => {
+  const product = {
+    productId: productId,
+  };
+  const response = await instance.delete(`/favorites/remove/${productId}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  // const response = await instance.delete("/favorites/remove", product,);
+  return response.data;
+};
+
+export const getSavedItems = async () => {
+  const response = await instance.get("/favorites/", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
   return response.data;
 };

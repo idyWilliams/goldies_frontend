@@ -5,8 +5,7 @@ interface Store {
   favProducts: any[];
   addProduct: (product: any) => void;
   removeProduct: (productId: number) => void;
-  addFavProduct: (product: any) => void;
-  removeFavProduct: (productId: string) => void;
+  setFavProducts: (products: any[]) => void;
 }
 
 const useUserPdctStore = create<Store>((set) => ({
@@ -18,14 +17,7 @@ const useUserPdctStore = create<Store>((set) => ({
     set((state) => ({
       products: state.products.filter((prod) => prod.id !== productId),
     })),
-  addFavProduct: (product) =>
-    set((state) => ({ favProducts: [product, ...state.favProducts] })),
-  removeFavProduct: (productId) =>
-    set((state) => ({
-      favProducts: state.favProducts.filter(
-        (prod) => prod.id?.toString() !== productId,
-      ),
-    })),
+  setFavProducts: (products) => set((state) => ({ favProducts: products })),
 }));
 
 export default useUserPdctStore;

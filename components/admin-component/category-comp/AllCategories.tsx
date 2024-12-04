@@ -1,7 +1,7 @@
 "use client";
 import EmptyStateCard from "@/components/admin-component/category-comp/EmptyStateCard";
 import React, { useEffect, useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getPaginatedCategories } from "@/services/hooks/category";
 import useBoundStore from "@/zustand/store";
 import ManageCategoriesSkeleton from "./ManageCategoriesSkeleton";
@@ -11,7 +11,7 @@ import CategoriesCards from "./CategoriesCards";
 
 const limit = 8;
 
-const AllCategories = ({ cat }: any) => {
+const AllCategories = () => {
   const setAllCategories = useBoundStore((state) => state.setCategories);
   const setActiveCategory = useBoundStore((state) => state.setActiveCategory);
   const setShowModal = useBoundStore((state) => state.setShowModal);
@@ -19,7 +19,6 @@ const AllCategories = ({ cat }: any) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [currentData, setCurrentData] = useState<Category[] | null>(null);
-  console.log(cat);
   const setLimit = useBoundStore((state) => state.setLimit);
   const setPage = useBoundStore((state) => state.setPage);
 
@@ -38,7 +37,8 @@ const AllCategories = ({ cat }: any) => {
   } = useQuery({
     queryKey: ["categories", currentPage, limit],
     queryFn: async () => getPaginatedCategories(currentPage, limit),
-    initialData: cat,
+    // initialData: cat,
+    placeholderData: keepPreviousData,
     // staleTime: 60 * 1000,
   });
   console.log(data);

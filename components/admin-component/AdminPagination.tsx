@@ -68,17 +68,21 @@ const AdminPagination = ({
             />
 
             <PaginationItem className=" flex items-center  justify-center  p-1">
-              <Button
-                disabled={page === totalPage}
-                className={twMerge(
-                  "inline-flex h-7 w-7 items-center justify-center rounded-full bg-neutral-100 text-neutral-800 hover:bg-goldie-100  disabled:text-neutral-400",
-                )}
-                onClick={() => handleNext(page, totalPage, setPage)}
+              <span
+                className={`flex items-center justify-center ${page === totalPage ? "cursor-not-allowed" : ""}`}
               >
-                <span className="">
-                  <RxCaretRight size={32} />
-                </span>
-              </Button>
+                <Button
+                  disabled={page === totalPage}
+                  className={twMerge(
+                    "inline-flex h-7 w-7 items-center justify-center rounded-full bg-neutral-100 text-neutral-800 hover:bg-goldie-100  disabled:text-neutral-400",
+                  )}
+                  onClick={() => handleNext(page, totalPage, setPage)}
+                >
+                  <span className="">
+                    <RxCaretRight size={32} />
+                  </span>
+                </Button>
+              </span>
             </PaginationItem>
           </PaginationContent>
         </Pagination>
