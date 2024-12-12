@@ -3,8 +3,11 @@ import { ArrowLeft, Edit } from "iconsax-react";
 import Image from "next/image";
 import coconut from "@/public/assets/AT0213_coconut-cream-cake_s4x3.webp";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { productList } from "@/utils/adminData";
+import { useQuery } from "@tanstack/react-query";
+import { getProduct } from "@/services/hooks/products";
+import { Product } from "../page";
 
 type Data = {
   id: number;
@@ -15,10 +18,20 @@ type Data = {
 export default function Page({ params }: any) {
   const [selectedImage, setSelectedImage] = useState(0);
   const router = useRouter();
-  const product = productList.find(
-    (item: any) => String(item.id) === params.details,
-  );
-  console.log(params, "product details", product);
+  const [product, setProduct] = useState<Product | null>();
+  const { data, isSuccess, isError, isPending } = useQuery({
+    queryFn: async () => getProduct(params.details),
+    queryKey: ["product"],
+  });
+
+  useEffect(() => {
+    if (!isSuccess) return;
+
+    setProduct(data?.productDetails);
+  }, [data?.productDetails, isSuccess]);
+
+  console.log(data?.productDetails, "A product", params);
+
   return (
     <section className="h-screen bg-gray-100">
       <div className="p-5">
@@ -52,49 +65,51 @@ export default function Page({ params }: any) {
             <div className="bg-white px-6 py-3">
               <div className="mb-5">
                 <p className="font-semibold capitalize">product name:</p>
-                <p className="capitalize">{product?.productName}</p>
+                <p className="capitalize">{product?.name}</p>
               </div>
               <div className="mb-5">
                 <p className="font-semibold">Product Description:</p>
                 <p>{product?.description}</p>
               </div>
-              <div className="mb-5 flex items-center justify-between">
+              <div className="mb-5 flex flex-wrap items-center justify-between">
                 <div className="mb-5">
                   <p className="font-semibold">Product Price:</p>
                   <p>
                     &euro;
-                    {product?.priceFrom} - &euro;{product?.priceTo}
+                    {product?.minPrice} - &euro;{product?.maxPrice}
                   </p>
                 </div>
                 <div className="mb-5">
                   <p className="font-semibold">Product ID:</p>
-                  <p>ID:{product?.id}</p>
+                  <p className="uppercase">ID:{product?._id?.slice(0, 6)}</p>
                 </div>
                 <div className="mb-5">
                   <p className="font-semibold">Product Category:</p>
-                  <p>{product?.category}</p>
+                  <p>{product?.category?.name}</p>
                 </div>
                 <div className="mb-5">
                   <p className="font-semibold">Subcategory:</p>
-                  <p>{product?.subcategory}</p>
+                  <p>
+                    {product?.subCategory?.map((item) => item?.name).join(", ")}
+                  </p>
                 </div>
               </div>
               <div className="mb-5">
                 <p className="font-semibold capitalize">Product Sizes:</p>
                 <p className="capitalize">
-                  {product?.sizes?.map((item: any) => item.name).join(", ")}
+                  {product?.sizes?.map((item: any) => item).join(", ")}
                 </p>
               </div>
               <div className="mb-5">
                 <p className="font-semibold capitalize">Product Shapes:</p>
                 <p className="capitalize">
-                  {product?.shapes?.map((item: any) => item.name).join(", ")}
+                  {product?.shapes?.map((item: any) => item).join(", ")}
                 </p>
               </div>
               <div className="mb-5">
                 <p className="font-semibold capitalize">Product Fillings:</p>
                 <p className="capitalize">
-                  {product?.fillings?.map((item: any) => item.name).join(", ")}
+                  {product?.toppings?.map((item: any) => item).join(", ")}
                 </p>
               </div>
               <div className="mb-5">
@@ -102,7 +117,7 @@ export default function Page({ params }: any) {
                   Toppings &amp; Addons:
                 </p>
                 <p className="capitalize">
-                  {product?.toppings?.map((item: any) => item.name).join(", ")}
+                  {product?.toppings?.map((item: any) => item).join(", ")}
                 </p>
               </div>
             </div>
@@ -115,7 +130,7 @@ export default function Page({ params }: any) {
               <div className="">
                 <div className="mb-6 h-[300px]">
                   <Image
-                    src={product?.image[selectedImage] || coconut}
+                    src={product?.images[selectedImage] || coconut}
                     alt="Coconut Cake"
                     width={250}
                     height={250}
@@ -123,7 +138,7 @@ export default function Page({ params }: any) {
                   />
                 </div>
                 <div className="grid grid-cols-4 gap-4">
-                  {product?.image.map((item: any, index: number) => (
+                  {product?.images.map((item: any, index: number) => (
                     <div
                       key={index}
                       className="h-[120px] cursor-pointer"
