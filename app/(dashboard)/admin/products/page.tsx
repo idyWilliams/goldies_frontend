@@ -31,21 +31,53 @@ import ProductSortBy from "@/components/admin-component/ProductSortBy";
 import AdminAuth from "@/components/admin-component/AdminAuth";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProducts } from "@/services/hooks/products";
+import { Button } from "@/components/ui/button";
 
-type Product = {
-  id: string;
-  image: any;
-  productName: string;
-  addedDate: string;
-  category: string;
-  priceFrom: number;
-  priceTo: number;
-  quantity: number;
+export type Product = {
+  _id: string;
+  name: string;
+  description: string;
+  shapes: string[];
+  sizes: string[];
+  productType: string;
+  toppings: string[];
+  category: {
+    name: string;
+    id: string;
+    _id: string;
+  };
+  subCategory: {
+    name: string;
+    id: string;
+    _id: string;
+  }[];
+  minPrice: string;
+  maxPrice: string;
+  images: string[];
+  flavour: string[];
+  createdAt: string;
+  updatedAt: string;
+  status: string;
+  quantity: string;
+};
+
+type Product2 = {
+  _id: string;
+  name: string;
+  images: string[];
+  category: {
+    name: string;
+    id: string;
+    _id: string;
+  };
+  minPrice: string;
+  maxPrice: string;
+  createdAt: string;
   status: string;
 };
 
 const statusColor = (status: string) => {
-  switch (status.toLowerCase()) {
+  switch (status?.toLowerCase()) {
     case "available":
       return (
         <div className="inline-flex items-center gap-2 rounded-[50px] border border-green-700 bg-green-700 bg-opacity-10 px-3 py-[2px] text-sm text-green-700">
@@ -73,28 +105,41 @@ export default function Page() {
   const [isOpen, setOpen] = useState(false);
   const [sortType, setSortType] = useState("recentlyAdded");
   const [searchValue, setSearchValue] = useState("");
-  const [data, setData] = useState(productList);
+  const [data, setData] = useState<Product[]>([]);
 
   const router = useRouter();
   const handleAddNew = () => {
     router.push(`/admin/create-products`);
   };
 
-  const allProducts = useQuery({
+  const {
+    data: allProducts,
+    isLoading,
+    isSuccess,
+    refetch,
+    isError,
+  } = useQuery({
     queryKey: ["allProducts"],
     queryFn: async () => getAllProducts(1, 15),
   });
 
-  console.log(allProducts?.data);
+  console.log(allProducts, "All products");
 
   useEffect(() => {
+    if (!isSuccess) return;
+    setData(allProducts?.products);
+  }, [allProducts?.products, isSuccess]);
+
+  useEffect(() => {
+    if (!isSuccess) return;
+
     const sortProducts = (type: string) => {
       switch (type) {
         case "recentlyAdded":
           setData(
-            productList
-              .slice()
-              .sort(
+            allProducts?.products
+              ?.slice()
+              ?.sort(
                 (a: any, b: any) =>
                   new Date(b.addedDate).getTime() -
                   new Date(a.addedDate).getTime(),
@@ -103,37 +148,44 @@ export default function Page() {
           return;
         case "highToLow":
           setData(
-            productList
-              .slice()
-              .sort((a: any, b: any) => b.priceFrom - a.priceFrom),
+            allProducts?.products
+              ?.slice()
+              ?.sort((a: any, b: any) => b.priceFrom - a.priceFrom),
           );
           return;
         case "lowToHigh":
           setData(
-            productList
-              .slice()
-              .sort((a: any, b: any) => a.priceFrom - b.priceFrom),
+            allProducts?.products
+              ?.slice()
+              ?.sort((a: any, b: any) => a.priceFrom - b.priceFrom),
           );
           return;
         case "available":
-          setData(productList.filter((a: any) => a.status === "available"));
+          setData(
+            allProducts?.products?.filter(
+              (a: any) => a?.status === "available",
+            ),
+          );
           return;
         default:
-          setData(productList);
+          setData(allProducts?.products);
           return;
       }
     };
 
     sortProducts(sortType);
-  }, [sortType]);
+  }, [allProducts?.products, isSuccess, sortType]);
+
   useEffect(() => {
-    const filteredProducts = productList?.filter(
+    if (!isSuccess) return;
+
+    const filteredProducts = allProducts?.products?.filter(
       (item: any) =>
-        item?.productName.toLowerCase().includes(searchValue) ||
-        item?.id.toString().toLowerCase().includes(searchValue),
+        item?.name.toLowerCase().includes(searchValue) ||
+        item?._id.toString().toLowerCase().includes(searchValue),
     );
     setData(filteredProducts);
-  }, [searchValue]);
+  }, [allProducts?.products, isSuccess, searchValue]);
 
   const handleChange = (e: any) => {
     const value = e.target.value;
@@ -147,53 +199,67 @@ export default function Page() {
         return (
           <div className="grid grid-cols-[50px_1fr] gap-2">
             <Image
-              src={info.cell.row.original?.image[0]}
-              alt={info.cell.row.original.productName}
+              width={300}
+              height={300}
+              className="h-[50px] w-full object-cover object-center"
+              src={info.cell.row.original?.images[0]}
+              alt={info.cell.row.original.name}
             />
             <div className="flex flex-col">
               <h3 className="whitespace-nowrap font-bold">
-                {info.cell.row.original.productName}
+                {info.cell.row.original.name}
               </h3>
-              <span>ID:&nbsp;{info.cell.row.original.id}</span>
+              <span className="uppercase">
+                ID:&nbsp;{info.cell.row.original._id.slice(0, 6)}
+              </span>
             </div>
           </div>
         );
       },
       header: () => <span>Product</span>,
-      footer: (info) => info.column.id,
     }),
     columnHelper.accessor((row) => row.category, {
       id: "category",
       cell: (info) => (
-        <span className="whitespace-nowrap capitalize">{info.getValue()}</span>
+        <span className="whitespace-nowrap capitalize">
+          {info.cell.row.original.category.name}
+        </span>
       ),
       header: () => <span>Category</span>,
-      footer: (info) => info.column.id,
     }),
     columnHelper.accessor((row) => row, {
       id: "price",
       cell: (info) => (
         <span className="whitespace-nowrap">
-          &euro;{info.cell.row.original.priceFrom} - &euro;
-          {info.cell.row.original.priceTo}
+          &euro;{info.cell.row.original.minPrice} - &euro;
+          {info.cell.row.original.maxPrice}
         </span>
       ),
       header: () => <span>Product</span>,
-      footer: (info) => info.column.id,
     }),
-    columnHelper.accessor("addedDate", {
+    columnHelper.accessor("createdAt", {
       header: () => <span>AddedDate</span>,
-      footer: (info) => info.column.id,
+      cell: (info) => {
+        const date = new Date(info.cell.row.original.createdAt);
+
+        const formattedDate = date.toLocaleDateString("en-US", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+        });
+
+        return <span>{formattedDate}</span>;
+      },
     }),
-    columnHelper.accessor("quantity", {
-      header: () => <span>Qnty</span>,
-      footer: (info) => info.column.id,
-    }),
+    // columnHelper.accessor("quantity", {
+    //   header: () => <span>Qnty</span>,
+    //
+    // }),
     columnHelper.accessor((row) => row, {
       id: "status",
-      cell: (info) => statusColor(info.cell.row.original.status),
+      cell: (info) =>
+        statusColor(info.cell.row.original?.status || "available"),
       header: () => <span>Status</span>,
-      footer: (info) => info.column.id,
     }),
     columnHelper.accessor((row) => row, {
       id: "actions",
@@ -202,7 +268,7 @@ export default function Page() {
         return (
           <div className="inline-flex items-center gap-3">
             <Link
-              href={`/admin/products/${info.cell.row.original.id}`}
+              href={`/admin/products/${info.cell.row.original._id}`}
               className="cursor-pointer text-blue-700"
             >
               <Eye size={20} />
@@ -231,9 +297,10 @@ export default function Page() {
         );
       },
       header: () => <span>Actions</span>,
-      footer: (info) => info.column.id,
     }),
   ];
+
+  console.log(data, new Date().getTime().toLocaleString());
   return (
     <>
       <section className="w-full px-4 pt-6">
@@ -278,12 +345,30 @@ export default function Page() {
         </div>
 
         <div className="hidden md:block md:overflow-x-scroll">
-          <ProductTable
-            columns={columns}
-            Tdata={productList}
-            statusType="product"
-            filteredTabs={["All", "Available", "Unavailable", "Disabled"]}
-          />
+          {isError && (
+            <div>
+              <p>An error occured</p>
+              <Button onClick={() => refetch()}>Try Again</Button>
+            </div>
+          )}
+          {isLoading && (
+            <div>
+              <p>The products is loading</p>
+            </div>
+          )}
+
+          {isSuccess && allProducts?.products?.length >= 1 && !isError ? (
+            <div>
+              <ProductTable
+                columns={columns}
+                Tdata={data}
+                statusType="product"
+                filteredTabs={["All", "Available", "Unavailable", "Disabled"]}
+              />
+            </div>
+          ) : (
+            <>{/* <p>No products</p> */}</>
+          )}
         </div>
         <div className="block space-y-5 md:hidden">
           {data.map((product: any, index: number) => (
@@ -301,3 +386,29 @@ export default function Page() {
     </>
   );
 }
+
+type ss = {
+  _id: string;
+  name: string;
+  description: string;
+  shapes: string[];
+  sizes: string[];
+  productType: string;
+  toppings: string[];
+  category: {
+    name: string;
+    id: string;
+    _id: string;
+  };
+  subCategory: {
+    name: string;
+    id: string;
+    _id: string;
+  }[];
+  minPrice: string;
+  maxPrice: string;
+  images: string[];
+  flavour: string[];
+  createdAt: string;
+  updatedAt: string;
+};

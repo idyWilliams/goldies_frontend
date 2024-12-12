@@ -4,18 +4,7 @@ import { ArrowDown2, ArrowUp2, Edit, Eye, Trash } from "iconsax-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import ProductOptionModal from "./ProductOptionModal";
-
-type Product = {
-  id: string;
-  image: any;
-  productName: string;
-  addedDate: string;
-  category: string;
-  priceFrom: number;
-  priceTo: number;
-  quantity: number;
-  status: string;
-};
+import { Product } from "@/app/(dashboard)/admin/products/page";
 
 const statusColor = (status: string) => {
   switch (status.toLowerCase()) {
@@ -38,14 +27,14 @@ const statusColor = (status: string) => {
   }
 };
 
-export default function MobileProductCard({ data }: { data: any }) {
+export default function MobileProductCard({ data }: { data: Product }) {
   const [showModal, setShowModal] = useState(false);
   const [action, setAction] = useState("");
   const [selectedProducts, setSelectedProducts] = useState<any>();
   const [isActive, setIsActive] = useState(false);
   const router = useRouter();
   const handleView = () => {
-    router.push(`/admin/products/${data.id}`);
+    router.push(`/admin/products/${data?._id}`);
   };
   const accordionData = {
     title: (
@@ -54,8 +43,8 @@ export default function MobileProductCard({ data }: { data: any }) {
           <div className="grid grid-cols-[70px_1fr] items-center gap-2">
             <>
               <Image
-                src={data.image[0]}
-                alt={data.productName}
+                src={data?.images[0]}
+                alt={data?.name}
                 width={50}
                 height={50}
                 className="h-full w-full object-cover"
@@ -63,19 +52,19 @@ export default function MobileProductCard({ data }: { data: any }) {
             </>
             <div className="flex flex-col items-start">
               <span className="inline-block text-sm font-semibold">
-                {data.productName}
+                {data.name}
               </span>
               <span className="mb-1.5 mt-1 inline-block text-sm font-medium">
-                &euro;{data.priceFrom} - &euro;
-                {data.priceTo}
+                &euro;{data?.minPrice} - &euro;
+                {data?.maxPrice}
               </span>
-              {statusColor(data.status)}
+              {statusColor(data?.status || "available")}
             </div>
           </div>
         </div>
         <div className="grid gap-5 text-right ">
-          <span className="text-xs">{data.addedDate}</span>
-          <span className="text-xs">X{data.quantity}</span>
+          <span className="text-xs">{data?.createdAt}</span>
+          <span className="text-xs">X{data?.quantity || 1}</span>
         </div>
       </div>
     ),
@@ -87,8 +76,8 @@ export default function MobileProductCard({ data }: { data: any }) {
           <li className="font-bold">Action:</li>
         </ul>
         <ul className="space-y-2 text-right">
-          <li>{data.id}</li>
-          <li className="capitalize">{data.category}</li>
+          <li className="uppercase">{data?._id?.slice(0, 6)}</li>
+          <li className="capitalize">{data?.category?.name}</li>
           <li className="inline-flex items-center gap-3">
             <span className="text-blue-700" onClick={handleView}>
               <Eye size={20} />
