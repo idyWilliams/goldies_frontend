@@ -63,9 +63,9 @@ const Page = () => {
           JSON.stringify({ token: res?.token, user: res?.user }),
         );
         localStorage.setItem("userToken", res?.token);
-        console.log(`/${activePathRef.current ? activePathRef.current : ""}`);
+        console.log(`/${activePathRef.current ? activePathRef.current : "/"}`);
 
-        router.push(`${activePathRef.current ? activePathRef.current : ""}`);
+        router.push(`${activePathRef.current ? activePathRef.current : "/"}`);
         reset();
       })
       .catch((err: any) => {

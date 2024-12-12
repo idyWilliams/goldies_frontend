@@ -42,7 +42,7 @@ export const resetPassword = async (data: ResetPassword) => {
 // LOGOUT ADMIN
 export const userLogOut = async (router: AppRouterInstance) => {
   localStorage.setItem("isLogin", JSON.stringify(false));
-  localStorage.removeItem("accessToken");
+  localStorage.removeItem("userToken");
   localStorage.removeItem("user");
   router.push("/sign-in");
 };

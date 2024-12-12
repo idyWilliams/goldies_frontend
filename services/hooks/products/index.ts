@@ -46,7 +46,12 @@ export const fetchProducts = async (category: string, subcategory?: string) => {
 };
 
 // GET A PRODUCT
-export const getProduct = async (productId: string) => {
+// export const getProduct = async (productId: string) => {
+//   const response = await instance.get(`/product/get_product/${productId}`);
+//   return response.data;
+// };
+
+export const getActiveProduct = async (productId: string) => {
   const response = await instance.get(`/product/get_product/${productId}`);
   return response.data;
 };

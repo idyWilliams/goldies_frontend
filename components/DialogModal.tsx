@@ -18,23 +18,27 @@ import { CloseSquare } from "iconsax-react";
 import Goldie from "@/public/assets/goldis-gold-logo.png";
 import AuthContext from "@/context/AuthProvider";
 import { usePathname, useRouter } from "next/navigation";
+import useActivePath from "@/app/_hooks/useActivePath";
 
 export function DialogCloseButton({
+  setPreviewFav,
   children,
 }: Readonly<{
   children: ReactNode;
+  setPreviewFav: React.Dispatch<React.SetStateAction<boolean>>;
 }>) {
-  // @ts-ignore
-  const { activePathRef } = useContext(AuthContext);
-  const router = useRouter();
-  const pathname = usePathname();
+  // // @ts-ignore
+  // const { activePathRef } = useContext(AuthContext);
+  // const router = useRouter();
+  // const pathname = usePathname();
 
-  const navigateToLogin = () => {
-    console.log(pathname);
+  // const navigateToLogin = () => {
+  //   console.log(pathname);
 
-    activePathRef.current = pathname;
-    router.push("/sign-in");
-  };
+  //   activePathRef.current = pathname;
+  //   router.push("/sign-in");
+  // };
+  const navigateToLogin = useActivePath();
 
   return (
     <Dialog>
@@ -49,7 +53,10 @@ export function DialogCloseButton({
             <div className="flex items-center justify-between border-b border-goldie-300 border-opacity-40 px-4 py-4">
               <Image src={Goldie} alt="Goldie" className="w-[120px]" />
               <DialogClose asChild>
-                <span className="cursor-pointer text-goldie-300">
+                <span
+                  className="cursor-pointer text-goldie-300"
+                  onClick={() => setPreviewFav(false)}
+                >
                   <CloseSquare size={24} />
                 </span>
               </DialogClose>
@@ -71,7 +78,10 @@ export function DialogCloseButton({
             </button>
 
             <DialogClose asChild>
-              <button className="cursor-pointer rounded-md bg-red-600 px-4 py-1.5 text-sm text-neutral-50">
+              <button
+                className="cursor-pointer rounded-md bg-red-600 px-4 py-1.5 text-sm text-neutral-50"
+                onClick={() => setPreviewFav(false)}
+              >
                 Close
               </button>
             </DialogClose>

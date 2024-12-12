@@ -57,8 +57,12 @@ const Header = () => {
     localStorage.removeItem("userToken");
     localStorage.setItem("isLogin", JSON.stringify(false));
 
-    if (pathname.includes("/my-account") || pathname.includes("/my-orders")) {
-      router.push("/sign-in");
+    if (
+      pathname.includes("/my-account") ||
+      pathname.includes("/my-orders") ||
+      pathname.includes("/saved-items")
+    ) {
+      router.replace("/sign-in");
     }
   };
 
@@ -249,6 +253,7 @@ const Header = () => {
         setShow={setShow}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
+        isLogin={isLogin}
       />
 
       <SessionModal

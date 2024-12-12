@@ -6,6 +6,7 @@ import { addFavorites, removeFavorites } from "@/services/hooks/products";
 import { toast } from "sonner";
 import useUserPdctStore from "@/zustand/userProductStore/store";
 import { AxiosError } from "axios";
+import useIsLoggedIn from "@/services/hooks/users/useIsLoggedIn";
 
 interface ErrorResponse {
   message: string;
@@ -21,30 +22,35 @@ const Favorite = ({
   setFav: React.Dispatch<React.SetStateAction<boolean>>;
   data: any;
 }) => {
-  const [isLogin, setIsLogin] = useState<boolean>();
-  const favProducts = useUserPdctStore((state) => state.favProducts);
-
   const [previewFav, setPreviewFav] = useState(false);
-
+  const favProducts = useUserPdctStore((state) => state.favProducts);
   const setFavProducts = useUserPdctStore((state) => state.setFavProducts);
+  const addFavProduct = useUserPdctStore((state) => state.addFavProduct);
+  const removeFavProducts = useUserPdctStore((state) => state.removeFavProduct);
+  const isLogin = useIsLoggedIn();
 
   useEffect(() => {
     const found = favProducts.find((favProduct) => favProduct._id === data._id);
-    found ? true : false;
-  }, [data._id, favProducts]);
+    console.log(found);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const isLoggedIn = JSON.parse(localStorage.getItem("user") as string);
-      setIsLogin(Boolean(isLoggedIn));
-    }
-  }, []);
+    if (found) setFav(true);
+    else setFav(false);
+  }, [data._id, favProducts, setFav]);
+
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     const isLoggedIn = JSON.parse(localStorage.getItem("user") as string);
+  //     setIsLogin(Boolean(isLoggedIn));
+  //   }
+  // }, []);
 
   const saveFavorites = useMutation({
     mutationFn: addFavorites,
     onSuccess: (data) => {
       setFav(true);
+      setPreviewFav(false);
       toast.success(data?.message);
+      // addFavProduct(data);
       setFavProducts(data?.favorites);
     },
 
@@ -64,27 +70,34 @@ const Favorite = ({
 
   const deleteFavorites = useMutation({
     mutationFn: removeFavorites,
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      setFav(false);
+      setPreviewFav(false);
+      removeFavProducts(data._id);
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      setFav(true);
+      setPreviewFav(false);
+      const resError = error.response?.data;
+      console.error(resError);
+      const errorMessage = resError?.message ? resError?.message : resError;
+      toast.error(`Error: ${errorMessage}`);
+    },
   });
 
   const handleSavedItem = (data: any) => {
-    if (!isLogin) return;
+    console.log(isLogin);
+
+    if (!isLogin) {
+      setPreviewFav(false);
+      return;
+    }
 
     if (!fav) {
       saveFavorites.mutate(data._id);
     } else {
-      setFav(false);
-      setPreviewFav(false);
-      deleteFavorites
-        .mutateAsync(data._id)
-        .then((res) => {
-          toast.success(res?.message);
-          setFavProducts(res.favorites);
-        })
-        .catch((err) => {
-          const error = err.response?.data?.message;
-          toast.error(error);
-          setFav(true);
-        });
+      deleteFavorites.mutate(data._id);
     }
   };
   return (
@@ -100,7 +113,7 @@ const Favorite = ({
       {isLogin ? (
         <Heart size={20} variant={fav || previewFav ? "Bold" : undefined} />
       ) : (
-        <DialogCloseButton>
+        <DialogCloseButton setPreviewFav={setPreviewFav}>
           <Heart size={20} variant={fav || previewFav ? "Bold" : undefined} />
         </DialogCloseButton>
       )}
