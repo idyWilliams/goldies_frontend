@@ -6,11 +6,12 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { useCallback, useEffect, useState } from "react";
 import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
-import { getUser } from "@/services/hooks/users";
+import { getUser, updateUser } from "@/services/hooks/users";
 import { useMutation, useQuery } from "@tanstack/react-query";
 // import { toast } from "sonner";
 import { toast, Toaster } from "sonner";
 import { useRouter } from "next/navigation";
+import { type } from "os";
 
 const schema = yup.object().shape({
   firstName: yup.string().required("First name is required"),
@@ -21,20 +22,29 @@ const schema = yup.object().shape({
     .required("Valid Phone Number is required")
     .min(6, "Valid Phone Number must be at least 6 characters")
     .max(15, "Valid Phone Number must not exceed 12 characters"),
-  address: yup.string().required("Shipping address is required"),
-  state: yup.string().required("State is required"),
-  country: yup.string().required("Country is required"),
+  // address: yup.string().required("Shipping address is required"),
+  // state: yup.string().required("State is required"),
+  // country: yup.string().required("Country is required"),
 });
 
 const AccountInfo = () => {
   const [phone, setPhone] = useState("");
-  const [country, setCountry] = useState("");
-  const [state, setState] = useState("");
+  // const [country, setCountry] = useState("");
+  // const [state, setState] = useState("");
   const [user, setUser] = useState<any>(null);
   const router = useRouter();
   // const [lastName, setLastName] = useState("");
   // const [email, setEmail] = useState("");
   // const [address, setAddress] = useState("");
+
+  const { data, isError, isSuccess } = useQuery({
+    queryKey: [user],
+    queryFn: getUser,
+  });
+
+  useEffect(() => {
+    if (isSuccess) console.log(data);
+  }, [isSuccess, data]);
 
   const {
     reset,
@@ -47,10 +57,25 @@ const AccountInfo = () => {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      firstName: user?.firstName || "taiwo",
+      firstName: user?.firstName || "",
       lastName: user?.lastName || "",
       email: user?.email || "",
+      phone: user?.phone || "",
     },
+
+    // defaultValues: user
+    //   ? {
+    //       firstName: user?.firstName,
+    //       lastName: user?.lastName,
+    //       email: user?.email,
+    //       phone: user?.phone,
+    //     }
+    //   : {
+    //       firstName: "",
+    //       lastName: "",
+    //       email: "",
+    //       phone: "",
+    //     },
   });
 
   useEffect(() => {
@@ -63,24 +88,38 @@ const AccountInfo = () => {
       router.push("/sign-in");
     }
   }, [router]);
-  console.log("data is", user);
+  // console.log("data is", user);
 
   useEffect(() => {
     console.log("reset ", user);
 
-    reset({
-      firstName: user?.firstName || "",
-      lastName: user?.lastName || "",
-      email: user?.email || "",
-    });
+    // reset({
+    //   firstName: user?.firstName || "",
+    //   lastName: user?.lastName || "",
+    //   email: user?.email || "",
+    // });
   }, [user, reset]);
 
-  console.log("values ", getValues(), "user: ", user);
+  const updateProfile = useMutation({
+    mutationKey: ["update user profile"],
+    mutationFn: updateUser,
+    onSuccess: (data) => {
+      toast.success("Account information updated successfully");
+      console.log(data);
+    },
+    onError: (error) => {
+      console.error(error);
+      toast.error("There was an error updating account information");
+    },
+  });
+
+  // console.log("values ", getValues(), "user: ", user);
 
   const handleSave = (data: any) => {
     console.log(data);
-    toast.success("Account information updated successfully");
-    console.log("Form errors:", errors);
+    updateProfile.mutate(data);
+    // toast.success("Account information updated successfully");
+    // console.log("Form errors:", errors);
   };
 
   return (
@@ -105,9 +144,10 @@ const AccountInfo = () => {
                 errors.firstName && "border-red-600 focus:border-red-600",
               )}
             />
-            {errors?.firstName && (
-              <p className="text-red-600">{errors?.firstName?.message}</p>
-            )}
+            {errors?.firstName &&
+              typeof errors.firstName.message === "string" && (
+                <p className="text-red-600">{errors?.firstName?.message}</p>
+              )}
           </label>
           <label htmlFor="lastName" className="block w-full">
             <span className="mb-1 inline-block text-sm font-medium">
@@ -123,9 +163,10 @@ const AccountInfo = () => {
                 errors.lastName && "border-red-600 focus:border-red-600",
               )}
             />
-            {errors?.lastName && (
-              <p className="text-red-600">{errors?.lastName?.message}</p>
-            )}
+            {errors?.lastName?.message &&
+              typeof errors.lastName.message === "string" && (
+                <p className="text-red-600">{errors?.lastName?.message}</p>
+              )}
           </label>
           <label htmlFor="email" className="block w-full">
             <span className="mb-1 inline-block text-sm font-medium">
@@ -141,7 +182,7 @@ const AccountInfo = () => {
                 errors.email && "border-red-600 focus:border-red-600",
               )}
             />
-            {errors?.email && (
+            {errors?.email && typeof errors?.email?.message === "string" && (
               <p className="text-red-600">{errors?.email?.message}</p>
             )}
           </label>
@@ -152,10 +193,9 @@ const AccountInfo = () => {
             <Controller
               name="phone"
               control={control}
-              rules={{ required: true }}
+              rules={{ required: "Phone number is required" }}
               render={({ field }) => (
                 <PhoneInput
-                  {...field}
                   country={"ng"}
                   value={field.value || phone}
                   onChange={(phoneNumber) => {
@@ -174,8 +214,11 @@ const AccountInfo = () => {
                 />
               )}
             />
+            {errors?.phone && typeof errors?.phone?.message === "string" && (
+              <p className="text-red-600">{errors?.phone?.message}</p>
+            )}
           </label>
-          <label htmlFor="country" className="block w-full">
+          {/* <label htmlFor="country" className="block w-full">
             <span className="mb-1 inline-block text-sm font-medium">
               Country
             </span>
@@ -200,8 +243,8 @@ const AccountInfo = () => {
             {errors?.country && (
               <p className="text-red-600">{errors?.country?.message}</p>
             )}
-          </label>
-          <label htmlFor="state" className="block w-full">
+          </label> */}
+          {/* <label htmlFor="state" className="block w-full">
             <span className="mb-1 inline-block text-sm font-medium">State</span>
             <Controller
               name="state"
@@ -226,9 +269,9 @@ const AccountInfo = () => {
             {errors?.state && (
               <p className="text-red-600">{errors?.state?.message}</p>
             )}
-          </label>
+          </label> */}
 
-          <label htmlFor="address" className="block w-full md:col-span-2">
+          {/* <label htmlFor="address" className="block w-full md:col-span-2">
             <span className="mb-1 inline-block text-sm font-medium">
               Shipping address
             </span>
@@ -244,7 +287,7 @@ const AccountInfo = () => {
             {errors?.address && (
               <p className="text-red-600">{errors?.address.message}</p>
             )}
-          </label>
+          </label> */}
         </div>
 
         <div className="mt-7 flex items-center justify-start gap-3">

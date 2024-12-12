@@ -1,5 +1,5 @@
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { addProductToCart } from "@/redux/features/product/productSlice";
 import { useDispatch } from "react-redux";
@@ -13,6 +13,9 @@ import Placeholder from "@/public/assets/placeholder3.png";
 import useUserPdctStore from "@/zustand/userProductStore/store";
 import Favorite from "./Favorite";
 
+const exampleImage =
+  "https://firebasestorage.googleapis.com/v0/b/goldie-b3ba7.appspot.com/o/products%2Fbanana-cake-with-cinnamon-cream-102945-1.webp?alt=media&token=32e645da-9327-4f7f-9f79-a2cba1102676";
+
 const ProductCard = React.memo(function ProductCard({ data }: { data: any }) {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -20,15 +23,23 @@ const ProductCard = React.memo(function ProductCard({ data }: { data: any }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [fav, setFav] = useState(false);
   const favProducts = useUserPdctStore((state) => state.favProducts);
+  const setActiveProduct = useUserPdctStore((state) => state.setActiveProduct);
+  const productId = data._id;
+  // console.log(productId);
+  // console.log(data);
 
-  useEffect(() => {
-    const found = favProducts.find((favProduct) => favProduct._id === data._id);
-    if (found) {
-      setFav(true);
-    } else {
-      setFav(false);
-    }
-  }, [favProducts, data._id]);
+  // useEffect(() => {
+  //   const found = favProducts.find((favProduct) => favProduct._id === data._id);
+  //   if (found) {
+  //     console.log(found);
+
+  //     setFav(true);
+  //   } else {
+  //     console.log(fav);
+
+  //     setFav(false);
+  //   }
+  // }, [favProducts, data._id, fav]);
 
   const handleAddToCart = () => {
     const items = Object.values(cart);
@@ -45,12 +56,17 @@ const ProductCard = React.memo(function ProductCard({ data }: { data: any }) {
     router.push("/cart");
   };
 
+  const handleProduct = (prod: any) => {
+    setActiveProduct(prod);
+  };
+
   return (
     <div className="w-full rounded-[10px] border border-neutral-100 bg-white p-2 shadow-[0_0_30px_-10px_rgba(0,0,0,0.1)]">
       <figure className="relative mb-3 h-[230px] w-full overflow-hidden rounded-[5px]">
         <Link
-          href={`/shop/${data?.slug}`}
+          href={`/shop/${data?.slug}?productId=${productId}`}
           className="relative inline-block h-full w-full overflow-hidden"
+          onClick={() => handleProduct(data)}
         >
           {!isLoaded && (
             <Image
@@ -64,7 +80,10 @@ const ProductCard = React.memo(function ProductCard({ data }: { data: any }) {
           )}
 
           <Image
-            src={data?.imageUrl ? data?.imageUrl : data.images[0]}
+            src={
+              data.images[0].includes("example") ? exampleImage : data.images[0]
+            }
+            // src={data?.imageUrl ? data?.imageUrl : data.images[0]}
             alt={data?.name}
             fill
             sizes="(max-width: 1440px) 33vw"
@@ -119,7 +138,11 @@ const ProductCard = React.memo(function ProductCard({ data }: { data: any }) {
           &euro;{data?.minPrice} - &euro;{data?.maxPrice}
         </span>
         <h3 className="font-semibold capitalize underline underline-offset-1">
-          <Link href={`/shop/${data?.slug}`}>{data?.name}</Link>
+          <Link href={`/shop/${data?.slug}?productId=${productId}`}>
+            <span className="w-full" onClick={() => handleProduct(data)}>
+              {data?.name}
+            </span>
+          </Link>
         </h3>
       </div>
       <p className=" mb-1 line-clamp-2 min-h-12 text-neutral-500">
@@ -130,7 +153,10 @@ const ProductCard = React.memo(function ProductCard({ data }: { data: any }) {
         <span className="text-sm">(32)</span>
       </div>
       <button
-        onClick={() => router.push(`/shop/${data?.slug}`)}
+        onClick={() => {
+          handleProduct(data);
+          router.push(`/shop/${data?.slug}?productId=${productId}`);
+        }}
         className="flex w-full flex-grow items-center justify-center gap-2 rounded-md border border-neutral-900 bg-neutral-900 px-0 py-2.5 text-goldie-300"
       >
         Shop now

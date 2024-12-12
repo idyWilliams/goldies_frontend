@@ -1,23 +1,23 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { useMemo } from "react";
 import { getSavedItems } from ".";
+import useUserPdctStore from "@/zustand/userProductStore/store";
+import useIsLoggedIn from "../users/useIsLoggedIn";
 
 const useSavedItems = () => {
-  const {
-    data: savedItemsData,
-    isLoading: isSavedItemsLoading,
-    isError: isSavedItemsError,
-    isPending,
-  } = useQuery({
+  const isLogin = useIsLoggedIn();
+
+  const { data, isLoading, isError, isPending } = useQuery({
     queryKey: ["savedProducts"],
     queryFn: getSavedItems,
+    enabled: isLogin,
   });
 
   const favorites = useMemo(() => {
-    if (isSavedItemsLoading || isSavedItemsError) return null;
+    if (isLoading || isError) return null;
 
-    return savedItemsData?.favorites;
-  }, [isSavedItemsLoading, isSavedItemsError, savedItemsData?.favorites]);
+    return data?.favorites;
+  }, [isLoading, isError, data?.favorites]);
 
   return { favorites, isPending };
 };
