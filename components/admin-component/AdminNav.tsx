@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import { FaRegUserCircle } from "react-icons/fa";
 import {
   IoIosArrowDown,
@@ -21,11 +21,7 @@ import {
   User,
   UserCirlceAdd,
 } from "iconsax-react";
-import moment from "moment";
-import { CiSearch } from "react-icons/ci";
 import { useRouter } from "next/navigation";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import {
   Popover,
   PopoverContent,
@@ -43,22 +39,27 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { adminLogOut, getAdmin } from "@/services/hooks/admin-auth";
+import { useQuery } from "@tanstack/react-query";
+import useAdmin from "@/services/hooks/admin/use_admin";
+import CurrentTime from "./CurrentTime";
 
 export default function AdminNav() {
+  const [admin, setAdmin] = useState<any>();
+  const router = useRouter();
   const [sticky, setSticky] = useState(false);
   const [open, setIsOpen] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
-  const [currentTime, setCurrentTime] = useState(moment().format("H:mm"));
-  const router = useRouter();
+  const adminStored = useAdmin();
+  console.log(adminStored?._id);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(moment().format("H:mm")), 60000;
-    });
+  const { data, isPending, isError, isSuccess } = useQuery({
+    queryKey: ["admin"],
+    queryFn: () => getAdmin(adminStored?._id),
+  });
 
-    return () => clearInterval(interval);
-  }, []);
+  console.log(data, "adminsns");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -68,9 +69,13 @@ export default function AdminNav() {
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    !isPending && isSuccess ? setAdmin(data?.admin) : setAdmin(null);
+  }, [data?.admin, isPending, isSuccess]);
+
   return (
     <>
-      <ToastContainer />
       <nav
         className={`${sticky ? "shadow-[0_0_50px_rgba(0,0,0,0.5)] lg:fixed" : "lg:absolute"} sticky left-0 top-0  z-[999] w-full bg-black py-3`}
       >
@@ -136,37 +141,28 @@ export default function AdminNav() {
             </Popover>
 
             <div className="hidden gap-3  sm:inline-flex">
-              <span className="text-sm font-normal text-goldie-300">
-                {moment().format("ddd D MMM")}
-              </span>
-              <span className="text-sm font-normal text-goldie-300">
-                {currentTime}
-              </span>
+              <CurrentTime text="text-goldie-300" />
             </div>
+
             <button
               onClick={() => setOpen((prev) => !prev)}
               className="flex items-center gap-2 border-l border-goldie-300 border-opacity-40 pl-4 text-goldie-300"
             >
               <FaRegUserCircle size={20} />{" "}
-              <span className="hidden text-sm md:inline-flex md:items-center md:gap-3">
-                Account {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
+              <span className="hidden text-sm capitalize md:inline-flex md:items-center md:gap-3">
+                {isSuccess && admin ? admin?.userName : "No username"}
+                {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
               </span>
             </button>
             {isOpen && (
               <MenuPopup className="absolute -right-3 top-10 z-40 w-[190px] rounded-md bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
                 <div className="mb-2 flex items-center justify-start gap-3 border-b border-black border-opacity-20 p-2 pb-3 sm:hidden">
-                  <span className="text-sm font-normal text-black">
-                    {moment().format("ddd D MMM")}
-                  </span>
-                  <span>-</span>
-                  <span className="text-sm font-normal text-black">
-                    {currentTime}
-                  </span>
+                  <CurrentTime text="text-black" isOpen={isOpen} />
                 </div>
                 <div className="">
                   <span
                     className="flex cursor-pointer items-center gap-2  whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
-                    onClick={() => router.push(`/admin/settings?tab=account`)}
+                    onClick={() => router.push(`/admin/settings?tab=profile`)}
                   >
                     <User size={20} />
                     My Account
@@ -182,12 +178,13 @@ export default function AdminNav() {
                   </span>
                 </div>
                 <div className="my-2 border-b border-black border-opacity-50"></div>
-                <Link
-                  href={`/admin/logout`}
-                  className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
+                <span
+                  className="flex w-full cursor-pointer items-center justify-center rounded-sm bg-black  px-7 py-2.5 text-center text-sm  text-[#E4D064] duration-300 hover:bg-neutral-950"
+                  role="button"
+                  onClick={() => adminLogOut(router)}
                 >
                   Logout
-                </Link>
+                </span>
               </MenuPopup>
             )}
           </div>

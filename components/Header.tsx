@@ -1,8 +1,6 @@
 "use client";
-
 import Link from "next/link";
 import Image from "next/image";
-import CartIcon from "../public/assets/cart.png";
 import { BsList, BsX, BsXLg } from "react-icons/bs";
 import { useContext, useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
@@ -10,20 +8,18 @@ import { useRouter } from "next/navigation";
 import MobileNav from "./MobileNav";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { VscAccount } from "react-icons/vsc";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { BiHeart, BiStore } from "react-icons/bi";
 import { FaRegUserCircle } from "react-icons/fa";
-import { Ghost, Menu, ShoppingCart } from "iconsax-react";
+import { Ghost } from "iconsax-react";
 import MenuPopup from "./MenuPopup";
 import { useDispatch } from "react-redux";
 import { setProducts } from "@/redux/features/product/productSlice";
 import { IoCartOutline } from "react-icons/io5";
+import Logo from "../public/assets/goldis-logo.png";
 import AuthContext from "@/context/AuthProvider";
 import { Button } from "./ui/button";
-import { jwtDecode } from "jwt-decode";
+// import { jwtDecode } from "jwt-decode";
 import {
   Dialog,
   DialogContent,
@@ -33,12 +29,14 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { cn } from "@/helper/cn";
+import { Toaster } from "sonner";
 
 const Header = () => {
   const [show, setShow] = useState(false);
   const [sticky, setSticky] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  // @ts-ignore
   const cart = useSelector((state: RootState) => state.product.cart);
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
@@ -55,11 +53,17 @@ const Header = () => {
   // Handle User logout
   const logOut = () => {
     setIsLogin(false);
-    setAuth({});
     localStorage.removeItem("user");
-    localStorage.removeItem("accessToken");
+    localStorage.removeItem("userToken");
     localStorage.setItem("isLogin", JSON.stringify(false));
-    setUser(null);
+
+    if (
+      pathname.includes("/my-account") ||
+      pathname.includes("/my-orders") ||
+      pathname.includes("/saved-items")
+    ) {
+      router.replace("/sign-in");
+    }
   };
 
   useEffect(() => {
@@ -89,54 +93,18 @@ const Header = () => {
     const storedUser = JSON.parse(localStorage.getItem("user") as string);
     setUser(storedUser?.user);
     setAuth(storedUser);
-    setIsLogin(Boolean(JSON.parse(localStorage.getItem("isLogin") as string)));
+    if (typeof window !== "undefined") {
+      const isLoggedIn = JSON.parse(localStorage.getItem("isLogin") as string);
+      setIsLogin(Boolean(isLoggedIn));
+    }
 
     console.log(storedUser, "useehehe");
-  }, []);
+  }, [setAuth, setIsLogin]);
   console.log(isLogin, "isLogged", auth);
-
-  // // SESSION CHECKER
-  // useEffect(() => {
-  //   const SESSION_DURATION = 1 * 24 * 60 * 60 * 1000; // 24HRs in milliseconds
-  //   const storedSession = JSON.parse(localStorage.getItem("user") as string);
-
-  //   try {
-  //     const decodedToken: { iat: number; exp: number } = jwtDecode(
-  //       storedSession?.token,
-  //     );
-
-  //     const storedTimestamp = decodedToken?.exp * 1000;
-  //     const currentTime = new Date().getTime();
-  //     const sessionExpired = currentTime - storedTimestamp >= SESSION_DURATION;
-  //     console.log(sessionExpired, "Expired");
-
-  //     if (!sessionExpired) {
-  //       setIsLogin(true);
-  //     } else {
-  //       // Session has expired, logout the user
-  //       logOut();
-  //       setShowModal(true);
-
-  //       // Optionally, inform the user about the session expiry
-  //       alert("Your session has expired. Please log in again.");
-  //       router.push("/sign-in");
-  //     }
-  //   } catch (error) {
-  //     if (
-  //       (!storedSession?.token && !pathname.includes("/sign-in")) ||
-  //       !pathname.includes("/sign-up")
-  //     ) {
-  //       console.error("Error checking session:", pathname.includes("/sign-in"));
-
-  //       setShowModal(true);
-  //     }
-  //     // Handle the error (e.g., log it, show a user-friendly message)
-  //   }
-  // }, []);
 
   return (
     <>
-      <ToastContainer />
+      <Toaster richColors position="top-right" expand={true} />
       <header
         className={`${sticky ? "fixed shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "absolute border-b border-neutral-900"} left-0 top-0 z-[999] flex  w-full items-center bg-goldie-300 py-3 lg:h-20`}
       >
@@ -150,7 +118,8 @@ const Header = () => {
             </span>
             <Link href="/" className="relative">
               <Image
-                src="/assets/goldis-logo.png"
+                src={Logo}
+                priority
                 className="w-[130px]"
                 width={175}
                 height={92}
@@ -247,6 +216,7 @@ const Header = () => {
                       <BiStore size={20} />
                       Orders
                     </Link>
+
                     <Link
                       href={isLogin ? "/saved-items" : "/sign-in"}
                       className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
@@ -258,18 +228,18 @@ const Header = () => {
                   <div className="my-2 border-b border-black border-opacity-50"></div>
                   {isLogin ? (
                     <Button
-                      onClick={logOut}
                       className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
+                      onClick={() => logOut()}
                     >
                       Logout
                     </Button>
                   ) : (
-                    <Link
-                      href={`/sign-in`}
+                    <Button
                       className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
+                      onClick={() => router.push("/sign-in")}
                     >
                       Sign In
-                    </Link>
+                    </Button>
                   )}
                 </MenuPopup>
               )}
@@ -283,6 +253,7 @@ const Header = () => {
         setShow={setShow}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
+        isLogin={isLogin}
       />
 
       <SessionModal
@@ -307,6 +278,7 @@ type ComponentProp = {
   content: string;
   action: () => void;
 };
+
 const SessionModal: React.FC<ComponentProp> = ({
   open,
   setOpen,

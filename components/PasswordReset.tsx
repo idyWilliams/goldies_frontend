@@ -1,5 +1,5 @@
 "use client";
-import Layout from "@/components/Layout";
+import Layout from "@/app/(landing)/layout";
 import AuthContext from "@/context/AuthProvider";
 import { loginUser } from "@/services/hooks/user-auth";
 import { useMutation } from "@tanstack/react-query";
@@ -8,8 +8,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
 import { BiArrowBack } from "react-icons/bi";
-import { toast } from "react-toastify";
 import { Button } from "./ui/button";
+import { toast } from "sonner";
 
 export default function PasswordReset({ password }: { password: string }) {
   const router = useRouter();
@@ -36,14 +36,14 @@ export default function PasswordReset({ password }: { password: string }) {
         console.log(res);
         setIsLogin(true);
         localStorage.setItem("isLogin", JSON.stringify(true));
-        localStorage.removeItem("accessToken");
+        localStorage.removeItem("userToken");
         localStorage.removeItem("user");
         localStorage.removeItem("email");
         localStorage.setItem(
           "user",
           JSON.stringify({ token: res?.token, user: res?.user }),
         );
-        localStorage.setItem("accessToken", res?.token);
+        localStorage.setItem("userToken", res?.token);
         router.push("/");
       })
       .catch((err: any) => {

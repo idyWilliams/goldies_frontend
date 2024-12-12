@@ -299,7 +299,7 @@ export const cakeSizes = [
 
 export const cakeProducts1 = [
   {
-    id: 1,
+    id: 'GOLB121',
     name: "Chocolate Fudge Cake",
     description:
       "Rich and moist chocolate cake layered with creamy fudge frosting.",
@@ -311,12 +311,12 @@ export const cakeProducts1 = [
     weight: "1.5kg",
     available: true,
     bestSeller: true,
-    category: "Milestone Cakes",
-    subcategory: "Birthday Cakes",
+    category: "Cupcake",
+    subcategory: "sxassccsa",
     type: "available",
   },
   {
-    id: 2,
+    id: 'GOLB122',
     name: "Red Velvet Cake",
     description:
       "Classic red velvet cake with layers of smooth cream cheese frosting.",
@@ -328,12 +328,12 @@ export const cakeProducts1 = [
     weight: "1.8kg",
     available: true,
     bestSeller: false,
-    category: "Kids' Cakes",
-    subcatergory: "Princess Cakes",
+    category: "Cupcake",
+    subcategory: "Cartoon Character Cakes",
     type: "available",
   },
   {
-    id: 3,
+    id: 'GOLB123',
     name: "Vanilla Bean Cake",
     description:
       "Delicate vanilla sponge cake infused with real vanilla beans.",
@@ -345,10 +345,12 @@ export const cakeProducts1 = [
     weight: "1.2kg",
     available: false,
     bestSeller: false,
+    category: "Kid's Cake",
+    subcategory: "Superhero Cakes",
     type: "pre-order",
   },
   {
-    id: 4,
+    id: 'GOLB124',
     name: "Strawberry Shortcake",
     description:
       "Light and fluffy sponge cake layered with fresh strawberries and whipped cream.",
@@ -367,10 +369,12 @@ export const cakeProducts1 = [
     weight: "1.5kg",
     available: true,
     bestSeller: true,
+    category: "Kid's Cake",
+    subcategory: "pine cake",
     type: "available",
   },
   {
-    id: 5,
+    id: 'GOLB125',
     name: "Lemon Drizzle Cake",
     description:
       "Zesty lemon cake drizzled with tangy lemon syrup and topped with lemon zest.",
@@ -382,10 +386,12 @@ export const cakeProducts1 = [
     weight: "1.2kg",
     available: true,
     bestSeller: false,
+    category: "Vanilla Cakes",
+    subcategory: "Smooth cake",
     type: "available",
   },
   {
-    id: 6,
+    id: 'GOLB126',
     name: "Carrot Cake",
     description:
       "Moist carrot cake with a hint of cinnamon, topped with cream cheese frosting and walnuts.",
@@ -405,10 +411,12 @@ export const cakeProducts1 = [
     weight: "1.8kg",
     available: true,
     bestSeller: false,
+    category: "Vanilla Cakes",
+    subcategory: "new subcategory",
     type: "pre-order",
   },
   {
-    id: 7,
+    id: 'GOLB127',
     name: "Coconut Cream Cake",
     description:
       "Decadent coconut cake with layers of creamy coconut filling and topped with shredded coconut.",
@@ -427,10 +435,12 @@ export const cakeProducts1 = [
     weight: "1.5kg",
     available: false,
     bestSeller: false,
+    category: "Cupcake",
+    subcategory: "Princess Cakes",
     type: "pre-order",
   },
   {
-    id: 8,
+    id: 'GOLB128',
     name: "Banana cake",
     description:
       "Moist and flavorful banana cake with a hint of cinnamon and walnuts.",
@@ -450,6 +460,8 @@ export const cakeProducts1 = [
     weight: "1kg",
     available: true,
     bestSeller: true,
+    category: "Kid's Cake",
+    subcategory: "Pineapple Cake",
     type: "pre-order",
   },
 ];

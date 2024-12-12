@@ -1,18 +1,13 @@
-"use client";
-import Image from "next/image";
-import MilestoneCake from "../public/assets/milestone-cake.webp";
-import KidCake from "../public/assets/kid-cake.webp";
-import Cupcakes from "../public/assets/cupcake.webp";
-import WeddingCake from "../public/assets/wedding-cake.webp";
 import Link from "next/link";
-import EachElement from "@/helper/EachElement";
-import { categories } from "@/utils/cakeCategories";
-import { Button } from "./ui/button";
+// import EachElement from "@/helper/EachElement";
+// import { Button } from "./ui/button";
+// import Placeholder from "../public/assets/placeholder3.png";
+// import { getPaginatedCategories } from "@/services/hooks/category";
+
+// import getApiResponse from "@/helper/getApiResponse";
+import CakeCategoryData from "./CakeCategoryData";
 
 const CakeCategory = () => {
-  {
-    /* CATEGORIES */
-  }
   return (
     <section className="py-10">
       {/* HEADIng */}
@@ -37,30 +32,7 @@ const CakeCategory = () => {
 
       <div className="vector-bg mt-7 rounded-3xl border bg-cover bg-center py-10">
         <div className="hide-scrollbar w-full overflow-x-auto">
-          <div className="wrapper w-full gap-3 space-y-5 sm:flex sm:w-min sm:grid-cols-2 sm:space-x-5 sm:space-y-0 lg:grid lg:w-full lg:grid-cols-3 lg:space-x-0 xl:gap-7">
-            <EachElement
-              of={categories}
-              render={(cake: any, index: any) => {
-                if (index > 2) return;
-                return (
-                  <div className="relative flex h-[300px] items-end sm:w-[300px] lg:w-full">
-                    <Image
-                      src={cake?.image}
-                      alt={cake?.value}
-                      className="absolute left-0 top-0 h-full w-full"
-                    />
-                    <div className=" bg-black bg-opacity-10 p-4 backdrop-blur-md">
-                      <h3 className="font-bold text-white">{cake?.label}</h3>
-                      <p className="text-white">{cake?.description}</p>
-                      <Button className="mt-4 h-auto w-full bg-goldie-300 text-black">
-                        Buy Now
-                      </Button>
-                    </div>
-                  </div>
-                );
-              }}
-            />
-          </div>
+          <CakeCategoryData />
         </div>
 
         <div className="wrapper mt-8 flex justify-end">

@@ -20,6 +20,9 @@ const config = {
     extend: {
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+        categories:
+          "linear-gradient(89deg, rgba(73, 72, 72, 0.60) -13.02%, rgba(17, 17, 17, 0.60) 65.2%)",
+
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
         review:
@@ -31,6 +34,7 @@ const config = {
         main: "#E4D064",
         goldie: {
           "50": "#fcfaee",
+          "75": "#f4e8ab",
           "100": "#f7f2ce",
           "200": "#ede39a",
           "300": "#e4d064",
@@ -90,17 +94,16 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-              
-          "caret-blink": {
-            "0%,70%,100%": { opacity: "1" },
-            "20%,50%": { opacity: "0" },
-          },
+
+        "caret-blink": {
+          "0%,70%,100%": { opacity: "1" },
+          "20%,50%": { opacity: "0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-         "caret-blink": "caret-blink 1.25s ease-out infinite",
-
+        "caret-blink": "caret-blink 1.25s ease-out infinite",
       },
     },
   },
@@ -108,5 +111,3 @@ const config = {
 } satisfies Config;
 
 export default config;
-
-

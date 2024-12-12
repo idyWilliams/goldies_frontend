@@ -4,11 +4,14 @@ import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
-import { getUser } from "@/services/hooks/users";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "react-toastify";
+import { getUser, updateUser } from "@/services/hooks/users";
+import { useMutation, useQuery } from "@tanstack/react-query";
+// import { toast } from "sonner";
+import { toast, Toaster } from "sonner";
+import { useRouter } from "next/navigation";
+import { type } from "os";
 
 const schema = yup.object().shape({
   firstName: yup.string().required("First name is required"),
@@ -19,18 +22,29 @@ const schema = yup.object().shape({
     .required("Valid Phone Number is required")
     .min(6, "Valid Phone Number must be at least 6 characters")
     .max(15, "Valid Phone Number must not exceed 12 characters"),
-  address: yup.string().required("Shipping address is required"),
-  state: yup.string().required("Shipping address is required"),
-  country: yup.string().required("Shipping address is required"),
+  // address: yup.string().required("Shipping address is required"),
+  // state: yup.string().required("State is required"),
+  // country: yup.string().required("Country is required"),
 });
 
 const AccountInfo = () => {
   const [phone, setPhone] = useState("");
-  const [country, setCountry] = useState("");
-  const [state, setState] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
+  // const [country, setCountry] = useState("");
+  // const [state, setState] = useState("");
+  const [user, setUser] = useState<any>(null);
+  const router = useRouter();
+  // const [lastName, setLastName] = useState("");
+  // const [email, setEmail] = useState("");
+  // const [address, setAddress] = useState("");
+
+  const { data, isError, isSuccess } = useQuery({
+    queryKey: [user],
+    queryFn: getUser,
+  });
+
+  useEffect(() => {
+    if (isSuccess) console.log(data);
+  }, [isSuccess, data]);
 
   const {
     reset,
@@ -39,52 +53,73 @@ const AccountInfo = () => {
     setValue,
     handleSubmit,
     formState: { errors },
-  } = useForm({ resolver: yupResolver(schema) });
+    getValues,
+  } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      firstName: user?.firstName || "",
+      lastName: user?.lastName || "",
+      email: user?.email || "",
+      phone: user?.phone || "",
+    },
 
-  const getAUser = useMutation({
-    mutationFn: getUser,
+    // defaultValues: user
+    //   ? {
+    //       firstName: user?.firstName,
+    //       lastName: user?.lastName,
+    //       email: user?.email,
+    //       phone: user?.phone,
+    //     }
+    //   : {
+    //       firstName: "",
+    //       lastName: "",
+    //       email: "",
+    //       phone: "",
+    //     },
   });
 
-  const handleUser = async () => {
-    try {
-      const response = await getAUser.mutateAsync();
-
-      console.log("Full API response:", response);
-
-      if (response && response.user) {
-        const userData = response.user;
-        localStorage.setItem("user", JSON.stringify(userData));
-        // @ts-ignore
-        localStorage.setItem("accessToken", userData.token);
-
-        console.log("User data from response:", userData);
-
-        setValue("firstName", userData.firstName);
-        setValue("lastName", userData.lastName);
-        setValue("email", userData.email);
-        setValue(
-          "address",
-          "3, Alade Yusuf Street, Epetedo B/stop, Abaranje Road, Ikotun, Lagos.",
-        );
-        setValue("state", "Lagos");
-        setValue("country", "Nigeria");
-        setPhone("+2348089134442");
-      } else {
-        console.log("No response data");
-      }
-    } catch (error: any) {
-      console.error("Error fetching user data: ", error);
-      toast.error(error.message);
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("user") as string);
+    if (storedUser) {
+      setUser(storedUser.user);
+      console.log("stored is", storedUser.user);
+    } else {
+      toast.error("Session expired! Please log in again");
+      router.push("/sign-in");
     }
-  };
+  }, [router]);
+  // console.log("data is", user);
 
   useEffect(() => {
-    handleUser();
-  }, []);
+    console.log("reset ", user);
+
+    // reset({
+    //   firstName: user?.firstName || "",
+    //   lastName: user?.lastName || "",
+    //   email: user?.email || "",
+    // });
+  }, [user, reset]);
+
+  const updateProfile = useMutation({
+    mutationKey: ["update user profile"],
+    mutationFn: updateUser,
+    onSuccess: (data) => {
+      toast.success("Account information updated successfully");
+      console.log(data);
+    },
+    onError: (error) => {
+      console.error(error);
+      toast.error("There was an error updating account information");
+    },
+  });
+
+  // console.log("values ", getValues(), "user: ", user);
 
   const handleSave = (data: any) => {
     console.log(data);
-    reset();
+    updateProfile.mutate(data);
+    // toast.success("Account information updated successfully");
+    // console.log("Form errors:", errors);
   };
 
   return (
@@ -103,15 +138,16 @@ const AccountInfo = () => {
               {...register("firstName")}
               type="text"
               id="firstName"
-              defaultValue={firstName}
+              // defaultValue={firstName}
               className={cn(
                 "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
                 errors.firstName && "border-red-600 focus:border-red-600",
               )}
             />
-            {errors?.firstName && (
-              <p className="text-red-600">{errors?.firstName?.message}</p>
-            )}
+            {errors?.firstName &&
+              typeof errors.firstName.message === "string" && (
+                <p className="text-red-600">{errors?.firstName?.message}</p>
+              )}
           </label>
           <label htmlFor="lastName" className="block w-full">
             <span className="mb-1 inline-block text-sm font-medium">
@@ -121,15 +157,16 @@ const AccountInfo = () => {
               {...register("lastName")}
               type="text"
               id="lastName"
-              defaultValue={lastName}
+              // defaultValue={lastName}
               className={cn(
                 "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
                 errors.lastName && "border-red-600 focus:border-red-600",
               )}
             />
-            {errors?.lastName && (
-              <p className="text-red-600">{errors?.lastName?.message}</p>
-            )}
+            {errors?.lastName?.message &&
+              typeof errors.lastName.message === "string" && (
+                <p className="text-red-600">{errors?.lastName?.message}</p>
+              )}
           </label>
           <label htmlFor="email" className="block w-full">
             <span className="mb-1 inline-block text-sm font-medium">
@@ -139,13 +176,13 @@ const AccountInfo = () => {
               {...register("email")}
               type="email"
               id="email"
-              defaultValue={email}
+              // defaultValue={email}
               className={cn(
                 "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
                 errors.email && "border-red-600 focus:border-red-600",
               )}
             />
-            {errors?.email && (
+            {errors?.email && typeof errors?.email?.message === "string" && (
               <p className="text-red-600">{errors?.email?.message}</p>
             )}
           </label>
@@ -156,10 +193,9 @@ const AccountInfo = () => {
             <Controller
               name="phone"
               control={control}
-              rules={{ required: true }}
+              rules={{ required: "Phone number is required" }}
               render={({ field }) => (
                 <PhoneInput
-                  {...field}
                   country={"ng"}
                   value={field.value || phone}
                   onChange={(phoneNumber) => {
@@ -178,24 +214,37 @@ const AccountInfo = () => {
                 />
               )}
             />
+            {errors?.phone && typeof errors?.phone?.message === "string" && (
+              <p className="text-red-600">{errors?.phone?.message}</p>
+            )}
           </label>
-          <label htmlFor="country" className="block w-full">
+          {/* <label htmlFor="country" className="block w-full">
             <span className="mb-1 inline-block text-sm font-medium">
               Country
             </span>
-            <CountryDropdown
-              value={country}
-              onChange={setCountry}
-              classes={cn(
-                "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
-                errors.country && "border-red-600 focus:border-red-600",
+            <Controller
+              name="country"
+              control={control}
+              rules={{ required: "Country is required" }}
+              render={({ field }) => (
+                <CountryDropdown
+                  value={field.value || country}
+                  onChange={(val) => {
+                    field.onChange(val);
+                    setCountry(val);
+                  }}
+                  classes={cn(
+                    "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
+                    errors.country && "border-red-600 focus:border-red-600",
+                  )}
+                />
               )}
             />
             {errors?.country && (
               <p className="text-red-600">{errors?.country?.message}</p>
             )}
-          </label>
-          <label htmlFor="state" className="block w-full">
+          </label> */}
+          {/* <label htmlFor="state" className="block w-full">
             <span className="mb-1 inline-block text-sm font-medium">State</span>
             <Controller
               name="state"
@@ -220,27 +269,32 @@ const AccountInfo = () => {
             {errors?.state && (
               <p className="text-red-600">{errors?.state?.message}</p>
             )}
-          </label>
-          <label htmlFor="address" className="block w-full md:col-span-2">
+          </label> */}
+
+          {/* <label htmlFor="address" className="block w-full md:col-span-2">
             <span className="mb-1 inline-block text-sm font-medium">
               Shipping address
             </span>
             <textarea
               {...register("address")}
               id="address"
+              placeholder="Enter your address"
               className={cn(
                 "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
                 errors.address && "border-red-600 focus:border-red-600",
               )}
             />
             {errors?.address && (
-              <p className="text-red-600">{errors?.email?.message}</p>
+              <p className="text-red-600">{errors?.address.message}</p>
             )}
-          </label>
+          </label> */}
         </div>
 
         <div className="mt-7 flex items-center justify-start gap-3">
-          <button className="rounded border border-neutral-900 bg-neutral-900 px-5 py-2.5 text-goldie-300">
+          <button
+            type="submit"
+            className="rounded border border-neutral-900 bg-neutral-900 px-5 py-2.5 text-goldie-300"
+          >
             Save changes
           </button>
           <button className="rounded border border-red-600 px-5 py-2.5 font-medium text-red-600">

@@ -3,7 +3,14 @@ import { BiHeart, BiStore } from "react-icons/bi";
 import { FaRegUserCircle } from "react-icons/fa";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 
-const MobileNav = ({ pathname, show, setShow, isOpen, setIsOpen }: any) => {
+const MobileNav = ({
+  pathname,
+  show,
+  setShow,
+  isOpen,
+  setIsOpen,
+  isLogin,
+}: any) => {
   return (
     <div
       onClick={() => setShow(false)}
@@ -25,21 +32,24 @@ const MobileNav = ({ pathname, show, setShow, isOpen, setIsOpen }: any) => {
             <div className="absolute right-0 top-10 z-20 w-[190px] rounded-md bg-[#e9da88] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
               <div className="">
                 <Link
-                  href={"/my-account"}
+                  onClick={() => setShow(false)}
+                  href={isLogin ? "/my-account" : "/sign-in"}
                   className="flex items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
                 >
                   <FaRegUserCircle size={20} />
                   My Account
                 </Link>
                 <Link
-                  href={"/my-orders"}
+                  onClick={() => setShow(false)}
+                  href={isLogin ? "/my-orders" : "/sign-in"}
                   className="flex items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
                 >
                   <BiStore size={20} />
                   Orders
                 </Link>
                 <Link
-                  href={"/saved-items"}
+                  onClick={() => setShow(false)}
+                  href={isLogin ? "/saved-items" : "/sign-in"}
                   className="flex items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
                 >
                   <BiHeart size={20} />

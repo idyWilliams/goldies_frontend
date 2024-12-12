@@ -1,30 +1,166 @@
 import { cn } from "@/helper/cn";
 import React from "react";
-import Goldie from "../../../public/assets/goldis-gold-logo.png";
+import Goldie from "@/public/assets/goldis-gold-logo.png";
 import Image from "next/image";
 import { CloseSquare } from "iconsax-react";
 import { ModalProps } from "@/utils/categoryTypes";
+import useBoundStore from "@/zustand/store";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteCategory, deleteSubCategory } from "@/services/hooks/category";
+import { toast } from "sonner";
+import { useRouter, useSearchParams } from "next/navigation";
+import {
+  optimisticCategoryUpdate,
+  optimisticSubCatUpdate,
+} from "@/utils/optimisticCategoryUpdate";
+import { QueryDataType } from "./CategoryForm";
+import { Category } from "@/services/types";
 
-// Example data that matches the CatWithCategory type
-const catData = {
-  cat: "Persian",
-  isCategory: true,
+type SubCatQueryDataType = {
+  [x: string]: any;
+  category: Category;
 };
 
-// Example data that matches the SubWithSubcategory type
-const subData = {
-  sub: "Sports",
-  isSubcategory: true,
-};
+const ConfirmModal: React.FC<ModalProps> = ({ catOrSub }) => {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const queryParams = useSearchParams();
+  const categoryId = queryParams.get("categoryId");
 
-const ConfirmModal: React.FC<ModalProps> = ({
-  actionType,
-  catOrSub,
-  setShowModal,
-  handleConfirm,
-}) => {
-  const handleCloseModal = () => {
+  const setShowSub = useBoundStore((state) => state.setShowSub);
+  const page = useBoundStore((state) => state.page);
+  const limit = useBoundStore((state) => state.limit);
+
+  const setShowModal = useBoundStore((state) => state.setShowModal);
+
+  const actionType = useBoundStore((state) => state.actionType);
+  const setActionType = useBoundStore((state) => state.setActionType);
+
+  const activeCategory = useBoundStore((state) => state.activeCategory);
+  const setActiveCategory = useBoundStore((state) => state.setActiveCategory);
+
+  const activeSubcategory = useBoundStore((state) => state.activeSubcategory);
+  const setActiveSubcategory = useBoundStore(
+    (state) => state.setActiveSubcategory,
+  );
+
+  const deleteActiveCategory = useMutation({
+    mutationFn: deleteCategory,
+
+    onMutate: async (variable) => {
+      await queryClient.cancelQueries({
+        queryKey: ["categories", page, limit],
+      });
+      const previousCategories = queryClient.getQueryData([
+        "categories",
+        1,
+        50,
+      ]);
+
+      queryClient.setQueryData(
+        ["categories", page, limit],
+        (old: QueryDataType) => {
+          const newData = optimisticCategoryUpdate("delete", old, variable);
+
+          return { ...newData };
+        },
+      );
+      return { previousCategories };
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories", page, limit] });
+      setShowModal(false);
+      setActionType("");
+      setActiveCategory(null);
+    },
+
+    onSuccess: () => {
+      toast.success("Category succesfully deleted");
+    },
+
+    onError: (error, newCategory, context) => {
+      queryClient.setQueryData(
+        ["categories", page, limit],
+        context?.previousCategories,
+      );
+      console.error(error);
+      toast.error("There was an error deleting  category");
+    },
+  });
+
+  const deleteSubcategory = useMutation({
+    mutationFn: deleteSubCategory,
+
+    onMutate: async (variable) => {
+      await queryClient.cancelQueries({ queryKey: ["categories", categoryId] });
+      const previousCategory = queryClient.getQueryData([
+        "categories",
+        categoryId,
+      ]);
+
+      if (!previousCategory) return;
+
+      queryClient.setQueryData(
+        ["categories", categoryId],
+        (old: SubCatQueryDataType) => {
+          const newData = optimisticSubCatUpdate("delete", old, variable);
+
+          return { ...newData };
+        },
+      );
+      return { previousCategory };
+    },
+
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["categories", categoryId] });
+      setShowModal(false);
+      setActionType("");
+      setActiveSubcategory(null);
+    },
+
+    onSuccess: () => {
+      toast.success("Category succesfully deleted");
+    },
+
+    onError: (error, newCategory, context) => {
+      queryClient.setQueryData(
+        ["categories", categoryId],
+        context?.previousCategory,
+      );
+      console.error(error);
+      toast.error("There was an error deleting  category");
+    },
+  });
+
+  const handleConfirm = () => {
+    if (actionType === "delete") {
+      try {
+        if (catOrSub.isCategory) {
+          deleteActiveCategory.mutate(activeCategory?._id);
+        } else {
+          deleteSubcategory.mutate(activeSubcategory?._id);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    } else if (actionType === "edit") {
+      if (catOrSub.isCategory) {
+        router.push(
+          `/admin/manage-categories/${activeCategory?.categorySlug}?categoryId=${activeCategory?._id}`,
+        );
+      } else if (!catOrSub.isCategory) {
+        setShowSub(true);
+      }
+      setActionType("");
+      setShowModal(false);
+    }
+  };
+
+  const handleClose = () => {
     setShowModal(false);
+    catOrSub.isCategory ? setActiveCategory(null) : setActiveSubcategory(null);
+    setActionType("");
   };
 
   return (
@@ -39,7 +175,7 @@ const ConfirmModal: React.FC<ModalProps> = ({
 
           <span
             className="cursor-pointer text-goldie-300"
-            onClick={handleCloseModal}
+            onClick={handleClose}
           >
             <CloseSquare size={24} />
           </span>
@@ -47,10 +183,10 @@ const ConfirmModal: React.FC<ModalProps> = ({
         <div className="px-4 py-5">
           <p className="leading-7 text-white">
             {actionType === "edit" &&
-              `Are you sure you want to edit ${catOrSub?.cat || catOrSub?.sub} ${(catOrSub?.isCategory && "category") || (catOrSub?.isSubcategory && "subcategory")}? Editing this ${(catOrSub?.isCategory && "category") || (catOrSub?.isSubcategory && "subcategory")} means you will overwrite the previous ${(catOrSub?.isCategory && "category") || (catOrSub?.isSubcategory && "subcategory")} information.`}
+              `Are you sure you want to edit ${catOrSub.isCategory ? `${activeCategory?.name} category` : `${activeSubcategory?.name} subcategory`}? Editing this ${catOrSub?.isCategory ? "category" : "subcategory"} means you will overwrite the previous ${catOrSub?.isCategory ? "category" : "subcategory"} information.`}
 
             {actionType === "delete" &&
-              `Are you sure you want to delete ${catOrSub?.cat || catOrSub?.sub} ${(catOrSub?.isCategory && "category") || (catOrSub?.isSubcategory && "subcategory")}? Deleting this ${(catOrSub?.isCategory && "category") || (catOrSub?.isSubcategory && "subcategory")} means you will ${catOrSub?.isCategory ? "remove the category, products and subcategories under it and can't be undone" : "remove the subcategory and products under it and can't be undone."}`}
+              `Are you sure you want to delete ${catOrSub.isCategory ? `${activeCategory?.name} category` : `${activeSubcategory?.name} subcategory`}? Deleting this ${catOrSub?.isCategory ? "category" : "subcategory"} means you will remove the ${catOrSub?.isCategory && "category, "}products and subcategories under it and can't be undone`}
           </p>
 
           <div className="mt-5 space-x-3">
@@ -62,7 +198,7 @@ const ConfirmModal: React.FC<ModalProps> = ({
                 (actionType === "delete" && "Yes, Delete")}
             </button>
             <button
-              onClick={handleCloseModal}
+              onClick={handleClose}
               className="cursor-pointer rounded-md bg-red-600 px-4 py-1.5 text-sm text-neutral-50"
             >
               No, Cancel

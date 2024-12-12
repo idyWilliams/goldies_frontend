@@ -1,3 +1,5 @@
+import { SubCategoryProps } from "@/utils/categoryTypes";
+
 export const billingFormData = [
   {
     label: "First Name",
@@ -102,8 +104,8 @@ export const newSubcategory = [
   //   required: true,
   // },
   {
-    label: "Subategory Name",
-    name: "subCategoryName",
+    label: "SubCategory Name",
+    name: "name",
     place_holder: "Enter subcategory name",
     error_message: "Subategory name is required",
     type: "text",

@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import Image from "next/image";
 import Img from "../public/assets/goldis-gold-logo.png";
@@ -8,17 +9,30 @@ import {
   BsTwitterX,
 } from "react-icons/bs";
 import { Call, Location, Sms } from "iconsax-react";
-import { categories } from "@/utils/cakeCategories";
+// import { categories } from "@/utils/cakeCategories";
+import { useEffect, useState } from "react";
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
+import { fetchCategories } from "@/services/hooks/category";
+import { fetchSubCategories } from "@/services/hooks/category";
+import { toast } from "sonner";
 
 const Footer = () => {
-  
-  const milestoneCategory = categories.find(category => category.label === 'Milestone Cakes');
+  const [categories, setCategories] = useState<any[]>([]);
+  const [subCategories, setSubCategories] = useState<any[]>([]);
 
-  // const subcategoriesToShow = ['Birthday Cakes', 'Retirement Cakes', 'Anniversary Cakes', 'Baby Shower Cakes'];
- 
-  if (!milestoneCategory) {
-   return <p>Category not found</p>;
- }
+  const { data, isPending, isSuccess } = useQuery({
+    queryFn: fetchCategories,
+    queryKey: ["all categories"],
+  });
+
+  useEffect(() => {
+    if (!isPending && isSuccess) {
+      setCategories(data?.categories);
+    } else {
+      setCategories([]);
+    }
+  }, [isPending, isSuccess, data]);
 
   return (
     <section className="relative grid min-h-[500px] w-full bg-neutral-900 pt-3">
@@ -101,42 +115,32 @@ const Footer = () => {
               <h3 className="text-white">Products</h3>
               <hr className="mb-2 w-[35px] border border-goldie-300" />
             </div>
-            <Link
-              href={`/shop?cat=${encodeURIComponent(milestoneCategory.value)}&sub=${encodeURIComponent("birthday_cakes")}`}
-            >
-              Birthday Cakes
-            </Link>
-            <Link
-              href={`/shop?cat=${encodeURIComponent(milestoneCategory.value)}&sub=${encodeURIComponent("retirement_cakes")}`}
-            >
-              Retirement Cakes
-            </Link>
-            <Link
-              href={`/shop?cat=${encodeURIComponent(milestoneCategory.value)}&sub=${encodeURIComponent("anniversary_cakes")}`}
-            >
-              Anniversary Cakes
-            </Link>
-            <Link
-              href={`/shop?cat=${encodeURIComponent(milestoneCategory.value)}&sub=${encodeURIComponent("baby_shower_cakes")}`}
-            >
-              Baby Shower Cakes
-            </Link>
-
-            {/* <ul>
-              {milestoneCategory.subcategories
-                .filter((subcategory) =>
-                  subcategoriesToShow.includes(subcategory.label),
-                )
-                .map((subcategory) => (
-                  <li key={subcategory.value}>
-                    <Link
-                      href={`/shop?cat=${encodeURIComponent(milestoneCategory.value)}&sub=${encodeURIComponent(subcategory.value)}`}
-                    >
-                      {subcategory.label}
-                    </Link>
-                  </li>
-                ))}
-            </ul> */}
+            <div className="flex flex-col gap-3">
+              {isPending ? (
+                <div className="flex flex-col gap-2 bg-neutral-900 ">
+                  <div className="h-5 w-4/5 animate-pulse rounded bg-neutral-700"></div>
+                  <div className="h-5 w-4/5 animate-pulse rounded bg-neutral-700"></div>
+                  <div className="h-5 w-4/5 animate-pulse rounded bg-neutral-700"></div>
+                  <div className="h-4 w-3/5 animate-pulse rounded bg-neutral-700"></div>
+                </div>
+              ) : categories.length === 0 ? (
+                <p>No categories found.</p>
+              ) : (
+                categories
+                  ?.sort((a: any, b: any) => a?.name?.localeCompare(b.name))
+                  ?.map((category: any, index: number) => {
+                    if (category?.subCategories?.length < 1) return null;
+                    return (
+                      <Link
+                        key={index}
+                        href={`/shop?cat=${encodeURIComponent(category?.name?.toLowerCase())}`}
+                      >
+                        {category?.name}
+                      </Link>
+                    );
+                  })
+              )}
+            </div>
           </div>
           <div className="inline-flex flex-col space-y-3 text-white">
             <div>

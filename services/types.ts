@@ -9,6 +9,7 @@ export interface User {
 }
 export interface Admin {
   id: string;
+  userName: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -51,6 +52,7 @@ export interface ResetPassword {
 
 // Interfaces for the admin signup and invite admin
 export interface CreateAdmin {
+  userName: string;
   email: string;
   refCode: string;
   password: string;
@@ -86,4 +88,38 @@ export interface GetUserResponse {
   // data: any;
   user: User;
   message: string;
+  token:string
+}
+export interface Category {
+  [x: string]: any;
+  name: string;
+  description: string;
+  image: string;
+  categorySlug: string;
+  status: boolean;
+}
+export interface SubCategory {
+  [x: string]: any;
+  name: string;
+  description: string;
+  image: string;
+  status: boolean;
+  categoryId?: string | null;
+}
+
+export interface CategoryId {
+  categoryId: string | null;
+}
+
+export interface EditCategory extends Category {
+  categoryId?: string;
+}
+
+export interface SubCategoryId {
+  subCategoryId: string | null;
+}
+
+export interface EditSubCategory {
+  subCategory: SubCategory;
+  subCategoryId: SubCategoryId;
 }
