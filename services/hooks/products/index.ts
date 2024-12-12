@@ -51,6 +51,11 @@ export const getProduct = async (productId: string) => {
   return response.data;
 };
 
+export const getActiveProduct = async (productId: string) => {
+  const response = await instance.get(`/product/get_product/${productId}`);
+  return response.data;
+};
+
 // UPDATE PRODUCT
 export const updateProduct = async (data: any, productId: string) => {
   const response = await instance.put(

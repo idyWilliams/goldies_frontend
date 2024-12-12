@@ -1,19 +1,15 @@
 "use client";
 
 import ProductCard from "@/components/shop-components/ProductCard";
-import Pagination from "@/components/custom-filter/Pagination";
-import { addSlugToCakes } from "@/helper";
 import { chunkArray } from "@/helper/chunkArray";
-import { cakeProducts1, savedItems } from "@/utils/cakeData";
 import React, { useEffect, useState } from "react";
 import useUserPdctStore from "@/zustand/userProductStore/store";
 import useSavedItems from "@/services/hooks/products/useSavedItems";
 import EachElement from "@/helper/EachElement";
 import AdminPagination from "@/components/admin-component/AdminPagination";
 import ShopPageSkeleton from "@/components/shop-components/ShopPageSkeleton";
-import ProductCardSkeleton from "@/components/shop-components/ProductCardSkeleton";
 
-let itemsPerPage = 2;
+let itemsPerPage = 6;
 
 const Page = () => {
   const favProducts = useUserPdctStore((state) => state.favProducts);
@@ -25,9 +21,13 @@ const Page = () => {
   const [totalProducts, setTotalProducts] = useState<number>(
     favProducts.length,
   );
-  const favProductChunks = chunkArray(favProducts, itemsPerPage);
-  console.log(favProductChunks);
-  const [currentData, setCurrentData] = useState<any[] | null>(null);
+
+  const [currentData, setCurrentData] = useState<any[] | null>(
+    favProducts ? favProducts.slice(0, itemsPerPage) : null,
+  );
+  const startIndex =
+    totalProducts === 0 ? 0 : (currentPageIndex - 1) * itemsPerPage + 1;
+  const endIndex = Math.min(startIndex + itemsPerPage - 1, totalProducts);
 
   const { favorites, isPending } = useSavedItems();
 
@@ -38,38 +38,13 @@ const Page = () => {
   }, [favorites, setFavProducts]);
 
   useEffect(() => {
-    if (favProducts) {
+    if (favProducts.length > 0) {
       setTotalProducts(favProducts.length);
       const favProductChunks = chunkArray(favProducts, itemsPerPage);
       setCurrentData(favProductChunks[currentPageIndex - 1]);
       setTotalPages(favProductChunks.length);
     }
   }, [currentPageIndex, favProducts]);
-
-  const [cakes, setCakes] = useState<any[]>(addSlugToCakes(savedItems));
-
-  const handleNext = () => {
-    if (currentPageIndex !== chunkArray(cakes, itemsPerPage).length) {
-      setCurrentPageIndex(currentPageIndex + 1);
-      window.scroll(0, 0);
-    } else {
-      return;
-    }
-  };
-
-  const handlePaginateClick = (index: number) => {
-    setCurrentPageIndex(index + 1);
-    window.scroll(0, 0);
-  };
-
-  const handlePrev = () => {
-    if (currentPageIndex !== 1) {
-      setCurrentPageIndex(currentPageIndex - 1);
-      window.scroll(0, 0);
-    } else {
-      return;
-    }
-  };
 
   return (
     <>
@@ -79,17 +54,15 @@ const Page = () => {
           <h2 className="text-center text-2xl font-bold">Favourite Products</h2>
         </div>
 
+        <div className="mb-4 flex justify-end">
+          <span className="text-sm text-neutral-500 lg:text-base">
+            Showing {startIndex} - {endIndex} of {totalProducts} results
+          </span>
+        </div>
+
         {isPending && !currentData && <ShopPageSkeleton />}
 
         <div className="grid justify-items-end gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {/* {chunkArray(cakes, itemsPerPage)[currentPageIndex - 1]?.map(
-            (cake: any, index: any) => {
-              return index <= 5 ? (
-                <ProductCard data={cake} key={index} />
-              ) : null;
-            },
-          )} */}
-
           {currentData && (
             <EachElement
               of={currentData}
@@ -106,15 +79,6 @@ const Page = () => {
             setPage={setCurrentPageIndex}
           />
         )}
-        {/* <Pagination
-          className=""
-          onNext={handleNext}
-          onPrev={handlePrev}
-          onPaginateClick={handlePaginateClick}
-          itemsPerPage={itemsPerPage}
-          currentPageIndex={currentPageIndex}
-          arr={cakes}
-        /> */}
       </section>
     </>
   );

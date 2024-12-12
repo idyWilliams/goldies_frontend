@@ -1,24 +1,12 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import React, {
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { getAllProducts, getSavedItems } from ".";
+import { useEffect, useMemo, useState } from "react";
+import { getAllProducts } from ".";
 import useUserPdctStore from "@/zustand/userProductStore/store";
-import useSavedItems from "./useSavedItems";
+import { addSlugToCakes } from "@/helper";
 
-const useProducts = (
-  page: number,
-  limit: number,
-  setTotalPages: Dispatch<SetStateAction<number>>,
-  setTotalProducts: Dispatch<SetStateAction<number>>,
-) => {
+const useProducts = (page: number, limit: number) => {
   const [products, setProducts] = useState<any[] | null>(null);
-
-  const setFavProducts = useUserPdctStore((state) => state.setFavProducts);
+  const setAllProducts = useUserPdctStore((state) => state.setAllProducts);
 
   const { data, isError, isLoading, isPending } = useQuery({
     queryKey: ["allProducts", page, limit],
@@ -26,35 +14,24 @@ const useProducts = (
     placeholderData: keepPreviousData,
   });
 
-  const {favorites} = useSavedItems();
-
-  const { fetchedProducts, pages, totalProducts } = useMemo(() => {
+  const { fetchedProducts, pages, allProducts } = useMemo(() => {
     if (isLoading || isError)
-      return { fetchedProducts: null, pages: null, totalProducts: null };
-    console.log(data);
-    const fetchedProducts = data?.products.filter(
-      (prod: any) => !prod.images[0].includes("example"),
-    );
+      return { fetchedProducts: null, pages: null, allProducts: null };
+
+    const fetchedProducts = data;
     const pages = data?.totalPages;
-    const totalProducts = data?.totalProducts;
-    return { fetchedProducts, pages, totalProducts };
+    const allProducts = data?.totalProducts;
+    return { fetchedProducts, pages, allProducts };
   }, [isLoading, isError, data]);
 
   useEffect(() => {
     if (fetchedProducts) {
-      setProducts(fetchedProducts);
-      setTotalPages(pages);
-      setTotalProducts(totalProducts);
+      setAllProducts(addSlugToCakes(fetchedProducts?.products));
+      setProducts(addSlugToCakes(fetchedProducts?.products));
     }
-  }, [fetchedProducts, pages, totalProducts, setTotalPages, setTotalProducts]);
+  }, [fetchedProducts, setAllProducts]);
 
-  useEffect(() => {
-    if (favorites) {
-      setFavProducts(favorites);
-    }
-  }, [favorites, setFavProducts]);
-
-  return { products, isPending };
+  return { products, isPending, pages, allProducts };
 };
 
 export default useProducts;

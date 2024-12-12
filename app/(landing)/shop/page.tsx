@@ -16,6 +16,8 @@ import EachElement from "@/helper/EachElement";
 import useProducts from "@/services/hooks/products/useProducts";
 import AdminPagination from "@/components/admin-component/AdminPagination";
 import ShopPageSkeleton from "@/components/shop-components/ShopPageSkeleton";
+import useSavedItems from "@/services/hooks/products/useSavedItems";
+import useUserPdctStore from "@/zustand/userProductStore/store";
 
 let itemsPerPage = 6;
 
@@ -32,43 +34,40 @@ const ShopPage = () => {
   const startIndex =
     totalProducts === 0 ? 0 : (currentPageIndex - 1) * itemsPerPage + 1;
   const endIndex = Math.min(startIndex + itemsPerPage - 1, totalProducts);
+  const setFavProducts = useUserPdctStore((state) => state.setFavProducts);
+  const allProduct = useUserPdctStore((state) => state.allProducts);
 
-  const { products, isPending } = useProducts(
+  const { favorites } = useSavedItems();
+
+  const { isPending, pages, allProducts } = useProducts(
     currentPageIndex,
     itemsPerPage,
-    setTotalPages,
-    setTotalProducts,
   );
 
-  // const handleNext = () => {
-  //   if (currentPageIndex !== chunkArray(cakes, itemsPerPage).length) {
-  //     setCurrentPageIndex(currentPageIndex + 1);
-  //     window.scroll(0, 0);
-  //   } else {
-  //     return;
-  //   }
-  // };
+  useEffect(() => {
+    if (pages) {
+      setTotalPages(pages);
+    }
+  }, [pages]);
 
-  // const handlePaginateClick = (index: number) => {
-  //   setCurrentPageIndex(index + 1);
-  //   window.scroll(0, 0);
-  // };
+  useEffect(() => {
+    if (allProducts) {
+      setTotalProducts(allProducts);
+    }
+  }, [allProducts]);
 
-  // const handlePrev = () => {
-  //   if (currentPageIndex !== 1) {
-  //     setCurrentPageIndex(currentPageIndex - 1);
-  //     window.scroll(0, 0);
-  //   } else {
-  //     return;
-  //   }
-  // };
+  useEffect(() => {
+    if (favorites) {
+      setFavProducts(favorites);
+    }
+  }, [favorites, setFavProducts]);
 
   const min = () => {
     if (Array.isArray(cakes)) {
       const cakeMinPrices = cakes?.map((s: any) => s?.minPrice);
       return Math.trunc(Math?.min(...cakeMinPrices));
     }
-    return 0; // or any default value
+    return 0;
   };
 
   const max = () => {
@@ -76,12 +75,8 @@ const ShopPage = () => {
       const cakeMaxPrices = cakes?.map((s: any) => s?.maxPrice);
       return Math.trunc(Math?.max(...cakeMaxPrices));
     }
-    return 100; // or any default value
+    return 100;
   };
-
-  // const searchParams = useSearchParams();
-  // const cat = '';
-  // console.log("cat is", cat);
 
   const handleFilter = () => {
     const queryString = window.location.search;
@@ -121,10 +116,7 @@ const ShopPage = () => {
           : prevCakes,
       );
     }
-    console.log("updated");
   }, [cat, cakesProducts]);
-
-  console.log("currentPage", query);
 
   // useEffect(() => {
   //   const queryString = window.location.search;
@@ -192,35 +184,19 @@ const ShopPage = () => {
                 </div>
               </div>
               <div className="xl:hidden">
-                {isPending && !products && <ShopPageSkeleton />}
+                {isPending && allProduct.length === 0 && <ShopPageSkeleton />}
               </div>
 
               <div className="grid gap-8 sm:grid-cols-2 md:gap-5 lg:grid-cols-3 xl:hidden">
-                {/* {chunkArray(cakes, itemsPerPage)[currentPageIndex - 1]?.map(
-                  (cake: any, index: any) => {
-                    return <ProductCard data={cake} key={index} />;
-                    },
-                    )} */}
-
-                {products && (
+                {allProduct.length > 0 && (
                   <EachElement
-                    of={addSlugToCakes(products)}
+                    of={allProduct}
                     render={(item: any) => {
                       return <ProductCard data={item} key={item._id} />;
                     }}
                   />
                 )}
               </div>
-
-              {/* <Pagination
-                className="lg:hidden"
-                onNext={handleNext}
-                onPrev={handlePrev}
-                onPaginateClick={handlePaginateClick}
-                itemsPerPage={itemsPerPage}
-                currentPageIndex={currentPageIndex}
-                arr={cakes}
-              /> */}
 
               <div className="xl:hidden">
                 {totalPages > 1 && (
@@ -277,14 +253,14 @@ const ShopPage = () => {
                     </div>
                   </div>
 
-                  {isPending && !products && <ShopPageSkeleton />}
+                  {isPending && allProduct.length === 0 && <ShopPageSkeleton />}
 
                   <div className="grid grid-cols-3 gap-5">
-                    {products && (
+                    {allProduct.length > 0 && (
                       <EachElement
-                        of={addSlugToCakes(products)}
+                        of={allProduct}
                         render={(item: any) => {
-                          return <ProductCard data={item} key={item.id} />;
+                          return <ProductCard data={item} key={item._id} />;
                         }}
                       />
                     )}

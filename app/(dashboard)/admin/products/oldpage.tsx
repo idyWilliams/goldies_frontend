@@ -31,53 +31,34 @@ import ProductSortBy from "@/components/admin-component/ProductSortBy";
 import AdminAuth from "@/components/admin-component/AdminAuth";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProducts } from "@/services/hooks/products";
-import { Button } from "@/components/ui/button";
+import useProducts from "@/services/hooks/products/useProducts";
 
-export type Product = {
+// type Product = {
+//   id: string;
+//   image: any;
+//   productName: string;
+//   addedDate: string;
+//   category: string;
+//   priceFrom: number;
+//   priceTo: number;
+//   quantity: number;
+//   status: string;
+// };
+type Product = {
+  [x: string]: any;
   _id: string;
+  image: any;
   name: string;
-  description: string;
-  shapes: string[];
-  sizes: string[];
+  createdAt: string;
+  category: string;
+  minPrice: number;
+  maxPrice: number;
+  quantity?: number;
   productType: string;
-  toppings: string[];
-  category: {
-    name: string;
-    id: string;
-    _id: string;
-  };
-  subCategory: {
-    name: string;
-    id: string;
-    _id: string;
-  }[];
-  minPrice: string;
-  maxPrice: string;
-  images: string[];
-  flavour: string[];
-  createdAt: string;
-  updatedAt: string;
-  status: string;
-  quantity: string;
 };
 
-type Product2 = {
-  _id: string;
-  name: string;
-  images: string[];
-  category: {
-    name: string;
-    id: string;
-    _id: string;
-  };
-  minPrice: string;
-  maxPrice: string;
-  createdAt: string;
-  status: string;
-};
-
-const statusColor = (status: string) => {
-  switch (status?.toLowerCase()) {
+const statusColor = (productType: string) => {
+  switch (productType.toLowerCase()) {
     case "available":
       return (
         <div className="inline-flex items-center gap-2 rounded-[50px] border border-green-700 bg-green-700 bg-opacity-10 px-3 py-[2px] text-sm text-green-700">
@@ -85,7 +66,7 @@ const statusColor = (status: string) => {
           Available
         </div>
       );
-    case "unavailable":
+    case "preorder":
       return (
         <div className="inline-flex items-center gap-2 rounded-[50px] border border-red-700 bg-red-700 bg-opacity-10 px-3 py-[2px] text-sm text-red-700">
           <span className="h-2 w-2 rounded-full bg-red-700"></span> Unavailable
@@ -96,6 +77,8 @@ const statusColor = (status: string) => {
   }
 };
 
+let itemsPerPage = 8;
+
 const columnHelper = createColumnHelper<Product>();
 
 export default function Page() {
@@ -105,87 +88,90 @@ export default function Page() {
   const [isOpen, setOpen] = useState(false);
   const [sortType, setSortType] = useState("recentlyAdded");
   const [searchValue, setSearchValue] = useState("");
-  const [data, setData] = useState<Product[]>([]);
+  const [currentPageIndex, setCurrentPageIndex] = useState(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [totalProducts, setTotalProducts] = useState<number>(0);
+
+  const { products, isPending, pages, allProducts } = useProducts(
+    currentPageIndex,
+    itemsPerPage,
+    // setTotalPages,
+    // setTotalProducts,
+  );
+
+  useEffect(() => {
+    if (pages) {
+      setTotalPages(pages);
+    }
+  }, [pages]);
+
+  useEffect(() => {
+    if (allProducts) {
+      setTotalProducts(allProducts);
+    }
+  }, [allProducts]);
+
+  const [data, setData] = useState(products);
 
   const router = useRouter();
   const handleAddNew = () => {
     router.push(`/admin/create-products`);
   };
 
-  const {
-    data: allProducts,
-    isLoading,
-    isSuccess,
-    refetch,
-    isError,
-  } = useQuery({
-    queryKey: ["allProducts"],
-    queryFn: async () => getAllProducts(1, 15),
-  });
-
-  console.log(allProducts, "All products");
+  console.log(products);
 
   useEffect(() => {
-    if (!isSuccess) return;
-    setData(allProducts?.products);
-  }, [allProducts?.products, isSuccess]);
-
-  useEffect(() => {
-    if (!isSuccess) return;
-
     const sortProducts = (type: string) => {
-      switch (type) {
-        case "recentlyAdded":
-          setData(
-            allProducts?.products
-              ?.slice()
-              ?.sort(
-                (a: any, b: any) =>
-                  new Date(b.addedDate).getTime() -
-                  new Date(a.addedDate).getTime(),
-              ),
-          );
-          return;
-        case "highToLow":
-          setData(
-            allProducts?.products
-              ?.slice()
-              ?.sort((a: any, b: any) => b.priceFrom - a.priceFrom),
-          );
-          return;
-        case "lowToHigh":
-          setData(
-            allProducts?.products
-              ?.slice()
-              ?.sort((a: any, b: any) => a.priceFrom - b.priceFrom),
-          );
-          return;
-        case "available":
-          setData(
-            allProducts?.products?.filter(
-              (a: any) => a?.status === "available",
-            ),
-          );
-          return;
-        default:
-          setData(allProducts?.products);
-          return;
+      if (products) {
+        switch (type) {
+          case "recentlyAdded":
+            setData(
+              products
+                .slice()
+                .sort(
+                  (a: any, b: any) =>
+                    new Date(b.createdAt).getTime() -
+                    new Date(a.createdAt).getTime(),
+                ),
+            );
+            return;
+          case "highToLow":
+            setData(
+              products
+                .slice()
+                .sort((a: any, b: any) => b.maxPrice - a.minPrice),
+            );
+            return;
+          case "lowToHigh":
+            setData(
+              products
+                .slice()
+                .sort((a: any, b: any) => a.minPrice - b.maxPrice),
+            );
+            return;
+          case "available":
+            setData(products.filter((a: any) => a.productType === "available"));
+            return;
+          default:
+            setData(productList);
+            return;
+        }
       }
     };
 
     sortProducts(sortType);
-  }, [allProducts?.products, isSuccess, sortType]);
+  }, [sortType, products]);
 
   useEffect(() => {
-    if (!isSuccess) return;
-
-    const filteredProducts = allProducts?.products?.filter(
-      (item: any) =>
-        item?.name.toLowerCase().includes(searchValue) ||
-        item?._id.toString().toLowerCase().includes(searchValue),
-    );
-    setData(filteredProducts);
-  }, [allProducts?.products, isSuccess, searchValue]);
+    if (products) {
+      const filteredProducts = products?.filter(
+        (item: any) =>
+          item?.name.toLowerCase().includes(searchValue) ||
+          item?._id.toString().toLowerCase().includes(searchValue),
+      );
+      setData(filteredProducts);
+    }
+  }, [searchValue, products]);
 
   const handleChange = (e: any) => {
     const value = e.target.value;
@@ -194,38 +180,33 @@ export default function Page() {
   };
   const columns = [
     columnHelper.accessor((row) => row, {
-      id: "productName",
+      id: "name",
       cell: (info) => {
         return (
           <div className="grid grid-cols-[50px_1fr] gap-2">
             <Image
-              width={300}
-              height={300}
-              className="h-[50px] w-full object-cover object-center"
-              src={info.cell.row.original?.images[0]}
+              src={info.cell.row.original?.image[0]}
               alt={info.cell.row.original.name}
             />
             <div className="flex flex-col">
               <h3 className="whitespace-nowrap font-bold">
                 {info.cell.row.original.name}
               </h3>
-              <span className="uppercase">
-                ID:&nbsp;{info.cell.row.original._id.slice(0, 6)}
-              </span>
+              <span>ID:&nbsp;{info.cell.row.original._id}</span>
             </div>
           </div>
         );
       },
       header: () => <span>Product</span>,
+      footer: (info) => info.column.id,
     }),
     columnHelper.accessor((row) => row.category, {
       id: "category",
       cell: (info) => (
-        <span className="whitespace-nowrap capitalize">
-          {info.cell.row.original.category.name}
-        </span>
+        <span className="whitespace-nowrap capitalize">{info.getValue()}</span>
       ),
       header: () => <span>Category</span>,
+      footer: (info) => info.column.id,
     }),
     columnHelper.accessor((row) => row, {
       id: "price",
@@ -236,30 +217,25 @@ export default function Page() {
         </span>
       ),
       header: () => <span>Product</span>,
+      footer: (info) => info.column.id,
     }),
     columnHelper.accessor("createdAt", {
       header: () => <span>AddedDate</span>,
-      cell: (info) => {
-        const date = new Date(info.cell.row.original.createdAt);
-
-        const formattedDate = date.toLocaleDateString("en-US", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        });
-
-        return <span>{formattedDate}</span>;
-      },
+      footer: (info) => info.column.id,
     }),
     // columnHelper.accessor("quantity", {
     //   header: () => <span>Qnty</span>,
-    //
+    //   footer: (info) => 20,
+    // }),
+    // columnHelper.accessor("quantity", {
+    //   header: () => <span>Qnty</span>,
+    //   footer: (info) => info.column.id,
     // }),
     columnHelper.accessor((row) => row, {
-      id: "status",
-      cell: (info) =>
-        statusColor(info.cell.row.original?.status || "available"),
+      id: "productType",
+      cell: (info) => statusColor(info.cell.row.original.productType),
       header: () => <span>Status</span>,
+      footer: (info) => info.column.id,
     }),
     columnHelper.accessor((row) => row, {
       id: "actions",
@@ -297,10 +273,9 @@ export default function Page() {
         );
       },
       header: () => <span>Actions</span>,
+      footer: (info) => info.column.id,
     }),
   ];
-
-  console.log(data, new Date().getTime().toLocaleString());
   return (
     <>
       <section className="w-full px-4 pt-6">
@@ -345,35 +320,17 @@ export default function Page() {
         </div>
 
         <div className="hidden md:block md:overflow-x-scroll">
-          {isError && (
-            <div>
-              <p>An error occured</p>
-              <Button onClick={() => refetch()}>Try Again</Button>
-            </div>
-          )}
-          {isLoading && (
-            <div>
-              <p>The products is loading</p>
-            </div>
-          )}
-
-          {isSuccess && allProducts?.products?.length >= 1 && !isError ? (
-            <div>
-              <ProductTable
-                columns={columns}
-                Tdata={data}
-                statusType="product"
-                filteredTabs={["All", "Available", "Unavailable", "Disabled"]}
-              />
-            </div>
-          ) : (
-            <>{/* <p>No products</p> */}</>
-          )}
+          <ProductTable
+            columns={columns}
+            Tdata={products}
+            statusType="product"
+            filteredTabs={["All", "Available", "Unavailable", "Disabled"]}
+          />
         </div>
         <div className="block space-y-5 md:hidden">
-          {data.map((product: any, index: number) => (
+          {/* {data.map((product: any, index: number) => (
             <MobileProductCard data={product} key={index} />
-          ))}
+          ))} */}
         </div>
       </section>
       {showModal && (
@@ -386,29 +343,3 @@ export default function Page() {
     </>
   );
 }
-
-type ss = {
-  _id: string;
-  name: string;
-  description: string;
-  shapes: string[];
-  sizes: string[];
-  productType: string;
-  toppings: string[];
-  category: {
-    name: string;
-    id: string;
-    _id: string;
-  };
-  subCategory: {
-    name: string;
-    id: string;
-    _id: string;
-  }[];
-  minPrice: string;
-  maxPrice: string;
-  images: string[];
-  flavour: string[];
-  createdAt: string;
-  updatedAt: string;
-};

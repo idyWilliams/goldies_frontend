@@ -8,7 +8,7 @@ import { BsDash, BsPlus } from "react-icons/bs";
 import { CgMenuCake } from "react-icons/cg";
 import { useEffect, useMemo, useState } from "react";
 import CustomSelect from "@/components/CustomSelect";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useDispatch } from "react-redux";
 import {
   addProductToCart,
@@ -17,7 +17,7 @@ import {
   // resetToastMessage,
 } from "@/redux/features/product/productSlice";
 import { cakeProducts1, cakeTimes } from "@/utils/cakeData";
-import { addSlugToCakes } from "@/helper";
+import { addSlugToCakes, slugify } from "@/helper";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { GiShoppingCart } from "react-icons/gi";
@@ -34,6 +34,10 @@ import { Controller, useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Toaster } from "sonner";
+import useUserPdctStore from "@/zustand/userProductStore/store";
+import Placeholder from "@/public/assets/placeholder3.png";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { getActiveProduct, getAllProducts } from "@/services/hooks/products";
 
 const cakeSizes = [
   { value: "6-round", label: "6″ round serves 10 - 12" },
@@ -87,9 +91,31 @@ interface FormValues {
   // message: string;
 }
 
+const setToUpperCase = (sentence: string) => {
+  const uppercaseWord = sentence
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+
+  return uppercaseWord;
+};
+
+const exampleImage =
+  "https://firebasestorage.googleapis.com/v0/b/goldie-b3ba7.appspot.com/o/products%2Fbanana-cake-with-cinnamon-cream-102945-1.webp?alt=media&token=32e645da-9327-4f7f-9f79-a2cba1102676";
+
 function CakeDetailsPage({ params }: any) {
+  const activeProduct = useUserPdctStore((state) => state.activeProduct);
+  const setActiveProduct = useUserPdctStore((state) => state.setActiveProduct);
+  const allProducts = useUserPdctStore((state) => state.allProducts);
+  console.log(activeProduct);
+  console.log(params);
+  const searchParams = useSearchParams();
+  const productId = searchParams.get("productId");
+  console.log(productId);
+  const [isLoaded, setIsLoaded] = useState(false);
+
   const [showReviews, setShowReviews] = useState(false);
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const [flavour, setFlavour] = useState<SelectOptionType>(null);
   const [duration, setDuration] = useState<SelectOptionType>(null);
   const [addon, setAddon] = useState<SelectOptionType>(null);
@@ -121,23 +147,39 @@ function CakeDetailsPage({ params }: any) {
   // const handleChange = (event: SelectChangeEvent) => {
   //   setAge(event.target.value as string);
   // };
+  console.log(productId);
+  console.log(activeProduct);
+
+  const { data, isError, isLoading, isPending } = useQuery({
+    queryKey: ["allProducts", productId],
+    queryFn: async () => productId && getActiveProduct(productId),
+  });
+
+  useEffect(() => {
+    if (data) {
+      const product = {
+        ...data.productDetails,
+        slug: slugify(data.productDetails.name),
+      };
+
+      setActiveProduct(product);
+    }
+  }, [data, setActiveProduct]);
 
   const cartTotal = Object.values(cart).reduce((acc, current) => {
     return acc + parseFloat(current.maxPrice) * (current.quantity as number);
   }, 0);
   console.log(cart, "cart");
 
-  const cakes = addSlugToCakes(cakeProducts1);
+  const cakes = addSlugToCakes(allProducts);
 
   console.log(cakes, "kkk");
-  const cakeProduct = useMemo(() => cakes, [cakes]);
+  // const cakeProduct = useMemo(() => cakes, [cakes]);
 
-  // console.log("Params Alias:", params);
-  // console.log("Cake Products:", cakeProduct);
-
-  const getProduct = cakeProduct.find(
-    (product: { slug: any }) => product.slug === params.alias,
+  const getSimilarProducts = allProducts.filter(
+    (product: { slug: any }) => product.slug !== activeProduct.slug,
   );
+  console.log(getSimilarProducts);
 
   function create(value: any) {
     if (value !== null) {
@@ -146,14 +188,16 @@ function CakeDetailsPage({ params }: any) {
     }
   }
 
+  activeProduct.category.name && setToUpperCase(activeProduct.category?.name);
+
   // const handleClick = () => {
   //   console.log(getProduct.id);
   //   // setShapes(null)
   // };
   const handleClick = handleSubmit((data) => {
     if (data.sizes && data.toppings && data.cakeTimes) {
-      dispatch(addProductToCart({ id: getProduct.id }));
-      console.log(getProduct.id);
+      dispatch(addProductToCart({ id: activeProduct._id }));
+      console.log(activeProduct._id);
     } else {
       console.error(
         "Please fill in all required fields before adding to cart.",
@@ -167,11 +211,11 @@ function CakeDetailsPage({ params }: any) {
     router.push("/cart");
   };
 
-  useEffect(() => {
-    if (getProduct) {
-      setLoading(false);
-    }
-  }, [getProduct]);
+  // useEffect(() => {
+  //   if (getProduct) {
+  //     setLoading(false);
+  //   }
+  // }, [getProduct]);
 
   // useEffect(() => {
   //   if (toastMessage) {
@@ -195,7 +239,7 @@ function CakeDetailsPage({ params }: any) {
   //   return <div>Loading...</div>;
   // }
 
-  if (!getProduct) {
+  if (!activeProduct) {
     return <div>Product not found.</div>;
   }
 
@@ -229,7 +273,7 @@ function CakeDetailsPage({ params }: any) {
                   link: "/shop",
                 },
                 {
-                  name: getProduct ? getProduct.name : "",
+                  name: activeProduct ? activeProduct.name : "",
                   link: "/shop/cakes",
                 },
               ]}
@@ -238,24 +282,55 @@ function CakeDetailsPage({ params }: any) {
         </section>
         <section className="">
           <div className="wrapper py-4 md:grid md:grid-cols-2 md:items-start md:gap-4 lg:justify-evenly lg:gap-8 xl:grid-cols-[40%_50%] xl:gap-10">
-            <div className="w-full overflow-hidden rounded-md md:h-3/4">
+            <div className="relative w-full overflow-hidden rounded-md md:h-3/4">
+              {!isLoaded && (
+                <Image
+                  src={Placeholder}
+                  alt="placeholder for image"
+                  fill
+                  placeholder="blur"
+                  sizes="(max-width: 1024px) 33vw"
+                  className="animate-pulse object-cover object-center"
+                />
+              )}
               <Image
-                src={getProduct.imageUrl}
-                alt={getProduct.slug}
-                className="mx-auto h-full w-full object-cover object-center"
+                src={
+                  activeProduct.images[0].includes("example")
+                    ? exampleImage
+                    : activeProduct.images[0]
+                }
+                alt={activeProduct.slug}
+                fill
+                sizes="(max-width: 1024px) 33vw"
+                className={`mx-auto object-cover object-center ${isLoaded ? "opacity-100" : "opacity-0"}`}
+                onLoad={() => setIsLoaded(true)}
               />
+
+              {/* <Image
+            src={
+              data.images[0].includes("example") ? exampleImage : data.images[0]
+            }
+            // src={data?.imageUrl ? data?.imageUrl : data.images[0]}
+            alt={data?.name}
+            fill
+            sizes="(max-width: 1440px) 33vw"
+            className={`object-cover object-center ${isLoaded ? "opacity-100" : "opacity-0"}`}
+            onLoad={() => setIsLoaded(true)}
+          /> */}
             </div>
 
             <div className="mb-1 flex flex-col text-lg">
               <span className="text-base font-semibold text-neutral-500">
-                &euro;{getProduct?.minPrice} - &euro;{getProduct?.maxPrice}
+                &euro;{activeProduct?.minPrice} - &euro;
+                {activeProduct?.maxPrice}
               </span>
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-semibold capitalize">
-                  {getProduct?.name}
+                  {setToUpperCase(activeProduct?.name)}
                 </h3>
+
                 <ProductStatusType
-                  status={getProduct?.type}
+                  status={setToUpperCase(activeProduct?.productType)}
                   className="text-sm"
                 />
               </div>
@@ -272,18 +347,22 @@ function CakeDetailsPage({ params }: any) {
               {/* CAKE DESCRIPTION */}
               <div>
                 <h3 className="font-semibold">Description</h3>
-                <p className="text-neutral-600">
-                  A red crimson,or scalet colored layer cake,layered with ermine
-                  icing.
-                </p>
+                <p className="text-neutral-600">{activeProduct?.description}</p>
                 <ul className="mt-1.5 space-y-1">
                   <li className="">
                     <span className="font-semibold">Category:</span>
-                    <span>&nbsp;Milestone Cakes</span>
+                    <span>
+                      &nbsp;{setToUpperCase(activeProduct?.category?.name)}
+                    </span>
                   </li>
                   <li className="">
                     <span className="font-semibold">Subcategory:</span>
-                    <span>&nbsp;Birthday Cakes</span>
+                    <span>
+                      &nbsp;
+                      {activeProduct?.subCategory.map((subCat: any) =>
+                        setToUpperCase(subCat.name),
+                      )}
+                    </span>
                   </li>
                 </ul>
               </div>
@@ -459,7 +538,9 @@ function CakeDetailsPage({ params }: any) {
 
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {Array.from({ length: 4 }, (_: any, index: number) => {
-                return <ProductCard key={index} data={cakeProduct[index]} />;
+                return (
+                  <ProductCard key={index} data={getSimilarProducts[index]} />
+                );
               })}
             </div>
           </div>

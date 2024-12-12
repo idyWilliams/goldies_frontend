@@ -10,12 +10,28 @@ import { addSlugToCakes } from "@/helper";
 import { savedItems } from "@/utils/cakeData";
 import Link from "next/link";
 import ProductCard from "../shop-components/ProductCard";
+import useSavedItems from "@/services/hooks/products/useSavedItems";
+import useUserPdctStore from "@/zustand/userProductStore/store";
+import EachElement from "@/helper/EachElement";
 
-let itemsPerPage = 6;
+let itemsPerPage = 2;
 const SavedItems = () => {
   const [cakes, setCakes] = useState<any[]>(addSlugToCakes(savedItems));
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
+  const setFavProducts = useUserPdctStore((state) => state.setFavProducts);
+  const favProducts = useUserPdctStore((state) => state.favProducts);
 
+  const { favorites } = useSavedItems();
+
+  useEffect(() => {
+    if (favorites) {
+      setFavProducts(favorites);
+    }
+  }, [favorites, setFavProducts]);
+
+  // useEffect(() => {
+  //   setCakes((prev: any) => prev.filter((item: any) => item?.id > 5));
+  // }, []);
   useEffect(() => {
     setCakes((prev: any) => prev.filter((item: any) => item?.id > 5));
   }, []);
@@ -29,10 +45,20 @@ const SavedItems = () => {
         </p>
       </div>
       <div className="grid gap-5 sm:grid-cols-2">
-        {chunkArray(cakes, itemsPerPage)[currentPageIndex - 1]?.map(
+        {/* {chunkArray(cakes, itemsPerPage)[currentPageIndex - 1]?.map(
           (cake: any, index: any) => {
             return <ProductCard data={cake} key={index} />;
           },
+        )} */}
+
+        {favProducts && (
+          <EachElement
+            of={addSlugToCakes(favProducts)}
+            render={(item: any, index: number) => {
+              if (index > 1) return;
+              return <ProductCard data={item} key={item._id} />;
+            }}
+          />
         )}
       </div>
 
