@@ -15,6 +15,8 @@ import { useRouter } from "next/navigation";
 import React, { act, useEffect, useState } from "react";
 import arrow from "@/public/assets/back-arrow.png";
 import frontarrow from "@/public/assets/frontArrow.png";
+import { useQuery } from "@tanstack/react-query";
+import { getUser } from "@/services/hooks/users";
 
 const tabs = [
   {
@@ -30,7 +32,7 @@ const tabs = [
     icon: <HeartTick />,
   },
   {
-    label: "My Addresses",
+    label: "Shipping Addresses",
     icon: <Book />,
   },
   // {
@@ -39,28 +41,47 @@ const tabs = [
   // },
 ];
 
-function switchTabs(index: any) {
-  switch (index) {
-    case 0:
-      return <AccountInfo />;
-    case 1:
-      return <Orders />;
-    case 2:
-      return <SavedItems />;
-    case 3:
-      return <MyAddresses />;
-    // case 4:
-    //   return <ChangePassword />;
-    default:
-      break;
-  }
-}
-
 const Page = () => {
   const [activeTab, setActiveTab] = useState<any>(null);
   // const [activeDesktopTab, setActiveDesktopTab] = useState<any>(0);
   const router = useRouter();
   const [isMobileView, setIsMobileView] = useState(false);
+  const [fetchedUser, setFetcheduser] = useState<any>();
+
+  const { data, isError } = useQuery({
+    queryKey: ["user"],
+    queryFn: getUser,
+  });
+
+  useEffect(() => {
+    if (data) {
+      console.log(data);
+      const user = {
+        firstName: data.user.firstName,
+        lastName: data.user.lastName,
+        email: data.user.email,
+        phoneNumber: data.user.phoneNumber || "",
+      };
+      setFetcheduser(user);
+    }
+  }, [data]);
+
+  function switchTabs(index: any) {
+    switch (index) {
+      case 0:
+        return <AccountInfo fetchedUser={fetchedUser} />;
+      case 1:
+        return <Orders />;
+      case 2:
+        return <SavedItems />;
+      case 3:
+        return <MyAddresses myaddresses={data} />;
+      // case 4:
+      //   return <ChangePassword />;
+      default:
+        break;
+    }
+  }
 
   const handleTab = (index: number, label: string) => {
     setActiveTab(index);
