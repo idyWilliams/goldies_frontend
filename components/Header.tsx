@@ -11,7 +11,7 @@ import { RootState } from "@/redux/store";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { BiHeart, BiStore } from "react-icons/bi";
 import { FaRegUserCircle } from "react-icons/fa";
-import { Ghost } from "iconsax-react";
+import { Ghost, Logout } from "iconsax-react";
 import MenuPopup from "./MenuPopup";
 import { useDispatch } from "react-redux";
 import { setProducts } from "@/redux/features/product/productSlice";
@@ -30,6 +30,7 @@ import {
 } from "./ui/dialog";
 import { cn } from "@/helper/cn";
 import { Toaster } from "sonner";
+import useActivePath from "@/app/_hooks/useActivePath";
 
 const Header = () => {
   const [show, setShow] = useState(false);
@@ -74,6 +75,8 @@ const Header = () => {
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const navigateToLogin = useActivePath();
 
   // STORE CART ITEMS TO LOCALSTORAGE
   useEffect(() => {
@@ -202,28 +205,40 @@ const Header = () => {
               {isOpen && (
                 <MenuPopup className="absolute right-0 top-16 z-20 w-[190px] rounded-md bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
                   <div className="">
-                    <Link
-                      href={isLogin ? "/my-account" : "/sign-in"}
+                    <span
+                      // href={isLogin ? "/my-account" : "/sign-in"}
+                      onClick={() => {
+                        isLogin
+                          ? router.push("/my-account")
+                          : navigateToLogin();
+                      }}
                       className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
                     >
                       <FaRegUserCircle size={20} />
                       My Account
-                    </Link>
-                    <Link
-                      href={isLogin ? "/my-orders" : "/sign-in"}
+                    </span>
+                    <span
+                      // href={isLogin ? "/my-orders" : "/sign-in"}
+                      onClick={() => {
+                        isLogin ? router.push("/my-orders") : navigateToLogin();
+                      }}
                       className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
                     >
                       <BiStore size={20} />
                       Orders
-                    </Link>
+                    </span>
 
-                    <Link
-                      href={isLogin ? "/saved-items" : "/sign-in"}
+                    <span
+                      onClick={() => {
+                        isLogin
+                          ? router.push("/saved-items")
+                          : navigateToLogin();
+                      }}
                       className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
                     >
                       <BiHeart size={20} />
                       Saved Items
-                    </Link>
+                    </span>
                   </div>
                   <div className="my-2 border-b border-black border-opacity-50"></div>
                   {isLogin ? (
@@ -254,6 +269,7 @@ const Header = () => {
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         isLogin={isLogin}
+        logOut={logOut}
       />
 
       <SessionModal

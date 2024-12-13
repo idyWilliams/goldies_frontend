@@ -55,11 +55,11 @@ const addresses = [
   },
 ];
 
-const MyAddresses = () => {
+const MyAddresses = ({ myaddresses }: any) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-    const [isMobileView, setIsMobileView] = useState(false);
-
+  const [isMobileView, setIsMobileView] = useState(false);
+  console.log(myaddresses);
 
   const handleEditClick = (data: any) => {
     setIsEditOpen(true);
@@ -70,7 +70,6 @@ const MyAddresses = () => {
     setIsDeleteOpen(true);
     console.log("hello, delete button clicked");
   };
-  
 
   const useIsMobile = () => {
     const isMobileView = useMediaQuery({ maxWidth: 768 });
@@ -78,7 +77,6 @@ const MyAddresses = () => {
   };
 
   const isMobile = useIsMobile();
-
 
   return (
     <div>
