@@ -1,5 +1,6 @@
 // types/api.ts
 export interface User {
+  [x: string]: any;
   id: string;
   firstName: string;
   lastName: string;
@@ -88,7 +89,7 @@ export interface GetUserResponse {
   // data: any;
   user: User;
   message: string;
-  token:string
+  token: string;
 }
 export interface Category {
   [x: string]: any;

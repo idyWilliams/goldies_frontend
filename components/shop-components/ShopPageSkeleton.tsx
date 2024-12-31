@@ -4,7 +4,7 @@ import ProductCardSkeleton from "./ProductCardSkeleton";
 const ShopPageSkeleton = () => {
   return (
     <>
-      <div className="hidden gap-5 lg:grid lg:grid-cols-3">
+      <div className="hidden gap-5 lg:grid lg:grid-cols-3 ">
         <ProductCardSkeleton />
         <ProductCardSkeleton />
         <ProductCardSkeleton />
@@ -18,7 +18,7 @@ const ShopPageSkeleton = () => {
         <ProductCardSkeleton />
         <ProductCardSkeleton />
       </div>
-      <div className=" md:hidden">
+      <div className=" gap-3 md:hidden">
         <ProductCardSkeleton />
         <ProductCardSkeleton />
       </div>

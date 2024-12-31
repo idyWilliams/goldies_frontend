@@ -9,22 +9,26 @@ import { useEffect, useMemo } from "react";
 import ShopPageSkeleton from "./shop-components/ShopPageSkeleton";
 import useSavedItems from "@/services/hooks/products/useSavedItems";
 import useUserPdctStore from "@/zustand/userProductStore/store";
+import useProducts from "@/services/hooks/products/useProducts";
 
 const FeaturedProducts = () => {
   const favProducts = useUserPdctStore((state) => state.favProducts);
   const setFavProducts = useUserPdctStore((state) => state.setFavProducts);
-
-  const { data, isError, isLoading, isPending } = useQuery({
-    queryKey: ["allProducts", 1, 6],
-    queryFn: async () => getAllProducts(1, 6),
-  });
-
-  const featuredProducts = useMemo(() => {
-    if (isLoading || isError) return null;
-    else return data?.products;
-  }, [isError, isLoading, data?.products]);
-
+  const featuredProducts = useUserPdctStore((state) => state.allProducts);
+  const { isPending, pages, allProducts } = useProducts(1, 6);
   const { favorites } = useSavedItems();
+
+  // const { data, isError, isLoading, isPending } = useQuery({
+  //   queryKey: ["allProducts", 1, 6],
+  //   queryFn: async () => getAllProducts(1, 6),
+  // });
+
+  // const featuredProducts = useMemo(() => {
+  //   if (isLoading || isError) return null;
+  //   else return data?.products;
+  // }, [isError, isLoading, data?.products]);
+
+  // use;
 
   useEffect(() => {
     if (favorites) {
@@ -55,8 +59,12 @@ const FeaturedProducts = () => {
         </div>
 
         <div className="vector-bg mt-7 rounded-3xl border bg-cover bg-center py-10">
-          <div className="wrapper grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:gap-7 ">
-            {isPending && !featuredProducts && <ShopPageSkeleton />}
+          {isPending && !featuredProducts && (
+            <div className="wrapper ">
+              <ShopPageSkeleton />
+            </div>
+          )}
+          <div className="wrapper grid gap-3 sm:grid-cols-2 lg:grid-cols-3  xl:gap-7">
             {featuredProducts && (
               <EachElement
                 of={addSlugToCakes(featuredProducts)}

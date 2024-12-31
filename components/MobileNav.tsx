@@ -1,4 +1,6 @@
+import useActivePath from "@/app/_hooks/useActivePath";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { BiHeart, BiStore } from "react-icons/bi";
 import { FaRegUserCircle } from "react-icons/fa";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
@@ -10,7 +12,11 @@ const MobileNav = ({
   isOpen,
   setIsOpen,
   isLogin,
+  logOut,
 }: any) => {
+  const router = useRouter();
+  const navigateToLogin = useActivePath();
+
   return (
     <div
       onClick={() => setShow(false)}
@@ -31,38 +37,52 @@ const MobileNav = ({
           {isOpen && (
             <div className="absolute right-0 top-10 z-20 w-[190px] rounded-md bg-[#e9da88] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
               <div className="">
-                <Link
-                  onClick={() => setShow(false)}
-                  href={isLogin ? "/my-account" : "/sign-in"}
+                <span
+                  // onClick={() => setShow(false)}
+                  onClick={() => {
+                    isLogin ? router.push("/my-account") : navigateToLogin();
+                    setShow(false);
+                  }}
+                  // href={isLogin ? "/my-account" : "/sign-in"}
                   className="flex items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
                 >
                   <FaRegUserCircle size={20} />
                   My Account
-                </Link>
-                <Link
-                  onClick={() => setShow(false)}
-                  href={isLogin ? "/my-orders" : "/sign-in"}
+                </span>
+                <span
+                  onClick={() => {
+                    isLogin ? router.push("/my-orders") : navigateToLogin();
+                    setShow(false);
+                  }}
+                  // href={isLogin ? "/my-orders" : "/sign-in"}
                   className="flex items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
                 >
                   <BiStore size={20} />
                   Orders
-                </Link>
-                <Link
-                  onClick={() => setShow(false)}
-                  href={isLogin ? "/saved-items" : "/sign-in"}
+                </span>
+                <span
+                  onClick={() => {
+                    isLogin ? router.push("/saved-items") : navigateToLogin();
+                    setShow(false);
+                  }}
+                  // href={isLogin ? "/saved-items" : "/sign-in"}
                   className="flex items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
                 >
                   <BiHeart size={20} />
                   Saved Items
-                </Link>
+                </span>
               </div>
               <div className="my-2 border-b border-black border-opacity-50"></div>
-              <Link
-                href={`/sign-in`}
+
+              <span
+                onClick={() => {
+                  isLogin ? logOut() : router.push("/sign-in");
+                  setShow(false);
+                }}
                 className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
               >
-                Sign In
-              </Link>
+                {isLogin ? "Logout" : "Sign In"}
+              </span>
             </div>
           )}
         </div>
