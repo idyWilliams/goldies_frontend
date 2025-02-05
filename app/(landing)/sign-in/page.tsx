@@ -116,34 +116,46 @@ const Page = () => {
                     name="email"
                     placeholder="Your email"
                   />
+                  {errors?.email && (
+                    <p className={cn("mt-1 text-sm text-red-600")}>
+                      {errors.email?.message}
+                    </p>
+                  )}
                 </label>
                 <label htmlFor="password" className="relative">
                   <span className="mb-1 inline-block font-medium capitalize">
                     Password
                   </span>
-                  <input
-                    {...register("password")}
-                    type={visible ? "text" : "password"}
-                    className={cn(
-                      "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
-                      errors?.password
-                        ? "border border-red-600 focus:border-red-600"
-                        : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
-                    )}
-                    id="password"
-                    name="password"
-                    placeholder="Your password"
-                  />
-                  <span
-                    onClick={handleToggle}
-                    className="absolute bottom-[14px] right-3 cursor-pointer text-neutral-800"
-                  >
-                    {visible ? (
-                      <BsEyeSlash size={20} />
-                    ) : (
-                      <AiOutlineEye size={20} />
-                    )}
-                  </span>
+                  <div className="relative">
+                    <input
+                      {...register("password")}
+                      type={visible ? "text" : "password"}
+                      className={cn(
+                        "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
+                        errors?.password
+                          ? "border border-red-600 focus:border-red-600"
+                          : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
+                      )}
+                      id="password"
+                      name="password"
+                      placeholder="Your password"
+                    />
+                    <span
+                      onClick={handleToggle}
+                      className="absolute bottom-[14px] right-3 cursor-pointer text-neutral-800"
+                    >
+                      {visible ? (
+                        <BsEyeSlash size={20} />
+                      ) : (
+                        <AiOutlineEye size={20} />
+                      )}
+                    </span>
+                  </div>
+                  {errors?.password && (
+                    <p className={cn("mt-1 text-sm text-red-600")}>
+                      {errors.password?.message}
+                    </p>
+                  )}
                 </label>
                 <div className="flex items-center justify-between">
                   <label htmlFor="agree" className="flex items-center gap-3">
