@@ -67,7 +67,7 @@ export const updateProduct = async (data: any, productId: string) => {
 
 // DELETE PRODUCT
 export const deleteProduct = async (productId: string) => {
-  const response = await instance.delete(`/product/edit_product/${productId}`);
+  const response = await instance.delete(`/product/delete_product/${productId}`);
   return response.data;
 };
 

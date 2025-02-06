@@ -32,4 +32,5 @@ export interface IProduct {
   allergens?: string[];
   available?: boolean;
   bestSeller?: boolean;
+  status?: string
 }

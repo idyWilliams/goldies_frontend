@@ -32,6 +32,7 @@ import AdminAuth from "@/components/admin-component/AdminAuth";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProducts } from "@/services/hooks/products";
 import { Button } from "@/components/ui/button";
+import { IProduct } from "@/interfaces/product.interface";
 
 export type Product = {
   _id: string;
@@ -96,12 +97,12 @@ const statusColor = (status: string) => {
   }
 };
 
-const columnHelper = createColumnHelper<Product>();
+const columnHelper = createColumnHelper<IProduct>();
 
 export default function Page() {
   const [showModal, setShowModal] = useState(false);
   const [action, setAction] = useState("");
-  const [selectedProducts, setSelectedProducts] = useState<any>();
+  const [selectedProduct, setSelectedProduct] = useState<IProduct>();
   const [isOpen, setOpen] = useState(false);
   const [sortType, setSortType] = useState("recentlyAdded");
   const [searchValue, setSearchValue] = useState("");
@@ -122,8 +123,6 @@ export default function Page() {
     queryKey: ["allProducts"],
     queryFn: async () => getAllProducts(1, 15),
   });
-
-  console.log(allProducts, "All products");
 
   useEffect(() => {
     if (!isSuccess) return;
@@ -263,12 +262,12 @@ export default function Page() {
     }),
     columnHelper.accessor((row) => row, {
       id: "actions",
-      cell: (info) => {
+      cell: ({ row }) => {
         // console.log(info, "info");
         return (
           <div className="inline-flex items-center gap-3">
             <Link
-              href={`/admin/products/${info.cell.row.original._id}`}
+              href={`/admin/products/${row.original._id}`}
               className="cursor-pointer text-blue-700"
             >
               <Eye size={20} />
@@ -277,7 +276,7 @@ export default function Page() {
               onClick={() => {
                 setShowModal(true);
                 setAction("edit");
-                setSelectedProducts(info.cell.row.original);
+                setSelectedProduct(row.original);
               }}
               className="cursor-pointer text-green-700"
             >
@@ -288,7 +287,7 @@ export default function Page() {
               onClick={() => {
                 setShowModal(true);
                 setAction("delete");
-                setSelectedProducts(info.cell.row.original);
+                setSelectedProduct(row.original);
               }}
             >
               <Trash size={20} />
@@ -300,7 +299,6 @@ export default function Page() {
     }),
   ];
 
-  console.log(data, new Date().getTime().toLocaleString());
   return (
     <>
       <section className="w-full px-4 pt-6">
@@ -352,7 +350,7 @@ export default function Page() {
             </div>
           )}
           {isLoading && (
-            <div>
+            <div className="py-8">
               <p>The products is loading</p>
             </div>
           )}
@@ -379,7 +377,7 @@ export default function Page() {
       {showModal && (
         <ProductOptionModal
           action={action}
-          product={selectedProducts}
+          product={selectedProduct as IProduct}
           setShowModal={setShowModal}
         />
       )}

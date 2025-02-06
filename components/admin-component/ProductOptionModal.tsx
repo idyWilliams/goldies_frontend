@@ -1,5 +1,15 @@
+import { IProduct } from "@/interfaces/product.interface";
+import { deleteProduct } from "@/services/hooks/products";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import React from "react";
+import { toast } from "sonner";
+
+interface ErrorResponse {
+  message: string;
+  [key: string]: any;
+}
 
 export default function ProductOptionModal({
   action,
@@ -7,13 +17,32 @@ export default function ProductOptionModal({
   setShowModal,
 }: {
   action: string;
-  product: any;
-  setShowModal: any;
+  product: IProduct;
+  setShowModal: (value: boolean) => void;
 }) {
   const router = useRouter();
+  const queryClient = useQueryClient();
+
+  const handleDeleteProduct = useMutation({
+    mutationFn: deleteProduct,
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      queryClient.invalidateQueries({ queryKey: ["allProducts"] });
+      setShowModal(false);
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      const resError = error.response?.data;
+      console.error(resError);
+      const errorMessage = resError?.message ? resError?.message : resError;
+      toast.error(`Error: ${errorMessage}`);
+    },
+  });
+
   const handleConfirm = () => {
     if (action.toLowerCase() === "edit") {
-      router.push(`/admin/create-products?edit=${product.id}`);
+      router.push(`/admin/create-products?edit=${product._id}`);
+    } else if (action === "delete") {
+      handleDeleteProduct.mutate(product?._id);
     }
   };
   return (
@@ -21,7 +50,7 @@ export default function ProductOptionModal({
       <div className="w-[300px] rounded-md bg-white p-6">
         <h3>
           Are you sure you want to {action}{" "}
-          <span className="capitalize">{product.productName}</span>?
+          <span className="capitalize">{product.name}</span>?
         </h3>
         <div className="mt-6 flex justify-end gap-2">
           <button

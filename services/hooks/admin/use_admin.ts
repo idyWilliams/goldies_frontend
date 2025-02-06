@@ -23,8 +23,6 @@ const useAdmin = () => {
     }
   }, []);
 
-  console.log("from useAdmin>>>", admin);
-
   return admin;
 };
 
