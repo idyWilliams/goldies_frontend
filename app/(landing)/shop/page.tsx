@@ -18,6 +18,7 @@ import AdminPagination from "@/components/admin-component/AdminPagination";
 import ShopPageSkeleton from "@/components/shop-components/ShopPageSkeleton";
 import useSavedItems from "@/services/hooks/products/useSavedItems";
 import useUserPdctStore from "@/zustand/userProductStore/store";
+import { IProduct } from "@/interfaces/product.interface";
 
 let itemsPerPage = 6;
 
@@ -43,6 +44,8 @@ const ShopPage = () => {
     currentPageIndex,
     itemsPerPage,
   );
+
+  console.log("from shop page", allProduct)
 
   useEffect(() => {
     if (pages) {
@@ -191,7 +194,7 @@ const ShopPage = () => {
                 {allProduct.length > 0 && (
                   <EachElement
                     of={allProduct}
-                    render={(item: any) => {
+                    render={(item: IProduct) => {
                       return <ProductCard data={item} key={item._id} />;
                     }}
                   />

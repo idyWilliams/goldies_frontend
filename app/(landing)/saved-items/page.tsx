@@ -54,24 +54,35 @@ const Page = () => {
           <h2 className="text-center text-2xl font-bold">Favourite Products</h2>
         </div>
 
-        <div className="mb-4 flex justify-end">
-          <span className="text-sm text-neutral-500 lg:text-base">
-            Showing {startIndex} - {endIndex} of {totalProducts} results
-          </span>
-        </div>
-
         {isPending && !currentData && <ShopPageSkeleton />}
 
-        <div className="grid justify-items-end gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {currentData && (
-            <EachElement
-              of={currentData}
-              render={(item: any) => {
-                return <ProductCard data={item} key={item._id} />;
-              }}
-            />
-          )}
-        </div>
+        {!isPending && favProducts.length === 0 ? (
+          <div className="h-40 py-8">
+            <p className="text-center text-lg text-gray-500">
+              You have no saved products.
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="mb-4 flex justify-end">
+              <span className="text-sm text-neutral-500 lg:text-base">
+                Showing {startIndex} - {endIndex} of {totalProducts} results
+              </span>
+            </div>
+
+            <div className="grid justify-items-end gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {currentData && (
+                <EachElement
+                  of={currentData}
+                  render={(item: any) => (
+                    <ProductCard data={item} key={item._id} />
+                  )}
+                />
+              )}
+            </div>
+          </>
+        )}
+
         {totalPages > 1 && (
           <AdminPagination
             totalPage={totalPages}

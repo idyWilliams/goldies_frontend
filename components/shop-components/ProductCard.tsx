@@ -12,11 +12,16 @@ import StarRating from "../StarRating";
 import Placeholder from "@/public/assets/placeholder3.png";
 import useUserPdctStore from "@/zustand/userProductStore/store";
 import Favorite from "./Favorite";
+import { IProduct } from "@/interfaces/product.interface";
 
 const exampleImage =
   "https://firebasestorage.googleapis.com/v0/b/goldie-b3ba7.appspot.com/o/products%2Fbanana-cake-with-cinnamon-cream-102945-1.webp?alt=media&token=32e645da-9327-4f7f-9f79-a2cba1102676";
 
-const ProductCard = React.memo(function ProductCard({ data }: { data: any }) {
+const ProductCard = React.memo(function ProductCard({
+  data,
+}: {
+  data: IProduct;
+}) {
   const router = useRouter();
   const params = useSearchParams();
   const dispatch = useDispatch();
@@ -91,13 +96,13 @@ const ProductCard = React.memo(function ProductCard({ data }: { data: any }) {
               <span
                 className={cn(
                   "font-semibold",
-                  data?.type === "pre-order" || data?.productType === "preorder"
+                  data?.productType === "pre-order" ||
+                    data?.productType === "preorder"
                     ? "text-red-600"
                     : "text-green-700",
                 )}
               >
                 {data?.productType}
-                {data?.type}
               </span>
             </span>
             <Tooltip
@@ -108,7 +113,7 @@ const ProductCard = React.memo(function ProductCard({ data }: { data: any }) {
               className="border bg-[#fff_!important] text-[#333_!important]"
               anchorSelect={`#my-anchor-element-${data?._id}`}
               content={
-                data?.type === "pre-order" || data?.productType === "preorder"
+                data?.productType === "preorder"
                   ? "Preorder now for a fresh bake!"
                   : "Ready for immediate purchase!"
               }
@@ -125,7 +130,7 @@ const ProductCard = React.memo(function ProductCard({ data }: { data: any }) {
           &euro;{data?.minPrice} - &euro;{data?.maxPrice}
         </span>
         <h3 className="font-semibold capitalize underline underline-offset-1">
-          <Link href={`/shop/${data?.slug}?productId=${data?.id}`}>
+          <Link href={`/shop/${data?.slug}?productId=${data?._id}`}>
             <span className="w-full" onClick={() => handleProduct(data)}>
               {data?.name}
             </span>
