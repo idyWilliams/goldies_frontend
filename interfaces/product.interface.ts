@@ -27,4 +27,9 @@ export interface IProduct {
   createdAt: string;
   updatedAt: string;
   slug: string;
+  weight?: string;
+  ingredients?: string[];
+  allergens?: string[];
+  available?: boolean;
+  bestSeller?: boolean;
 }

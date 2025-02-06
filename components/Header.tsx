@@ -78,20 +78,6 @@ const Header = () => {
 
   const navigateToLogin = useActivePath();
 
-  // STORE CART ITEMS TO LOCALSTORAGE
-  useEffect(() => {
-    if (Object.values(cart).length >= 1) {
-      localStorage.setItem("cart", JSON.stringify(cart));
-    }
-  }, [cart]);
-
-  // RETRIEVE CART ITEMS FROM LOCALSTORAGE ON INITIAL RENDER
-  useEffect(() => {
-    if (localStorage.getItem("cart") !== null) {
-      dispatch(setProducts(JSON.parse(localStorage.getItem("cart") as string)));
-    }
-  }, [dispatch]);
-
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user") as string);
     setUser(storedUser?.user);

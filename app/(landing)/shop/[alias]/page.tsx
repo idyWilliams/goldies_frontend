@@ -230,7 +230,7 @@ function CakeDetailsPage({ params }: any) {
   useEffect(() => {
     if (allProducts) {
       const getSimilarProducts = allProducts.filter(
-        (product: { slug: any }) => product.slug !== activeProduct.slug,
+        (product: { slug: string }) => product.slug !== activeProduct?.slug,
       );
       console.log(getSimilarProducts);
 
@@ -267,8 +267,8 @@ function CakeDetailsPage({ params }: any) {
   // };
   const handleClick = handleSubmit((data) => {
     if (data.sizes && data.toppings && data.cakeTimes) {
-      dispatch(addProductToCart({ id: activeProduct._id }));
-      console.log(activeProduct._id);
+      dispatch(addProductToCart({ id: activeProduct?._id as string }));
+      console.log("add to cart>>>",activeProduct?._id);
     } else {
       console.error(
         "Please fill in all required fields before adding to cart.",
