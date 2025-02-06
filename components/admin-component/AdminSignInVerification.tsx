@@ -48,8 +48,8 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
         setAuth({ token: res?.token, ...res?.admin });
 
         // UPDATE LOCALSTORAGE
-        localStorage.removeItem("adminToken");
-        localStorage.removeItem("admin");
+        // localStorage.removeItem("adminToken");
+        // localStorage.removeItem("admin");
         localStorage.setItem("isLogin", JSON.stringify(true));
         localStorage.setItem(
           "admin",

@@ -24,3 +24,14 @@ export interface IShippingAddress {
   phonenumber: string;
   isDefault: boolean;
 }
+
+export interface IAdmin {
+  _id: string;
+  userName: string;
+  email: string;
+  password: string;
+  OTP: string;
+  isVerified: boolean;
+  role: string;
+  createdAt: string;
+}
