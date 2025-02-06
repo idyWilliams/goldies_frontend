@@ -1,6 +1,5 @@
 "use client";
 import AuthContext from "@/context/AuthProvider";
-import { setProducts } from "@/redux/features/product/productSlice";
 import { RootState } from "@/redux/store";
 import { Ghost } from "iconsax-react";
 import Image from "next/image";
@@ -14,7 +13,6 @@ import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { IoCartOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import Logo from "../public/assets/goldis-logo.png";
-import MenuPopup from "./MenuPopup";
 import MobileNav from "./MobileNav";
 import { Button } from "./ui/button";
 // import { jwtDecode } from "jwt-decode";
@@ -25,8 +23,9 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from "./ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 const Header = () => {
   const [show, setShow] = useState(false);
@@ -90,7 +89,7 @@ const Header = () => {
   return (
     <>
       <header
-        className={`${sticky ? "fixed shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "absolute border-b border-neutral-900"} left-0 top-0 z-[999] flex  w-full items-center bg-goldie-300 py-3 lg:h-20`}
+        className={`${sticky ? "fixed shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "absolute border-b border-neutral-900"} left-0 top-0 z-50 flex  w-full items-center bg-goldie-300 py-3 lg:h-20`}
       >
         <div className="wrapper flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -150,16 +149,11 @@ const Header = () => {
 
           <div className="flex items-center gap-3">
             <div
-              className="relative w-[30px] cursor-pointer"
+              className="relative flex h-[30px] w-[30px] cursor-pointer items-center justify-center"
               onClick={() => router.push("/cart")}
             >
-              {/* <Image
-                src={CartIcon}
-                className="h-[22px] w-auto"
-                alt="Goldis Logo"
-              /> */}
               <span>
-                <IoCartOutline size={24} />
+                <IoCartOutline size={24} className="mb-0" />
               </span>
               {Object.values(cart) && Object.values(cart).length >= 0 && (
                 <span className="absolute -right-1 top-0 inline-flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs font-medium text-[#fcf7e8]">
@@ -168,23 +162,25 @@ const Header = () => {
               )}
             </div>
             <div className="hidden lg:block">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsOpen((prev) => !prev);
-                }}
-                className="flex items-center gap-2"
-              >
-                <FaRegUserCircle size={20} />
-                {!isLogin ? (
-                  <span>Account</span>
-                ) : (
-                  <span>{user?.firstName}</span>
-                )}
-                {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
-              </button>
-              {isOpen && (
-                <MenuPopup className="absolute right-0 top-16 z-20 w-[190px] rounded-md bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsOpen((prev) => !prev);
+                    }}
+                    className="flex items-center gap-2"
+                  >
+                    <FaRegUserCircle size={20} />
+                    {!isLogin ? (
+                      <span>Account</span>
+                    ) : (
+                      <span>{user?.firstName}</span>
+                    )}
+                    {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[190px] rounded-md border-[#E4D064] bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
                   <div className="">
                     <span
                       // href={isLogin ? "/my-account" : "/sign-in"}
@@ -237,8 +233,8 @@ const Header = () => {
                       Sign In
                     </Button>
                   )}
-                </MenuPopup>
-              )}
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
         </div>
@@ -251,6 +247,7 @@ const Header = () => {
         setIsOpen={setIsOpen}
         isLogin={isLogin}
         logOut={logOut}
+        user={user}
       />
 
       <SessionModal
