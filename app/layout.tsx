@@ -13,6 +13,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { usePathname } from "next/navigation";
 import StoreProvider from "./StoreProvider";
+import { Toaster } from "@/components/ui/sonner";
 
 const metadata: Metadata = {
   title: "Goldies Confectioneries | Buy Delicious Cakes Online",
@@ -76,6 +77,7 @@ export default function RootLayout({
                   className={cn("overflow-x-hidden", tomatoGrotesk.className)}
                 >
                   {children}
+                  <Toaster position="top-right" richColors expand={true} />
                 </body>
               </ProductProvider>
             </StoreProvider>

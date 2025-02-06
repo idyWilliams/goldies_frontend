@@ -1,36 +1,32 @@
 "use client";
-import Link from "next/link";
-import Image from "next/image";
-import { BsList, BsX, BsXLg } from "react-icons/bs";
-import { useContext, useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
-import MobileNav from "./MobileNav";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
-import { BiHeart, BiStore } from "react-icons/bi";
-import { FaRegUserCircle } from "react-icons/fa";
-import { Ghost, Logout } from "iconsax-react";
-import MenuPopup from "./MenuPopup";
-import { useDispatch } from "react-redux";
-import { setProducts } from "@/redux/features/product/productSlice";
-import { IoCartOutline } from "react-icons/io5";
-import Logo from "../public/assets/goldis-logo.png";
 import AuthContext from "@/context/AuthProvider";
+import { setProducts } from "@/redux/features/product/productSlice";
+import { RootState } from "@/redux/store";
+import { Ghost } from "iconsax-react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
+import { BiHeart, BiStore } from "react-icons/bi";
+import { BsList, BsX } from "react-icons/bs";
+import { FaRegUserCircle } from "react-icons/fa";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import { IoCartOutline } from "react-icons/io5";
+import { useDispatch, useSelector } from "react-redux";
+import Logo from "../public/assets/goldis-logo.png";
+import MenuPopup from "./MenuPopup";
+import MobileNav from "./MobileNav";
 import { Button } from "./ui/button";
 // import { jwtDecode } from "jwt-decode";
+import useActivePath from "@/app/_hooks/useActivePath";
+import { cn } from "@/helper/cn";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle,
-  DialogTrigger,
+  DialogTitle
 } from "./ui/dialog";
-import { cn } from "@/helper/cn";
-import { Toaster } from "sonner";
-import useActivePath from "@/app/_hooks/useActivePath";
 
 const Header = () => {
   const [show, setShow] = useState(false);
@@ -93,7 +89,6 @@ const Header = () => {
 
   return (
     <>
-      <Toaster richColors position="top-right" expand={true} />
       <header
         className={`${sticky ? "fixed shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "absolute border-b border-neutral-900"} left-0 top-0 z-[999] flex  w-full items-center bg-goldie-300 py-3 lg:h-20`}
       >

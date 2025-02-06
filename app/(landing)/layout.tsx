@@ -7,6 +7,7 @@ import AuthContext from "@/context/AuthProvider";
 import { usePathname, useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 import { userLogOut } from "@/services/hooks/user-auth";
+import NextTopLoader from "nextjs-toploader";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   // @ts-ignore
@@ -63,6 +64,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   return (
     <>
+      <NextTopLoader color="#262626" showSpinner={false} height={4} />
       <Header />
       {children}
       <Footer />
