@@ -1,19 +1,18 @@
 "use client";
 import type { Metadata } from "next";
-import { ReactNode, useEffect } from "react";
+import { ReactNode } from "react";
 import "./globals.css";
 
-import { Provider } from "react-redux";
-import { store } from "@/redux/store";
-import { ShoppingCartProvider } from "@/context/ShoppingCartContext";
-import { ProductProvider } from "@/context/ProductInfoContext";
-import { cn } from "@/helper/cn";
-import tomatoGrotesk from "@/utils/font";
-import { usePathname } from "next/navigation";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BASEURL } from "@/services/api";
 import { AuthProvider } from "@/context/AuthProvider";
+import { ProductProvider } from "@/context/ProductInfoContext";
+import { ShoppingCartProvider } from "@/context/ShoppingCartContext";
+import { cn } from "@/helper/cn";
+import { BASEURL } from "@/services/api";
+import tomatoGrotesk from "@/utils/font";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { usePathname } from "next/navigation";
+import StoreProvider from "./StoreProvider";
 
 const metadata: Metadata = {
   title: "Goldies Confectioneries | Buy Delicious Cakes Online",
@@ -71,7 +70,7 @@ export default function RootLayout({
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
           <ShoppingCartProvider>
-            <Provider store={store}>
+            <StoreProvider>
               <ProductProvider>
                 <body
                   className={cn("overflow-x-hidden", tomatoGrotesk.className)}
@@ -79,7 +78,7 @@ export default function RootLayout({
                   {children}
                 </body>
               </ProductProvider>
-            </Provider>
+            </StoreProvider>
           </ShoppingCartProvider>
         </AuthProvider>
         <ReactQueryDevtools initialIsOpen={false} />
