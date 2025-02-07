@@ -1,6 +1,6 @@
 "use client";
 import type { Metadata } from "next";
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 import "./globals.css";
 
 import { AuthProvider } from "@/context/AuthProvider";
@@ -14,6 +14,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { usePathname } from "next/navigation";
 import StoreProvider from "./StoreProvider";
 import { Toaster } from "@/components/ui/sonner";
+import Loading from "./(landing)/loading";
 
 const metadata: Metadata = {
   title: "Goldies Confectioneries | Buy Delicious Cakes Online",
@@ -68,23 +69,23 @@ export default function RootLayout({
           content="delicious cakes, buy cakes online, cake delivery, Goldies Confectioneries"
         />
       </head>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <ShoppingCartProvider>
-            <StoreProvider>
-              <ProductProvider>
-                <body
-                  className={cn("overflow-x-hidden", tomatoGrotesk.className)}
-                >
-                  {children}
-                  <Toaster position="top-right" richColors expand={true} />
-                </body>
-              </ProductProvider>
-            </StoreProvider>
-          </ShoppingCartProvider>
-        </AuthProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
+      <body className={cn("overflow-x-hidden", tomatoGrotesk.className)}>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <ShoppingCartProvider>
+              <StoreProvider>
+                <ProductProvider>
+                  <Suspense fallback={<Loading />}>
+                    {children}
+                    <Toaster position="top-right" richColors expand={true} />
+                  </Suspense>
+                </ProductProvider>
+              </StoreProvider>
+            </ShoppingCartProvider>
+          </AuthProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+      </body>
     </html>
   );
 }
