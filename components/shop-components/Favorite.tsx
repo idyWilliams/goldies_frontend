@@ -31,7 +31,6 @@ const Favorite = ({
 
   useEffect(() => {
     const found = favProducts.find((favProduct) => favProduct._id === data._id);
-    console.log(found);
 
     if (found) setFav(true);
     else setFav(false);

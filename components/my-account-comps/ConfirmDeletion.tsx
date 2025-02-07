@@ -1,5 +1,11 @@
 "use client";
+import { useAuth } from "@/context/AuthProvider";
+import { deleteUserAccount } from "@/services/hooks/users";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { toast } from "sonner";
+import { Button } from "../ui/button";
 import {
   Dialog,
   DialogContent,
@@ -8,24 +14,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
-import { Button } from "../ui/button";
-import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
-
-export const deleteUserAccount = async (): Promise<{ success: boolean }> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      console.log("Account deleted (dummy function)");
-      resolve({ success: true });
-    }, 2000); // Simulates a network request delay
-  });
-};
 
 const ConfirmDeletion = () => {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [confirmationText, setConfirmationText] = useState("");
   const [error, setError] = useState("");
+  const router = useRouter();
+  const { setIsLogin } = useAuth();
 
   const deleteAccount = useMutation({
     mutationKey: ["deleteAccount"],
@@ -39,11 +35,20 @@ const ConfirmDeletion = () => {
     },
   });
 
+  const logOut = () => {
+    setIsLogin(false);
+    localStorage.removeItem("user");
+    localStorage.removeItem("userToken");
+    localStorage.setItem("isLogin", JSON.stringify(false));
+
+    router.replace("/sign-in");
+  };
+
   const handleDelete = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (confirmationText.trim() !== "DELETE MY ACCOUNT") {
-      setError(`Please type "DELETE MY ACCOUNT" to confirm deletion.`);
+      setError(`Please confirm deletion.`);
       return;
     }
 
@@ -52,6 +57,7 @@ const ConfirmDeletion = () => {
       await deleteAccount.mutateAsync();
       setConfirmationText("");
       setError("");
+      logOut();
     } catch (error) {
       toast.error(
         "An error occurred while deleting your account. Please try again.",
@@ -91,16 +97,26 @@ const ConfirmDeletion = () => {
               type="text"
               value={confirmationText}
               onChange={(e) => setConfirmationText(e.target.value)}
-              className="form-input w-full rounded border p-2"
+              className={`${error && "border-red-500"} form-input w-full rounded border p-2`}
             />
             {error && <p className="text-sm text-red-500">{error}</p>}
           </div>
 
           <DialogFooter className="gap-2">
-            <Button type="submit" variant="destructive" disabled={isDeleting} className="rounded-sm">
+            <Button
+              type="submit"
+              variant="destructive"
+              disabled={isDeleting}
+              className="rounded-sm"
+            >
               {isDeleting ? "Deleting..." : "Confirm Delete"}
             </Button>
-            <Button type="button" variant="secondary" onClick={handleCancel} className="rounded-sm">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={handleCancel}
+              className="rounded-sm"
+            >
               Cancel
             </Button>
           </DialogFooter>

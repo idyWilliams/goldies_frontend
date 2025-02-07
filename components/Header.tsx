@@ -1,11 +1,13 @@
 "use client";
-import AuthContext from "@/context/AuthProvider";
+import useActivePath from "@/app/_hooks/useActivePath";
+import { useAuth } from "@/context/AuthProvider";
+import { cn } from "@/helper/cn";
 import { RootState } from "@/redux/store";
 import { Ghost } from "iconsax-react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { BiHeart, BiStore } from "react-icons/bi";
 import { BsList, BsX } from "react-icons/bs";
 import { FaRegUserCircle } from "react-icons/fa";
@@ -15,9 +17,6 @@ import { useDispatch, useSelector } from "react-redux";
 import Logo from "../public/assets/goldis-logo.png";
 import MobileNav from "./MobileNav";
 import { Button } from "./ui/button";
-// import { jwtDecode } from "jwt-decode";
-import useActivePath from "@/app/_hooks/useActivePath";
-import { cn } from "@/helper/cn";
 import {
   Dialog,
   DialogContent,
@@ -32,13 +31,11 @@ const Header = () => {
   const [sticky, setSticky] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  // @ts-ignore
   const cart = useSelector((state: RootState) => state.product.cart);
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState<any | null>(null);
-  // @ts-ignore
-  const { isLogin, auth, setIsLogin, setAuth } = useContext(AuthContext);
+  const { isLogin, auth, setIsLogin, setAuth } = useAuth();
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const handleClick = () => {
@@ -81,10 +78,7 @@ const Header = () => {
       const isLoggedIn = JSON.parse(localStorage.getItem("isLogin") as string);
       setIsLogin(Boolean(isLoggedIn));
     }
-
-    console.log(storedUser, "useehehe");
   }, [setAuth, setIsLogin]);
-  console.log(isLogin, "isLogged", auth);
 
   return (
     <>

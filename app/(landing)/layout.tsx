@@ -3,15 +3,14 @@ import { useContext, useEffect } from "react";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 // import { jwtDecode } from "jwt-decode";
-import AuthContext from "@/context/AuthProvider";
+import AuthContext, { useAuth } from "@/context/AuthProvider";
 import { usePathname, useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 import { userLogOut } from "@/services/hooks/user-auth";
 import NextTopLoader from "nextjs-toploader";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  // @ts-ignore
-  const { setIsLogin, setAuth } = useContext(AuthContext);
+  const { setIsLogin, setAuth } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 

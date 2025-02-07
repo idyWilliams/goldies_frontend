@@ -7,7 +7,7 @@ import TypeForm from "@/components/TypeForm";
 const BespokePage = () => {
   return (
     <>
-      <Header />
+      {/* <Header /> */}
       <section className="bg-black py-16 pt-24">
         <div className="wrapper">
           <h2 className="mb-2 text-2xl font-bold capitalize text-goldie-300 md:text-center md:text-3xl">
@@ -29,7 +29,7 @@ const BespokePage = () => {
         </div>
       </section>
 
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 };
