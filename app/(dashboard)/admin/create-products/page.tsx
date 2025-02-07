@@ -5,8 +5,12 @@ import CreateProductLayout from "@/components/admin-component/create-product/Cre
 
 import { uploadImageToFirebase } from "@/lib/utils";
 
-import { useMutation } from "@tanstack/react-query";
-import { createNewProduct } from "@/services/hooks/products";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  createNewProduct,
+  getProduct,
+  updateProduct,
+} from "@/services/hooks/products";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import CreateProductImages from "@/components/admin-component/create-product/CreateProductImages";
@@ -19,6 +23,8 @@ import CreatePdctType from "@/components/admin-component/create-product/CreatePd
 import { useMediaQuery } from "react-responsive";
 import useFormValues from "@/services/hooks/category/useFormValues";
 import { useSearchParams } from "next/navigation";
+import { IProduct } from "@/interfaces/product.interface";
+import { Option } from "react-multi-select-component";
 
 interface ErrorResponse {
   message: string;
@@ -62,33 +68,106 @@ export default function Page() {
 
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
+  const { data: productData, isLoading } = useQuery({
+    queryKey: ["product", editId],
+    queryFn: async () => getProduct(editId!),
+    enabled: !!editId,
+  });
+
+  const product: IProduct = productData?.productDetails;
+
+  const convertToOptions = (items: string[]): Option[] =>
+    items.map((item) => ({
+      label: item
+        .replace(/_/g, " ")
+        .replace(/\b\w/g, (char) => char.toUpperCase()),
+      value: item,
+    }));
+
+  useEffect(() => {
+    if (product) {
+      setFormValues({
+        productName: product.name,
+        productDescription: product.description,
+        category: product.category.id,
+        productType: product.productType,
+        maxPrice: Number(product.maxPrice),
+        minPrice: Number(product.minPrice),
+      });
+      setImages(
+        product.images && Array.isArray(product.images)
+          ? {
+              image1: product.images[0] || "",
+              image2: product.images[1] || "",
+              image3: product.images[2] || "",
+              image4: product.images[3] || "",
+            }
+          : { image1: "", image2: "", image3: "", image4: "" },
+      );
+      setSubCategory(product.subCategory);
+      setShapes(convertToOptions(product.shapes));
+      setSizes(convertToOptions(product.sizes));
+      setFlavours(convertToOptions(product.flavour));
+      setAddOn(convertToOptions(product.toppings));
+    }
+  }, [
+    product,
+    setFormValues,
+    setImages,
+    setSubCategory,
+    setShapes,
+    setSizes,
+    setFlavours,
+    setAddOn,
+  ]);
+
   const submitProduct = useMutation({
-    mutationFn: createNewProduct,
+    // mutationFn: editId ? updateProduct : createNewProduct,
+    mutationFn: async (data: {
+      name: string;
+      description: string;
+      category: { name: string; id: string };
+      subCategory: { name: string; id: string }[];
+      productType: string;
+      images: string[];
+      minPrice: number;
+      maxPrice: number;
+      shapes: string[];
+      sizes: string[];
+      flavour: string[];
+      toppings: string[];
+    }) => (editId ? updateProduct(data, editId) : createNewProduct(data)),
     onSettled: () => setIsSubmitting(false),
     onSuccess: (data) => {
-      console.log("created product successfully");
+      console.log(
+        editId
+          ? "Product updated successfully"
+          : "Product created successfully",
+      );
 
       toast.success(data.message);
-      formRef.current?.reset();
-      setFormValues({
-        productName: "",
-        productDescription: "",
-        category: "",
-        productType: "",
-        maxPrice: 0,
-        minPrice: 0,
-      });
-      setSubCategory([]);
-      setFlavours([]);
-      setShapes([]);
-      setSizes([]);
-      setAddOn([]);
-      setImages({
-        image1: "",
-        image2: "",
-        image3: "",
-        image4: "",
-      });
+      if (!editId) {
+        formRef.current?.reset();
+        setFormValues({
+          productName: "",
+          productDescription: "",
+          category: "",
+          productType: "",
+          maxPrice: 0,
+          minPrice: 0,
+        });
+        setSubCategory([]);
+        setFlavours([]);
+        setShapes([]);
+        setSizes([]);
+        setAddOn([]);
+        setImages({
+          image1: "",
+          image2: "",
+          image3: "",
+          image4: "",
+        });
+      }
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       console.error(error);
@@ -139,7 +218,7 @@ export default function Page() {
         id: sub.id,
       })),
       productType: formValues.productType,
-      images: [...imageArr],
+      images: [...imageArr, ...Object.values(images)] as string[],
       minPrice: Number(formValues.minPrice),
       maxPrice: Number(formValues.maxPrice),
       shapes: [...shapes].map((shape: any) => shape.value),
@@ -149,12 +228,12 @@ export default function Page() {
     };
 
     console.log(data);
-    // setIsSubmitting(false);
-    submitProduct.mutate(data);
+    setIsSubmitting(false);
+    // submitProduct.mutate(data);
   };
 
   return (
-    <section className="p-6">
+    <section className="p-6 pb-16">
       <div className="hidden md:block">
         <form ref={formRef} onSubmit={createProduct}>
           <CreateProductHeader

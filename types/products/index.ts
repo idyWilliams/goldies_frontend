@@ -1,4 +1,5 @@
 import { Category } from "@/services/types";
+import { Option } from "react-multi-select-component";
 
 export type ICake = {
   id: number;
@@ -98,14 +99,14 @@ export interface CreateProductMobilePropTypes {
       >;
       subCategory: any[];
       setSubCategory: React.Dispatch<React.SetStateAction<any[]>>;
-      shapes: [];
-      setShapes: React.Dispatch<React.SetStateAction<[]>>;
-      flavour: [];
-      setFlavours: React.Dispatch<React.SetStateAction<[]>>;
-      sizes: [];
-      setSizes: React.Dispatch<React.SetStateAction<[]>>;
-      addOn: [];
-      setAddOn: React.Dispatch<React.SetStateAction<[]>>;
+      shapes: Option[];
+      setShapes: React.Dispatch<React.SetStateAction<Option[]>>;
+      flavour: Option[];
+      setFlavours: React.Dispatch<React.SetStateAction<Option[]>>;
+      sizes: Option[];
+      setSizes: React.Dispatch<React.SetStateAction<Option[]>>;
+      addOn: Option[];
+      setAddOn: React.Dispatch<React.SetStateAction<Option[]>>;
     };
   };
 }
@@ -135,13 +136,13 @@ export interface InformationAndPricingType {
 }
 
 export type ProductVariantsPropType = {
-  shapes: [];
-  setShapes: React.Dispatch<React.SetStateAction<[]>>;
-  sizes: [];
-  setSizes: React.Dispatch<React.SetStateAction<[]>>;
-  flavour: [];
-  setFlavours: React.Dispatch<React.SetStateAction<[]>>;
-  addOn: [];
-  setAddOn: React.Dispatch<React.SetStateAction<[]>>;
+  shapes: Option[];
+  setShapes: React.Dispatch<React.SetStateAction<Option[]>>;
+  sizes: Option[];
+  setSizes: React.Dispatch<React.SetStateAction<Option[]>>;
+  flavour: Option[];
+  setFlavours: React.Dispatch<React.SetStateAction<Option[]>>;
+  addOn: Option[];
+  setAddOn: React.Dispatch<React.SetStateAction<Option[]>>;
   productType: string;
 };
