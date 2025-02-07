@@ -22,7 +22,7 @@ import CreatePdctCatAndSubCat from "@/components/admin-component/create-product/
 import CreatePdctType from "@/components/admin-component/create-product/CreatePdctType";
 import { useMediaQuery } from "react-responsive";
 import useFormValues from "@/services/hooks/category/useFormValues";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { IProduct } from "@/interfaces/product.interface";
 import { Option } from "react-multi-select-component";
 
@@ -61,10 +61,12 @@ export default function Page() {
     setSizes,
     addOn,
     setAddOn,
+    setCategoryData,
   } = multiSelect;
 
   const formRef = useRef<HTMLFormElement>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const router = useRouter();
 
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
@@ -84,8 +86,17 @@ export default function Page() {
       value: item,
     }));
 
+  const convertToOptionsWithId = (
+    items: { name: string; id: string }[],
+  ): Option[] =>
+    items.map((item) => ({
+      label: item.name,
+      value: item.id,
+    }));
+
   useEffect(() => {
     if (product) {
+      
       setFormValues({
         productName: product.name,
         productDescription: product.description,
@@ -94,6 +105,12 @@ export default function Page() {
         maxPrice: Number(product.maxPrice),
         minPrice: Number(product.minPrice),
       });
+
+      setCategoryData({
+        name: product.category.name,
+        id: product.category.id,
+      });
+
       setImages(
         product.images && Array.isArray(product.images)
           ? {
@@ -104,11 +121,41 @@ export default function Page() {
             }
           : { image1: "", image2: "", image3: "", image4: "" },
       );
-      setSubCategory(product.subCategory);
+
+      setSubCategory(
+        product.subCategory.map((sub: any) => ({
+          label: sub.name,
+          value: sub.id,
+          id: sub.id,
+        })),
+      );
+
+      setSubCategory(convertToOptionsWithId(product.subCategory));
+
       setShapes(convertToOptions(product.shapes));
       setSizes(convertToOptions(product.sizes));
       setFlavours(convertToOptions(product.flavour));
       setAddOn(convertToOptions(product.toppings));
+    } else {
+      setFormValues({
+        productName: "",
+        productDescription: "",
+        category: "",
+        productType: "",
+        maxPrice: 0,
+        minPrice: 0,
+      });
+      setSubCategory([]);
+      setFlavours([]);
+      setShapes([]);
+      setSizes([]);
+      setAddOn([]);
+      setImages({
+        image1: "",
+        image2: "",
+        image3: "",
+        image4: "",
+      });
     }
   }, [
     product,
@@ -119,10 +166,11 @@ export default function Page() {
     setSizes,
     setFlavours,
     setAddOn,
+    setCategoryData,
   ]);
 
   const submitProduct = useMutation({
-    // mutationFn: editId ? updateProduct : createNewProduct,
+    // mutationFn: createNewProduct,
     mutationFn: async (data: {
       name: string;
       description: string;
@@ -139,35 +187,30 @@ export default function Page() {
     }) => (editId ? updateProduct(data, editId) : createNewProduct(data)),
     onSettled: () => setIsSubmitting(false),
     onSuccess: (data) => {
-      console.log(
-        editId
-          ? "Product updated successfully"
-          : "Product created successfully",
-      );
-
       toast.success(data.message);
-      if (!editId) {
-        formRef.current?.reset();
-        setFormValues({
-          productName: "",
-          productDescription: "",
-          category: "",
-          productType: "",
-          maxPrice: 0,
-          minPrice: 0,
-        });
-        setSubCategory([]);
-        setFlavours([]);
-        setShapes([]);
-        setSizes([]);
-        setAddOn([]);
-        setImages({
-          image1: "",
-          image2: "",
-          image3: "",
-          image4: "",
-        });
-      }
+
+      formRef.current?.reset();
+      setFormValues({
+        productName: "",
+        productDescription: "",
+        category: "",
+        productType: "",
+        maxPrice: 0,
+        minPrice: 0,
+      });
+      setSubCategory([]);
+      setFlavours([]);
+      setShapes([]);
+      setSizes([]);
+      setAddOn([]);
+      setImages({
+        image1: "",
+        image2: "",
+        image3: "",
+        image4: "",
+      });
+
+      router.push("/admin/products");
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       console.error(error);
@@ -183,11 +226,9 @@ export default function Page() {
     }
   }, [formValues.productType, setFlavours]);
 
-  const createProduct = async (e: any) => {
+  const createProduct = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-
-    const formData = new FormData(e.target);
 
     let newImageArr: (string | null)[] = [];
 
@@ -208,6 +249,16 @@ export default function Page() {
     }
 
     const imageArr = newImageArr.filter((url) => url !== null);
+    const finalImages = editId
+      ? [...imageArr, ...(product?.images || [])].filter(Boolean)
+      : [...imageArr];
+
+    // Validation: Ensure at least one image is present
+    if (finalImages.length === 0) {
+      toast.warning("Please upload at least one product image.");
+      setIsSubmitting(false);
+      return;
+    }
 
     const data = {
       name: formValues.productName,
@@ -218,7 +269,7 @@ export default function Page() {
         id: sub.id,
       })),
       productType: formValues.productType,
-      images: [...imageArr, ...Object.values(images)] as string[],
+      images: finalImages as string[],
       minPrice: Number(formValues.minPrice),
       maxPrice: Number(formValues.maxPrice),
       shapes: [...shapes].map((shape: any) => shape.value),
@@ -227,19 +278,23 @@ export default function Page() {
       toppings: [...addOn].map((topping: any) => topping.value),
     };
 
-    console.log(data);
-    setIsSubmitting(false);
-    // submitProduct.mutate(data);
+    submitProduct.mutate(data);
   };
+
+  if (isLoading)
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-primary" role="status">
+          <span className="">Loading...</span>
+        </div>
+      </div>
+    );
 
   return (
     <section className="p-6 pb-16">
       <div className="hidden md:block">
         <form ref={formRef} onSubmit={createProduct}>
-          <CreateProductHeader
-            title={editId ? "Edit Product" : "Create New Product"}
-            isSubmitting={isSubmitting}
-          />
+          <CreateProductHeader editId={editId!} isSubmitting={isSubmitting} />
           <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
 
           <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">

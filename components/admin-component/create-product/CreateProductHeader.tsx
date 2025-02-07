@@ -1,31 +1,49 @@
+import { useRouter } from "next/navigation";
 import React from "react";
 import { CgSpinner } from "react-icons/cg";
 
 type CreateProductHeaderPropType = {
   isSubmitting: boolean;
-  title: string;
+  editId: string;
 };
 
 const CreateProductHeader = ({
   isSubmitting,
-  title,
+  editId,
 }: CreateProductHeaderPropType) => {
+  const router = useRouter();
+
+  const handleBackClick = () => {
+    router.push('/admin/products');
+  };
   return (
     <div className="flex items-center justify-between">
-      <h1 className="font-bold">{title}</h1>
-      <button
-        className="relative rounded-md bg-black px-10 py-2 text-[12px] text-goldie-300 disabled:pointer-events-none disabled:opacity-75"
-        type="submit"
-        disabled={isSubmitting}
-      >
-        <CgSpinner
-          className={`${isSubmitting ? "block" : "hidden"} absolute left-[45%] top-[20%] h-6 w-6 animate-spin `}
-        />
+      <h1 className="font-bold">
+        {editId ? "Edit Product" : "Create New Product"}
+      </h1>
 
-        <span className={`${isSubmitting ? "opacity-0" : "opacity-100"}`}>
-          Save Changes
-        </span>
-      </button>
+      <div className="flex items-center gap-4">
+        <button
+          type="button"
+          className="relative rounded-md bg-neutral-400 px-10 py-2 text-[12px] text-neutral-900"
+          onClick={handleBackClick}
+        >
+          Cancel
+        </button>
+        <button
+          className="relative rounded-md bg-black px-10 py-2 text-[12px] text-goldie-300 disabled:pointer-events-none disabled:opacity-75"
+          type="submit"
+          disabled={isSubmitting}
+        >
+          <CgSpinner
+            className={`${isSubmitting ? "block" : "hidden"} absolute left-[45%] top-[20%] h-6 w-6 animate-spin `}
+          />
+
+          <span className={`${isSubmitting ? "opacity-0" : "opacity-100"}`}>
+            Save Changes
+          </span>
+        </button>
+      </div>
     </div>
   );
 };

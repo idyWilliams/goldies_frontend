@@ -17,11 +17,11 @@ const CreatePdctType = ({
       <select
         id="productType"
         name="productType"
-        className="form-select w-full rounded-md border-neutral-300 text-neutral-400"
+        className="form-select w-full rounded-md border-neutral-300 disabled:text-neutral-400"
         onChange={handleChange}
         value={productType}
       >
-        <option className="" value={""}>
+        <option className="" value={""} disabled>
           Select product type
         </option>
 

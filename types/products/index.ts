@@ -64,8 +64,8 @@ export interface CreatePdctCatAndSubCatPropType {
     disabled: boolean;
   }[];
   handleChange: (e: any) => void;
-  subCategory: any[];
-  setSubCategory: React.Dispatch<React.SetStateAction<any[]>>;
+  subCategory: Option[];
+  setSubCategory: React.Dispatch<React.SetStateAction<Option[]>>;
 }
 
 export interface CreateProductMobilePropTypes {
@@ -97,8 +97,8 @@ export interface CreateProductMobilePropTypes {
           id: string;
         }>
       >;
-      subCategory: any[];
-      setSubCategory: React.Dispatch<React.SetStateAction<any[]>>;
+      subCategory: Option[];
+      setSubCategory: React.Dispatch<React.SetStateAction<Option[]>>;
       shapes: Option[];
       setShapes: React.Dispatch<React.SetStateAction<Option[]>>;
       flavour: Option[];
@@ -126,7 +126,10 @@ type CategoryOptions = {
   subCategories: any[];
 };
 export interface InformationAndPricingType {
-  category: string;
+  category: {
+    name: string;
+    id: string;
+  };
   subCategory: any[];
   categoryOptions: CategoryOptions[] | undefined;
   subcategories: ProductSubCategories[];

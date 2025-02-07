@@ -19,7 +19,7 @@ export default function Page({ params }: { params: { details: string } }) {
   const [selectedImage, setSelectedImage] = useState(0);
   const router = useRouter();
   const [product, setProduct] = useState<Product | null>();
-  const { data, isSuccess, isError, isPending } = useQuery({
+  const { data, isSuccess, isError, isLoading } = useQuery({
     queryFn: async () => getProduct(params.details),
     queryKey: ["product"],
   });
@@ -30,7 +30,7 @@ export default function Page({ params }: { params: { details: string } }) {
     setProduct(data?.productDetails);
   }, [data?.productDetails, isSuccess]);
 
-  if (isPending)
+  if (isLoading)
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-primary" role="status">

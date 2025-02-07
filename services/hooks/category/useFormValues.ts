@@ -35,25 +35,22 @@ const useFormValues = () => {
 
   const imagesRef = useRef<(File | null)[]>([null, null, null, null]);
 
-  const { categories } = useCategories();
+  const { categories: allCategories } = useCategories();
   const category = formValues.category;
 
   const { categoryOptions, subcatOptions } = useCategoryOptions({
-    categories,
-    category,
+    categories: allCategories,
+    category: formValues.category,
   });
 
   useEffect(() => {
     if (category) {
-      console.log(category);
-
-      setSubCategory([]);
       const activeCategory = categoryOptions?.find(
         (option) => option.value === category,
       );
 
       if (activeCategory)
-        setCategoryData({ name: activeCategory.value, id: activeCategory.id });
+        setCategoryData({ name: activeCategory.label, id: activeCategory.id });
     }
     if (!category) setSubCategory([]);
   }, [category, setSubCategory, categoryOptions, setCategoryData]);

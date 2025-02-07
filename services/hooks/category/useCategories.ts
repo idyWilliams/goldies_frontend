@@ -22,6 +22,7 @@ const useCategories = () => {
     placeholderData: initialCategory,
   });
 
+
   const memoisedCategories = useMemo(() => {
     if (data?.categories) {
       return data?.categories;
