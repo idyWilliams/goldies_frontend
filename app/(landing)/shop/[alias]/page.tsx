@@ -268,7 +268,7 @@ function CakeDetailsPage({ params }: any) {
   const handleClick = handleSubmit((data) => {
     if (data.sizes && data.toppings && data.cakeTimes) {
       dispatch(addProductToCart({ id: activeProduct?._id as string }));
-      console.log("add to cart>>>",activeProduct?._id);
+      console.log("add to cart>>>", activeProduct?._id);
     } else {
       console.error(
         "Please fill in all required fields before adding to cart.",
@@ -366,9 +366,9 @@ function CakeDetailsPage({ params }: any) {
               )}
               <Image
                 src={
-                  activeProduct.images[0].includes("example")
-                    ? exampleImage
-                    : activeProduct.images[0]
+                  activeProduct.images.length > 0
+                    ? activeProduct.images[0]
+                    : exampleImage
                 }
                 alt={activeProduct.slug}
                 fill

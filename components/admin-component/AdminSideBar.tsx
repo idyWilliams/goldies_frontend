@@ -20,7 +20,6 @@ export default function AdminSideBar() {
   const pathname = usePathname();
 
   const [role, setRole] = useState("");
-  console.log(role, "myrole");
 
   useEffect(() => {
     const storedAdmin =

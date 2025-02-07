@@ -26,3 +26,12 @@ export const updateUser = async (userInfo: any) => {
   });
   return response.data;
 };
+
+export const deleteUserAccount = async () => {
+  const response = await instance.delete("/user/my_account", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  return response.data;
+};

@@ -3,12 +3,16 @@ import { CgSpinner } from "react-icons/cg";
 
 type CreateProductHeaderPropType = {
   isSubmitting: boolean;
+  title: string;
 };
 
-const CreateProductHeader = ({ isSubmitting }: CreateProductHeaderPropType) => {
+const CreateProductHeader = ({
+  isSubmitting,
+  title,
+}: CreateProductHeaderPropType) => {
   return (
     <div className="flex items-center justify-between">
-      <h1 className="font-bold">Create New Products</h1>
+      <h1 className="font-bold">{title}</h1>
       <button
         className="relative rounded-md bg-black px-10 py-2 text-[12px] text-goldie-300 disabled:pointer-events-none disabled:opacity-75"
         type="submit"

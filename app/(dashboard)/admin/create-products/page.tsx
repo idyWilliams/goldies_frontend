@@ -18,6 +18,7 @@ import CreatePdctCatAndSubCat from "@/components/admin-component/create-product/
 import CreatePdctType from "@/components/admin-component/create-product/CreatePdctType";
 import { useMediaQuery } from "react-responsive";
 import useFormValues from "@/services/hooks/category/useFormValues";
+import { useSearchParams } from "next/navigation";
 
 interface ErrorResponse {
   message: string;
@@ -25,6 +26,9 @@ interface ErrorResponse {
 }
 
 export default function Page() {
+  const searchParams = useSearchParams();
+  const editId = searchParams.get("edit");
+
   const data = useFormValues();
   const {
     formValues,
@@ -153,7 +157,10 @@ export default function Page() {
     <section className="p-6">
       <div className="hidden md:block">
         <form ref={formRef} onSubmit={createProduct}>
-          <CreateProductHeader isSubmitting={isSubmitting} />
+          <CreateProductHeader
+            title={editId ? "Edit Product" : "Create New Product"}
+            isSubmitting={isSubmitting}
+          />
           <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
 
           <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">

@@ -15,7 +15,7 @@ type Data = {
   age: number;
 };
 
-export default function Page({ params }: any) {
+export default function Page({ params }: { params: { details: string } }) {
   const [selectedImage, setSelectedImage] = useState(0);
   const router = useRouter();
   const [product, setProduct] = useState<Product | null>();
@@ -30,7 +30,20 @@ export default function Page({ params }: any) {
     setProduct(data?.productDetails);
   }, [data?.productDetails, isSuccess]);
 
-  console.log(data?.productDetails, "A product", params);
+  if (isPending)
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <div className="text-primary" role="status">
+          <span className="">Loading...</span>
+        </div>
+      </div>
+    );
+
+  const formatText = (text: string) => {
+    return text
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+  };
 
   return (
     <section className="h-screen bg-gray-100">
@@ -51,7 +64,12 @@ export default function Page({ params }: any) {
               </p>
             </div>
           </div>
-          <div className="mb-2 flex cursor-pointer items-center gap-2">
+          <div
+            className="mb-2 flex cursor-pointer items-center gap-2"
+            onClick={() =>
+              router.push(`/admin/create-products?edit=${product?._id}`)
+            }
+          >
             <Edit size={20} />
             <p className="border-b border-black">Edit Product</p>
           </div>
@@ -109,7 +127,7 @@ export default function Page({ params }: any) {
               <div className="mb-5">
                 <p className="font-semibold capitalize">Product Fillings:</p>
                 <p className="capitalize">
-                  {product?.toppings?.map((item: any) => item).join(", ")}
+                  {product?.toppings?.map((item: string) => formatText(item)).join(", ")}
                 </p>
               </div>
               <div className="mb-5">
@@ -117,7 +135,7 @@ export default function Page({ params }: any) {
                   Toppings &amp; Addons:
                 </p>
                 <p className="capitalize">
-                  {product?.toppings?.map((item: any) => item).join(", ")}
+                  {product?.toppings?.map((item: string) => formatText(item)).join(", ")}
                 </p>
               </div>
             </div>
