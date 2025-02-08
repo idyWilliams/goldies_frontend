@@ -126,7 +126,7 @@ const Page = () => {
                       <Link
                         href={
                           cat.status
-                            ? `/shop/categories/${cat.name}?id=${cat._id}&status=${cat.status}`
+                            ? `/shop/categories/${encodeURIComponent(cat.name)}?id=${cat._id}&status=${cat.status}`
                             : "#"
                         }
                         key={cat?._id}

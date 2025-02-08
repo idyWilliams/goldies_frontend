@@ -4,6 +4,24 @@ export interface ICategory {
   _id: string;
 }
 
+export interface UCategory {
+  _id: string;
+  name: string;
+  description: string;
+  image: string;
+  categorySlug: string;
+  status: boolean;
+  subCategories: ISubCategory[];
+}
+export interface ICategories {
+  _id: string;
+  name: string;
+  description: string;
+  image: string;
+  categorySlug: string;
+  status: boolean;
+}
+
 export interface ISubCategory {
   name: string;
   id: string;
@@ -32,5 +50,14 @@ export interface IProduct {
   allergens?: string[];
   available?: boolean;
   bestSeller?: boolean;
-  status?: string
+  status?: string;
+}
+
+export interface ProductParams {
+  subCategoryIds?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  searchQuery?: string;
+  page?: number;
+  limit?: number;
 }

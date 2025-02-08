@@ -20,7 +20,7 @@ import sortArray from "@/helper/sortArray";
 import { chunkArray } from "@/helper/chunkArray";
 import AdminPagination from "@/components/admin-component/AdminPagination";
 
-const limit = 2;
+const limit = 10;
 
 const Page = () => {
   const searchParams = useSearchParams();
@@ -192,7 +192,7 @@ const Page = () => {
                               onClick={() => handleSubCategory(sub)}
                             >
                               <Link
-                                href={`/shop?cat=${encodeURIComponent(category?.name?.toLowerCase())}&sub=${encodeURIComponent(sub?.name?.toLowerCase())}`}
+                                href={`/shop?cat=${encodeURIComponent(category?.name?.toLowerCase())}&sub=${encodeURIComponent(sub?.name?.toLowerCase())}&subCategoryId=${sub?._id}`}
                                 className="inline-block w-full text-center font-bold"
                               >
                                 Buy now

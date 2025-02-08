@@ -32,7 +32,7 @@ import AdminAuth from "@/components/admin-component/AdminAuth";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProducts } from "@/services/hooks/products";
 import { Button } from "@/components/ui/button";
-import { IProduct } from "@/interfaces/product.interface";
+import { IProduct, ProductParams } from "@/interfaces/product.interface";
 
 export type Product = {
   _id: string;
@@ -108,11 +108,16 @@ export default function Page() {
   const [searchValue, setSearchValue] = useState("");
   const [data, setData] = useState<Product[]>([]);
 
-  console.log("products>>>", data)
+  console.log("products>>>", data);
 
   const router = useRouter();
   const handleAddNew = () => {
     router.push(`/admin/create-products`);
+  };
+
+  const params: ProductParams = {
+    page: 1,
+    limit: 15,
   };
 
   const {
@@ -123,7 +128,7 @@ export default function Page() {
     isError,
   } = useQuery({
     queryKey: ["allProducts"],
-    queryFn: async () => getAllProducts(1, 15),
+    queryFn: async () => getAllProducts(params),
   });
 
   useEffect(() => {

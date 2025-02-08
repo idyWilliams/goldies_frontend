@@ -27,7 +27,6 @@ const CakeCategoryData = () => {
     queryKey: ["categories", 1, 12],
     queryFn: async () => getPaginatedCategories(1, 12),
   });
-  console.log(data);
 
   const sortedCategories = useMemo(() => {
     if (data?.categories) {

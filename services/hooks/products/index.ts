@@ -1,3 +1,4 @@
+import { ProductParams } from "@/interfaces/product.interface";
 import instance from "@/services/api";
 
 let accessToken = "";
@@ -26,14 +27,13 @@ export const createNewProduct = async (data: any) => {
 };
 
 // GET ALL PRODUCTS
-export const getProducts = async (data: any) => {
-  const response = await instance.get("/product/get_all_products", data);
+export const getProducts = async () => {
+  const response = await instance.get("/product/get_all_product");
   return response.data;
 };
-export const getAllProducts = async (page: number, limit: number) => {
-  const response = await instance.get(
-    `/product/get_all_product?page=${page}&limit=${limit}`,
-  );
+
+export const getAllProducts = async (params: ProductParams) => {
+  const response = await instance.get("/product/get_all_product", { params });
   return response.data;
 };
 

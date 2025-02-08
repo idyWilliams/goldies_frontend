@@ -1,23 +1,23 @@
-import React, { useCallback, useEffect, useState, useRef } from "react";
-import "../../styles/rangeInput.css";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
-import { relative } from "path";
-import { number } from "yup";
+import "../../styles/rangeInput.css";
+
+interface RangeInputProps {
+  min: number;
+  max: number;
+  onChange: (minVal: number, maxVal: number) => void;
+}
 
 const RangeInput = ({ min, max, onChange }: RangeInputProps) => {
   const [minVal, setMinVal] = useState(min);
   const [maxVal, setMaxVal] = useState(max);
-  const [rangeVal, setRangeVal] = useState<{ min: number; max: number }>({
-    min: min,
-    max: max,
-  });
-  const minValRef = useRef<any>(min);
-  const maxValRef = useRef<any>(max);
-  const range = useRef<any>(null);
+  const minValRef = useRef(min);
+  const maxValRef = useRef(max);
+  const range = useRef<HTMLDivElement>(null);
 
   // Convert to percentage
   const getPercent = useCallback(
-    (value: any) => Math.round(((value - min) / (max - min)) * 100),
+    (value: number) => Math.round(((value - min) / (max - min)) * 100),
     [min, max],
   );
 
@@ -43,13 +43,9 @@ const RangeInput = ({ min, max, onChange }: RangeInputProps) => {
   }, [maxVal, getPercent]);
 
   // Get min and max values when their state changes
-  // useEffect(() => {
-  //   onChange({ min: minVal, max: maxVal });
-  // }, [minVal, maxVal, onChange]);
-
-  const handleChange = () => {
-    onChange({ min: minVal, max: maxVal });
-  };
+  useEffect(() => {
+    onChange(minVal, maxVal);
+  }, [minVal, maxVal, onChange]);
 
   return (
     <div className={twMerge("mb-10 flex h-[5vh] items-center justify-center")}>
@@ -64,12 +60,10 @@ const RangeInput = ({ min, max, onChange }: RangeInputProps) => {
           const value = Math.min(Number(event.target.value), maxVal - 1);
           setMinVal(value);
           minValRef.current = value;
-          handleChange();
         }}
-        className={twMerge(
-          "thumb pointer-events-none absolute z-[3] h-0 w-[260px] outline-0",
-        )}
+        className="thumb pointer-events-none absolute z-[3] h-0 w-[260px] outline-0"
         // style={{ zIndex: minVal > max - 100 && "5" }}
+        style={{ zIndex: minVal > max - 100 ? 5 : 3 }}
       />
       <input
         id="max"
@@ -82,53 +76,34 @@ const RangeInput = ({ min, max, onChange }: RangeInputProps) => {
           const value = Math.max(Number(event.target.value), minVal + 1);
           setMaxVal(value);
           maxValRef.current = value;
-          handleChange();
         }}
-        className={twMerge(
-          "thumb pointer-events-none absolute z-[4] h-0 w-[260px] outline-0",
-        )}
+        className="thumb pointer-events-none absolute z-[4] h-0 w-[260px] outline-0"
       />
 
-      <div className={twMerge("relative w-[260px]")}>
-        <div
-          className={twMerge(
-            "absolute z-[1] h-[5px] w-full rounded bg-neutral-400",
-          )}
-        />
+      <div className="relative w-[260px]">
+        <div className="absolute z-[1] h-[5px] w-full rounded bg-neutral-400" />
         <div
           ref={range}
-          className={twMerge("absolute z-[2] h-[5px] rounded bg-neutral-900")}
+          className="absolute z-[2] h-[5px] rounded bg-neutral-900"
         />
-        <div
-          className={twMerge(
-            "absolute left-[3px] mt-5 text-xs text-neutral-300",
-          )}
-        >
+        <div className="absolute left-[3px] mt-5 text-xs text-neutral-300">
           <input
             id="minVal"
             name="minVal"
             value={`€ ${minVal}`}
-            min={min}
-            max={max}
             disabled
             className="form-input inline-block w-[80px] rounded-2xl border-neutral-400 text-center text-[#333] focus:border-neutral-900 focus:ring-neutral-900 disabled:border-neutral-300 disabled:text-neutral-400"
-            onChange={(e) => setMinVal(parseInt(e.target.value) || 0)}
+            // onChange={(e) => setMinVal(parseInt(e.target.value) || 0)}
           />
         </div>
-        <div
-          className={twMerge(
-            "absolute -right-[4px] mt-5 text-xs text-neutral-300",
-          )}
-        >
+        <div className="absolute -right-[4px] mt-5 text-xs text-neutral-300">
           <input
             id="maxVal"
             name="maxVal"
             value={`€ ${maxVal}`}
-            min={min - 1}
-            max={max}
             disabled
             className="form-input inline-block w-[80px] rounded-2xl border-neutral-400 text-center text-[#333] focus:border-neutral-900 focus:ring-neutral-900 disabled:border-neutral-300 disabled:text-neutral-400"
-            onChange={(e) => setMaxVal(e.target.value)}
+            // onChange={(e) => setMaxVal(e.target.value)}
           />
         </div>
       </div>
@@ -136,10 +111,10 @@ const RangeInput = ({ min, max, onChange }: RangeInputProps) => {
   );
 };
 
-type RangeInputProps = {
-  min: any;
-  max: any;
-  onChange?: any;
-};
+// type RangeInputProps = {
+//   min: any;
+//   max: any;
+//   onChange?: any;
+// };
 
 export default RangeInput;
