@@ -36,7 +36,7 @@ const Footer = () => {
 
   return (
     <section className="relative grid min-h-[500px] w-full bg-neutral-900 pt-3">
-      <div className="wrapper relative z-30">
+      <div className="wrapper relative">
         <div className="mx-auto grid gap-6 rounded-2xl bg-[#494848] px-4 py-4 md:grid-cols-2 md:items-center md:py-6 xl:w-10/12">
           <div>
             <h1 className="text-2xl font-bold text-goldie-300 lg:text-[32px]">
@@ -162,21 +162,36 @@ const Footer = () => {
                   <span>
                     <Call />
                   </span>
-                  <span className="text-[14px]">+447488855300</span>
+                  <a
+                    href="tel:+447488855300"
+                    className="text-[14px] hover:underline"
+                  >
+                    +447488855300
+                  </a>
                 </div>
                 <div className="inline-flex items-center gap-5">
                   <span>
                     <Sms />
                   </span>
-                  <span className="text-[14px]">johndoe@gmail.com</span>
+                  <a
+                    href="mailto:johndoe@gmail.com"
+                    className="text-[14px] hover:underline"
+                  >
+                    johndoe@gmail.com
+                  </a>
                 </div>
                 <div className="inline-flex gap-5">
                   <span>
                     <Location />
                   </span>
-                  <span className="text-balance text-[14px]">
+                  <a
+                    href="https://www.google.com/maps/search/?api=1&query=37+Wallenger+Avenue,+Romford,+Essex,+England,+RM2+6EP"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-balance text-[14px] hover:underline"
+                  >
                     37 Wallenger Avenue, Romford, Essex, England, RM2 6EP
-                  </span>
+                  </a>
                 </div>
               </div>
               <div className="flex flex-col items-start space-y-7"></div>
