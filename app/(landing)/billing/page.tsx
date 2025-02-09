@@ -148,7 +148,7 @@ const Page = () => {
       defaultBillingInfo: true,
     };
 
-    const ItemID = Object.values(cart).map((item) => item.id);
+    const ItemID = Object.values(cart).map((item) => item._id);
     const orderInfo = {
       orderedItems: ItemID,
       fee: {
@@ -255,7 +255,7 @@ const Page = () => {
     };
     console.log("Payment Data:", paymentData);
 
-       const ItemID = Object.values(cart).map((item) => item.id);
+       const ItemID = Object.values(cart).map((item) => item._id);
     const orderInfo = {
       orderedItems: ItemID,
       fee: {
@@ -727,12 +727,12 @@ const Page = () => {
               </h3>
               <section>
                 {Object.values(cart).length >= 1 &&
-                  Object.values(cart).map((item, idx) => {
+                  Object.values(cart).map((item, i) => {
                     return (
-                      <div key={item.id} className=" space-y-3 p-2 md:bg-white">
+                      <div key={i} className=" space-y-3 p-2 md:bg-white">
                         <div className="grid grid-cols-[50px_1fr] gap-2 rounded-md bg-white p-4 md:bg-transparent md:p-0">
                           <Image
-                            src={item.imageUrl}
+                            src={item.images[0]}
                             alt={item.name}
                             width={50}
                             height={50}

@@ -120,6 +120,14 @@ export default function CreateProductLayout({
     }
 
     const imageArr = newImageArr.filter((url) => url !== null);
+    const finalImages = [...imageArr, ...Object.values(images)].filter(Boolean);
+
+    // Validation: Ensure at least one image is present
+    if (finalImages.length === 0) {
+      toast.warning("Please upload at least one product image.");
+      setIsSubmitting(false);
+      return;
+    }
 
     const data = {
       name: formValues.productName,
@@ -130,7 +138,7 @@ export default function CreateProductLayout({
         id: sub.id,
       })),
       productType: formValues.productType,
-      images: [...imageArr],
+      images: finalImages as string[],
       minPrice: Number(formValues.minPrice),
       maxPrice: Number(formValues.maxPrice),
       shapes: [...shapes].map((shape: any) => shape.value),

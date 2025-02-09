@@ -37,11 +37,11 @@ export default function ProfileInfo() {
   // HANDLE SUBMIT
   const handleSave = async (data: any) => {
     const { userName } = data;
-    console.log({ userName, id: admin._id });
+    console.log({ userName, id: admin?._id });
     try {
       const update = await updateUserName.mutateAsync({
         userName,
-        id: admin._id,
+        id: admin?._id!!,
       });
       console.log(update);
       localStorage.setItem("admin", JSON.stringify(update));
@@ -66,7 +66,7 @@ export default function ProfileInfo() {
       <>
         <div className="mt-5 inline-flex h-10 w-10 items-center justify-center rounded-full bg-black text-main">
           <span className="items-center justify-center">
-            {initials(admin?.userName)}
+            {initials(admin?.userName || "")}
           </span>
         </div>
         <p className="my-3 font-semibold">{admin?.userName}</p>

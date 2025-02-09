@@ -20,7 +20,7 @@ import sortArray from "@/helper/sortArray";
 import { chunkArray } from "@/helper/chunkArray";
 import AdminPagination from "@/components/admin-component/AdminPagination";
 
-const limit = 2;
+const limit = 6;
 
 const Page = () => {
   const searchParams = useSearchParams();
@@ -53,7 +53,7 @@ const Page = () => {
 
   const getSubCategories = useCallback(() => {
     if (categoryData?.subCategories.length > 0) {
-      console.log(categoryData);
+      // console.log(categoryData);
 
       const sortedCategories = sortArray(categoryData?.subCategories);
       const paginatedSubCatArr = chunkArray(sortedCategories, limit);
@@ -177,7 +177,7 @@ const Page = () => {
                         className=" relative h-[270px] w-full  xl:h-[300px]"
                       >
                         <div className="absolute left-0 top-0 -z-20 flex h-full w-full flex-col justify-center gap-2 bg-gradient-to-r from-black/20 to-black/20 px-4 "></div>
-                        <figure className="relative z-10 mx-auto flex h-full w-full items-end pb-3 xl:pb-3">
+                        <figure className="relative z-10 mx-auto flex h-full w-full items-end ">
                           <div className="box-border flex min-h-[180px] w-full flex-col items-start justify-between bg-black bg-opacity-40 p-4 text-white backdrop-blur-sm  ">
                             <div className=" w-full grow">
                               <h3 className="text-xl font-bold sm:text-2xl">
@@ -192,7 +192,7 @@ const Page = () => {
                               onClick={() => handleSubCategory(sub)}
                             >
                               <Link
-                                href={`/shop?cat=${encodeURIComponent(category?.name?.toLowerCase())}&sub=${encodeURIComponent(sub?.name?.toLowerCase())}`}
+                                href={`/shop?cat=${encodeURIComponent(category?.name?.toLowerCase())}&sub=${encodeURIComponent(sub?.name?.toLowerCase())}&subCategoryIds=${sub?._id}`}
                                 className="inline-block w-full text-center font-bold"
                               >
                                 Buy now

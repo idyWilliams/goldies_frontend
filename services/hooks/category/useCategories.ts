@@ -4,8 +4,7 @@ import useBoundStore from "@/zustand/store";
 import { getAllCategories } from ".";
 
 const useCategories = () => {
-  const categories = useBoundStore((state) => state.categories);
-  const setCategories = useBoundStore((state) => state.setCategories);
+  const { categories, setCategories } = useBoundStore();
   const initialCategory = categories
     ? {
         categories: categories,
@@ -22,6 +21,7 @@ const useCategories = () => {
     queryFn: getAllCategories,
     placeholderData: initialCategory,
   });
+
 
   const memoisedCategories = useMemo(() => {
     if (data?.categories) {

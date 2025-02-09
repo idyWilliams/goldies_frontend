@@ -10,11 +10,11 @@
 //   return response.data;
 // };
 
-
+import { IAdmin } from "@/interfaces/user.interface";
 import { useEffect, useState } from "react";
 
 const useAdmin = () => {
-  const [admin, setAdmin] = useState<any>(null);
+  const [admin, setAdmin] = useState<IAdmin>();
 
   useEffect(() => {
     if (typeof window !== "undefined") {

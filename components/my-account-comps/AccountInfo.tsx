@@ -1,17 +1,17 @@
 import { cn } from "@/helper/cn";
+import { IUser } from "@/interfaces/user.interface";
+import { updateUser } from "@/services/hooks/users";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import * as yup from "yup";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import { useCallback, useEffect, useState } from "react";
-import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
-import { getUser, updateUser } from "@/services/hooks/users";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-// import { toast } from "sonner";
-import { toast, Toaster } from "sonner";
-import { useRouter } from "next/navigation";
-import { type } from "os";
+import { toast } from "sonner";
+import * as yup from "yup";
+import ConfirmDeletion from "./ConfirmDeletion";
+
 
 const schema = yup.object().shape({
   firstName: yup.string().required("First name is required"),
@@ -27,17 +27,16 @@ const schema = yup.object().shape({
   // country: yup.string().required("Country is required"),
 });
 
-const AccountInfo = ({ fetchedUser }: any) => {
+const AccountInfo = ({ fetchedUser }: { fetchedUser: IUser }) => {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const [user, setUser] = useState<any>(null);
   const [phone, setPhone] = useState("");
   // const [country, setCountry] = useState("");
   // const [state, setState] = useState("");
-  const [user, setUser] = useState<any>(null);
-  const router = useRouter();
   // const [lastName, setLastName] = useState("");
   // const [email, setEmail] = useState("");
   // const [address, setAddress] = useState("");
-  console.log(fetchedUser);
-  const queryClient = useQueryClient();
 
   // const { data, isError, isSuccess } = useQuery({
   //   queryKey: [user],
@@ -150,6 +149,8 @@ const AccountInfo = ({ fetchedUser }: any) => {
     // toast.success("Account information updated successfully");
     // console.log("Form errors:", errors);
   };
+
+
 
   return (
     <div className="">
@@ -327,11 +328,16 @@ const AccountInfo = ({ fetchedUser }: any) => {
           >
             Save changes
           </button>
-          <button className="rounded border border-red-600 px-5 py-2.5 font-medium text-red-600">
-            Close account
-          </button>
         </div>
       </form>
+
+      <div className="mt-8 flex items-center justify-between rounded-lg border border-red-500 p-4">
+        <div>
+          <p className="text-red-500">Danger zone</p>
+        </div>
+
+        <ConfirmDeletion />
+      </div>
     </div>
   );
 };

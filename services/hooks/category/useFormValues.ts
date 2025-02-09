@@ -2,6 +2,7 @@ import { formValuesType } from "@/types/products";
 import React, { useEffect, useRef, useState } from "react";
 import useCategories from "./useCategories";
 import useCategoryOptions from "./useCategoryOptions";
+import { Option } from "react-multi-select-component";
 
 const useFormValues = () => {
   const [formValues, setFormValues] = useState<formValuesType>({
@@ -20,10 +21,10 @@ const useFormValues = () => {
 
   const [subCategory, setSubCategory] = useState<any[]>([]);
 
-  const [shapes, setShapes] = useState<[]>([]);
-  const [flavour, setFlavours] = useState<[]>([]);
-  const [sizes, setSizes] = useState<[]>([]);
-  const [addOn, setAddOn] = useState<[]>([]);
+  const [shapes, setShapes] = useState<Option[]>([]);
+  const [flavour, setFlavours] = useState<Option[]>([]);
+  const [sizes, setSizes] = useState<Option[]>([]);
+  const [addOn, setAddOn] = useState<Option[]>([]);
 
   const [images, setImages] = useState<any>({
     image1: "",
@@ -34,25 +35,22 @@ const useFormValues = () => {
 
   const imagesRef = useRef<(File | null)[]>([null, null, null, null]);
 
-  const { categories } = useCategories();
+  const { categories: allCategories } = useCategories();
   const category = formValues.category;
 
   const { categoryOptions, subcatOptions } = useCategoryOptions({
-    categories,
-    category,
+    categories: allCategories,
+    category: formValues.category,
   });
 
   useEffect(() => {
     if (category) {
-      console.log(category);
-
-      setSubCategory([]);
       const activeCategory = categoryOptions?.find(
         (option) => option.value === category,
       );
 
       if (activeCategory)
-        setCategoryData({ name: activeCategory.value, id: activeCategory.id });
+        setCategoryData({ name: activeCategory.label, id: activeCategory.id });
     }
     if (!category) setSubCategory([]);
   }, [category, setSubCategory, categoryOptions, setCategoryData]);

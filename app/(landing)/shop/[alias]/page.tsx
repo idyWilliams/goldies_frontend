@@ -40,6 +40,8 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getActiveProduct, getAllProducts } from "@/services/hooks/products";
 import useProducts from "@/services/hooks/products/useProducts";
 import { useMediaQuery } from "react-responsive";
+import { ProductParams } from "@/interfaces/product.interface";
+import { Button } from "@/components/ui/button";
 // import {
 //   cakeSizes,
 //   toppings,
@@ -119,14 +121,13 @@ const setToUpperCase = (sentence: string) => {
 const exampleImage =
   "https://firebasestorage.googleapis.com/v0/b/goldie-b3ba7.appspot.com/o/products%2Fbanana-cake-with-cinnamon-cream-102945-1.webp?alt=media&token=32e645da-9327-4f7f-9f79-a2cba1102676";
 
-function CakeDetailsPage({ params }: any) {
+function CakeDetailsPage() {
   const activeProduct = useUserPdctStore((state) => state.activeProduct);
   const setActiveProduct = useUserPdctStore((state) => state.setActiveProduct);
   const allProducts = useUserPdctStore((state) => state.allProducts);
   const setAllProducts = useUserPdctStore((state) => state.setAllProducts);
   const queryParams = useSearchParams();
   const productId = queryParams.get("productId");
-  console.log(productId);
   const [isLoaded, setIsLoaded] = useState(false);
   const isDesktop = useMediaQuery({ minWidth: 1280 });
   const isLaptop = useMediaQuery({ minWidth: 1024 });
@@ -181,7 +182,6 @@ function CakeDetailsPage({ params }: any) {
   //   setAge(event.target.value as string);
   // };
 
-  console.log(activeProduct);
 
   const { data, isError, isLoading, isPending } = useQuery({
     queryKey: ["allProducts", productId],
@@ -205,13 +205,18 @@ function CakeDetailsPage({ params }: any) {
     }
   }, [data, setActiveProduct]);
 
+  const params: ProductParams = {
+    page: 1,
+    limit: 6,
+  };
+
   const {
     data: otherProducts,
     isError: allproductsError,
     isLoading: allProductsLoading,
   } = useQuery({
     queryKey: ["allProducts", 1, 6],
-    queryFn: async () => getAllProducts(1, 6),
+    queryFn: async () => getAllProducts(params),
     enabled: allProducts.length === 0,
   });
 
@@ -230,7 +235,7 @@ function CakeDetailsPage({ params }: any) {
   useEffect(() => {
     if (allProducts) {
       const getSimilarProducts = allProducts.filter(
-        (product: { slug: any }) => product.slug !== activeProduct.slug,
+        (product: { slug: string }) => product.slug !== activeProduct?.slug,
       );
       console.log(getSimilarProducts);
 
@@ -267,8 +272,8 @@ function CakeDetailsPage({ params }: any) {
   // };
   const handleClick = handleSubmit((data) => {
     if (data.sizes && data.toppings && data.cakeTimes) {
-      dispatch(addProductToCart({ id: activeProduct._id }));
-      console.log(activeProduct._id);
+      dispatch(addProductToCart({ id: activeProduct?._id as string }));
+      console.log("add to cart>>>", activeProduct?._id);
     } else {
       console.error(
         "Please fill in all required fields before adding to cart.",
@@ -366,9 +371,9 @@ function CakeDetailsPage({ params }: any) {
               )}
               <Image
                 src={
-                  activeProduct.images[0].includes("example")
-                    ? exampleImage
-                    : activeProduct.images[0]
+                  activeProduct.images.length > 0
+                    ? activeProduct.images[0]
+                    : exampleImage
                 }
                 alt={activeProduct.slug}
                 fill
@@ -593,20 +598,23 @@ function CakeDetailsPage({ params }: any) {
                       </span>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-3 after:grid ">
-                    <button
+                  <div className="grid grid-cols-2 gap-3 after:grid mt-4">
+                    <Button
+                    size={'lg'}
                       type="button"
+                      variant={'secondary'}
                       className="cursor-pointer bg-neutral-300 px-4 py-2 text-neutral-900"
                     >
                       Buy now
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                    size={'lg'}
                       onClick={handleClick}
                       type="submit"
                       className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
                     >
                       Add to cart
-                    </button>
+                    </Button>
                   </div>
                 </form>
               )}

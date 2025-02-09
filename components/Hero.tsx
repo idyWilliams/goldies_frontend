@@ -80,7 +80,7 @@ const Hero = () => {
               </p>
               <Button
                 size="lg"
-                className="mt-6 bg-goldie-300 font-semibold text-black hover:bg-goldie-300"
+                className="mt-6 bg-goldie-300 font-semibold text-black hover:bg-goldie-400"
                 onClick={() => {
                   console.log("click order now button on slide 1");
                   router.push("/shop");

@@ -6,6 +6,7 @@ import { MdDeleteOutline } from "react-icons/md";
 import EditAddressModal from "../EditAddressModal";
 import DeleteAddressModal from "../DeleteAddressModal";
 import { useMediaQuery } from "react-responsive";
+import { IShippingAddress } from "@/interfaces/user.interface";
 
 const addresses = [
   {
@@ -55,7 +56,7 @@ const addresses = [
   },
 ];
 
-const MyAddresses = ({ myaddresses }: any) => {
+const MyAddresses = ({ myaddresses }: { myaddresses: IShippingAddress[] }) => {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [isMobileView, setIsMobileView] = useState(false);

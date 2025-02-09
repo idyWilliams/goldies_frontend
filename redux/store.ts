@@ -1,13 +1,19 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import productReducer from "./features/product/productSlice";
 import { Action, ThunkAction } from "@reduxjs/toolkit";
 import { userReducer } from "./features/user";
-export const store = configureStore({
-  reducer: {
-    product: productReducer,
-    user: userReducer,
-  },
+
+const rootReducer = combineReducers({
+  product: productReducer,
+  user: userReducer,
 });
+
+const store = configureStore({
+  reducer: rootReducer,
+  devTools: process.env.NODE_ENV !== 'production',
+});
+
+export default store;
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
@@ -19,6 +25,3 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   unknown,
   Action<string>
 >;
-
-
-

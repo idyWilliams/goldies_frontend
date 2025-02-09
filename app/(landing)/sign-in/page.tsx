@@ -12,7 +12,7 @@ import Link from "next/link";
 import { cn } from "@/helper/cn";
 import { useMutation } from "@tanstack/react-query";
 import { loginUser } from "@/services/hooks/user-auth";
-import AuthContext from "@/context/AuthProvider";
+import AuthContext, { useAuth } from "@/context/AuthProvider";
 // import { toast } from "sonner";
 import { Toaster, toast } from "sonner";
 import { useRouter } from "next/navigation";
@@ -23,8 +23,7 @@ const validationSchema = yup.object().shape({
 });
 
 const Page = () => {
-  // @ts-ignore
-  const { setIsLogin, activePathRef } = useContext(AuthContext);
+  const { setIsLogin, activePathRef } = useAuth();
   const [isChecked, setIsChecked] = useState(false);
   const router = useRouter();
   const [visible, setVisible] = useState(false);
@@ -48,12 +47,9 @@ const Page = () => {
   };
 
   const onSubmit = (data: any) => {
-    console.log(data);
-
     userLogin
       .mutateAsync(data)
       .then((res: any) => {
-        console.log(res);
         setIsLogin(true);
         localStorage.setItem("isLogin", JSON.stringify(true));
         localStorage.removeItem("userToken");
@@ -63,7 +59,6 @@ const Page = () => {
           JSON.stringify({ token: res?.token, user: res?.user }),
         );
         localStorage.setItem("userToken", res?.token);
-        console.log(`/${activePathRef.current ? activePathRef.current : "/"}`);
 
         router.push(`${activePathRef.current ? activePathRef.current : "/"}`);
         reset();
@@ -99,10 +94,13 @@ const Page = () => {
                 className="grid gap-5"
                 onSubmit={handleSubmit(onSubmit)}
               >
-                <label htmlFor="email" className="">
-                  <span className="mb-1 inline-block font-medium capitalize">
+                <div>
+                  <label
+                    htmlFor="email"
+                    className="mb-1 inline-block font-medium capitalize"
+                  >
                     Email Address
-                  </span>
+                  </label>
                   <input
                     {...register("email")}
                     type="email"
@@ -112,39 +110,53 @@ const Page = () => {
                         ? "border border-red-600 focus:border-red-600"
                         : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
                     )}
-                    id="email"
                     name="email"
                     placeholder="Your email"
                   />
-                </label>
-                <label htmlFor="password" className="relative">
-                  <span className="mb-1 inline-block font-medium capitalize">
-                    Password
-                  </span>
-                  <input
-                    {...register("password")}
-                    type={visible ? "text" : "password"}
-                    className={cn(
-                      "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
-                      errors?.password
-                        ? "border border-red-600 focus:border-red-600"
-                        : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
-                    )}
-                    id="password"
-                    name="password"
-                    placeholder="Your password"
-                  />
-                  <span
-                    onClick={handleToggle}
-                    className="absolute bottom-[14px] right-3 cursor-pointer text-neutral-800"
+                  {errors?.email && (
+                    <p className={cn("mt-1 text-sm text-red-600")}>
+                      {errors.email?.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="password"
+                    className="relative mb-1 inline-block font-medium capitalize"
                   >
-                    {visible ? (
-                      <BsEyeSlash size={20} />
-                    ) : (
-                      <AiOutlineEye size={20} />
-                    )}
-                  </span>
-                </label>
+                    Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      {...register("password")}
+                      type={visible ? "text" : "password"}
+                      className={cn(
+                        "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
+                        errors?.password
+                          ? "border border-red-600 focus:border-red-600"
+                          : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
+                      )}
+                      name="password"
+                      placeholder="Your password"
+                    />
+                    <span
+                      onClick={handleToggle}
+                      className="absolute bottom-[14px] right-3 cursor-pointer text-neutral-800"
+                    >
+                      {visible ? (
+                        <BsEyeSlash size={20} />
+                      ) : (
+                        <AiOutlineEye size={20} />
+                      )}
+                    </span>
+                  </div>
+                  {errors?.password && (
+                    <p className={cn("mt-1 text-sm text-red-600")}>
+                      {errors.password?.message}
+                    </p>
+                  )}
+                </div>
                 <div className="flex items-center justify-between">
                   <label htmlFor="agree" className="flex items-center gap-3">
                     <input

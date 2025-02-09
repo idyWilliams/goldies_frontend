@@ -1,6 +1,6 @@
 import { captalizedName } from "@/helper/nameFormat";
 import { Category } from "@/services/types";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 
 type CatOptionsParamsType = {
   categories: Category[] | null;
@@ -11,17 +11,19 @@ const useCategoryOptions = ({ categories, category }: CatOptionsParamsType) => {
   const categoryOptions = useMemo(() => {
     return categories?.map((item) => ({
       label: item.name,
-      value: item.name.toLowerCase(),
+      value: item._id,
       disabled: !item.status || item.subCategories.length < 1,
       id: item._id,
       subCategories: [...item.subCategories],
     }));
   }, [categories]);
 
+
   const subcatOptions = useMemo(() => {
     const selectedCategory = categoryOptions?.find(
       (option) => option.value === category,
     );
+
     return selectedCategory
       ? selectedCategory.subCategories.map((sub) => ({
           label: captalizedName(sub.name),
@@ -31,6 +33,7 @@ const useCategoryOptions = ({ categories, category }: CatOptionsParamsType) => {
         }))
       : [];
   }, [category, categoryOptions]);
+
 
   return { categoryOptions, subcatOptions };
 };

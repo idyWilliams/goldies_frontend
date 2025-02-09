@@ -41,7 +41,6 @@ const AllCategories = () => {
     placeholderData: keepPreviousData,
     // staleTime: 60 * 1000,
   });
-  console.log(data);
 
   const QueryData = useMemo(() => {
     if (data) {
