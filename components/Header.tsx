@@ -1,48 +1,41 @@
 "use client";
-import Link from "next/link";
-import Image from "next/image";
-import { BsList, BsX, BsXLg } from "react-icons/bs";
-import { useContext, useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
-import { useRouter } from "next/navigation";
-import MobileNav from "./MobileNav";
-import { useSelector } from "react-redux";
+import useActivePath from "@/app/_hooks/useActivePath";
+import { useAuth } from "@/context/AuthProvider";
+import { cn } from "@/helper/cn";
 import { RootState } from "@/redux/store";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
-import { BiHeart, BiStore } from "react-icons/bi";
-import { FaRegUserCircle } from "react-icons/fa";
 import { Ghost } from "iconsax-react";
-import MenuPopup from "./MenuPopup";
-import { useDispatch } from "react-redux";
-import { setProducts } from "@/redux/features/product/productSlice";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { BiHeart, BiStore } from "react-icons/bi";
+import { BsList, BsX } from "react-icons/bs";
+import { FaRegUserCircle } from "react-icons/fa";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { IoCartOutline } from "react-icons/io5";
+import { useDispatch, useSelector } from "react-redux";
 import Logo from "../public/assets/goldis-logo.png";
-import AuthContext from "@/context/AuthProvider";
+import MobileNav from "./MobileNav";
 import { Button } from "./ui/button";
-// import { jwtDecode } from "jwt-decode";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "./ui/dialog";
-import { cn } from "@/helper/cn";
-import { Toaster } from "sonner";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 const Header = () => {
   const [show, setShow] = useState(false);
   const [sticky, setSticky] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  // @ts-ignore
   const cart = useSelector((state: RootState) => state.product.cart);
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
   const [user, setUser] = useState<any | null>(null);
-  // @ts-ignore
-  const { isLogin, auth, setIsLogin, setAuth } = useContext(AuthContext);
+  const { isLogin, auth, setIsLogin, setAuth } = useAuth();
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const handleClick = () => {
@@ -75,19 +68,7 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // STORE CART ITEMS TO LOCALSTORAGE
-  useEffect(() => {
-    if (Object.values(cart).length >= 1) {
-      localStorage.setItem("cart", JSON.stringify(cart));
-    }
-  }, [cart]);
-
-  // RETRIEVE CART ITEMS FROM LOCALSTORAGE ON INITIAL RENDER
-  useEffect(() => {
-    if (localStorage.getItem("cart") !== null) {
-      dispatch(setProducts(JSON.parse(localStorage.getItem("cart") as string)));
-    }
-  }, [dispatch]);
+  const navigateToLogin = useActivePath();
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user") as string);
@@ -97,16 +78,12 @@ const Header = () => {
       const isLoggedIn = JSON.parse(localStorage.getItem("isLogin") as string);
       setIsLogin(Boolean(isLoggedIn));
     }
-
-    console.log(storedUser, "useehehe");
   }, [setAuth, setIsLogin]);
-  console.log(isLogin, "isLogged", auth);
 
   return (
     <>
-      <Toaster richColors position="top-right" expand={true} />
       <header
-        className={`${sticky ? "fixed shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "absolute border-b border-neutral-900"} left-0 top-0 z-[999] flex  w-full items-center bg-goldie-300 py-3 lg:h-20`}
+        className={`${sticky ? "fixed shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "absolute border-b border-neutral-900"} left-0 top-0 z-50 flex  w-full items-center bg-goldie-300 py-3 lg:h-20`}
       >
         <div className="wrapper flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -165,65 +142,73 @@ const Header = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <div
-              className="relative w-[30px] cursor-pointer"
-              onClick={() => router.push("/cart")}
-            >
-              {/* <Image
-                src={CartIcon}
-                className="h-[22px] w-auto"
-                alt="Goldis Logo"
-              /> */}
-              <span>
-                <IoCartOutline size={24} />
-              </span>
-              {Object.values(cart) && Object.values(cart).length >= 0 && (
-                <span className="absolute -right-1 top-0 inline-flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs font-medium text-[#fcf7e8]">
-                  {Object.values(cart).length}
+            <Link href={"/cart"}>
+              <button className="relative flex h-[30px] w-[30px] cursor-pointer items-center justify-center">
+                <span>
+                  <IoCartOutline size={24} className="mb-0" />
                 </span>
-              )}
-            </div>
-            <div className="hidden lg:block">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsOpen((prev) => !prev);
-                }}
-                className="flex items-center gap-2"
-              >
-                <FaRegUserCircle size={20} />
-                {!isLogin ? (
-                  <span>Account</span>
-                ) : (
-                  <span>{user?.firstName}</span>
+                {Object.values(cart) && Object.values(cart).length >= 0 && (
+                  <span className="absolute -right-1 top-0 inline-flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs font-medium text-[#fcf7e8]">
+                    {Object.values(cart).length}
+                  </span>
                 )}
-                {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
               </button>
-              {isOpen && (
-                <MenuPopup className="absolute right-0 top-16 z-20 w-[190px] rounded-md bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
+            </Link>
+            <div className="hidden lg:block">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsOpen((prev) => !prev);
+                    }}
+                    className="flex items-center gap-2"
+                  >
+                    <FaRegUserCircle size={20} />
+                    {!isLogin ? (
+                      <span>Account</span>
+                    ) : (
+                      <span>{user?.firstName}</span>
+                    )}
+                    {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[190px] rounded-md border-[#E4D064] bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
                   <div className="">
-                    <Link
-                      href={isLogin ? "/my-account" : "/sign-in"}
+                    <span
+                      // href={isLogin ? "/my-account" : "/sign-in"}
+                      onClick={() => {
+                        isLogin
+                          ? router.push("/my-account")
+                          : navigateToLogin();
+                      }}
                       className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
                     >
                       <FaRegUserCircle size={20} />
                       My Account
-                    </Link>
-                    <Link
-                      href={isLogin ? "/my-orders" : "/sign-in"}
+                    </span>
+                    <span
+                      // href={isLogin ? "/my-orders" : "/sign-in"}
+                      onClick={() => {
+                        isLogin ? router.push("/my-orders") : navigateToLogin();
+                      }}
                       className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
                     >
                       <BiStore size={20} />
                       Orders
-                    </Link>
+                    </span>
 
-                    <Link
-                      href={isLogin ? "/saved-items" : "/sign-in"}
+                    <span
+                      onClick={() => {
+                        isLogin
+                          ? router.push("/saved-items")
+                          : navigateToLogin();
+                      }}
                       className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
                     >
                       <BiHeart size={20} />
                       Saved Items
-                    </Link>
+                    </span>
                   </div>
                   <div className="my-2 border-b border-black border-opacity-50"></div>
                   {isLogin ? (
@@ -241,8 +226,8 @@ const Header = () => {
                       Sign In
                     </Button>
                   )}
-                </MenuPopup>
-              )}
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
         </div>
@@ -254,6 +239,8 @@ const Header = () => {
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         isLogin={isLogin}
+        logOut={logOut}
+        user={user}
       />
 
       <SessionModal

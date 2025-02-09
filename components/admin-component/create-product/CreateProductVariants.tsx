@@ -8,18 +8,6 @@ import {
 } from "@/utils/productDetails";
 import { ProductVariantsPropType } from "@/types/products";
 
-// type ProductVariantsPropeType = {
-//   shapes: [];
-//   setShapes: React.Dispatch<React.SetStateAction<[]>>;
-//   sizes: [];
-//   setSizes: React.Dispatch<React.SetStateAction<[]>>;
-//   flavour: [];
-//   setFlavours: React.Dispatch<React.SetStateAction<[]>>;
-//   addOn: [];
-//   setAddOn: React.Dispatch<React.SetStateAction<[]>>;
-//   productType: string;
-// };
-
 const CreateProductVariants = ({
   shapes,
   setShapes,

@@ -1,22 +1,21 @@
 "use client";
 
-import React, { useContext, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
-import { RiUserSharedLine } from "react-icons/ri";
 import { Button } from "@/components/ui/button";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { BsEyeSlash } from "react-icons/bs";
-import { AiOutlineEye, AiOutlineUserAdd } from "react-icons/ai";
-import Link from "next/link";
-import { cn } from "@/helper/cn";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { createUser, loginUser } from "@/services/hooks/user-auth";
 import AuthContext from "@/context/AuthProvider";
-import { Toaster, toast } from "sonner";
+import { cn } from "@/helper/cn";
+import { createUser, loginUser } from "@/services/hooks/user-auth";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation } from "@tanstack/react-query";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useContext, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { AiOutlineEye, AiOutlineUserAdd } from "react-icons/ai";
+import { BsEyeSlash } from "react-icons/bs";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import { toast } from "sonner";
+import * as yup from "yup";
 
 const validationSchema = yup.object().shape({
   firstName: yup.string().required("Firstname is required"),

@@ -1,29 +1,25 @@
-import Link from "next/link";
 import EachElement from "@/helper/EachElement";
-import { addSlugToCakes } from "@/helper";
-import { cakeProducts1 } from "@/utils/cakeData";
-import ProductCard from "./shop-components/ProductCard";
-import { useQuery } from "@tanstack/react-query";
-import { getAllProducts } from "@/services/hooks/products";
-import { useEffect, useMemo } from "react";
-import ShopPageSkeleton from "./shop-components/ShopPageSkeleton";
+import { IProduct, ProductParams } from "@/interfaces/product.interface";
+import useProducts from "@/services/hooks/products/useProducts";
 import useSavedItems from "@/services/hooks/products/useSavedItems";
 import useUserPdctStore from "@/zustand/userProductStore/store";
+import Link from "next/link";
+import { useEffect } from "react";
+import ProductCard from "./shop-components/ProductCard";
+import ProductCardSkeleton from "./shop-components/ProductCardSkeleton";
+import ShopPageSkeleton from "./shop-components/ShopPageSkeleton";
 
 const FeaturedProducts = () => {
   const favProducts = useUserPdctStore((state) => state.favProducts);
   const setFavProducts = useUserPdctStore((state) => state.setFavProducts);
+  // const featuredProducts = useUserPdctStore((state) => state.allProducts);
 
-  const { data, isError, isLoading, isPending } = useQuery({
-    queryKey: ["allProducts", 1, 6],
-    queryFn: async () => getAllProducts(1, 6),
-  });
+  const params: ProductParams = {
+    page: 1,
+    limit: 6,
+  };
 
-  const featuredProducts = useMemo(() => {
-    if (isLoading || isError) return null;
-    else return data?.products;
-  }, [isError, isLoading, data?.products]);
-
+  const { isPending, products: featuredProducts } = useProducts(params);
   const { favorites } = useSavedItems();
 
   useEffect(() => {
@@ -55,16 +51,24 @@ const FeaturedProducts = () => {
         </div>
 
         <div className="vector-bg mt-7 rounded-3xl border bg-cover bg-center py-10">
-          <div className="wrapper grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:gap-7 ">
-            {isPending && !featuredProducts && <ShopPageSkeleton />}
-            {featuredProducts && (
+          {isPending && !featuredProducts && (
+            <div className="wrapper ">
+              <ShopPageSkeleton />
+            </div>
+          )}
+          <div className="wrapper grid gap-3 sm:grid-cols-2 lg:grid-cols-3  xl:gap-7">
+            {isPending ? (
+              [...Array(6)].map((_, i) => <ProductCardSkeleton key={i} />)
+            ) : featuredProducts.length > 0 ? (
               <EachElement
-                of={addSlugToCakes(featuredProducts)}
-                render={(cake: any, index: any) => {
+                of={featuredProducts}
+                render={(cake: IProduct, index: any) => {
                   if (index > 5) return;
                   return <ProductCard data={cake} key={index} />;
                 }}
               />
+            ) : (
+              <div></div>
             )}
           </div>
           <div className="wrapper mt-8 flex justify-end">

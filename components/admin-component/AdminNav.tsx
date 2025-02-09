@@ -52,14 +52,11 @@ export default function AdminNav() {
   const [isOpen, setOpen] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
   const adminStored = useAdmin();
-  console.log(adminStored?._id);
 
   const { data, isPending, isError, isSuccess } = useQuery({
     queryKey: ["admin"],
-    queryFn: () => getAdmin(adminStored?._id),
+    queryFn: () => getAdmin(adminStored?._id as string),
   });
-
-  console.log(data, "adminsns");
 
   useEffect(() => {
     const handleScroll = () => {

@@ -1,17 +1,17 @@
 import { cn } from "@/helper/cn";
+import { IUser } from "@/interfaces/user.interface";
+import { updateUser } from "@/services/hooks/users";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import * as yup from "yup";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import { useCallback, useEffect, useState } from "react";
-import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
-import { getUser, updateUser } from "@/services/hooks/users";
-import { useMutation, useQuery } from "@tanstack/react-query";
-// import { toast } from "sonner";
-import { toast, Toaster } from "sonner";
-import { useRouter } from "next/navigation";
-import { type } from "os";
+import { toast } from "sonner";
+import * as yup from "yup";
+import ConfirmDeletion from "./ConfirmDeletion";
+
 
 const schema = yup.object().shape({
   firstName: yup.string().required("First name is required"),
@@ -27,24 +27,25 @@ const schema = yup.object().shape({
   // country: yup.string().required("Country is required"),
 });
 
-const AccountInfo = () => {
+const AccountInfo = ({ fetchedUser }: { fetchedUser: IUser }) => {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const [user, setUser] = useState<any>(null);
   const [phone, setPhone] = useState("");
   // const [country, setCountry] = useState("");
   // const [state, setState] = useState("");
-  const [user, setUser] = useState<any>(null);
-  const router = useRouter();
   // const [lastName, setLastName] = useState("");
   // const [email, setEmail] = useState("");
   // const [address, setAddress] = useState("");
 
-  const { data, isError, isSuccess } = useQuery({
-    queryKey: [user],
-    queryFn: getUser,
-  });
+  // const { data, isError, isSuccess } = useQuery({
+  //   queryKey: [user],
+  //   queryFn: getUser,
+  // });
 
-  useEffect(() => {
-    if (isSuccess) console.log(data);
-  }, [isSuccess, data]);
+  // useEffect(() => {
+  //   if (isSuccess) console.log(data);
+  // }, [isSuccess, data]);
 
   const {
     reset,
@@ -57,10 +58,10 @@ const AccountInfo = () => {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      firstName: user?.firstName || "",
-      lastName: user?.lastName || "",
-      email: user?.email || "",
-      phone: user?.phone || "",
+      firstName: fetchedUser?.firstName || "",
+      lastName: fetchedUser?.lastName || "",
+      email: fetchedUser?.email || "",
+      phone: fetchedUser?.phoneNumber || "",
     },
 
     // defaultValues: user
@@ -91,21 +92,48 @@ const AccountInfo = () => {
   // console.log("data is", user);
 
   useEffect(() => {
-    console.log("reset ", user);
+    if (fetchedUser) {
+      reset({
+        firstName: fetchedUser.firstName || "",
+        lastName: fetchedUser.lastName || "",
+        email: fetchedUser.email || "",
+        phone: fetchedUser.phoneNumber || "",
+      });
+    }
 
     // reset({
     //   firstName: user?.firstName || "",
     //   lastName: user?.lastName || "",
     //   email: user?.email || "",
     // });
-  }, [user, reset]);
+  }, [fetchedUser, reset]);
 
   const updateProfile = useMutation({
     mutationKey: ["update user profile"],
     mutationFn: updateUser,
     onSuccess: (data) => {
+      const storedUser = JSON.parse(localStorage.getItem("user") as string);
+      console.log(storedUser);
+      const user = {
+        ...storedUser.user,
+        firstName: data.data.firstName,
+        lastName: data.data.lasttName,
+      };
+      const newUser = {
+        ...storedUser,
+        user: {
+          ...storedUser.user,
+          firstName: data.data.firstName,
+          lastName: data.data.lastName,
+        },
+      };
+      console.log(newUser);
+
+      localStorage.setItem("user", JSON.stringify(newUser));
+
       toast.success("Account information updated successfully");
       console.log(data);
+      queryClient.invalidateQueries({ queryKey: ["user"] });
     },
     onError: (error) => {
       console.error(error);
@@ -122,11 +150,13 @@ const AccountInfo = () => {
     // console.log("Form errors:", errors);
   };
 
+
+
   return (
     <div className="">
       <div className="mb-4 border-b border-neutral-200 pb-4">
         <h2 className="text-xl font-semibold">Account Information</h2>
-        <p>This is your default shipping information</p>
+        <p>This is your default account information</p>
       </div>
       <form onSubmit={handleSubmit(handleSave)}>
         <div className="space-y-3 md:grid md:grid-cols-2 md:gap-3 md:space-y-0">
@@ -176,9 +206,10 @@ const AccountInfo = () => {
               {...register("email")}
               type="email"
               id="email"
+              disabled
               // defaultValue={email}
               className={cn(
-                "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
+                "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0 disabled:cursor-not-allowed disabled:opacity-75",
                 errors.email && "border-red-600 focus:border-red-600",
               )}
             />
@@ -297,11 +328,16 @@ const AccountInfo = () => {
           >
             Save changes
           </button>
-          <button className="rounded border border-red-600 px-5 py-2.5 font-medium text-red-600">
-            Close account
-          </button>
         </div>
       </form>
+
+      <div className="mt-8 flex items-center justify-between rounded-lg border border-red-500 p-4">
+        <div>
+          <p className="text-red-500">Danger zone</p>
+        </div>
+
+        <ConfirmDeletion />
+      </div>
     </div>
   );
 };

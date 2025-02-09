@@ -38,6 +38,16 @@ import useUserPdctStore from "@/zustand/userProductStore/store";
 import Placeholder from "@/public/assets/placeholder3.png";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getActiveProduct, getAllProducts } from "@/services/hooks/products";
+import useProducts from "@/services/hooks/products/useProducts";
+import { useMediaQuery } from "react-responsive";
+import { ProductParams } from "@/interfaces/product.interface";
+import { Button } from "@/components/ui/button";
+// import {
+//   cakeSizes,
+//   toppings,
+//   cakeShapes,
+//   fillingsList,
+// } from "@/utils/productDetails";
 
 const cakeSizes = [
   { value: "6-round", label: "6″ round serves 10 - 12" },
@@ -48,7 +58,7 @@ const cakeSizes = [
   { value: "10-square", label: "10″ square serves 48 – 50" },
 ];
 
-const flavour = [
+const flavours = [
   { value: "vanilla", label: "Vanilla" },
   { value: "red-velvet", label: "Red Velvet" },
   { value: "lemon", label: "Lemon" },
@@ -76,10 +86,17 @@ export type SelectOptionType = {
   value: string | number;
   description?: string;
 } | null;
+export type SelectOptionUserType =
+  | {
+      label: string | number;
+      value: string | number;
+    }[]
+  | undefined;
 
 const schema = yup.object().shape({
   sizes: yup.string().required("Size is required"),
   toppings: yup.string().required("Topping is required"),
+  flavours: yup.string().required("Flavour is required"),
   cakeTimes: yup.string().required("cakeTimes is required"),
   // message: yup.string().required("Input any additional info"),
 });
@@ -87,6 +104,7 @@ const schema = yup.object().shape({
 interface FormValues {
   sizes: string;
   toppings: string;
+  flavours: string;
   cakeTimes: string;
   // message: string;
 }
@@ -103,16 +121,32 @@ const setToUpperCase = (sentence: string) => {
 const exampleImage =
   "https://firebasestorage.googleapis.com/v0/b/goldie-b3ba7.appspot.com/o/products%2Fbanana-cake-with-cinnamon-cream-102945-1.webp?alt=media&token=32e645da-9327-4f7f-9f79-a2cba1102676";
 
-function CakeDetailsPage({ params }: any) {
+function CakeDetailsPage() {
   const activeProduct = useUserPdctStore((state) => state.activeProduct);
   const setActiveProduct = useUserPdctStore((state) => state.setActiveProduct);
   const allProducts = useUserPdctStore((state) => state.allProducts);
-  console.log(activeProduct);
-  console.log(params);
-  const searchParams = useSearchParams();
-  const productId = searchParams.get("productId");
-  console.log(productId);
+  const setAllProducts = useUserPdctStore((state) => state.setAllProducts);
+  const queryParams = useSearchParams();
+  const productId = queryParams.get("productId");
   const [isLoaded, setIsLoaded] = useState(false);
+  const isDesktop = useMediaQuery({ minWidth: 1280 });
+  const isLaptop = useMediaQuery({ minWidth: 1024 });
+  const isTablet = useMediaQuery({ minWidth: 640 });
+
+  const featuredPdctLength = () => {
+    if (isDesktop) {
+      return 4;
+    }
+    if (isLaptop) {
+      return 3;
+    }
+    if (isTablet) {
+      return 2;
+    }
+    return 2;
+  };
+
+  const [featuredPdcts, setFeaturedProducts] = useState<any[] | null>(null);
 
   const [showReviews, setShowReviews] = useState(false);
   // const [loading, setLoading] = useState(true);
@@ -147,8 +181,7 @@ function CakeDetailsPage({ params }: any) {
   // const handleChange = (event: SelectChangeEvent) => {
   //   setAge(event.target.value as string);
   // };
-  console.log(productId);
-  console.log(activeProduct);
+
 
   const { data, isError, isLoading, isPending } = useQuery({
     queryKey: ["allProducts", productId],
@@ -161,25 +194,70 @@ function CakeDetailsPage({ params }: any) {
         ...data.productDetails,
         slug: slugify(data.productDetails.name),
       };
+      // const newToppings = toppings.filter((topping: any) => {
+      //   return product.toppings.find((top: string) => topping.value === top);
+      // });
+      // console.log(newToppings);
+
+      // setAddon(newToppings);
 
       setActiveProduct(product);
     }
   }, [data, setActiveProduct]);
+
+  const params: ProductParams = {
+    page: 1,
+    limit: 6,
+  };
+
+  const {
+    data: otherProducts,
+    isError: allproductsError,
+    isLoading: allProductsLoading,
+  } = useQuery({
+    queryKey: ["allProducts", 1, 6],
+    queryFn: async () => getAllProducts(params),
+    enabled: allProducts.length === 0,
+  });
+
+  const similarProducts = useMemo(() => {
+    if (otherProducts) {
+      return otherProducts.products;
+    }
+  }, [otherProducts]);
+
+  useEffect(() => {
+    if (similarProducts) {
+      setAllProducts(addSlugToCakes(similarProducts));
+    }
+  }, [similarProducts, setAllProducts]);
+
+  useEffect(() => {
+    if (allProducts) {
+      const getSimilarProducts = allProducts.filter(
+        (product: { slug: string }) => product.slug !== activeProduct?.slug,
+      );
+      console.log(getSimilarProducts);
+
+      setFeaturedProducts(getSimilarProducts);
+    }
+  }, [allProducts, activeProduct?.slug]);
+
+  // useEffect(() => {
+  //   if (featuredPdcts) console.log(featuredPdcts);
+  // }, [featuredPdcts]);
 
   const cartTotal = Object.values(cart).reduce((acc, current) => {
     return acc + parseFloat(current.maxPrice) * (current.quantity as number);
   }, 0);
   console.log(cart, "cart");
 
-  const cakes = addSlugToCakes(allProducts);
+  // const cakes = addSlugToCakes(allProducts);
 
-  console.log(cakes, "kkk");
+  // console.log(cakes, "kkk");
   // const cakeProduct = useMemo(() => cakes, [cakes]);
 
-  const getSimilarProducts = allProducts.filter(
-    (product: { slug: any }) => product.slug !== activeProduct.slug,
-  );
-  console.log(getSimilarProducts);
+  // console.log(getSimilarProducts);
 
   function create(value: any) {
     if (value !== null) {
@@ -188,16 +266,14 @@ function CakeDetailsPage({ params }: any) {
     }
   }
 
-  activeProduct.category.name && setToUpperCase(activeProduct.category?.name);
-
   // const handleClick = () => {
   //   console.log(getProduct.id);
   //   // setShapes(null)
   // };
   const handleClick = handleSubmit((data) => {
     if (data.sizes && data.toppings && data.cakeTimes) {
-      dispatch(addProductToCart({ id: activeProduct._id }));
-      console.log(activeProduct._id);
+      dispatch(addProductToCart({ id: activeProduct?._id as string }));
+      console.log("add to cart>>>", activeProduct?._id);
     } else {
       console.error(
         "Please fill in all required fields before adding to cart.",
@@ -295,9 +371,9 @@ function CakeDetailsPage({ params }: any) {
               )}
               <Image
                 src={
-                  activeProduct.images[0].includes("example")
-                    ? exampleImage
-                    : activeProduct.images[0]
+                  activeProduct.images.length > 0
+                    ? activeProduct.images[0]
+                    : exampleImage
                 }
                 alt={activeProduct.slug}
                 fill
@@ -305,18 +381,6 @@ function CakeDetailsPage({ params }: any) {
                 className={`mx-auto object-cover object-center ${isLoaded ? "opacity-100" : "opacity-0"}`}
                 onLoad={() => setIsLoaded(true)}
               />
-
-              {/* <Image
-            src={
-              data.images[0].includes("example") ? exampleImage : data.images[0]
-            }
-            // src={data?.imageUrl ? data?.imageUrl : data.images[0]}
-            alt={data?.name}
-            fill
-            sizes="(max-width: 1440px) 33vw"
-            className={`object-cover object-center ${isLoaded ? "opacity-100" : "opacity-0"}`}
-            onLoad={() => setIsLoaded(true)}
-          /> */}
             </div>
 
             <div className="mb-1 flex flex-col text-lg">
@@ -434,6 +498,36 @@ function CakeDetailsPage({ params }: any) {
                         </p>
                       )}
                     </label>
+                    <label htmlFor="flavours" className="block w-full">
+                      <span className="mb-1.5 inline-block after:inline-block after:text-red-600 after:content-['*']">
+                        Flavour
+                      </span>
+                      {/* <Select options={toppings} theme={selectTheme} /> */}
+                      <Controller
+                        control={control}
+                        name="flavours"
+                        render={({ field: { value, onChange, ref } }) => {
+                          console.log(value, "vavav");
+
+                          return (
+                            <Select
+                              options={flavours}
+                              value={flavours.find(
+                                (option) => option.value === value,
+                              )}
+                              onChange={(selected) => onChange(selected?.value)}
+                              ref={ref}
+                              theme={selectTheme}
+                            />
+                          );
+                        }}
+                      />
+                      {errors.flavours && (
+                        <p className="text-red-500">
+                          {errors.flavours.message}
+                        </p>
+                      )}
+                    </label>
                     <label htmlFor="cakeTimes" className="block w-full">
                       <span className="mb-1.5 inline-block after:inline-block after:text-red-600 after:content-['*'] ">
                         When do you need your cake?
@@ -504,20 +598,23 @@ function CakeDetailsPage({ params }: any) {
                       </span>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-3 after:grid ">
-                    <button
+                  <div className="grid grid-cols-2 gap-3 after:grid mt-4">
+                    <Button
+                    size={'lg'}
                       type="button"
+                      variant={'secondary'}
                       className="cursor-pointer bg-neutral-300 px-4 py-2 text-neutral-900"
                     >
                       Buy now
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                    size={'lg'}
                       onClick={handleClick}
                       type="submit"
                       className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
                     >
                       Add to cart
-                    </button>
+                    </Button>
                   </div>
                 </form>
               )}
@@ -536,13 +633,17 @@ function CakeDetailsPage({ params }: any) {
               </Link>
             </div>
 
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {Array.from({ length: 4 }, (_: any, index: number) => {
-                return (
-                  <ProductCard key={index} data={getSimilarProducts[index]} />
-                );
-              })}
-            </div>
+            {featuredPdcts && featuredPdcts?.length > 0 && (
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <EachElement
+                  of={featuredPdcts}
+                  render={(item: any, index: number) => {
+                    if (index >= featuredPdctLength()) return;
+                    return <ProductCard data={item} key={item._id} />;
+                  }}
+                />
+              </div>
+            )}
           </div>
         </section>
       </>

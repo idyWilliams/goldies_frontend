@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import ProductOptionModal from "./ProductOptionModal";
 import { Product } from "@/app/(dashboard)/admin/products/page";
+import { IProduct } from "@/interfaces/product.interface";
 
 const statusColor = (status: string) => {
   switch (status.toLowerCase()) {
@@ -27,7 +28,7 @@ const statusColor = (status: string) => {
   }
 };
 
-export default function MobileProductCard({ data }: { data: Product }) {
+export default function MobileProductCard({ data }: { data: IProduct }) {
   const [showModal, setShowModal] = useState(false);
   const [action, setAction] = useState("");
   const [selectedProducts, setSelectedProducts] = useState<any>();
@@ -64,7 +65,7 @@ export default function MobileProductCard({ data }: { data: Product }) {
         </div>
         <div className="grid gap-5 text-right ">
           <span className="text-xs">{data?.createdAt}</span>
-          <span className="text-xs">X{data?.quantity || 1}</span>
+          {/* <span className="text-xs">X{data?.quantity || 1}</span> */}
         </div>
       </div>
     ),

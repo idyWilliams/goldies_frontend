@@ -37,10 +37,6 @@ const CreateProductImages = ({
     imagesRef.current[fileIndex] = file;
   };
 
-  useEffect(() => {
-    console.log(images);
-    console.log(imagesRef);
-  }, [images, imagesRef]);
 
   return (
     <>

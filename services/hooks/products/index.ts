@@ -1,3 +1,4 @@
+import { ProductParams } from "@/interfaces/product.interface";
 import instance from "@/services/api";
 
 let accessToken = "";
@@ -16,7 +17,6 @@ if (typeof window !== "undefined") {
 
 // CREATE PRODUCT
 export const createNewProduct = async (data: any) => {
-  console.log(accessToken);
 
   const response = await instance.post("/product/create_product", data, {
     headers: {
@@ -27,14 +27,13 @@ export const createNewProduct = async (data: any) => {
 };
 
 // GET ALL PRODUCTS
-export const getProducts = async (data: any) => {
-  const response = await instance.get("/product/get_all_products", data);
+export const getProducts = async () => {
+  const response = await instance.get("/product/get_all_product");
   return response.data;
 };
-export const getAllProducts = async (page: number, limit: number) => {
-  const response = await instance.get(
-    `/product/get_all_product?page=${page}&limit=${limit}`,
-  );
+
+export const getAllProducts = async (params?: ProductParams) => {
+  const response = await instance.get("/product/get_all_product", { params });
   return response.data;
 };
 
@@ -67,7 +66,7 @@ export const updateProduct = async (data: any, productId: string) => {
 
 // DELETE PRODUCT
 export const deleteProduct = async (productId: string) => {
-  const response = await instance.delete(`/product/edit_product/${productId}`);
+  const response = await instance.delete(`/product/delete_product/${productId}`);
   return response.data;
 };
 
@@ -75,13 +74,9 @@ export const addFavorites = async (productId: string) => {
   const product = {
     productId: productId,
   };
-  const token = accessToken;
+  // const token = accessToken;
 
-  const response = await instance.post("/favorites/add", product, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await instance.post("/favorites/add", product);
 
   return response.data;
 };
