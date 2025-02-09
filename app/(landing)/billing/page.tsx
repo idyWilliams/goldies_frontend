@@ -4,26 +4,25 @@ import BreadCrumbs from "@/components/BreadCrumbs";
 
 import EachElement from "@/helper/EachElement";
 import { cn } from "@/helper/cn";
-import { billingFormData } from "@/utils/formData";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useState } from "react";
-import { CountryDropdown } from "react-country-region-selector";
-import "react-phone-input-2/lib/style.css";
-import { Controller, useForm } from "react-hook-form";
-import PhoneInput from "react-phone-input-2";
-import * as yup from "yup";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import Image from "next/image";
-import { toast } from "sonner";
+import { useAppSelector } from "@/redux/hook";
 import {
   detailsBillings,
   initPayment,
   orderCreate,
   updateDetailsBillings,
 } from "@/services/hooks/payment";
+import { billingFormData } from "@/utils/formData";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
-import { useAppSelector } from "@/redux/hook";
+import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { CountryDropdown } from "react-country-region-selector";
+import { Controller, useForm } from "react-hook-form";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import { toast } from "sonner";
+import * as yup from "yup";
 
 const form1Schema = yup.object().shape({
   firstName: yup.string().required("First name is required"),
@@ -56,13 +55,16 @@ const form2Schema = yup.object().shape({
 });
 
 const Page = () => {
+  const queryParams = useSearchParams();
+  const router = useRouter();
   const { cart, buyNowProduct } = useAppSelector((state) => state.product);
-  const isCheckingOutFromCart = cart.length > 0 && !buyNowProduct;
-  const products = isCheckingOutFromCart
-    ? cart
-    : buyNowProduct
-      ? [buyNowProduct]
-      : [];
+
+  // Get URL parameters
+  const isBuyNow = queryParams.get("buyNow") === "true";
+  const productIdParam = queryParams.get("productId");
+
+  // Determine which products to use
+  const products = isBuyNow && buyNowProduct ? [buyNowProduct] : cart;
 
   const [country1, setCountry1] = useState("");
   const [country2, setCountry2] = useState("");
@@ -86,6 +88,14 @@ const Page = () => {
   });
   const form2 = useForm({ resolver: yupResolver(form2Schema) });
   const [submitForm1, setSubmitForm1] = useState(true);
+
+  useEffect(() => {
+    if (isBuyNow && !buyNowProduct) {
+      toast.error("Invalid product selection");
+      router.push("/shop");
+    }
+  }, [isBuyNow, buyNowProduct, router]);
+
   const paymentInit = useMutation({
     mutationFn: initPayment,
   });
@@ -156,11 +166,11 @@ const Page = () => {
       defaultBillingInfo: true,
     };
 
-    const ItemID = Object.values(cart).map((item) => item._id);
+    const ItemID = products.map((item) => item._id);
     const orderInfo = {
       orderedItems: ItemID,
       fee: {
-        subTotal: orderTotal - deliveryFee,
+        subTotal: totalWithDelivery - deliveryFee,
         total: orderTotal,
         deliveryFee: deliveryFee,
       },
@@ -264,7 +274,7 @@ const Page = () => {
     };
     console.log("Payment Data:", paymentData);
 
-    const ItemID = Object.values(cart).map((item) => item._id);
+    const ItemID = products.map((item) => item._id);
     const orderInfo = {
       orderedItems: ItemID,
       fee: {
@@ -565,7 +575,7 @@ const Page = () => {
                     {selectedMethod === "option2" && (
                       <div
                         className={cn(
-                          "h-0 mt-2 space-y-3 duration-300",
+                          "mt-2 h-0 space-y-3 duration-300",
                           selectedMethod === "option2" && "h-[610px]",
                         )}
                       >
@@ -736,7 +746,7 @@ const Page = () => {
               <h3 className="mb-3 hidden text-xl font-semibold md:block">
                 Order Summary
               </h3>
-              <div>
+              <div className="divide-y">
                 {products.length >= 1 &&
                   products.map((item, i) => {
                     return (
@@ -765,7 +775,7 @@ const Page = () => {
                     );
                   })}
               </div>
-              <div className="">
+              <div className="bordert-t border">
                 <div className="space-y-3 p-2 md:bg-white">
                   <div className="flex items-center justify-between">
                     <ul className="flex flex-col gap-3">
