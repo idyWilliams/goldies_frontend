@@ -23,6 +23,7 @@ import {
   updateDetailsBillings,
 } from "@/services/hooks/payment";
 import { useMutation } from "@tanstack/react-query";
+import { useAppSelector } from "@/redux/hook";
 
 const form1Schema = yup.object().shape({
   firstName: yup.string().required("First name is required"),
@@ -55,7 +56,14 @@ const form2Schema = yup.object().shape({
 });
 
 const Page = () => {
-  const cart = useSelector((state: RootState) => state.product.cart);
+  const { cart, buyNowProduct } = useAppSelector((state) => state.product);
+  const isCheckingOutFromCart = cart.length > 0 && !buyNowProduct;
+  const products = isCheckingOutFromCart
+    ? cart
+    : buyNowProduct
+      ? [buyNowProduct]
+      : [];
+
   const [country1, setCountry1] = useState("");
   const [country2, setCountry2] = useState("");
   const [phone1, setPhone1] = useState("");
@@ -73,7 +81,7 @@ const Page = () => {
       phoneNumber: "",
       address: "",
       country: "",
-      save: false, 
+      save: false,
     },
   });
   const form2 = useForm({ resolver: yupResolver(form2Schema) });
@@ -109,11 +117,11 @@ const Page = () => {
   };
 
   const deliveryFee = 50.5;
-  const orderTotal = Object.values(cart).reduce((acc, current) => {
-    return (
-      deliveryFee + acc + parseFloat(current.maxPrice) * (current.quantity as number)
-    );
+  const orderTotal = products.reduce((acc, current) => {
+    return acc + parseFloat(current.maxPrice) * (current.quantity as number);
   }, 0);
+
+  const totalWithDelivery = orderTotal + deliveryFee;
 
   const onSubmitForm1 = (data: any) => {
     console.log("Form 1 submitted:", data);
@@ -207,7 +215,8 @@ const Page = () => {
         });
     } else if (isSaveChecked && !isBillingInfoSaved) {
       console.log("Saving billing info");
-      billingDetails.mutateAsync(billingInfo)
+      billingDetails
+        .mutateAsync(billingInfo)
         .then((res: any) => {
           if (res?.success) {
             setIsBillingInfoSaved(true);
@@ -215,9 +224,9 @@ const Page = () => {
           }
         })
         .catch((err: any) => {
-        toast.error("An error occurred while saving the billing info.");
-        console.error("Save Error:", err.message);
-      })
+          toast.error("An error occurred while saving the billing info.");
+          console.error("Save Error:", err.message);
+        });
     } else if (!isSaveChecked) {
       toast.error("'Save this Information' is not checked.");
     }
@@ -255,11 +264,11 @@ const Page = () => {
     };
     console.log("Payment Data:", paymentData);
 
-       const ItemID = Object.values(cart).map((item) => item._id);
+    const ItemID = Object.values(cart).map((item) => item._id);
     const orderInfo = {
       orderedItems: ItemID,
       fee: {
-        subTotal: orderTotal - deliveryFee,
+        subTotal: totalWithDelivery - deliveryFee,
         total: orderTotal,
         deliveryFee: deliveryFee,
       },
@@ -274,7 +283,7 @@ const Page = () => {
 
     console.log("orderInfo: ", orderInfo);
 
-     createOrder
+    createOrder
       .mutateAsync(orderInfo)
       .then((res: any) => {
         if (!res?.error) {
@@ -299,7 +308,7 @@ const Page = () => {
         toast.error("An error occurred while creating the order.");
         console.error("Order Error:", err.message);
       });
-    
+
     paymentInit
       .mutateAsync(paymentData)
       .then((res: any) => {
@@ -340,9 +349,11 @@ const Page = () => {
             />
           </div>
         </div>
-        <section className="bg-neutral-100 px-4 py-6">
-          <div className="grid-cols-2 gap-4 md:grid lg:mx-auto lg:max-w-5xl lg:grid-cols-[1fr_400px] lg:gap-8 xl:max-w-6xl">
-            <div>
+
+        <section className="w-full bg-neutral-100 px-4 py-6">
+          <div className="mx-auto grid-cols-2 gap-8 md:grid lg:max-w-5xl lg:grid-cols-[1fr_400px] lg:gap-8 xl:max-w-6xl">
+            {/* billing form */}
+            <div className="w-full lg:w-4/5">
               <div className="mb-4">
                 <h2 className="text-xl font-semibold">Billing Details</h2>
                 <p>This field is required before Payment</p>
@@ -507,9 +518,16 @@ const Page = () => {
                 </div>
               </form>
 
+              <div className="mt-8">
+                <h3 className="text-xl font-medium">Shipping method</h3>
+                <p className="text-neutral-500">
+                  This is the address where your product will be delivered
+                </p>
+              </div>
+
               <div className="mt-3 inline-flex flex-col space-y-2">
                 <label
-                  htmlFor="info"
+                  htmlFor="option1"
                   className="inline-flex items-center gap-2"
                 >
                   <input
@@ -523,8 +541,9 @@ const Page = () => {
                   />
                   <span>Same as billing address</span>
                 </label>
+
                 <label
-                  htmlFor="options"
+                  htmlFor="option2"
                   className="inline-flex items-center gap-2"
                 >
                   <input
@@ -542,23 +561,14 @@ const Page = () => {
 
               <form id="form2">
                 <div>
-                  <div className="h-min overflow-hidden">
+                  <div className="">
                     {selectedMethod === "option2" && (
                       <div
                         className={cn(
-                          "mt-2 h-0 origin-top space-y-3 duration-300",
+                          "h-0 mt-2 space-y-3 duration-300",
                           selectedMethod === "option2" && "h-[610px]",
                         )}
                       >
-                        <div className="mt-8">
-                          <h3 className="text-xl font-medium">
-                            Shipping method
-                          </h3>
-                          <p className="text-neutral-500">
-                            This is the address where your product will be
-                            delivered
-                          </p>
-                        </div>
                         <EachElement
                           of={billingFormData}
                           render={(data: any, index: number) => {
@@ -702,32 +712,33 @@ const Page = () => {
                           }}
                         />
 
-                        {/* <label
-                        htmlFor="save"
-                        className="inline-flex items-center gap-2"
-                      >
-                        <input
-                          type="checkbox"
-                          name="save"
-                          id="save"
-                          className="form-checkbox"
-                        />
-                        <span>Save this information</span>
-                      </label> */}
+                        <label
+                          htmlFor="save"
+                          className="inline-flex items-center gap-2"
+                        >
+                          <input
+                            type="checkbox"
+                            name="save"
+                            id="save"
+                            className="form-checkbox"
+                          />
+                          <span>Save this information</span>
+                        </label>
                       </div>
                     )}
                   </div>
                 </div>
               </form>
             </div>
+
             {/* order summary */}
             <div className="mt-3 md:mt-0">
               <h3 className="mb-3 hidden text-xl font-semibold md:block">
                 Order Summary
               </h3>
-              <section>
-                {Object.values(cart).length >= 1 &&
-                  Object.values(cart).map((item, i) => {
+              <div>
+                {products.length >= 1 &&
+                  products.map((item, i) => {
                     return (
                       <div key={i} className=" space-y-3 p-2 md:bg-white">
                         <div className="grid grid-cols-[50px_1fr] gap-2 rounded-md bg-white p-4 md:bg-transparent md:p-0">
@@ -753,19 +764,19 @@ const Page = () => {
                       </div>
                     );
                   })}
-              </section>
+              </div>
               <div className="">
                 <div className="space-y-3 p-2 md:bg-white">
                   <div className="flex items-center justify-between">
                     <ul className="flex flex-col gap-3">
                       <li>SubTotal</li>
                       <li>Delivery Fees</li>
-                      <li>Total</li>
+                      <li className="font-bold">Total</li>
                     </ul>
                     <ul className="flex flex-col gap-3 ">
-                      <li>&euro;{orderTotal}</li>
-                      <li>&euro; {deliveryFee}</li>
-                      <li>&euro;{orderTotal + deliveryFee}</li>
+                      <li>&euro;{orderTotal.toFixed(2)}</li>
+                      <li>&euro;{deliveryFee.toFixed(2)}</li>
+                      <li>&euro;{totalWithDelivery.toFixed(2)}</li>
                     </ul>
                   </div>
                 </div>

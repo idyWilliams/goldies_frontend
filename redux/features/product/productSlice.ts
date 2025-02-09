@@ -5,11 +5,19 @@ import { toast } from "sonner";
 
 export interface ICart extends IProduct {
   quantity?: number;
+  cakeDetails?: {
+    size: string;
+    topping: string;
+    flavour: string;
+    cakeTime: string;
+    message?: string;
+  };
 }
 
 export interface ProductState {
   productList: IProduct[];
-  cart: ICart[]; // Changed cart type to hold a collection of ICart
+  cart: ICart[];
+  buyNowProduct: ICart | null;
   toastMessage: string | null;
 }
 
@@ -24,10 +32,22 @@ const getLocalStorageCart = () => {
   return [];
 };
 
+const getLocalStorageBuyNowProduct = () => {
+  if (typeof window !== "undefined") {
+    try {
+      return JSON.parse(localStorage.getItem("goldies_buyNow") || "null");
+    } catch {
+      return null;
+    }
+  }
+  return null;
+};
+
 const initialState: ProductState = {
   productList: [],
   cart: getLocalStorageCart(),
-  toastMessage: null, // Add this line
+  buyNowProduct: getLocalStorageBuyNowProduct(),
+  toastMessage: null,
 };
 
 export const productSlice = createSlice({
@@ -40,10 +60,22 @@ export const productSlice = createSlice({
     },
 
     // Reducer to add products to cart
-    addProductToCart: (state, action: PayloadAction<{ id: string }>) => {
-      const product = state.productList.find(
-        (product) => product._id === action.payload.id,
-      );
+    addProductToCart: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        quantity: number;
+        cakeDetails?: {
+          size: string;
+          topping: string;
+          flavour: string;
+          cakeTime: string;
+          message?: string;
+        };
+      }>,
+    ) => {
+      const { id, quantity, cakeDetails } = action.payload;
+      const product = state.productList.find((product) => product._id === id);
       if (product) {
         const existingProductIndex = state.cart.findIndex(
           (item) => item._id === product._id,
@@ -51,12 +83,16 @@ export const productSlice = createSlice({
 
         if (existingProductIndex !== -1) {
           // If product already in the cart, increase quantity
-          state.cart[existingProductIndex].quantity! += 1;
+          state.cart[existingProductIndex].quantity! += quantity;
+          if (cakeDetails) {
+            state.cart[existingProductIndex].cakeDetails = cakeDetails;
+          }
         } else {
           // If product is not in the cart, add it with quantity 1
-          state.cart.push({ ...product, quantity: 1 });
+          state.cart.push({ ...product, quantity, cakeDetails });
         }
 
+        console.log("added product>>", product);
         localStorage.setItem("cart", JSON.stringify(state.cart));
         toast.success(`${product.name} is added to cart`);
       }
@@ -102,6 +138,47 @@ export const productSlice = createSlice({
         }
       }
     },
+
+    //  Reducer to handle "Buy Now" functionality
+    setBuyNowProduct: (
+      state,
+      action: PayloadAction<{
+        id: string;
+        quantity: number;
+        cakeDetails: {
+          size: string;
+          topping: string;
+          flavour: string;
+          cakeTime: string;
+          message?: string;
+        };
+      }>,
+    ) => {
+      const { id, quantity, cakeDetails } = action.payload;
+      const product = state.productList.find((product) => product._id === id);
+      if (product) {
+        state.buyNowProduct = {
+          ...product,
+          quantity,
+          cakeDetails,
+        };
+
+        console.log("buyNowProduct from store", product);
+
+        localStorage.setItem(
+          "goldies_buyNow",
+          JSON.stringify(state.buyNowProduct),
+        );
+      } else {
+        toast.error("Product not found in the cart.");
+        return;
+      }
+    },
+
+    clearBuyNowProduct: (state) => {
+      state.buyNowProduct = null;
+      localStorage.removeItem("goldies_buyNow");
+    },
   },
 });
 
@@ -111,6 +188,8 @@ export const {
   deleteProductFromCart,
   incrementProductQty,
   decrementProductQty,
+  setBuyNowProduct,
+  clearBuyNowProduct,
 } = productSlice.actions;
 
 export default productSlice.reducer;

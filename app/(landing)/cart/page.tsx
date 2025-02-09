@@ -4,7 +4,6 @@ import illustration from "@/public/assets/illistration-removebg-preview.png";
 import Image from "next/image";
 import { BsPlus, BsDash, BsTrash } from "react-icons/bs";
 import Layout from "../layout";
-import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useRouter } from "next/navigation";
 import { GiEmptyChessboard } from "react-icons/gi";
@@ -15,15 +14,26 @@ import {
   incrementProductQty,
   setProducts,
 } from "@/redux/features/product/productSlice";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
+import { useAppSelector } from "@/redux/hook";
+import { Button } from "@/components/ui/button";
 
 const CartPage = () => {
   const dispatch = useDispatch();
-  const cart = useSelector((state: RootState) => state.product.cart);
+  const { cart } = useAppSelector((state) => state.product);
   const router = useRouter();
-  const cartTotal = Object.values(cart).reduce((acc, current) => {
-    return acc + parseFloat(current.maxPrice) * (current.quantity as number);
-  }, 0);
+
+  const cartItems = Object.values(cart);
+
+  const cartTotal = useMemo(
+    () =>
+      cartItems.reduce(
+        (acc, current) =>
+          acc + parseFloat(current.maxPrice) * (current.quantity as number),
+        0,
+      ),
+    [cartItems],
+  );
 
   const handleCheckout = () => {
     console.log(cart, "cart");
@@ -57,10 +67,10 @@ const CartPage = () => {
                 ]}
               />
               <h2 className="mb-8 mt-4 text-2xl font-bold capitalize text-goldie-300 md:text-3xl">
-                Cart({Object.values(cart).length})
+                Cart({cartItems.length})
               </h2>
 
-              {cart.length > 0 && (
+              {cartItems.length > 0 && (
                 <div className="mb-5 border-b border-goldie-300 pb-2 sm:grid sm:grid-cols-[2fr_1fr_1fr]">
                   <p className="text-goldie-300">Product</p>
                   <p className="w-[136px] text-goldie-300">Quantity</p>
@@ -71,127 +81,123 @@ const CartPage = () => {
               {/* CART FOR DESKTOP */}
               <>
                 <div className="hidden sm:block">
-                  {Object.values(cart).length >= 1 &&
-                    Object.values(cart).map((item, idx) => {
-                      return (
-                        <div
-                          key={item._id}
-                          className="w-full items-start justify-start sm:inline-grid sm:grid-cols-[2fr_1fr_1fr]"
-                        >
-                          <div className="flex gap-3">
-                            <figure className="h-[80px] w-[100px]">
-                              <Image
-                                src={item.images[0]}
-                                alt="Lemon Cake"
-                                className="h-full w-full object-cover"
-                                width={300}
-                                height={300}
-                              />
-                            </figure>
-                            <h3 className="text-lg font-bold text-goldie-300">
-                              {item.name}
-                            </h3>
-                          </div>
-                          <div className="inline-flex w-[100px] items-center justify-start gap-3 rounded-[50px] bg-white px-1.5 py-1">
-                            <span
-                              onClick={() =>
-                                dispatch(decrementProductQty({ id: item._id }))
-                              }
-                              className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full duration-300 hover:bg-goldie-300"
-                            >
-                              <BsDash size={24} />
-                            </span>
-                            <span className="font-bold">{item.quantity}</span>
-                            <span
-                              onClick={() =>
-                                dispatch(incrementProductQty({ id: item._id }))
-                              }
-                              className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full duration-300 hover:bg-goldie-300"
-                            >
-                              <BsPlus size={24} />
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span className="text-xl text-goldie-300">
-                              &euro; {item.maxPrice}
-                            </span>
-                            <span
-                              onClick={() =>
-                                dispatch(
-                                  deleteProductFromCart({ id: item?._id }),
-                                )
-                              }
-                              className="cursor-pointer text-goldie-300"
-                            >
-                              <BsTrash size={20} />
-                            </span>
-                          </div>
-                        </div>
-                      );
-                    })}
-                </div>
-              </>
-
-              <>
-                {Object.values(cart).length >= 1 &&
-                  Object.values(cart).map((item, idx) => {
+                  {cartItems.map((item, i) => {
                     return (
                       <div
-                        key={item._id}
-                        className="grid grid-cols-[170px_1fr] gap-4 sm:hidden"
+                        key={i}
+                        className="w-full items-start justify-start sm:inline-grid sm:grid-cols-[2fr_1fr_1fr]"
                       >
-                        <figure className="h-[150px] w-full">
-                          <Image
-                            src={item.images[0]}
-                            alt="Lemon Cake"
-                            className="h-full w-full object-cover"
-                            width={300}
-                            height={300}
-                          />
-                        </figure>
-                        <div className="flex flex-col items-start">
+                        <div className="flex gap-3">
+                          <figure className="h-[80px] w-[100px]">
+                            <Image
+                              src={item.images[0]}
+                              alt="Lemon Cake"
+                              className="h-full w-full object-cover"
+                              width={300}
+                              height={300}
+                            />
+                          </figure>
                           <h3 className="text-lg font-bold text-goldie-300">
                             {item.name}
                           </h3>
-                          <span className="inline-block text-lg text-goldie-300">
-                            &euro; {item.maxPrice}
-                          </span>
-                          <div className="mt-3 inline-flex items-center gap-3 rounded-[50px] bg-white px-1.5 py-1">
-                            <span
-                              onClick={() =>
-                                dispatch(decrementProductQty({ id: item._id }))
-                              }
-                              className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full duration-300 hover:bg-goldie-300"
-                            >
-                              <BsDash size={24} />
-                            </span>
-                            <span className="font-bold">{item.quantity}</span>
-                            <span
-                              onClick={() =>
-                                dispatch(incrementProductQty({ id: item._id }))
-                              }
-                              className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full duration-300 hover:bg-goldie-300"
-                            >
-                              <BsPlus size={24} />
-                            </span>
-                          </div>
+                        </div>
+                        <div className="inline-flex w-[100px] items-center justify-start gap-3 rounded-[50px] bg-white px-1.5 py-1">
                           <span
                             onClick={() =>
-                              dispatch(deleteProductFromCart({ id: item._id }))
+                              dispatch(decrementProductQty({ id: item._id }))
                             }
-                            className="mt-3 inline-flex cursor-pointer items-center gap-3 text-goldie-300"
+                            className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full duration-300 hover:bg-goldie-300"
                           >
-                            <BsTrash size={16} />
-                            Delete
+                            <BsDash size={24} />
+                          </span>
+                          <span className="font-bold">{item.quantity}</span>
+                          <span
+                            onClick={() =>
+                              dispatch(incrementProductQty({ id: item._id }))
+                            }
+                            className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full duration-300 hover:bg-goldie-300"
+                          >
+                            <BsPlus size={24} />
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xl text-goldie-300">
+                            &euro; {item.maxPrice}
+                          </span>
+                          <span
+                            onClick={() =>
+                              dispatch(deleteProductFromCart({ id: item?._id }))
+                            }
+                            className="cursor-pointer text-goldie-300"
+                          >
+                            <BsTrash size={20} />
                           </span>
                         </div>
                       </div>
                     );
                   })}
+                </div>
+              </>
+
+              <>
+                {cartItems.map((item, i) => {
+                  return (
+                    <div
+                      key={i}
+                      className="grid grid-cols-[170px_1fr] gap-4 sm:hidden"
+                    >
+                      <figure className="h-[150px] w-full">
+                        <Image
+                          src={item.images[0]}
+                          alt="Lemon Cake"
+                          className="h-full w-full object-cover"
+                          width={300}
+                          height={300}
+                        />
+                      </figure>
+                      <div className="flex flex-col items-start">
+                        <h3 className="text-lg font-bold text-goldie-300">
+                          {item.name}
+                        </h3>
+                        <span className="inline-block text-lg text-goldie-300">
+                          &euro; {item.maxPrice}
+                        </span>
+                        <div className="mt-3 inline-flex items-center gap-3 rounded-[50px] bg-white px-1.5 py-1">
+                          <span
+                            onClick={() =>
+                              dispatch(decrementProductQty({ id: item._id }))
+                            }
+                            className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full duration-300 hover:bg-goldie-300"
+                          >
+                            <BsDash size={24} />
+                          </span>
+                          <span className="font-bold">{item.quantity}</span>
+                          <span
+                            onClick={() =>
+                              dispatch(incrementProductQty({ id: item._id }))
+                            }
+                            className="inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full duration-300 hover:bg-goldie-300"
+                          >
+                            <BsPlus size={24} />
+                          </span>
+                        </div>
+                        <span
+                          onClick={() =>
+                            dispatch(deleteProductFromCart({ id: item._id }))
+                          }
+                          className="mt-3 inline-flex cursor-pointer items-center gap-3 text-goldie-300"
+                        >
+                          <BsTrash size={16} />
+                          Delete
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })}
               </>
 
               {/* PAYMENT DETAILS */}
-              {Object.values(cart).length >= 1 ? (
+              {cartItems.length > 0 ? (
                 <div className="my-8 w-full border-t border-goldie-300">
                   <h2 className="mb-8 mt-4 text-xl font-bold capitalize text-goldie-300">
                     Payment Details
@@ -229,7 +235,7 @@ const CartPage = () => {
                   </div>
                 </div>
               ) : (
-                <div className="space-y-2 py-10 text-center text-goldie-300">
+                <div className="space-y-4 py-10 text-center text-goldie-300">
                   <figure className="mx-auto h-28 w-24">
                     <Image
                       src={illustration}
@@ -241,12 +247,13 @@ const CartPage = () => {
                   </figure>
 
                   <p>Oops!, Your cart is empty</p>
-                  <button
+                  <Button
+                    variant={"outline"}
+                    className=" rounded-full border-goldie-300 bg-transparent text-goldie-300 hover:border-goldie-400 hover:bg-transparent hover:text-goldie-400"
                     onClick={() => router.push("/shop")}
-                    className="rounded-full border border-goldie-300 p-2 text-goldie-300"
                   >
                     Start Shopping
-                  </button>
+                  </Button>
                 </div>
               )}
             </div>
