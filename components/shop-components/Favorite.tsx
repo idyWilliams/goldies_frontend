@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { DialogCloseButton } from "../DialogModal";
 import { Heart } from "iconsax-react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addFavorites, removeFavorites } from "@/services/hooks/products";
 import { toast } from "sonner";
 import useUserPdctStore from "@/zustand/userProductStore/store";
@@ -28,6 +28,7 @@ const Favorite = ({
   const addFavProduct = useUserPdctStore((state) => state.addFavProduct);
   const removeFavProducts = useUserPdctStore((state) => state.removeFavProduct);
   const isLogin = useIsLoggedIn();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     const found = favProducts.find((favProduct) => favProduct._id === data._id);
@@ -74,6 +75,7 @@ const Favorite = ({
       setFav(false);
       setPreviewFav(false);
       removeFavProducts(data._id);
+      queryClient.invalidateQueries({ queryKey: ["savedProducts"] });
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       setFav(true);

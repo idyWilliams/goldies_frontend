@@ -13,7 +13,6 @@ let itemsPerPage = 6;
 
 const Page = () => {
   const favProducts = useUserPdctStore((state) => state.favProducts);
-  console.log(favProducts);
   const setFavProducts = useUserPdctStore((state) => state.setFavProducts);
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
 
@@ -25,11 +24,12 @@ const Page = () => {
   const [currentData, setCurrentData] = useState<any[] | null>(
     favProducts ? favProducts.slice(0, itemsPerPage) : null,
   );
+  
   const startIndex =
     totalProducts === 0 ? 0 : (currentPageIndex - 1) * itemsPerPage + 1;
   const endIndex = Math.min(startIndex + itemsPerPage - 1, totalProducts);
 
-  const { favorites, isPending } = useSavedItems();
+  const { favorites, isFetching } = useSavedItems();
 
   useEffect(() => {
     if (favorites) {
@@ -54,9 +54,9 @@ const Page = () => {
           <h2 className="text-center text-2xl font-bold">Favourite Products</h2>
         </div>
 
-        {isPending && !currentData && <ShopPageSkeleton />}
+        {isFetching && !currentData && <ShopPageSkeleton />}
 
-        {!isPending && favProducts.length === 0 ? (
+        {!isFetching && favProducts.length === 0 ? (
           <div className="h-40 py-8">
             <p className="text-center text-lg text-gray-500">
               You have no saved products.

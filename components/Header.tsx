@@ -142,19 +142,18 @@ const Header = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <div
-              className="relative flex h-[30px] w-[30px] cursor-pointer items-center justify-center"
-              onClick={() => router.push("/cart")}
-            >
-              <span>
-                <IoCartOutline size={24} className="mb-0" />
-              </span>
-              {Object.values(cart) && Object.values(cart).length >= 0 && (
-                <span className="absolute -right-1 top-0 inline-flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs font-medium text-[#fcf7e8]">
-                  {Object.values(cart).length}
+            <Link href={"/cart"}>
+              <button className="relative flex h-[30px] w-[30px] cursor-pointer items-center justify-center">
+                <span>
+                  <IoCartOutline size={24} className="mb-0" />
                 </span>
-              )}
-            </div>
+                {Object.values(cart) && Object.values(cart).length >= 0 && (
+                  <span className="absolute -right-1 top-0 inline-flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs font-medium text-[#fcf7e8]">
+                    {Object.values(cart).length}
+                  </span>
+                )}
+              </button>
+            </Link>
             <div className="hidden lg:block">
               <Popover>
                 <PopoverTrigger asChild>

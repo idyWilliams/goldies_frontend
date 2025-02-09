@@ -13,6 +13,7 @@ import Placeholder from "@/public/assets/placeholder3.png";
 import useUserPdctStore from "@/zustand/userProductStore/store";
 import Favorite from "./Favorite";
 import { IProduct } from "@/interfaces/product.interface";
+import { Button } from "../ui/button";
 
 const exampleImage =
   "https://firebasestorage.googleapis.com/v0/b/goldie-b3ba7.appspot.com/o/products%2Fbanana-cake-with-cinnamon-cream-102945-1.webp?alt=media&token=32e645da-9327-4f7f-9f79-a2cba1102676";
@@ -144,15 +145,16 @@ const ProductCard = React.memo(function ProductCard({
         <StarRating iconSize={20} canRate={false} />{" "}
         <span className="text-sm">(32)</span>
       </div>
-      <button
+      <Button
+      size={'lg'}
         onClick={() => {
           handleProduct(data);
           router.push(`/shop/${data?.slug}?productId=${data?._id}`);
         }}
-        className="flex w-full flex-grow items-center justify-center gap-2 rounded-md border border-neutral-900 bg-neutral-900 px-0 py-2.5 text-goldie-300"
+        className="w-full text-goldie-300"
       >
         Shop now
-      </button>
+      </Button>
     </div>
   );
 });

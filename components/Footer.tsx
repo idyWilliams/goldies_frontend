@@ -16,6 +16,17 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchCategories } from "@/services/hooks/category";
 import { fetchSubCategories } from "@/services/hooks/category";
 import { toast } from "sonner";
+import { Button } from "./ui/button";
+
+// Contact Details Constants
+const CONTACT_DETAILS = {
+  phone: "+447488855300",
+  email: "johndoe@gmail.com",
+  address: "37 Wallenger Avenue, Romford, Essex, England, RM2 6EP",
+};
+
+const address = encodeURIComponent(CONTACT_DETAILS.address);
+const mapLink = `https://www.google.com/maps/search/?api=1&query=${address}`;
 
 const Footer = () => {
   const [categories, setCategories] = useState<any[]>([]);
@@ -35,7 +46,7 @@ const Footer = () => {
   }, [isPending, isSuccess, data]);
 
   return (
-    <section className="relative grid min-h-[500px] w-full bg-neutral-900 pt-3">
+    <section className="relative mt-auto grid min-h-[500px] w-full bg-neutral-900 pt-3">
       <div className="wrapper relative">
         <div className="mx-auto grid gap-6 rounded-2xl bg-[#494848] px-4 py-4 md:grid-cols-2 md:items-center md:py-6 xl:w-10/12">
           <div>
@@ -60,9 +71,9 @@ const Footer = () => {
                   className="form-input w-full rounded-md border-none bg-white p-3 placeholder:text-sm focus:ring-0 md:w-auto md:py-0"
                 />
               </label>
-              <button className="mt-2 w-full rounded-md bg-black px-5 py-2 text-goldie-300 md:mt-0 md:w-auto">
+              <Button className=" text-goldie-300 md:mt-0 md:w-auto">
                 Subscribe
-              </button>
+              </Button>
             </form>
           </div>
         </div>
@@ -163,10 +174,10 @@ const Footer = () => {
                     <Call />
                   </span>
                   <a
-                    href="tel:+447488855300"
+                    href={`tel:${CONTACT_DETAILS.phone}`}
                     className="text-[14px] hover:underline"
                   >
-                    +447488855300
+                    {CONTACT_DETAILS.phone}
                   </a>
                 </div>
                 <div className="inline-flex items-center gap-5">
@@ -174,23 +185,18 @@ const Footer = () => {
                     <Sms />
                   </span>
                   <a
-                    href="mailto:johndoe@gmail.com"
+                    href={`mailto:${CONTACT_DETAILS.email}`}
                     className="text-[14px] hover:underline"
                   >
-                    johndoe@gmail.com
+                    {CONTACT_DETAILS.email}
                   </a>
                 </div>
                 <div className="inline-flex gap-5">
                   <span>
                     <Location />
                   </span>
-                  <a
-                    href="https://www.google.com/maps/search/?api=1&query=37+Wallenger+Avenue,+Romford,+Essex,+England,+RM2+6EP"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-balance text-[14px] hover:underline"
-                  >
-                    37 Wallenger Avenue, Romford, Essex, England, RM2 6EP
+                  <a href={mapLink} target="_blank" rel="noopener noreferrer" className="text-[14px] hover:underline">
+                    {CONTACT_DETAILS.address}
                   </a>
                 </div>
               </div>

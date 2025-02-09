@@ -7,19 +7,19 @@ import useIsLoggedIn from "../users/useIsLoggedIn";
 const useSavedItems = () => {
   const isLogin = useIsLoggedIn();
 
-  const { data, isLoading, isError, isPending } = useQuery({
+  const { data, isError, isPending, isFetching } = useQuery({
     queryKey: ["savedProducts"],
     queryFn: getSavedItems,
     enabled: isLogin,
   });
 
   const favorites = useMemo(() => {
-    if (isLoading || isError) return null;
+    if (isFetching || isError) return null;
 
     return data?.favorites;
-  }, [isLoading, isError, data?.favorites]);
+  }, [isFetching, isError, data?.favorites]);
 
-  return { favorites, isPending };
+  return { favorites, isPending, isFetching };
 };
 
 export default useSavedItems;

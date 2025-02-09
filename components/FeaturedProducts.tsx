@@ -10,25 +10,21 @@ import ShopPageSkeleton from "./shop-components/ShopPageSkeleton";
 import useSavedItems from "@/services/hooks/products/useSavedItems";
 import useUserPdctStore from "@/zustand/userProductStore/store";
 import useProducts from "@/services/hooks/products/useProducts";
+import { ProductParams } from "@/interfaces/product.interface";
 
 const FeaturedProducts = () => {
   const favProducts = useUserPdctStore((state) => state.favProducts);
   const setFavProducts = useUserPdctStore((state) => state.setFavProducts);
-  const featuredProducts = useUserPdctStore((state) => state.allProducts);
-  const { isPending, pages, allProducts } = useProducts(1, 6);
+  // const featuredProducts = useUserPdctStore((state) => state.allProducts);
+
+  const params: ProductParams = {
+    page: 1,
+    limit: 6,
+  };
+
+  const { isPending, products: featuredProducts } = useProducts(params);
   const { favorites } = useSavedItems();
 
-  // const { data, isError, isLoading, isPending } = useQuery({
-  //   queryKey: ["allProducts", 1, 6],
-  //   queryFn: async () => getAllProducts(1, 6),
-  // });
-
-  // const featuredProducts = useMemo(() => {
-  //   if (isLoading || isError) return null;
-  //   else return data?.products;
-  // }, [isError, isLoading, data?.products]);
-
-  // use;
 
   useEffect(() => {
     if (favorites) {

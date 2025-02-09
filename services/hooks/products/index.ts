@@ -74,13 +74,9 @@ export const addFavorites = async (productId: string) => {
   const product = {
     productId: productId,
   };
-  const token = accessToken;
+  // const token = accessToken;
 
-  const response = await instance.post("/favorites/add", product, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await instance.post("/favorites/add", product);
 
   return response.data;
 };

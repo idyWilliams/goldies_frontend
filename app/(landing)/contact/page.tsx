@@ -13,6 +13,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import "react-phone-input-2/lib/style.css";
 import { cn } from "@/helper/cn";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 const schema = yup.object().shape({
   name: yup.string().required("name is required"),
@@ -218,9 +219,9 @@ export default function Page() {
                       <p className="text-red-600">{errors?.message?.message}</p>
                     )}
                   </label>
-                  <button className="ml-auto block w-full bg-black py-2 text-goldie-300 md:w-[75%]">
+                  <Button className="ml-auto block w-full text-goldie-300 md:w-[75%]">
                     Send Message
-                  </button>
+                  </Button>
                 </form>
               </div>
             </div>

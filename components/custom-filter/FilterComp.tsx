@@ -2,6 +2,7 @@ import { ISubCategory, UCategory } from "@/interfaces/product.interface";
 import { Add, Minus } from "iconsax-react";
 import Checkbox from "./Checkbox";
 import RangeInput from "./RangeInput";
+import { Button } from "../ui/button";
 
 interface FilterCompProps {
   isPending: boolean;
@@ -90,18 +91,18 @@ const FilterComp = ({
         </div>
 
         <div className="grid grid-cols-2 gap-2 pt-7">
-          <button
+          <Button
             className="rounded-md bg-neutral-900 p-3 text-white"
             onClick={handleApplyFilter}
           >
             Filter
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={handleResetFilter}
-            className="rounded-md border border-red-600 p-3 text-red-600"
+            className="rounded-md border border-red-600 bg-transparent p-3 text-red-600 hover:bg-transparent"
           >
             Reset
-          </button>
+          </Button>
         </div>
       </div>
     </div>

@@ -76,7 +76,7 @@ export default function RootLayout({
               <StoreProvider>
                 <ProductProvider>
                   <Suspense fallback={<Loading />}>
-                    {children}
+                    <div className="min-h-dvh">{children}</div>
                     <Toaster position="top-right" richColors expand={true} />
                   </Suspense>
                 </ProductProvider>

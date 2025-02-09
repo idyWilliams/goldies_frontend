@@ -108,8 +108,6 @@ export default function Page() {
   const [searchValue, setSearchValue] = useState("");
   const [data, setData] = useState<Product[]>([]);
 
-  console.log("products>>>", data);
-
   const router = useRouter();
   const handleAddNew = () => {
     router.push(`/admin/create-products`);
