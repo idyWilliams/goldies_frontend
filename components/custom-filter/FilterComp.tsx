@@ -15,6 +15,10 @@ interface FilterCompProps {
   applyFilter: () => void;
   handleReset: () => void;
   onClose?: () => void;
+  min: number;
+  max: number;
+  minPrice: number;
+  maxPrice: number;
 }
 
 const FilterComp = ({
@@ -28,15 +32,19 @@ const FilterComp = ({
   applyFilter,
   handleReset,
   onClose,
+  minPrice,
+  maxPrice,
+  min,
+  max,
 }: FilterCompProps) => {
   const handleApplyFilter = () => {
     applyFilter();
-    onClose!();
+    if (onClose) onClose();
   };
 
   const handleResetFilter = () => {
     handleReset();
-    onClose!();
+    if (onClose) onClose();
   };
   return (
     <div className="w-full">
@@ -87,7 +95,13 @@ const FilterComp = ({
           <label className="block font-semibold capitalize text-neutral-800">
             Price
           </label>
-          <RangeInput min={0} max={1000} onChange={handleRangeChange} />
+          <RangeInput
+            min={min}
+            max={max}
+            minValue={minPrice}
+            maxValue={maxPrice}
+            onChange={handleRangeChange}
+          />
         </div>
 
         <div className="grid grid-cols-2 gap-2 pt-7">

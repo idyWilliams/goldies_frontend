@@ -37,16 +37,6 @@ const ShopPage = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const [showFilter, setShowFilter] = useState(false);
-  const [currentPageIndex, setCurrentPageIndex] = useState(
-    parseInt(searchParams.get("page") || "1", 10),
-  );
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const [minPrice, setMinPrice] = useState<number>(0);
-  const [maxPrice, setMaxPrice] = useState<number>(1000);
-  const [categories, setCategories] = useState<UCategory[]>([]);
-  const [openIndexes, setOpenIndexes] = useState<number[]>([]);
-
   const queryCat = searchParams.get("cat")
     ? decodeURIComponent(searchParams.get("cat")!)
     : null;
@@ -60,6 +50,17 @@ const ShopPage = () => {
   const queryMaxPrice = searchParams.get("maxPrice")
     ? Number(searchParams.get("maxPrice"))
     : null;
+
+  const [showFilter, setShowFilter] = useState(false);
+  const [currentPageIndex, setCurrentPageIndex] = useState(
+    parseInt(searchParams.get("page") || "1", 10),
+  );
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [categories, setCategories] = useState<UCategory[]>([]);
+  const [openIndexes, setOpenIndexes] = useState<number[]>([]);
+
+  const [minPrice, setMinPrice] = useState<number>(queryMinPrice ?? 0);
+  const [maxPrice, setMaxPrice] = useState<number>(queryMaxPrice ?? 1000);
 
   const {
     data: categoryData,
@@ -76,6 +77,11 @@ const ShopPage = () => {
       setOpenIndexes(categories.map((_, index) => index)); // Open all initially
     }
   }, [loadingCat, isSuccess, categoryData, categories]);
+
+  useEffect(() => {
+    setMinPrice(queryMinPrice ?? 0);
+    setMaxPrice(queryMaxPrice ?? 1000);
+  }, [queryMinPrice, queryMaxPrice]);
 
   const [params, setParams] = useState<ProductParams>({
     page: currentPageIndex,
@@ -143,6 +149,7 @@ const ShopPage = () => {
   const handleRangeChange = (newMin: number, newMax: number) => {
     setMinPrice(newMin);
     setMaxPrice(newMax);
+    // console.log("Updated values:", { newMin, newMax });
   };
 
   const handleSelectedItem = (id: string, isChecked: boolean) => {
@@ -296,6 +303,10 @@ const ShopPage = () => {
                   handleRangeChange={handleRangeChange}
                   applyFilter={applyFilter}
                   handleReset={handleReset}
+                  min={0}
+                  max={1000}
+                  minPrice={minPrice}
+                  maxPrice={maxPrice}
                 />
               </div>
 
@@ -369,7 +380,11 @@ const ShopPage = () => {
               handleRangeChange={handleRangeChange}
               applyFilter={applyFilter}
               handleReset={handleReset}
-              onClose={()=> setShowFilter(false)}
+              onClose={() => setShowFilter(false)}
+              min={0}
+              max={1000}
+              minPrice={minPrice}
+              maxPrice={maxPrice}
             />
           </FilterSidebar>
         </div>
