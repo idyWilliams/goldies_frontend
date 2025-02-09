@@ -66,10 +66,7 @@ export default function CreateProductLayout({
       setFormValues({
         productName: "",
         productDescription: "",
-        category: {
-          id: "",
-          name: "",
-        },
+        category: "",
         productType: "",
         maxPrice: 0,
         minPrice: 0,
