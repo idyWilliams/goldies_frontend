@@ -46,6 +46,7 @@ const FilterComp = ({
     handleReset();
     if (onClose) onClose();
   };
+
   return (
     <div className="w-full">
       <div className="space-y-3">
@@ -92,31 +93,52 @@ const FilterComp = ({
               );
             })}
         <div className="border-t border-neutral-200 pt-3">
-          <label className="block font-semibold capitalize text-neutral-800">
-            Price
-          </label>
-          <RangeInput
-            min={min}
-            max={max}
-            minValue={minPrice}
-            maxValue={maxPrice}
-            onChange={handleRangeChange}
-          />
+          {isPending ? (
+            <div className="mb-1 animate-pulse border-t border-gray-200 pt-3">
+              <div className="h-10 w-full rounded-md bg-gray-300"></div>
+            </div>
+          ) : (
+            <>
+              <label className="block font-semibold capitalize text-neutral-800">
+                Price
+              </label>
+              <RangeInput
+                min={min}
+                max={max}
+                minValue={minPrice}
+                maxValue={maxPrice}
+                onChange={handleRangeChange}
+              />
+            </>
+          )}
         </div>
 
         <div className="grid grid-cols-2 gap-2 pt-7">
-          <Button
-            className="rounded-md bg-neutral-900 p-3 text-white"
-            onClick={handleApplyFilter}
-          >
-            Filter
-          </Button>
-          <Button
-            onClick={handleResetFilter}
-            className="rounded-md border border-red-600 bg-transparent p-3 text-red-600 hover:bg-transparent"
-          >
-            Reset
-          </Button>
+          {isPending ? (
+            Array.from({ length: 2 }).map((_, index) => (
+              <div
+                key={index}
+                className="mb-3 animate-pulse border-t border-gray-200 pt-3"
+              >
+                <div className="h-10 w-full rounded-md bg-gray-300"></div>
+              </div>
+            ))
+          ) : (
+            <>
+              <Button
+                className="rounded-md bg-neutral-900 p-3 text-white"
+                onClick={handleApplyFilter}
+              >
+                Filter
+              </Button>
+              <Button
+                onClick={handleResetFilter}
+                className="rounded-md border border-red-600 bg-transparent p-3 text-red-600 hover:bg-transparent"
+              >
+                Reset
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </div>

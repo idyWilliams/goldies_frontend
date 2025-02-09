@@ -15,6 +15,7 @@ import { handleImageLoad } from "@/helper/handleImageLoad";
 import sortArray from "@/helper/sortArray";
 import AdminPagination from "@/components/admin-component/AdminPagination";
 import { chunkArray } from "@/helper/chunkArray";
+import { slugify } from "@/helper";
 
 const limit = 12;
 
@@ -126,7 +127,7 @@ const Page = () => {
                       <Link
                         href={
                           cat.status
-                            ? `/shop/categories/${encodeURIComponent(cat.name)}?id=${cat._id}&status=${cat.status}`
+                            ? `/shop/categories/${slugify(cat.name)}?id=${cat._id}&status=${cat.status}`
                             : "#"
                         }
                         key={cat?._id}

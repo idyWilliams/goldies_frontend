@@ -45,6 +45,10 @@ const Footer = () => {
     }
   }, [isPending, isSuccess, data]);
 
+  const getYear = () =>{
+    return new Date().getFullYear();
+  }
+
   return (
     <section className="relative mt-auto grid min-h-[500px] w-full bg-neutral-900 pt-3">
       <div className="wrapper relative">
@@ -85,7 +89,7 @@ const Footer = () => {
                 alt="logo"
                 width={100}
                 height={100}
-                className="mb-3 w-[200px]"
+                className="mb-6 w-[200px]"
               />
               <p className="text-goldie-300 ">Goldies Confectionary</p>
               <p className="mb-2 text-white">
@@ -116,10 +120,18 @@ const Footer = () => {
               <h3 className="font-bold text-white">Company</h3>
               <hr className="mb-2 w-[35px] border border-goldie-300" />
             </div>
-            <Link href={"/shop"}>Products</Link>
-            <Link href={"/about-us"}>About Us</Link>
-            <Link href={"/testimonials"}>Testimonies</Link>
-            <Link href={"/contact"}>Contact Us</Link>
+            <Link href={"/shop"} className="hover:underline w-fit">
+              Products
+            </Link>
+            <Link href={"/about-us"} className="hover:underline w-fit">
+              About Us
+            </Link>
+            <Link href={"/testimonials"} className="hover:underline w-fit">
+              Testimonies
+            </Link>
+            <Link href={"/contact"} className="hover:underline w-fit">
+              Contact Us
+            </Link>
           </div>
           <div className="inline-flex flex-col space-y-3 text-white">
             <div>
@@ -145,6 +157,7 @@ const Footer = () => {
                       <Link
                         key={index}
                         href={`/shop?cat=${encodeURIComponent(category?.name?.toLowerCase())}`}
+                        className="hover:underline w-fit "
                       >
                         {category?.name}
                       </Link>
@@ -175,7 +188,7 @@ const Footer = () => {
                   </span>
                   <a
                     href={`tel:${CONTACT_DETAILS.phone}`}
-                    className="text-[14px] hover:underline"
+                    className=" hover:underline"
                   >
                     {CONTACT_DETAILS.phone}
                   </a>
@@ -186,7 +199,7 @@ const Footer = () => {
                   </span>
                   <a
                     href={`mailto:${CONTACT_DETAILS.email}`}
-                    className="text-[14px] hover:underline"
+                    className=" hover:underline"
                   >
                     {CONTACT_DETAILS.email}
                   </a>
@@ -195,7 +208,12 @@ const Footer = () => {
                   <span>
                     <Location />
                   </span>
-                  <a href={mapLink} target="_blank" rel="noopener noreferrer" className="text-[14px] hover:underline">
+                  <a
+                    href={mapLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className=" hover:underline"
+                  >
                     {CONTACT_DETAILS.address}
                   </a>
                 </div>
@@ -208,7 +226,7 @@ const Footer = () => {
       <div className="mt-5 flex items-center bg-neutral-700 py-3">
         <div className="wrapper flex w-full flex-col-reverse justify-between gap-5 md:flex-row md:items-center">
           <p className="text-xs text-white md:text-sm">
-            ©Goldies 2024 All Rights Reserved
+            ©Goldies {getYear()} All Rights Reserved
           </p>
           <div className="inline-flex gap-8">
             <Link href={"/"} className="text-xs text-white md:text-sm">

@@ -12,6 +12,8 @@ import { Button } from "./ui/button";
 import sortArray from "@/helper/sortArray";
 import { handleImageLoad } from "@/helper/handleImageLoad";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { slugify } from "@/helper";
 
 const CakeCategoryData = () => {
   const router = useRouter();
@@ -64,7 +66,6 @@ const CakeCategoryData = () => {
 
   const getCategory = (item: Category) => {
     setActiveCategory(item);
-    router.push(`/shop/categories/${item.name}?id=${item?._id}`);
   };
 
   return (
@@ -137,12 +138,14 @@ const CakeCategoryData = () => {
                     </p>
                   </div>
 
-                  <Button
-                    className="mt-4 h-auto w-full bg-goldie-300 text-black hover:bg-goldie-200"
-                    onClick={() => getCategory(category)}
-                  >
-                    Buy Now
-                  </Button>
+                  <Link href={`/shop/categories/${slugify(category.name)}?id=${category?._id}`} className="w-full">
+                    <Button
+                      className="mt-4 h-auto w-full bg-goldie-300 text-black hover:bg-goldie-200"
+                      onClick={() => getCategory(category)}
+                    >
+                      Buy Now
+                    </Button>
+                  </Link>
                 </div>
               </div>
             );

@@ -1,16 +1,13 @@
-import Link from "next/link";
 import EachElement from "@/helper/EachElement";
-import { addSlugToCakes } from "@/helper";
-import { cakeProducts1 } from "@/utils/cakeData";
-import ProductCard from "./shop-components/ProductCard";
-import { useQuery } from "@tanstack/react-query";
-import { getAllProducts } from "@/services/hooks/products";
-import { useEffect, useMemo } from "react";
-import ShopPageSkeleton from "./shop-components/ShopPageSkeleton";
+import { IProduct, ProductParams } from "@/interfaces/product.interface";
+import useProducts from "@/services/hooks/products/useProducts";
 import useSavedItems from "@/services/hooks/products/useSavedItems";
 import useUserPdctStore from "@/zustand/userProductStore/store";
-import useProducts from "@/services/hooks/products/useProducts";
-import { ProductParams } from "@/interfaces/product.interface";
+import Link from "next/link";
+import { useEffect } from "react";
+import ProductCard from "./shop-components/ProductCard";
+import ProductCardSkeleton from "./shop-components/ProductCardSkeleton";
+import ShopPageSkeleton from "./shop-components/ShopPageSkeleton";
 
 const FeaturedProducts = () => {
   const favProducts = useUserPdctStore((state) => state.favProducts);
@@ -24,7 +21,6 @@ const FeaturedProducts = () => {
 
   const { isPending, products: featuredProducts } = useProducts(params);
   const { favorites } = useSavedItems();
-
 
   useEffect(() => {
     if (favorites) {
@@ -61,14 +57,18 @@ const FeaturedProducts = () => {
             </div>
           )}
           <div className="wrapper grid gap-3 sm:grid-cols-2 lg:grid-cols-3  xl:gap-7">
-            {featuredProducts && (
+            {isPending ? (
+              [...Array(6)].map((_, i) => <ProductCardSkeleton key={i} />)
+            ) : featuredProducts.length > 0 ? (
               <EachElement
-                of={addSlugToCakes(featuredProducts)}
-                render={(cake: any, index: any) => {
+                of={featuredProducts}
+                render={(cake: IProduct, index: any) => {
                   if (index > 5) return;
                   return <ProductCard data={cake} key={index} />;
                 }}
               />
+            ) : (
+              <div></div>
             )}
           </div>
           <div className="wrapper mt-8 flex justify-end">

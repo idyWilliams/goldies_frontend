@@ -1,6 +1,6 @@
 "use client";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { getAllProducts, getProducts } from ".";
 import useUserPdctStore from "@/zustand/userProductStore/store";
 import { addSlugToCakes } from "@/helper";
@@ -20,26 +20,35 @@ const useProducts = (params: ProductParams) => {
   });
 
   const { productData, totalPages, totalProducts } = useMemo(() => {
-    if (isLoading || isError)
+    if (!data || isLoading || isError)
       return { productData: [], totalPages: 0, totalProducts: 0 };
 
     return {
-      productData: data?.products || [],
-      totalPages: data?.totalPages || 0,
-      totalProducts: data?.totalProducts || 0,
+      productData: data.products ?? [],
+      totalPages: data.totalPages ?? 0,
+      totalProducts: data.totalProducts ?? 0,
     };
-  }, [isLoading, isError, data]);
+  }, [data, isLoading, isError]);
+
+  const processProducts = useMemo(() => {
+    return productData.length > 0 ? addSlugToCakes(productData) : [];
+  }, [productData]);
+
+  const updateStore = useCallback(() => {
+    if (processProducts.length > 0) {
+      setAllProducts(processProducts);
+      dispatch(setProducts(processProducts));
+    } else {
+      setAllProducts([]); // Clear Zustand store
+      dispatch(setProducts([])); // Clear Redux store
+    }
+  }, [processProducts, setAllProducts, dispatch]);
 
   useEffect(() => {
-    if (productData.length > 0) {
-      const processedProducts = addSlugToCakes(productData);
+    updateStore();
+  }, [updateStore]);
 
-      setAllProducts(processedProducts);
-      dispatch(setProducts(processedProducts));
-    }
-  }, [productData, setAllProducts, dispatch]);
-
-  return { products, isPending, totalPages, totalProducts };
+  return { products, isPending, totalPages, totalProducts, isLoading };
 };
 
 export default useProducts;

@@ -145,16 +145,17 @@ const ProductCard = React.memo(function ProductCard({
         <StarRating iconSize={20} canRate={false} />{" "}
         <span className="text-sm">(32)</span>
       </div>
-      <Button
-      size={'lg'}
-        onClick={() => {
-          handleProduct(data);
-          router.push(`/shop/${data?.slug}?productId=${data?._id}`);
-        }}
-        className="w-full text-goldie-300"
-      >
-        Shop now
-      </Button>
+      <Link href={`/shop/${data?.slug}?productId=${data?._id}`}>
+        <Button
+          size={"lg"}
+          onClick={() => {
+            handleProduct(data);
+          }}
+          className="w-full text-goldie-300"
+        >
+          Shop now
+        </Button>
+      </Link>
     </div>
   );
 });

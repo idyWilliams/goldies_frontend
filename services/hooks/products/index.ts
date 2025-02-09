@@ -32,7 +32,7 @@ export const getProducts = async () => {
   return response.data;
 };
 
-export const getAllProducts = async (params: ProductParams) => {
+export const getAllProducts = async (params?: ProductParams) => {
   const response = await instance.get("/product/get_all_product", { params });
   return response.data;
 };

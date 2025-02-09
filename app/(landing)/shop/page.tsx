@@ -1,36 +1,29 @@
 "use client";
 import BreadCrumbs from "@/components/BreadCrumbs";
-import { cakeProducts1 } from "@/utils/cakeData";
-import { addSlugToCakes } from "@/helper";
+import FilterComp from "@/components/custom-filter/FilterComp";
+import FilterSidebar from "@/components/custom-filter/FilterSideBar";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { ArrowDown2, Shuffle } from "iconsax-react";
 import { useEffect, useState } from "react";
-import { Add, ArrowDown2, Minus, Shuffle } from "iconsax-react";
-import FilterComp from "@/components/custom-filter/FilterComp";
 import { IoList } from "react-icons/io5";
-import FilterSidebar from "@/components/custom-filter/FilterSideBar";
 
-import ProductCard from "@/components/shop-components/ProductCard";
-import { captalizedName } from "@/helper/nameFormat";
-import EachElement from "@/helper/EachElement";
-import useProducts from "@/services/hooks/products/useProducts";
 import AdminPagination from "@/components/admin-component/AdminPagination";
-import ShopPageSkeleton from "@/components/shop-components/ShopPageSkeleton";
-import useSavedItems from "@/services/hooks/products/useSavedItems";
-import useUserPdctStore from "@/zustand/userProductStore/store";
+import ProductCard from "@/components/shop-components/ProductCard";
+import ProductCardSkeleton from "@/components/shop-components/ProductCardSkeleton";
+import EachElement from "@/helper/EachElement";
+import { captalizedName } from "@/helper/nameFormat";
 import {
   IProduct,
-  ISubCategory,
   ProductParams,
   UCategory,
 } from "@/interfaces/product.interface";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import RangeInput from "@/components/custom-filter/RangeInput";
-import Checkbox from "@/components/custom-filter/Checkbox";
-import { useQuery } from "@tanstack/react-query";
 import { fetchCategories } from "@/services/hooks/category";
+import useProducts from "@/services/hooks/products/useProducts";
+import { useQuery } from "@tanstack/react-query";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-let itemsPerPage = 2;
+let itemsPerPage = 6;
 
 const ShopPage = () => {
   const searchParams = useSearchParams();
@@ -74,9 +67,11 @@ const ShopPage = () => {
   useEffect(() => {
     if (!loadingCat && isSuccess && categoryData?.categories) {
       setCategories(categoryData?.categories);
-      setOpenIndexes(categories.map((_, index) => index)); // Open all initially
+      setOpenIndexes(
+        categoryData.categories.map((_: UCategory, index: number) => index),
+      ); // Open all initially
     }
-  }, [loadingCat, isSuccess, categoryData, categories]);
+  }, [loadingCat, isSuccess, categoryData]);
 
   useEffect(() => {
     setMinPrice(queryMinPrice ?? 0);
@@ -123,7 +118,7 @@ const ShopPage = () => {
   ]);
 
   const {
-    isPending,
+    isLoading,
     totalPages,
     totalProducts,
     products: allProducts,
@@ -192,14 +187,15 @@ const ShopPage = () => {
 
     router.push(`${pathname}?${params.toString()}`);
 
-    setParams({
+    setParams((prev) => ({
+      ...prev,
       page: 1,
       limit: itemsPerPage,
       subCategoryIds:
         selectedIds.size > 0 ? Array.from(selectedIds).join(",") : undefined,
       minPrice: minPrice > 0 ? minPrice : undefined,
       maxPrice: maxPrice < 1000 ? maxPrice : undefined,
-    });
+    }));
   };
 
   const handleReset = () => {
@@ -234,9 +230,12 @@ const ShopPage = () => {
           <div className="mx-auto w-full">
             <div className="mb-4 flex items-center justify-between border-b border-neutral-400 pb-4 lg:grid lg:grid-cols-[85%_10%] xl:hidden">
               <div className="items-center justify-between lg:flex">
-                <h3 className="text-2xl font-bold text-black">
-                  {queryCat ? captalizedName(queryCat) : "All Cakes"}
-                </h3>
+                <div>
+                  <h3 className="text-2xl font-bold text-black">
+                    {queryCat ? captalizedName(queryCat) : "All Cakes"}
+                  </h3>
+                  <span>{querySubCat && captalizedName(querySubCat)}</span>
+                </div>
                 {/* MOBILE PRODUCT DISPLAY */}
                 <span className="text-sm text-neutral-500 lg:text-base">
                   Showing {allProducts.length} of {totalProducts} results
@@ -252,10 +251,11 @@ const ShopPage = () => {
                 </span>
               </div>
             </div>
-            <div className="xl:hidden">{isPending && <ShopPageSkeleton />}</div>
 
             <div className="grid gap-8 sm:grid-cols-2 md:gap-5 lg:grid-cols-3 xl:hidden">
-              {allProducts.length > 0 ? (
+              {isLoading ? (
+                [...Array(6)].map((_, i) => <ProductCardSkeleton key={i} />)
+              ) : allProducts.length > 0 ? (
                 <EachElement
                   of={allProducts}
                   render={(item: IProduct) => {
@@ -294,7 +294,7 @@ const ShopPage = () => {
                 </div>
 
                 <FilterComp
-                  isPending={isPending}
+                  isPending={isLoading}
                   categories={categories}
                   openIndexes={openIndexes}
                   handleClick={handleClick}
@@ -314,11 +314,12 @@ const ShopPage = () => {
               <div className="w-full bg-white p-4">
                 <div className="mb-4 flex items-center justify-between border-b border-neutral-400 pb-4 lg:grid lg:grid-cols-[85%_10%]">
                   <div className="items-center justify-between lg:flex">
-                    <h3 className="text-2xl font-bold text-black">
-                      {" "}
-                      {/* {query?.cat ? captalizedName(query?.cat) : "All Cakes"} */}
-                      {queryCat ? captalizedName(queryCat) : "All Cakes"}
-                    </h3>
+                    <div>
+                      <h3 className="text-2xl font-bold text-black">
+                        {queryCat ? captalizedName(queryCat) : "All Cakes"}
+                      </h3>
+                      <span>{querySubCat && captalizedName(querySubCat)}</span>
+                    </div>
                     <span className="text-sm text-neutral-500 lg:text-base">
                       Showing {allProducts.length} of {totalProducts} results
                     </span>
@@ -334,10 +335,10 @@ const ShopPage = () => {
                   </div>
                 </div>
 
-                {isPending && <ShopPageSkeleton />}
-
                 <div className="grid grid-cols-3 gap-5">
-                  {allProducts.length > 0 ? (
+                  {isLoading ? (
+                    [...Array(6)].map((_, i) => <ProductCardSkeleton key={i} />)
+                  ) : allProducts.length > 0 ? (
                     <EachElement
                       of={allProducts}
                       render={(item: any) => {
@@ -371,7 +372,7 @@ const ShopPage = () => {
             setShowFilter={setShowFilter}
           >
             <FilterComp
-              isPending={isPending}
+              isPending={isLoading}
               categories={categories}
               openIndexes={openIndexes}
               handleClick={handleClick}
