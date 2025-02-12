@@ -1,4 +1,6 @@
+import { ADMIN_TOKEN_NAME, USER_TOKEN_NAME } from "@/utils/constants";
 import axios from "axios";
+import Cookies from "js-cookie";
 
 console.log("Current NODE_ENV:", process.env.NODE_ENV);
 
@@ -16,6 +18,9 @@ switch (process.env.NODE_ENV) {
 export const ImageStorageUrl = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_API;
 let accessToken;
 
+const USER_TOKEN = Cookies.get(USER_TOKEN_NAME) || "";
+const ADMIN_TOKEN = Cookies.get(ADMIN_TOKEN_NAME) || "";
+
 if (typeof window !== "undefined") {
   // Check if the current URL includes '/admin'
   const isAdmin =
@@ -23,9 +28,10 @@ if (typeof window !== "undefined") {
     window.location.pathname === "/admin";
 
   // Retrieve token based on the user role
-  accessToken = isAdmin
-    ? localStorage.getItem("adminToken") || ""
-    : localStorage.getItem("userToken") || "";
+  // accessToken = isAdmin
+  //   ? localStorage.getItem("adminToken") || ""
+  //   : localStorage.getItem("userToken") || "";
+  accessToken = isAdmin ? ADMIN_TOKEN : USER_TOKEN;
 }
 
 // if (typeof window !== "undefined") {

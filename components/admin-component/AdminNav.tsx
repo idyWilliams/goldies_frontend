@@ -1,35 +1,29 @@
 "use client";
-import Link from "next/link";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { CheckIcon } from "@radix-ui/react-icons";
+import {
+  Bag,
+  Lock1,
+  User,
+  UserCirlceAdd
+} from "iconsax-react";
 import Image from "next/image";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { BsList, BsSearch, BsX } from "react-icons/bs";
 import { FaRegUserCircle } from "react-icons/fa";
 import {
   IoIosArrowDown,
   IoIosArrowUp,
   IoMdNotificationsOutline,
 } from "react-icons/io";
-import { BsList, BsSearch, BsX } from "react-icons/bs";
-import AdminSideBar from "./AdminSideBar";
 import MobileSideBar from "./MobileSideBar";
-import MenuPopup from "../MenuPopup";
-import { BiHeart, BiStore } from "react-icons/bi";
-import {
-  Bag,
-  Lock1,
-  SearchNormal1,
-  Setting2,
-  User,
-  UserCirlceAdd,
-} from "iconsax-react";
-import { useRouter } from "next/navigation";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { BellIcon, CheckIcon } from "@radix-ui/react-icons";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -39,9 +33,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { adminLogOut, getAdmin } from "@/services/hooks/admin-auth";
-import { useQuery } from "@tanstack/react-query";
 import useAdmin from "@/services/hooks/admin/use_admin";
+import { useQuery } from "@tanstack/react-query";
 import CurrentTime from "./CurrentTime";
 
 export default function AdminNav() {

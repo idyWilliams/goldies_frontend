@@ -1,17 +1,17 @@
 import { cn } from "@/helper/cn";
 import { IProduct } from "@/interfaces/product.interface";
 import Placeholder from "@/public/assets/placeholder3.png";
-import { RootState } from "@/redux/store";
 import useUserPdctStore from "@/zustand/userProductStore/store";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Tooltip } from "react-tooltip";
 import StarRating from "../StarRating";
 import { Button } from "../ui/button";
 import Favorite from "./Favorite";
+import { formatCurrency } from "@/helper/formatCurrency";
 
 const exampleImage =
   "https://firebasestorage.googleapis.com/v0/b/goldie-b3ba7.appspot.com/o/products%2Fbanana-cake-with-cinnamon-cream-102945-1.webp?alt=media&token=32e645da-9327-4f7f-9f79-a2cba1102676";
@@ -28,7 +28,6 @@ const ProductCard = React.memo(function ProductCard({
   const [fav, setFav] = useState(false);
   const favProducts = useUserPdctStore((state) => state.favProducts);
   const setActiveProduct = useUserPdctStore((state) => state.setActiveProduct);
-
 
   const handleProduct = (prod: any) => {
     setActiveProduct(prod);
@@ -111,7 +110,8 @@ const ProductCard = React.memo(function ProductCard({
       <div className="mb-1 flex flex-col text-lg">
         {" "}
         <span className="text-base font-semibold text-neutral-500">
-          &euro;{data?.minPrice} - &euro;{data?.maxPrice}
+          {formatCurrency(parseInt(data?.minPrice), "en-NG")}-
+          {formatCurrency(parseInt(data?.maxPrice), "en-NG")}
         </span>
         <h3 className="font-semibold capitalize underline underline-offset-1">
           <Link href={`/shop/${data?.slug}?productId=${data?._id}`}>

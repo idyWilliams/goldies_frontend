@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import AuthContext from "@/context/AuthProvider";
 import { cn } from "@/helper/cn";
 import { createUser, loginUser } from "@/services/hooks/user-auth";
+import { USER_DETAILS, USER_TOKEN_NAME } from "@/utils/constants";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
@@ -16,6 +17,7 @@ import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { toast } from "sonner";
 import * as yup from "yup";
+import Cookies from "js-cookie";
 
 const validationSchema = yup.object().shape({
   firstName: yup.string().required("Firstname is required"),
@@ -68,6 +70,10 @@ const Page = () => {
           JSON.stringify({ token: res?.token, user: res?.user }),
         );
         localStorage.setItem("userToken", res?.token);
+
+        const userToken = JSON.stringify(res?.user);
+        Cookies.set(USER_DETAILS, userToken);
+        Cookies.set(USER_TOKEN_NAME, res?.token);
         router.push("/");
         reset();
       })

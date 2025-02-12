@@ -1,21 +1,23 @@
 "use client";
 
-import React, { useContext, useState } from "react";
-import { useForm } from "react-hook-form";
-import { RiUserSharedLine } from "react-icons/ri";
 import { Button } from "@/components/ui/button";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { BsEyeSlash } from "react-icons/bs";
-import { AiOutlineEye } from "react-icons/ai";
-import Link from "next/link";
+import { useAuth } from "@/context/AuthProvider";
 import { cn } from "@/helper/cn";
-import { useMutation } from "@tanstack/react-query";
 import { loginUser } from "@/services/hooks/user-auth";
-import AuthContext, { useAuth } from "@/context/AuthProvider";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation } from "@tanstack/react-query";
+import Link from "next/link";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { AiOutlineEye } from "react-icons/ai";
+import { BsEyeSlash } from "react-icons/bs";
+import { RiUserSharedLine } from "react-icons/ri";
+import * as yup from "yup";
 // import { toast } from "sonner";
-import { Toaster, toast } from "sonner";
+import { USER_DETAILS, USER_TOKEN_NAME } from "@/utils/constants";
+import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const validationSchema = yup.object().shape({
   email: yup.string().required("Email is required"),
@@ -59,6 +61,10 @@ const Page = () => {
           JSON.stringify({ token: res?.token, user: res?.user }),
         );
         localStorage.setItem("userToken", res?.token);
+
+        const userToken = JSON.stringify(res?.user);
+        Cookies.set(USER_DETAILS, userToken);
+        Cookies.set(USER_TOKEN_NAME, res?.token);
 
         router.push(`${activePathRef.current ? activePathRef.current : "/"}`);
         reset();
