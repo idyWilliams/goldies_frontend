@@ -18,7 +18,7 @@ interface TableProps {
   showSearchBar?: boolean;
 }
 
-export default function DataTable({
+export default function ProductTable({
   columns,
   Tdata,
   filteredTabs = [],

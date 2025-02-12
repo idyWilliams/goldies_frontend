@@ -22,7 +22,7 @@ import {
 } from "iconsax-react";
 import MobileProductCard from "@/components/admin-component/MobileProductCard";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import ProductOptionModal from "@/components/admin-component/ProductOptionModal";
 import { setProducts } from "@/redux/features/product/productSlice";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
@@ -36,6 +36,8 @@ import { IProduct, ProductParams } from "@/interfaces/product.interface";
 import { Loader2Icon } from "lucide-react";
 import momemt from "moment";
 import { formatCurrency } from "@/helper/formatCurrency";
+import DataTable from "@/components/admin-component/DataTable";
+import useProducts from "@/services/hooks/products/useProducts";
 
 const statusColor = (status: string) => {
   switch (status?.toLowerCase()) {
@@ -60,74 +62,64 @@ const statusColor = (status: string) => {
 const columnHelper = createColumnHelper<IProduct>();
 
 export default function ProductsPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
   const [showModal, setShowModal] = useState(false);
   const [action, setAction] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<IProduct>();
   const [isOpen, setOpen] = useState(false);
   const [sortType, setSortType] = useState("recentlyAdded");
   const [searchValue, setSearchValue] = useState("");
+  const [currentPageIndex, setCurrentPageIndex] = useState(
+    parseInt(searchParams.get("page") || "1", 10),
+  );
+  const itemsPerPage = 10;
 
-  const router = useRouter();
   const handleAddNew = () => {
     router.push(`/admin/create-products`);
   };
 
-  const params: ProductParams = {
-    page: 1,
-    limit: 15,
-  };
-
-  const { data, isLoading, isSuccess, refetch, isError } = useQuery({
-    queryKey: ["allProducts"],
-    queryFn: async () => getAllProducts(params),
+  const [params, setParams] = useState<ProductParams>({
+    page: currentPageIndex,
+    limit: itemsPerPage,
   });
 
-  const processedProducts = useMemo<IProduct[]>(() => {
-    if (!data?.products) return [];
-    let sortedProducts = [...data.products];
+  useEffect(() => {
+    const newParams: ProductParams = {
+      page: currentPageIndex,
+      limit: itemsPerPage,
+      searchQuery: searchValue,
+    };
 
-    // Sorting logic
-    switch (sortType) {
-      case "recentlyAdded":
-        sortedProducts.sort(
-          (a, b) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-        );
-        break;
-      case "highToLow":
-        sortedProducts.sort((a, b) => Number(b.minPrice) - Number(a.minPrice));
-        break;
-      case "lowToHigh":
-        sortedProducts.sort((a, b) => Number(a.minPrice) - Number(b.minPrice));
-        break;
-      case "available":
-        sortedProducts = sortedProducts.filter(
-          (product) => product.status.toLowerCase() === "available",
-        );
-        break;
-      default:
-        break;
+    // Update URL with new search query and page
+    const currentParams = new URLSearchParams(searchParams.toString());
+    currentParams.set("page", currentPageIndex.toString());
+
+    if (searchValue) {
+      currentParams.set("searchQuery", searchValue);
+    } else {
+      currentParams.delete("searchQuery");
     }
 
-    // Filtering logic
-    if (searchValue.trim()) {
-      sortedProducts = sortedProducts.filter(
-        (product) =>
-          product.name
-            .toLowerCase()
-            .includes(searchValue.toLowerCase().trim()) ||
-          product._id.toLowerCase().includes(searchValue.toLowerCase().trim()),
-      );
-    }
+    router.push(`${pathname}?${currentParams.toString()}`);
+    setParams(newParams);
+  }, [currentPageIndex, searchValue, pathname, router, searchParams]);
 
-    return sortedProducts;
-  }, [data?.products, sortType, searchValue]);
+  const {
+    isLoading,
+    isError,
+    refetch,
+    totalPages,
+    products: allProducts,
+  } = useProducts(params);
 
   const handleChange = (e: any) => {
     const value = e.target.value;
     setSearchValue(value);
-    console.log(value, "value");
   };
+
   const columns = [
     columnHelper.accessor((row) => row, {
       id: "productName",
@@ -181,14 +173,10 @@ export default function ProductsPage() {
         </span>
       ),
     }),
-    // columnHelper.accessor("quantity", {
-    //   header: () => <span>Qnty</span>,
-    //
-    // }),
+
     columnHelper.accessor((row) => row, {
       id: "status",
-      cell: (info) =>
-        statusColor(info.cell.row.original?.status || "available"),
+      cell: (info) => statusColor(info.cell.row.original?.status),
       header: () => <span>Status</span>,
     }),
     columnHelper.accessor((row) => row, {
@@ -288,18 +276,28 @@ export default function ProductsPage() {
           </p>
           <Button onClick={() => refetch()}>Retry</Button>
         </div>
-      ) : processedProducts.length > 0 ? (
+      ) : allProducts.length > 0 ? (
         <>
           <div className="hidden md:block md:overflow-x-scroll">
-            <ProductTable
+            <DataTable
               columns={columns}
-              Tdata={processedProducts}
-              statusType="product"
-              filteredTabs={["All", "Available", "Unavailable", "Disabled"]}
+              data={allProducts}
+              filteredTabs={[
+                "All",
+                "Available",
+                "Unavailable",
+                "Disabled",
+                "Out of Stock",
+              ]}
+              statusKey="status"
+              searchKeys={["name", "category", "subCategory"]}
+              currentPage={currentPageIndex}
+              totalPages={totalPages}
+              setCurrentPage={setCurrentPageIndex}
             />
           </div>
           <div className="block space-y-5 md:hidden">
-            {processedProducts.map((product: IProduct, index: number) => (
+            {allProducts.map((product: IProduct, index: number) => (
               <MobileProductCard data={product} key={index} />
             ))}
           </div>

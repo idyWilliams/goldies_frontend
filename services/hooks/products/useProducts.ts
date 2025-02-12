@@ -13,7 +13,7 @@ const useProducts = (params: ProductParams) => {
   const { productList: products } = useAppSelector((state) => state.product);
   const { setAllProducts } = useUserPdctStore();
 
-  const { data, isError, isLoading, isPending } = useQuery({
+  const { data, isError, isLoading, isPending, refetch } = useQuery({
     queryKey: ["allProducts", params],
     queryFn: async () => getAllProducts(params),
     placeholderData: keepPreviousData,
@@ -48,7 +48,15 @@ const useProducts = (params: ProductParams) => {
     updateStore();
   }, [updateStore]);
 
-  return { products, isPending, totalPages, totalProducts, isLoading };
+  return {
+    products,
+    isPending,
+    totalPages,
+    totalProducts,
+    isLoading,
+    refetch,
+    isError,
+  };
 };
 
 export default useProducts;

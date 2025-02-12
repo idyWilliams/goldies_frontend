@@ -34,6 +34,7 @@ import { Loader2Icon } from "lucide-react";
 import AdminPagination from "@/components/admin-component/AdminPagination";
 import momemt from "moment";
 import { formatCurrency } from "@/helper/formatCurrency";
+import DataTable from "@/components/admin-component/DataTable";
 
 const statusColor = (status: string) => {
   switch (status.toLowerCase()) {
@@ -143,8 +144,8 @@ export default function OrderPage() {
       cell: ({ row }) => statusColor(row.original.orderStatus),
       header: () => <span>Status</span>,
     }),
-    columnHelper.accessor((row) => row, {
-      id: "actions",
+    columnHelper.accessor("_id", {
+      header: () => <span>Actions</span>,
       cell: ({ row }) => (
         <button
           className="rounded-[50px] bg-goldie-300 px-4 py-1 text-black"
@@ -153,8 +154,6 @@ export default function OrderPage() {
           View Details
         </button>
       ),
-      header: () => <span> </span>,
-      footer: (info) => info.column.id,
     }),
   ];
 
@@ -169,7 +168,7 @@ export default function OrderPage() {
           <p>Fetching Orders...</p>
         </div>
       ) : isError ? (
-        <div className="py-5 text-center text-red-500">
+        <div className="py-5 text-center">
           <p className="mb-4 text-center text-red-500">
             Failed to load orders. Please try again.
           </p>
@@ -178,25 +177,22 @@ export default function OrderPage() {
         </div>
       ) : processedOrders.length > 0 ? (
         <>
+          
           <div className="hidden md:block">
-            <ProductTable
+            <DataTable
               columns={columns}
-              Tdata={paginatedOrders}
-              statusType="order"
-              filteredTabs={["All", "Pending", "Success", "Failed"]}
+              data={paginatedOrders}
+              filteredTabs={["All", "Pending", "Completed", "Cancelled"]}
+              statusKey="orderStatus"
+              searchKeys={["orderId", "firstName", "lastName"]}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              setCurrentPage={setCurrentPage}
             />
           </div>
           <div className="block md:hidden">
-            {/* <MobileOrderCard data={processedOrders} /> */}
+            <MobileOrderCard data={paginatedOrders} />
           </div>
-
-          {totalPages > 1 && (
-            <AdminPagination
-              totalPage={totalPages}
-              page={currentPage}
-              setPage={setCurrentPage}
-            />
-          )}
         </>
       ) : (
         <div>
