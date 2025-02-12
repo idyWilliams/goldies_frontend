@@ -11,10 +11,6 @@ const useAdmin = () => {
     }
   }, []);
 
-  useEffect(() => {
-    console.log("admin>>>", admin);
-  }, []);
-
   return admin;
 };
 

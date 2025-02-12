@@ -5,12 +5,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { CheckIcon } from "@radix-ui/react-icons";
-import {
-  Bag,
-  Lock1,
-  User,
-  UserCirlceAdd
-} from "iconsax-react";
+import { Bag, Lock1, User, UserCirlceAdd } from "iconsax-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -38,20 +33,22 @@ import { adminLogOut, getAdmin } from "@/services/hooks/admin-auth";
 import useAdmin from "@/services/hooks/admin/use_admin";
 import { useQuery } from "@tanstack/react-query";
 import CurrentTime from "./CurrentTime";
+import { useAuth } from "@/context/AuthProvider";
 
 export default function AdminNav() {
-  const [admin, setAdmin] = useState<any>();
+  // const [admin, setAdmin] = useState<any>();
   const router = useRouter();
   const [sticky, setSticky] = useState(false);
   const [open, setIsOpen] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
-  const adminStored = useAdmin();
+  const { auth } = useAuth();
+  // const adminStored = useAdmin();
 
-  const { data, isPending, isError, isSuccess } = useQuery({
-    queryKey: ["admin"],
-    queryFn: () => getAdmin(adminStored?._id as string),
-  });
+  // const { data, isPending, isError, isSuccess } = useQuery({
+  //   queryKey: ["admin"],
+  //   queryFn: () => getAdmin(adminStored?._id as string),
+  // });
 
   // useEffect(() => {
   //   const handleScroll = () => {
@@ -62,9 +59,9 @@ export default function AdminNav() {
   //   return () => window.removeEventListener("scroll", handleScroll);
   // }, []);
 
-  useEffect(() => {
-    !isPending && isSuccess ? setAdmin(data?.admin) : setAdmin(null);
-  }, [data?.admin, isPending, isSuccess]);
+  // useEffect(() => {
+  //   !isPending && isSuccess ? setAdmin(data?.admin) : setAdmin(null);
+  // }, [data?.admin, isPending, isSuccess]);
 
   return (
     <>
@@ -144,10 +141,10 @@ export default function AdminNav() {
                   <div className="hidden text-sm capitalize md:flex md:items-center md:gap-3">
                     <div className="flex flex-col">
                       <span>
-                        {isSuccess && admin ? admin?.userName : "No username"}
+                        {auth?.admin ? auth?.admin?.userName : "No username"}
                       </span>
                       <span className="text-xs">
-                        {isPending && admin ? admin?.role : "No Role"}
+                        {auth?.admin ? auth?.admin?.role : "No Role"}
                       </span>
                     </div>
                     {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
@@ -156,7 +153,7 @@ export default function AdminNav() {
               </PopoverTrigger>
               <PopoverContent className="w-[190px] rounded-md border-[#E4D064] bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
                 <div className="mb-2 flex items-center justify-start gap-3 border-b border-black border-opacity-20 p-2 pb-3 sm:hidden">
-                  {isSuccess && admin ? admin?.userName : "No username"}
+                  {auth?.admin ? auth?.admin?.userName : "No username"}
                 </div>
                 <div className="">
                   <span

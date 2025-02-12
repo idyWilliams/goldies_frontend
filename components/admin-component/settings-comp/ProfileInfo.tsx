@@ -1,4 +1,5 @@
 "use client";
+import { useAuth } from "@/context/AuthProvider";
 import { cn } from "@/helper/cn";
 import { initials } from "@/helper/initials";
 import { updateAdminProfile } from "@/services/hooks/admin-auth";
@@ -20,7 +21,9 @@ const schema = yup.object().shape({
 });
 
 export default function ProfileInfo() {
-  const admin = useAdmin();
+  const { auth } = useAuth();
+  const admin = auth?.admin;
+
   const updateUserName = useMutation({
     mutationFn: updateAdminProfile,
     mutationKey: ["update + username"],
@@ -37,11 +40,11 @@ export default function ProfileInfo() {
   // HANDLE SUBMIT
   const handleSave = async (data: any) => {
     const { userName } = data;
-    console.log({ userName, id: admin._id });
+    console.log({ userName, id: admin?._id });
     try {
       const update = await updateUserName.mutateAsync({
         userName,
-        id: admin._id,
+        id: admin?._id as string,
       });
       console.log(update);
       localStorage.setItem("admin", JSON.stringify(update));
@@ -66,7 +69,7 @@ export default function ProfileInfo() {
       <>
         <div className="mt-5 inline-flex h-10 w-10 items-center justify-center rounded-full bg-black text-main">
           <span className="items-center justify-center">
-            {initials(admin?.userName)}
+            {initials(admin?.userName as string)}
           </span>
         </div>
         <p className="my-3 font-semibold">{admin?.userName}</p>
