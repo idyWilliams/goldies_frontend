@@ -64,9 +64,6 @@ const statusColor = (status: string) => {
 
 const columnHelper = createColumnHelper<IOrder>();
 
-interface ITableProps {
-  filteredTabs: any;
-}
 export default function OrderPage() {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);

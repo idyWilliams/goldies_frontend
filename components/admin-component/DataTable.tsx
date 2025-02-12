@@ -89,7 +89,7 @@ export default function DataTable<T>({
       {/* Filter Tabs & Search Bar */}
       <div
         className={cn(
-          "flex items-center justify-between gap-2",
+          "flex items-center justify-between gap-2 mb-6",
           filteredTabs?.length >= 1 && "mb-6",
         )}
       >

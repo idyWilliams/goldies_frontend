@@ -1,93 +1,57 @@
 "use client";
-import AdminTable from "@/components/admin-component/AdminTable";
-import { customers } from "@/utils/adminData";
-import Image from "next/image";
-import React, { useContext, useEffect, useMemo, useState } from "react";
-import { CiSearch } from "react-icons/ci";
-import { Column } from "react-table";
-import {
-  ColumnDef,
-  createColumnHelper,
-  useReactTable,
-} from "@tanstack/react-table";
-import ProductTable from "@/components/admin-component/ProductTable";
-import { useRouter } from "next/navigation";
-import { chunkArray } from "@/helper/chunkArray";
-import Pagination from "@/components/custom-filter/Pagination";
+import AdminPagination from "@/components/admin-component/AdminPagination";
+import DataTable from "@/components/admin-component/DataTable";
+import { Button } from "@/components/ui/button";
 import { initials } from "@/helper/initials";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { toast } from "sonner";
-import AuthContext from "@/context/AuthProvider";
+import { IUser } from "@/interfaces/user.interface";
 import { getUsers } from "@/services/hooks/admin-auth";
+import { useQuery } from "@tanstack/react-query";
+import { createColumnHelper } from "@tanstack/react-table";
+import { Loader2Icon } from "lucide-react";
 import moment from "moment";
-import AdminAuth from "@/components/admin-component/AdminAuth";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
-type Customer = {
-  id: string;
-  image: any;
-  firstName: string;
-  lastName: string;
-  createdAt: string;
-  orders: number;
-  phoneNumber: number;
-  amountSpent: number;
-  action: string;
-};
+const columnHelper = createColumnHelper<IUser>();
 
-const columnHelper = createColumnHelper<Customer>();
-let itemsPerPage = 6;
-interface ITableProps {
-  filteredTabs: any;
-}
 export default function Page() {
   const router = useRouter();
-  const [customers, setCustomers] = useState([]);
-  // @ts-ignore
-  const { setAuth } = useContext(AuthContext);
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const { data, isPending, isSuccess } = useQuery({
+  const itemsPerPage = 10;
+
+  const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["getUsers"],
     queryFn: getUsers,
   });
+
+  const processedUsers = useMemo<IUser[]>(() => {
+    if (!data?.users) return [];
+
+    let filtered = data.users as IUser[];
+
+    return filtered;
+  }, [data?.users]);
+
+  const totalPages = Math.ceil(processedUsers.length / itemsPerPage);
+
+  const paginatedUsers = useMemo(
+    () =>
+      processedUsers.slice(
+        (currentPageIndex - 1) * itemsPerPage,
+        currentPageIndex * itemsPerPage,
+      ),
+    [processedUsers, currentPageIndex],
+  );
+
   useEffect(() => {
-    if (isPending) {
-      setCustomers([]);
-    } else if (isSuccess) {
-      setCustomers(data?.users);
-    } else {
-      setCustomers([]);
+    if (currentPageIndex > totalPages && totalPages > 0) {
+      setCurrentPageIndex(totalPages);
     }
-  }, [data, isPending, isSuccess]);
+  }, [totalPages, currentPageIndex]);
 
-  console.log(data, "Wangui");
-
-  const handleNext = () => {
-    if (currentPageIndex !== chunkArray(customers, itemsPerPage).length) {
-      setCurrentPageIndex(currentPageIndex + 1);
-      window.scroll(0, 0);
-    } else {
-      return;
-    }
-  };
-
-  const handlePaginateClick = (index: number) => {
-    setCurrentPageIndex(index + 1);
-    window.scroll(0, 0);
-  };
-
-  const handlePrev = () => {
-    if (currentPageIndex !== 1) {
-      setCurrentPageIndex(currentPageIndex - 1);
-      window.scroll(0, 0);
-    } else {
-      return;
-    }
-  };
   const handleView = (id: string) => {
     router.push(`/admin/customers/${id}`);
   };
-  console.log(customers, "Njoroge");
 
   const columns = [
     columnHelper.accessor((row) => row, {
@@ -112,11 +76,10 @@ export default function Page() {
     // }),
     columnHelper.accessor((row) => row, {
       id: "createdAt",
-      cell: (info) => {
-        console.log(info, "Wangoi");
+      cell: ({ row }) => {
         return (
           <span>
-            {moment(info.row.original.createdAt).format("YYYY/MM/DD")}
+            {moment(row.original.createdAt).format("MMM DD, YYYY HH:mm A")}
           </span>
         );
       },
@@ -125,21 +88,25 @@ export default function Page() {
     }),
     columnHelper.accessor((row) => row.phoneNumber, {
       id: "contactNumber",
-      cell: (info) => <span>{info.row.original.phoneNumber || "N/A"}</span>,
+      cell: ({ row }) => <span>{row.original.phoneNumber || "N/A"}</span>,
       header: () => <span>Contact Number </span>,
       footer: (info) => info.column.id,
     }),
-    columnHelper.accessor("orders", {
-      cell: (info) => <span>{info.row.original.orders ?? 0}</span>,
-      header: () => <span>Orders</span>,
-      footer: (info) => info.column.id,
-    }),
-    columnHelper.accessor((row) => row, {
-      id: "amountSpent",
-      cell: (info) => <span>&euro;{info.cell.row.original.amountSpent ?? 0}</span>,
-      header: () => <span>Amount Spent</span>,
-      footer: (info) => info.column.id,
-    }),
+    // columnHelper.accessor("orders", {
+    //   cell: (info) => <span>{info.row.original.orders ?? 0}</span>,
+    //   header: () => <span>Orders</span>,
+    //   footer: (info) => info.column.id,
+    // }),
+    // columnHelper.accessor((row) => row, {
+    //   id: "amountSpent",
+    //   cell: ({ row }) => (
+    //     <span>
+    //       &euro;{formatCurrency(row.original.amountSpent, "en-NG") ?? 0}
+    //     </span>
+    //   ),
+    //   header: () => <span>Amount Spent</span>,
+    //   footer: (info) => info.column.id,
+    // }),
 
     columnHelper.accessor((row) => row, {
       id: "action",
@@ -160,101 +127,87 @@ export default function Page() {
       <section className="min-h-screen w-full bg-[#EFEFEF] px-4 py-6">
         <h1 className="text-lg font-extrabold uppercase">Customers</h1>
         <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
-        <div className="hidden  md:block">
-          {isPending && <div>Loading ... </div>}
-          {customers?.length >= 1 ? (
-            <ProductTable
-              columns={columns}
-              Tdata={customers}
-              statusType="customer"
-              filteredTabs={[""]}
-            />
-          ) : (
-            "No Data"
-          )}
-        </div>
-        <div>
-          <label
-            htmlFor="search"
-            className="relative mb-4 mt-6 block w-full md:hidden"
-          >
-            <input
-              //   value={searchValue}
-              type="text"
-              name="search"
-              autoComplete="search"
-              placeholder="search for product name, product ID..."
-              className="w-full rounded-[50px] px-4 py-1 placeholder:text-xs focus:border-black focus:ring-black lg:py-2"
-              //   onChange={(e) => handleChange(e)}
-            />
-            <span className="absolute right-3 top-1/2 -translate-y-1/2">
-              <CiSearch />
-            </span>
-          </label>
-          <div className="grid gap-5 md:hidden">
-            {chunkArray(customers, itemsPerPage)[currentPageIndex - 1]?.map(
-              (item: any, index: any) => {
-                return (
+
+        {isPending ? (
+          <div className="flex w-full items-center justify-center py-10">
+            <Loader2Icon className="mr-2 animate-spin" />
+            <p>Fetching Customers...</p>
+          </div>
+        ) : isError ? (
+          <div className="py-5 text-center">
+            <p className="mb-4 text-center text-red-500">
+              Failed to load customers. Please try again.
+            </p>
+            <Button onClick={() => refetch()}>Retry</Button>
+          </div>
+        ) : processedUsers.length > 0 ? (
+          <>
+            <div className="hidden md:block">
+              <DataTable
+                columns={columns}
+                data={paginatedUsers}
+                searchKeys={["lastName", "firstName", "email"]}
+                currentPage={currentPageIndex}
+                totalPages={totalPages}
+                setCurrentPage={setCurrentPageIndex}
+              />
+            </div>
+            <div className="block md:hidden">
+              <div className="grid gap-5">
+                {paginatedUsers.map((item, index) => (
                   <div key={index} className="bg-white p-4 py-6">
                     <div className="mt-3">
-                      <div className="grid grid-cols-[50px_1fr] gap-3 gap-y-5">
-                        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-black text-goldie-300">
-                          {initials(item?.customerName)}
-                        </div>
-                        <div className="flex justify-between">
-                          <div className="flex flex-col gap-2">
-                            <h3 className="whitespace-nowrap font-bold">
-                              {item?.customerName}
-                            </h3>
-                            <span className="text-sm">
-                              +{initials(item?.contactNumber)}
-                            </span>
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-center">
+                          <div className="mr-4 flex h-14 w-14 items-center justify-center rounded-full bg-black text-goldie-300">
+                            {initials(`${item.firstName} ${item.lastName}`)}
                           </div>
-                          <div className="flex flex-col gap-2">
-                            <span className="">
-                              &euro;{item?.amountSpent} spent
-                            </span>
-                            <span className="inline-block text-right text-sm font-bold">
-                              {item?.orders}orders
-                            </span>
+                          <div className="flex justify-between">
+                            <div className="flex flex-col gap-2">
+                              <h3 className="whitespace-nowrap font-bold">
+                                {`${item.firstName} ${item.lastName}`}
+                              </h3>
+                              <span className="text-sm">
+                                {item.phoneNumber || "N/A"}
+                              </span>
+                            </div>
                           </div>
                         </div>
-                        <div></div>
-                        <div className="flex items-center justify-between">
+
+                        <div className="flex w-full items-end justify-between">
                           <span className="text-sm">
-                            Joined: {item?.dateOnboarded}
+                            Joined:{" "}
+                            {moment(item.createdAt).format("MMM DD, YYYY")}
                           </span>
                           <button
-                            className="items-center bg-black px-5 py-2 text-sm text-goldie-300"
+                            className="bg-black px-5 py-2 text-sm text-goldie-300"
                             onClick={() =>
-                              router.push(`/admin/customers/${item?.id}`)
+                              router.push(`/admin/customers/${item.id}`)
                             }
                           >
                             More Info
                           </button>
                         </div>
-                        <div>
-                          <span className="text-sm">
-                            Joined: {item?.dateOnboarded}
-                          </span>
-                        </div>
                       </div>
                     </div>
                   </div>
-                );
-              },
-            )}
-            <Pagination
-              className="bg-transparent lg:hidden"
-              onNext={handleNext}
-              onPrev={handlePrev}
-              onPaginateClick={handlePaginateClick}
-              itemsPerPage={itemsPerPage}
-              currentPageIndex={currentPageIndex}
-              arr={customers}
-            />
+                ))}
+              </div>
+
+              {totalPages > 1 && (
+                <AdminPagination
+                  totalPage={totalPages}
+                  page={currentPageIndex}
+                  setPage={setCurrentPageIndex}
+                />
+              )}
+            </div>
+          </>
+        ) : (
+          <div>
+            <p className="text-center text-gray-500">No customers found.</p>
           </div>
-        </div>
+        )}
       </section>
     </>
   );
