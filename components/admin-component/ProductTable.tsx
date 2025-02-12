@@ -1,5 +1,6 @@
 "use client";
 import { cn } from "@/helper/cn";
+import { IOrder } from "@/interfaces/order.interface";
 import {
   flexRender,
   getCoreRowModel,
@@ -9,24 +10,26 @@ import { useEffect, useMemo, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { Tooltip } from "react-tooltip";
 
-export default function ProductTable({
+interface TableProps {
+  columns: any;
+  Tdata: any[];
+  filteredTabs?: string[];
+  statusType?: "order" | "product";
+  showSearchBar?: boolean;
+}
+
+export default function DataTable({
   columns,
   Tdata,
-  filteredTabs,
+  filteredTabs = [],
   statusType,
   showSearchBar = true,
-}: {
-  columns: any;
-  Tdata: any;
-  filteredTabs?: any;
-  statusType?: string;
-  showSearchBar?: boolean;
-}) {
-  const [selectedTabs, setSelectedTabs] = useState(filteredTabs[0]);
-  const [chosenTab, setChosenTab] = useState(filteredTabs[0]);
-  const [TData, setTData] = useState(Tdata);
-  const data = useMemo(() => TData, [TData]);
+}: TableProps) {
+  const [selectedTab, setSelectedTab] = useState(filteredTabs[0] || "All");
+  const [filteredData, setFilteredData] = useState(Tdata);
   const [searchValue, setSearchValue] = useState("");
+
+  const data = useMemo(() => filteredData, [filteredData]);
   const table = useReactTable({
     data,
     columns,
@@ -34,28 +37,37 @@ export default function ProductTable({
   });
 
   useEffect(() => {
-    if (chosenTab === filteredTabs[0]) {
-      setTData(Tdata);
+    if (!selectedTab || selectedTab === "All") {
+      setFilteredData(Tdata);
     } else {
-      if (statusType === "order" || statusType === "product") {
-        setTData(
-          Tdata?.filter(
-            (item: any) =>
-              item?.status.toLowerCase() === chosenTab?.toLowerCase(),
-          ),
-        );
-      }
+      setFilteredData(
+        Tdata.filter((item) => {
+          if (statusType === "order") {
+            return (
+              (item as IOrder).orderStatus?.toLowerCase() ===
+              selectedTab.toLowerCase()
+            );
+          }
+          return item?.status?.toLowerCase() === selectedTab.toLowerCase();
+        }),
+      );
     }
-  }, [chosenTab, filteredTabs, Tdata, statusType]);
+  }, [selectedTab, Tdata, statusType]);
 
   useEffect(() => {
-    const filteredProducts = Tdata?.filter(
-      (item: any) =>
-        item?.productName?.toLowerCase()?.includes(searchValue) ||
-        item?.name?.toLowerCase()?.includes(searchValue) ||
-        item?.id?.toString()?.toLowerCase()?.includes(searchValue),
+    if (!searchValue) {
+      setFilteredData(Tdata);
+      return;
+    }
+    const lowerSearch = searchValue.toLowerCase();
+    setFilteredData(
+      Tdata.filter(
+        (item) =>
+          item?.productName?.toLowerCase()?.includes(lowerSearch) ||
+          item?.name?.toLowerCase()?.includes(lowerSearch) ||
+          item?.id?.toString()?.toLowerCase()?.includes(lowerSearch),
+      ),
     );
-    setTData(filteredProducts);
   }, [searchValue, Tdata]);
 
   const handleChange = (e: any) => {
@@ -73,16 +85,15 @@ export default function ProductTable({
       >
         <div className="flex items-center gap-1">
           {filteredTabs &&
-            filteredTabs.map((tabs: string, index: number) => (
+            filteredTabs.map((tab, index) => (
               <button
                 key={index}
-                className={`w-fit rounded-sm border px-2 ${selectedTabs === tabs ? "bg-black text-goldie-300" : "border-neutral-200 bg-white"}`}
+                className={`w-fit rounded-sm border px-2 ${selectedTab === tab ? "bg-black text-goldie-300" : "border-neutral-200 bg-white"}`}
                 onClick={() => {
-                  setSelectedTabs(tabs);
-                  setChosenTab(tabs);
+                  setSelectedTab(tab);
                 }}
               >
-                {tabs}
+                {tab}
               </button>
             ))}
         </div>

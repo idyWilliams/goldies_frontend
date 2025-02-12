@@ -7,18 +7,18 @@ import NextTopLoader from "nextjs-toploader";
 
 function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
-    <>
+    <div className="min-h-[calc(100dvh-64px)]">
       <NextTopLoader color="#e4d064" showSpinner={false} height={4} />
       <AdminNav />
-      <div className="grid w-full lg:grid-cols-[200px_1fr]">
-        <>
-          <AdminSideBar />
-        </>
-        <div className="overflow-auto lg:h-screen lg:pb-0 lg:pt-[64px]">
+      <div className="w-full flex">
+        <AdminSideBar />
+
+        <div className="overflow-auto lg:ml-[220px] w-full min-h-[calc(100dvh-64px)] bg-[#EFEFEF] pb-6 mt-[64px] ">
           {children}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 export default AdminAuth(AdminLayout);
+// export default AdminLayout;

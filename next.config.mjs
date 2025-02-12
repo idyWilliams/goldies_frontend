@@ -12,6 +12,10 @@ const nextConfig = {
         port: "",
         pathname: "/v0/b/goldie-b3ba7.appspot.com/o/**",
       },
+      {
+        protocol: "https",
+        hostname: "example.com",
+      },
     ],
   },
 };

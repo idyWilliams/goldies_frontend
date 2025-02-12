@@ -50,7 +50,7 @@ export interface IProduct {
   allergens?: string[];
   available?: boolean;
   bestSeller?: boolean;
-  status?: string;
+  status: string;
 }
 
 export interface ProductParams {

@@ -15,6 +15,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import AuthContext, { useAuth } from "@/context/AuthProvider";
 import { verifyOTP } from "@/services/hooks/admin-auth";
+import { toast } from "sonner";
 
 const validationSchema = yup.object().shape({
   otp: yup.string().required("otp required"),
@@ -41,7 +42,6 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
     otpVerify
       .mutateAsync({ ...data, email })
       .then((res: any) => {
-        console.log(res);
         // UPDATE THE AUTH PROVIDER
         setIsLogin(true);
         setRole(res?.admin?.role);
@@ -60,9 +60,10 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
       })
       .catch((error: any) => {
         console.log(error);
+        toast.error(error?.response?.data?.message || error?.message);
+
       });
 
-    console.log(data);
   };
 
   return (

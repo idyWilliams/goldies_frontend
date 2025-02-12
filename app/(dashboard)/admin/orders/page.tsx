@@ -2,7 +2,7 @@
 import AdminTable from "@/components/admin-component/AdminTable";
 import { orderList, productList } from "@/utils/adminData";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { Column } from "react-table";
 import {
@@ -25,17 +25,15 @@ import MobileOrderCard from "@/components/admin-component/MobileOrderCard";
 import OrderDetailsModal from "@/components/admin-component/OrderDetailsModal";
 import { useRouter } from "next/navigation";
 import AdminAuth from "@/components/admin-component/AdminAuth";
-
-type Product = {
-  id: string;
-  image: any;
-  productName: string;
-  orderDate: string;
-  billingName: string;
-  priceFrom: number;
-  totalPrice: number;
-  status: string;
-};
+import { useQuery } from "@tanstack/react-query";
+import { adminGetAllOrders } from "@/services/hooks/payment";
+import { IOrder } from "@/interfaces/order.interface";
+import Loading from "../loading";
+import { Button } from "@/components/ui/button";
+import { Loader2Icon } from "lucide-react";
+import AdminPagination from "@/components/admin-component/AdminPagination";
+import momemt from "moment";
+import { formatCurrency } from "@/helper/formatCurrency";
 
 const statusColor = (status: string) => {
   switch (status.toLowerCase()) {
@@ -63,66 +61,94 @@ const statusColor = (status: string) => {
   }
 };
 
-const columnHelper = createColumnHelper<Product>();
+const columnHelper = createColumnHelper<IOrder>();
 
 interface ITableProps {
   filteredTabs: any;
 }
-export default function Page() {
+export default function OrderPage() {
   const router = useRouter();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedStatus, setSelectedStatus] = useState("All");
+  const itemsPerPage = 10;
+
+  const { data, isLoading, isSuccess, refetch, isError } = useQuery({
+    queryKey: ["adminAllOrders"],
+    queryFn: async () => adminGetAllOrders(),
+  });
+
+  const processedOrders = useMemo<IOrder[]>(() => {
+    if (!data?.orders) return [];
+
+    let filtered = data.orders as IOrder[];
+    if (selectedStatus !== "All") {
+      filtered = filtered.filter(
+        (order) =>
+          order.orderStatus.toLowerCase() === selectedStatus.toLowerCase(),
+      );
+    }
+    return filtered;
+  }, [data?.orders, selectedStatus]);
+
+  const totalPages = Math.ceil(processedOrders.length / itemsPerPage);
+
+  const paginatedOrders = useMemo(
+    () =>
+      processedOrders.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage,
+      ),
+    [processedOrders, currentPage],
+  );
+
+  useEffect(() => {
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(totalPages);
+    }
+  }, [totalPages, currentPage]);
+
   const columns = [
-    columnHelper.accessor((row) => row, {
-      id: "productName",
-      cell: (info) => {
-        return (
-          <div className="grid grid-cols-[50px_1fr] items-center gap-2">
-            <Image
-              src={info.cell.row.original?.image}
-              alt={info.cell.row.original.productName}
-              className="h-[40px] w-full object-cover"
-            />
-            <h3 className="font-bold">{info.cell.row.original.productName}</h3>
-          </div>
-        );
-      },
-      header: () => <span>Product</span>,
-      footer: (info) => info.column.id,
-    }),
-    columnHelper.accessor("id", {
+    columnHelper.accessor((row) => row.orderId, {
+      id: "orderId",
       header: () => <span>Order ID</span>,
-      footer: (info) => info.column.id,
+      cell: ({ row }) => (
+        <span className="capitalize">{row.original?.orderId}</span>
+      ),
     }),
-    columnHelper.accessor((row) => row.billingName, {
-      id: "billingName",
-      cell: (info) => <span className="capitalize">{info.getValue()}</span>,
+    columnHelper.accessor("firstName", {
       header: () => <span>Billing Name</span>,
-      footer: (info) => info.column.id,
+      cell: ({ row }) => (
+        <span className="capitalize">
+          {row.original?.firstName + " " + row.original?.lastName}
+        </span>
+      ),
     }),
-    columnHelper.accessor("orderDate", {
-      header: () => <span>Order Date</span>,
-      footer: (info) => info.column.id,
-    }),
-    columnHelper.accessor((row) => row, {
-      id: "totalPrice",
-      cell: (info) => <span>&euro;{info.cell.row.original.totalPrice}</span>,
+    columnHelper.accessor("fee.total", {
+      cell: ({ row }) => (
+        <span>{formatCurrency(row.original.fee.total, "en-NG")}</span>
+      ),
       header: () => <span>Total</span>,
-      footer: (info) => info.column.id,
+    }),
+    columnHelper.accessor("createdAt", {
+      header: () => <span>Order Date</span>,
+      cell: ({ row }) => (
+        <span>
+          {momemt(row.original.createdAt).format("MMM DD, YYYY HH:mm A")}
+        </span>
+      ),
     }),
 
     columnHelper.accessor((row) => row, {
       id: "status",
-      cell: (info) => statusColor(info.cell.row.original.status),
+      cell: ({ row }) => statusColor(row.original.orderStatus),
       header: () => <span>Status</span>,
-      footer: (info) => info.column.id,
     }),
     columnHelper.accessor((row) => row, {
       id: "actions",
-      cell: (info) => (
+      cell: ({ row }) => (
         <button
           className="rounded-[50px] bg-goldie-300 px-4 py-1 text-black"
-          onClick={() =>
-            router.push(`/admin/orders/${info.cell.row.original.id}`)
-          }
+          onClick={() => router.push(`/admin/orders/${row.original._id}`)}
         >
           View Details
         </button>
@@ -131,25 +157,52 @@ export default function Page() {
       footer: (info) => info.column.id,
     }),
   ];
-  return (
-    <>
-      <section className="w-full bg-[#EFEFEF] px-4 pt-6">
-        <h1 className="text-lg font-extrabold">Orders</h1>
-        <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
 
-        <div className="hidden  md:block">
-          <ProductTable
-            columns={columns}
-            Tdata={orderList}
-            statusType="order"
-            filteredTabs={["All", "Pending", "Success", "Failed"]}
-          />
+  return (
+    <section className="h-full w-full px-4 pt-6">
+      <h1 className="text-lg font-extrabold">Orders</h1>
+      <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
+
+      {isLoading ? (
+        <div className="flex w-full items-center justify-center py-10">
+          <Loader2Icon className="mr-2 animate-spin" />
+          <p>Fetching Orders...</p>
         </div>
-        <div className="block md:hidden">
-          <MobileOrderCard />
+      ) : isError ? (
+        <div className="py-5 text-center text-red-500">
+          <p className="mb-4 text-center text-red-500">
+            Failed to load orders. Please try again.
+          </p>
+
+          <Button onClick={() => refetch()}>Retry</Button>
         </div>
-      </section>
-      {/* <OrderDetailsModal isOpen={isOpen} setIsOpen={setIsOpen} /> */}
-    </>
+      ) : processedOrders.length > 0 ? (
+        <>
+          <div className="hidden md:block">
+            <ProductTable
+              columns={columns}
+              Tdata={paginatedOrders}
+              statusType="order"
+              filteredTabs={["All", "Pending", "Success", "Failed"]}
+            />
+          </div>
+          <div className="block md:hidden">
+            {/* <MobileOrderCard data={processedOrders} /> */}
+          </div>
+
+          {totalPages > 1 && (
+            <AdminPagination
+              totalPage={totalPages}
+              page={currentPage}
+              setPage={setCurrentPage}
+            />
+          )}
+        </>
+      ) : (
+        <div>
+          <p className="text-center text-gray-500">No orders found.</p>
+        </div>
+      )}
+    </section>
   );
 }

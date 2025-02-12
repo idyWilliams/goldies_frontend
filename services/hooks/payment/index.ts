@@ -9,6 +9,12 @@ export const initPayment = async (paymentData: any) => {
   return response.data;
 };
 
+export const verifyPayment = async (reference: string) => {
+  const res = await instance.post(`/payments/verify_payment/${reference}`);
+
+  return res.data;
+};
+
 export const detailsBillings = async (billingInfo: any) => {
   const response = await instance.post(
     "/user/save_billing_details",
@@ -64,3 +70,13 @@ export const getOrderByOrderId = async (orderId: string) => {
     throw error;
   }
 };
+
+export const adminGetAllOrders =async()=>{
+  try {
+    const response = await instance.get(`/order/get_all_order`);
+    return response.data;
+  } catch (error) {
+    console.log("error getting admin all orders", error);
+    throw error;
+  }
+}

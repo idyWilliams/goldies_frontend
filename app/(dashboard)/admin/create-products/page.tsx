@@ -104,6 +104,7 @@ export default function Page() {
         productType: product.productType,
         maxPrice: Number(product.maxPrice),
         minPrice: Number(product.minPrice),
+        status: "Available"
       });
 
       setCategoryData({
@@ -144,6 +145,7 @@ export default function Page() {
         productType: "",
         maxPrice: 0,
         minPrice: 0,
+        status: formValues.status,
       });
       setSubCategory([]);
       setFlavours([]);
@@ -184,6 +186,7 @@ export default function Page() {
       sizes: string[];
       flavour: string[];
       toppings: string[];
+      status: string;
     }) => (editId ? updateProduct(data, editId) : createNewProduct(data)),
     onSettled: () => setIsSubmitting(false),
     onSuccess: (data) => {
@@ -197,6 +200,7 @@ export default function Page() {
         productType: "",
         maxPrice: 0,
         minPrice: 0,
+        status: formValues.status,
       });
       setSubCategory([]);
       setFlavours([]);
@@ -276,6 +280,7 @@ export default function Page() {
       sizes: [...sizes].map((size: any) => size.value),
       flavour: [...flavour].map((filling: any) => filling.value),
       toppings: [...addOn].map((topping: any) => topping.value),
+      status: formValues.status,
     };
 
     submitProduct.mutate(data);

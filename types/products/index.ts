@@ -42,6 +42,7 @@ export type formValuesType = {
   productType: string;
   maxPrice: number;
   minPrice: number;
+  status: string;
 };
 
 type CategoryOptionsType =

@@ -1,19 +1,17 @@
-import Image from "next/image";
-import React, { useState } from "react";
-import Link from "next/link";
-import { addProductToCart } from "@/redux/features/product/productSlice";
-import { useDispatch } from "react-redux";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 import { cn } from "@/helper/cn";
+import { IProduct } from "@/interfaces/product.interface";
+import Placeholder from "@/public/assets/placeholder3.png";
+import { RootState } from "@/redux/store";
+import useUserPdctStore from "@/zustand/userProductStore/store";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Tooltip } from "react-tooltip";
 import StarRating from "../StarRating";
-import Placeholder from "@/public/assets/placeholder3.png";
-import useUserPdctStore from "@/zustand/userProductStore/store";
-import Favorite from "./Favorite";
-import { IProduct } from "@/interfaces/product.interface";
 import { Button } from "../ui/button";
+import Favorite from "./Favorite";
 
 const exampleImage =
   "https://firebasestorage.googleapis.com/v0/b/goldie-b3ba7.appspot.com/o/products%2Fbanana-cake-with-cinnamon-cream-102945-1.webp?alt=media&token=32e645da-9327-4f7f-9f79-a2cba1102676";
@@ -26,26 +24,11 @@ const ProductCard = React.memo(function ProductCard({
   const router = useRouter();
   const params = useSearchParams();
   const dispatch = useDispatch();
-  const cart = useSelector((state: RootState) => state.product?.cart);
   const [isLoaded, setIsLoaded] = useState(false);
   const [fav, setFav] = useState(false);
   const favProducts = useUserPdctStore((state) => state.favProducts);
   const setActiveProduct = useUserPdctStore((state) => state.setActiveProduct);
 
-  const handleAddToCart = () => {
-    const items = Object.values(cart);
-
-    dispatch(addProductToCart({ id: data._id }));
-
-    localStorage.getItem("cart");
-    console.log(data._id, cart);
-    // setShapes(null)
-  };
-
-  const handleBuyNow = () => {
-    handleAddToCart();
-    router.push("/cart");
-  };
 
   const handleProduct = (prod: any) => {
     setActiveProduct(prod);

@@ -58,14 +58,14 @@ export default function AdminNav() {
     queryFn: () => getAdmin(adminStored?._id as string),
   });
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setSticky(window.scrollY >= 300);
-    };
-    window.addEventListener("scroll", handleScroll);
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     setSticky(window.scrollY >= 300);
+  //   };
+  //   window.addEventListener("scroll", handleScroll);
 
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, []);
 
   useEffect(() => {
     !isPending && isSuccess ? setAdmin(data?.admin) : setAdmin(null);
@@ -73,9 +73,7 @@ export default function AdminNav() {
 
   return (
     <>
-      <nav
-        className={`${sticky ? "shadow-[0_0_50px_rgba(0,0,0,0.5)] lg:fixed" : "lg:absolute"} sticky left-0 top-0  z-[999] w-full bg-black py-3`}
-      >
+      <nav className={` fixed left-0 top-0 z-50 w-full bg-black py-3`}>
         <div className="flex items-center justify-between px-4">
           <div className="flex items-center gap-3">
             <span
@@ -141,20 +139,29 @@ export default function AdminNav() {
               <CurrentTime text="text-goldie-300" />
             </div>
 
-            <button
-              onClick={() => setOpen((prev) => !prev)}
-              className="flex items-center gap-2 border-l border-goldie-300 border-opacity-40 pl-4 text-goldie-300"
-            >
-              <FaRegUserCircle size={20} />{" "}
-              <span className="hidden text-sm capitalize md:inline-flex md:items-center md:gap-3">
-                {isSuccess && admin ? admin?.userName : "No username"}
-                {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
-              </span>
-            </button>
-            {isOpen && (
-              <MenuPopup className="absolute -right-3 top-10 z-40 w-[190px] rounded-md bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
+            <Popover>
+              <PopoverTrigger asChild>
+                <button
+                  onClick={() => setOpen((prev) => !prev)}
+                  className="flex items-center gap-2 border-l border-goldie-300 border-opacity-40 pl-4 text-goldie-300"
+                >
+                  <FaRegUserCircle size={20} />{" "}
+                  <div className="hidden text-sm capitalize md:flex md:items-center md:gap-3">
+                    <div className="flex flex-col">
+                      <span>
+                        {isSuccess && admin ? admin?.userName : "No username"}
+                      </span>
+                      <span className="text-xs">
+                        {isPending && admin ? admin?.role : "No Role"}
+                      </span>
+                    </div>
+                    {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
+                  </div>
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[190px] rounded-md border-[#E4D064] bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
                 <div className="mb-2 flex items-center justify-start gap-3 border-b border-black border-opacity-20 p-2 pb-3 sm:hidden">
-                  <CurrentTime text="text-black" isOpen={isOpen} />
+                  {isSuccess && admin ? admin?.userName : "No username"}
                 </div>
                 <div className="">
                   <span
@@ -182,12 +189,12 @@ export default function AdminNav() {
                 >
                   Logout
                 </span>
-              </MenuPopup>
-            )}
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
         <div
-          className={`fixed top-0 h-screen w-full duration-300 ${open ? "left-0" : "-left-full"}`}
+          className={`fixed top-0 h-screen w-full duration-300 lg:hidden ${open ? "left-0" : "-left-full"}`}
         >
           <span
             className="absolute left-3 top-4 z-50 inline-block cursor-pointer text-goldie-300"

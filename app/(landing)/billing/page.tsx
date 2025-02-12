@@ -10,6 +10,7 @@ import {
   initPayment,
   orderCreate,
   updateDetailsBillings,
+  verifyPayment,
 } from "@/services/hooks/payment";
 import { billingFormData } from "@/utils/formData";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -72,6 +73,9 @@ const Page = () => {
   const [phone2, setPhone2] = useState("");
   const [selectedMethod, setSelectedMethod] = useState<string>("option1");
   const [isBillingInfoSaved, setIsBillingInfoSaved] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+
   // const form1 = useForm({ resolver: yupResolver(form1Schema) });
   const form1 = useForm({
     resolver: yupResolver(form1Schema),
@@ -99,11 +103,21 @@ const Page = () => {
   const paymentInit = useMutation({
     mutationFn: initPayment,
   });
+
   const billingDetails = useMutation({ mutationFn: detailsBillings });
   const updateBillingDetails = useMutation({
     mutationFn: updateDetailsBillings,
   });
   const createOrder = useMutation({ mutationFn: orderCreate });
+
+  useEffect(() => {
+    const reference = queryParams.get("reference");
+
+    if (reference) {
+      verifyAndCreateOrder(reference);
+    }
+  }, []);
+
   const {
     register,
     control,
@@ -133,129 +147,123 @@ const Page = () => {
 
   const totalWithDelivery = orderTotal + deliveryFee;
 
-  const onSubmitForm1 = (data: any) => {
-    console.log("Form 1 submitted:", data);
-    console.log("Cart data", cart);
-    console.log("orderTotal", orderTotal);
+  const onSubmitForm1 = async (data: any) => {
+    setIsProcessingPayment(true);
+    toast.loading("Initializing payment...");
 
-    const callbackUrl =
-      process.env.NODE_ENV === "development"
-        ? "http://localhost:7009/my-orders"
-        : "https://goldies-frontend-v3.vercel.app/my-orders";
+    try {
+      const callbackUrl =
+        process.env.NODE_ENV === "development"
+          ? "http://localhost:7009/billing"
+          : "https://goldies-frontend-v3.vercel.app/billing";
 
-    const paymentData = {
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email,
-      amount: orderTotal,
-      callbackUrl: callbackUrl,
-    };
-    // console.log("Payment Data:", paymentData);
+      const paymentData = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        amount: orderTotal,
+        callbackUrl: callbackUrl,
+      };
 
-    const isSaveChecked = data.save;
-    // console.log("isSaveChecked is ", isSaveChecked);
+      // Step 1: Initialize Payment
+      const paymentRes = await paymentInit.mutateAsync(paymentData);
+      if (
+        !paymentRes?.data?.authorization_url ||
+        !paymentRes?.data?.reference
+      ) {
+        throw new Error("Payment initialization failed.");
+      }
 
-    const billingInfo = {
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email,
-      country: data.country,
-      cityOrTown: data.city,
-      streetAddress: data.address,
-      phoneNumber: data.phoneNumber,
-      defaultBillingInfo: true,
-    };
+      console.log(">>>> Payment", paymentRes);
 
-    const ItemID = products.map((item) => item._id);
-    const orderInfo = {
-      orderedItems: ItemID,
-      fee: {
-        subTotal: totalWithDelivery - deliveryFee,
-        total: orderTotal,
-        deliveryFee: deliveryFee,
-      },
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email,
-      country: data.country,
-      cityOrTown: data.city,
-      streetAddress: data.address,
-      phoneNumber: data.phoneNumber,
-    };
+      localStorage.setItem("goldies_formData", JSON.stringify(data));
 
-    console.log("orderInfo: ", orderInfo);
-    createOrder
-      .mutateAsync(orderInfo)
-      .then((res: any) => {
-        if (!res?.error) {
-          const newOrder = {
-            name: "placeholder",
-            id: orderInfo.orderedItems.join(","),
-            date: new Date().toLocaleDateString(),
-            quantity: orderInfo.orderedItems.length,
-            price: orderInfo.fee.total.toFixed(2),
-            status: res?.data?.order?.orderStatus,
-            total: Number(orderInfo.fee.deliveryFee),
-            shippingFee: Number(orderInfo.fee.deliveryFee),
-          };
-          console.log("neworder", newOrder);
-          toast.success(res.message || "Order Successfully Created");
-        } else {
-          console.error("Order creation failed. Response:", res);
-          toast.error(res.message || "Failed to create order.");
-        }
-      })
-      .catch((err: any) => {
-        toast.error("An error occurred while creating the order.");
-        console.error("Order Error:", err.message);
-      });
-
-    if (isSaveChecked && isBillingInfoSaved) {
-      console.log("Updating billing info");
-      updateBillingDetails
-        .mutateAsync(billingInfo)
-        .then((res: any) => {
-          if (res?.success) {
-            toast.success("Account Successfully Updated");
-          }
-        })
-        .catch((err: any) => {
-          toast.error("An error occurred while updating the billing info.");
-          console.error("Update Error:", err.message);
-        });
-    } else if (isSaveChecked && !isBillingInfoSaved) {
-      console.log("Saving billing info");
-      billingDetails
-        .mutateAsync(billingInfo)
-        .then((res: any) => {
-          if (res?.success) {
-            setIsBillingInfoSaved(true);
-            toast.success("Billing info saved successfully!");
-          }
-        })
-        .catch((err: any) => {
-          toast.error("An error occurred while saving the billing info.");
-          console.error("Save Error:", err.message);
-        });
-    } else if (!isSaveChecked) {
-      toast.error("'Save this Information' is not checked.");
+      toast.success("Redirecting to payment...");
+      window.location.href = paymentRes.data.authorization_url;
+    } catch (error: any) {
+      console.error("Payment Init Error:", error);
+      toast.error(error.message || "Payment initialization failed.");
+    } finally {
+      setIsProcessingPayment(false);
     }
+  };
 
-    paymentInit
-      .mutateAsync(paymentData)
-      .then((res: any) => {
-        if (res?.data?.authorization_url) {
-          window.location.href = res?.data?.authorization_url;
-          toast.success("Redirecting....");
+  // This function should run after successful payment callback
+  const verifyAndCreateOrder = async (reference: string) => {
+    setIsSubmitting(true);
+    toast.loading("Verifying payment...");
+
+    try {
+      const formDataString = localStorage.getItem("goldies_formData");
+
+      if (!formDataString) throw new Error("Billing information missing.");
+
+      const data = JSON.parse(formDataString);
+
+      // Step 2: Verify Payment
+      const verifyRes = await verifyPayment(reference);
+      if (!verifyRes?.data?.status || verifyRes.data.status !== "success") {
+        throw new Error("Payment verification failed.");
+      }
+
+      toast.success("Payment verified! Creating order...");
+
+      // Step 3: Create Order
+      const ItemID = products.map((item) => item._id);
+      const orderInfo = {
+        orderedItems: ItemID,
+        fee: {
+          subTotal: totalWithDelivery - deliveryFee,
+          total: orderTotal,
+          deliveryFee,
+        },
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        country: data.country,
+        cityOrTown: data.city,
+        streetAddress: data.address,
+        phoneNumber: data.phoneNumber,
+      };
+
+      const orderRes = await createOrder.mutateAsync(orderInfo);
+      if (!orderRes?.error) {
+        toast.success("Order Successfully Created");
+      } else {
+        throw new Error(orderRes.message || "Failed to create order.");
+      }
+
+      // Step 4: Save Billing Info (If Checked)
+      if (data.save) {
+        const billingInfo = {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          country: data.country,
+          cityOrTown: data.city,
+          streetAddress: data.address,
+          phoneNumber: data.phoneNumber,
+          defaultBillingInfo: true,
+        };
+
+        if (isBillingInfoSaved) {
+          await updateBillingDetails.mutateAsync(billingInfo);
+          toast.success("Billing info updated successfully!");
         } else {
-          console.error("Failed to initialize payment.");
+          await billingDetails.mutateAsync(billingInfo);
+          setIsBillingInfoSaved(true);
+          toast.success("Billing info saved successfully!");
         }
-      })
-      .catch((err) => {
-        console.error("Error: ", err);
-        console.log(err.message);
-        toast.error(err.message);
-      });
+      }
+
+      router.push("/my-orders");
+    } catch (error: any) {
+      toast.error(error.message || "An error occurred.");
+      console.error("Error:", error);
+    } finally {
+      setIsSubmitting(false);
+      localStorage.removeItem("goldies_formData");
+    }
   };
 
   const onSubmitForm2 = (data: any) => {

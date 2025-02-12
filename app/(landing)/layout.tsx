@@ -19,7 +19,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     const userToken = storedUser ? storedUser?.token : null;
 
     const handleSession = () => {
-      if (pathname.includes("/my-account") || pathname.includes("/my-orders")) {
+      if (
+        pathname.includes("/my-account") ||
+        pathname.includes("/my-orders") ||
+        pathname.includes("/billing")
+      ) {
         userLogOut(router);
       } else {
         localStorage.setItem("isLogin", JSON.stringify(false));
@@ -65,7 +69,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <>
       <NextTopLoader color="#262626" showSpinner={false} height={4} />
       <Header />
-      {children}
+      <main className="min-h-dvh">{children}</main>
       <Footer />
     </>
   );
