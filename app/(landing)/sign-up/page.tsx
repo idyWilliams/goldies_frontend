@@ -130,10 +130,10 @@ const Page = () => {
             <div className="w-full">
               <form
                 id="signup"
-                className="grid gap-5 md:grid-cols-2"
+                className="grid md:gap-5 gap-4 grid-cols-1 md:grid-cols-2"
                 onSubmit={handleSubmit(onSubmit)}
               >
-                <label htmlFor="firstName" className="">
+                <label htmlFor="firstName" className="col-span-2 md:col-span-1">
                   <span className="mb-1 inline-block font-medium capitalize">
                     First name
                   </span>
@@ -148,7 +148,7 @@ const Page = () => {
                     )}
                     id="firstName"
                     name="firstName"
-                    placeholder="Your firstname"
+                    placeholder="Your first name"
                   />
                   {errors?.firstName && (
                     <p className={cn("mt-1 text-sm text-red-600")}>
@@ -156,7 +156,7 @@ const Page = () => {
                     </p>
                   )}
                 </label>
-                <label htmlFor="lastName" className="">
+                <label htmlFor="lastName" className="col-span-2 md:col-span-1">
                   <span className="mb-1 inline-block font-medium capitalize">
                     Last name
                   </span>
@@ -171,7 +171,7 @@ const Page = () => {
                     )}
                     id="lastName"
                     name="lastName"
-                    placeholder="Your lastname"
+                    placeholder="Your last name"
                   />
                   {errors?.lastName && (
                     <p className={cn("mt-1 text-sm text-red-600")}>
@@ -179,7 +179,7 @@ const Page = () => {
                     </p>
                   )}
                 </label>
-                <label htmlFor="email" className="md:col-span-2">
+                <label htmlFor="email" className="col-span-2">
                   <span className="mb-1 inline-block font-medium capitalize">
                     Email Address
                   </span>
@@ -202,7 +202,7 @@ const Page = () => {
                     </p>
                   )}
                 </label>
-                <label htmlFor="phoneNumber" className="md:col-span-2">
+                <label htmlFor="phoneNumber" className="col-span-2">
                   <span className="mb-1 inline-block font-medium capitalize">
                     Phone Number
                   </span>
@@ -231,7 +231,7 @@ const Page = () => {
                     </p>
                   )}
                 </label>
-                <label htmlFor="password" className="relative md:col-span-2">
+                <label htmlFor="password" className="relative col-span-2">
                   <span className="mb-1 inline-block font-medium capitalize">
                     Password
                   </span>
@@ -269,7 +269,7 @@ const Page = () => {
                 </label>
                 <label
                   htmlFor="agree"
-                  className="flex items-center gap-3 md:col-span-2"
+                  className="flex items-center gap-3 col-span-2"
                 >
                   <input
                     type="checkbox"
