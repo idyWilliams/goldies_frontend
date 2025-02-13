@@ -326,4 +326,18 @@
       background: #000;
     }
   }
+
+  .review-swiper {
+    .swiper-button-next,
+    .swiper-button-prev {
+      &::after {
+        color: white !important;
+      }
+    }
+    .swiper-pagination {
+      .swiper-pagination-bullet {
+        background-color: white !important;
+      }
+    }
+  }
 }

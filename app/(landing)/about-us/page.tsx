@@ -8,6 +8,7 @@ import BrandSlider from "@/components/about-components/BrandSlider";
 import TeamSlider from "@/components/about-components/TeamSlider";
 import ReviewSlider from "@/components/about-components/ReviewSlider";
 import AboutImg from "@/public/assets/abt-img.jpg";
+
 const AboutUs = () => {
   return (
     <>
@@ -31,10 +32,10 @@ const AboutUs = () => {
         />
 
         <div className="wrapper flex flex-col items-center text-center">
-          <h1 className="text-2xl font-bold text-white sm:text-4xl lg:text-7xl">
+          <h1 className="text-2xl font-bold text-white sm:text-4xl lg:text-5xl mb-2">
             About us
           </h1>
-          <p className="w-[230px] text-sm font-bold text-goldie-300 sm:w-fit sm:text-base lg:text-2xl">
+          <p className="lg:max-w-2xl w-3/4 font-bold text-goldie-300  lg:text-2xl">
             Everything you need to know about Goldies Confectionery.
           </p>
         </div>
@@ -45,12 +46,12 @@ const AboutUs = () => {
         <div className="wrapper">
           <div className="flex flex-col items-center justify-center gap-4 py-5 sm:px-10 md:gap-6">
             <div className="inline-block">
-              <h2 className="inline-block text-xl font-bold uppercase sm:text-2xl lg:text-4xl">
+              <h2 className="inline-block text-xl font-bold uppercase md:text-2xl">
                 Our Company
               </h2>
               <span className="block h-0.5 w-[60px] bg-goldie-300"></span>
             </div>
-            <p className="max-w-[924px] text-center text-xs sm:text-base lg:text-2xl">
+            <p className="max-w-[924px] text-center">
               Goldis offers a wide range of cakes for different occasions.
               Whether you seek a whimsical unicorn cake for your child&apos;s
               birthday, an elegant tiered cake for a lavish wedding, or a
@@ -65,31 +66,29 @@ const AboutUs = () => {
 
       {/* ========= OUR FOUNDER ============ */}
       <section className="bg-goldie-300">
-        <h2 className="py-4 text-center text-2xl font-semibold uppercase">
+        <h2 className="py-4 text-center text-xl font-semibold uppercase lg:text-2xl">
           Our Founder
         </h2>
 
-        <div className="bg-neutral-700 py-5">
+        <div className="bg-neutral-700 lg:py-8 py-10">
           <div className="wrapper sm:grid sm:grid-cols-2 sm:items-center md:grid-cols-[1.5fr_2fr]">
-            <>
-              <div className="flex items-center justify-center">
-                <Image src={Founder} alt="our-founder" className="w-1/2" />
-              </div>
-              <div className="text-center sm:text-left">
-                <h3 className="text-xl font-semibold text-goldie-300 md:text-3xl">
-                  Mrs Goldis Confectinery
-                </h3>
-                <span className="text-base text-goldie-300 md:text-lg">
-                  Professional Baker
-                </span>
-                <p className="mt-2 text-balance text-white md:text-lg lg:text-2xl lg:leading-[160%]">
-                  Mrs Goldis Confectionery combines 15 years of baking expertise
-                  with a passion for creating memorable celebrations. Each cake
-                  reflects our commitment to quality and joy, ensuring every
-                  moment with Goldis is unforgettable.
-                </p>
-              </div>
-            </>
+            <div className="flex items-center justify-center">
+              <Image src={Founder} alt="our-founder" className="w-1/2" />
+            </div>
+            <div className="text-center sm:text-left">
+              <h3 className="text-xl font-semibold text-goldie-300 md:text-3xl">
+                Mrs Goldis Confectinery
+              </h3>
+              <span className="text-base text-goldie-300 md:text-lg">
+                Professional Baker
+              </span>
+              <p className="mt-2 text-balance text-white lg:leading-[160%]">
+                Mrs Goldis Confectionery combines 15 years of baking expertise
+                with a passion for creating memorable celebrations. Each cake
+                reflects our commitment to quality and joy, ensuring every
+                moment with Goldis is unforgettable.
+              </p>
+            </div>
           </div>
         </div>
       </section>

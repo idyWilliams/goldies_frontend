@@ -50,8 +50,8 @@ const Footer = () => {
   };
 
   return (
-    <section className="relative mt-auto grid min-h-[500px] w-full bg-neutral-900 pt-3">
-      <div className="wrapper relative">
+    <section className="relative mt-auto grid min-h-[500px] w-full bg-neutral-900">
+      <div className="wrapper relative py-10 pt-12">
         <div className="mx-auto grid gap-6 rounded-2xl bg-[#494848] px-4 py-4 md:grid-cols-2 md:items-center md:py-6 xl:w-10/12">
           <div>
             <h1 className="text-2xl font-bold text-goldie-300 lg:text-[32px]">
