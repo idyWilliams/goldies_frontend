@@ -1,19 +1,17 @@
-import Image from "next/image";
-import React, { useState } from "react";
-import Link from "next/link";
-import { addProductToCart } from "@/redux/features/product/productSlice";
-import { useDispatch } from "react-redux";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
 import { cn } from "@/helper/cn";
-import { Tooltip } from "react-tooltip";
-import StarRating from "../StarRating";
+import { IProduct } from "@/interfaces/product.interface";
 import Placeholder from "@/public/assets/placeholder3.png";
 import useUserPdctStore from "@/zustand/userProductStore/store";
-import Favorite from "./Favorite";
-import { IProduct } from "@/interfaces/product.interface";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { Tooltip } from "react-tooltip";
+import StarRating from "../StarRating";
 import { Button } from "../ui/button";
+import Favorite from "./Favorite";
+import { formatCurrency } from "@/helper/formatCurrency";
 
 const exampleImage =
   "https://firebasestorage.googleapis.com/v0/b/goldie-b3ba7.appspot.com/o/products%2Fbanana-cake-with-cinnamon-cream-102945-1.webp?alt=media&token=32e645da-9327-4f7f-9f79-a2cba1102676";
@@ -26,26 +24,10 @@ const ProductCard = React.memo(function ProductCard({
   const router = useRouter();
   const params = useSearchParams();
   const dispatch = useDispatch();
-  const cart = useSelector((state: RootState) => state.product?.cart);
   const [isLoaded, setIsLoaded] = useState(false);
   const [fav, setFav] = useState(false);
   const favProducts = useUserPdctStore((state) => state.favProducts);
   const setActiveProduct = useUserPdctStore((state) => state.setActiveProduct);
-
-  const handleAddToCart = () => {
-    const items = Object.values(cart);
-
-    dispatch(addProductToCart({ id: data._id }));
-
-    localStorage.getItem("cart");
-    console.log(data._id, cart);
-    // setShapes(null)
-  };
-
-  const handleBuyNow = () => {
-    handleAddToCart();
-    router.push("/cart");
-  };
 
   const handleProduct = (prod: any) => {
     setActiveProduct(prod);
@@ -128,7 +110,8 @@ const ProductCard = React.memo(function ProductCard({
       <div className="mb-1 flex flex-col text-lg">
         {" "}
         <span className="text-base font-semibold text-neutral-500">
-          &euro;{data?.minPrice} - &euro;{data?.maxPrice}
+          {formatCurrency(parseInt(data?.minPrice), "en-NG")}-
+          {formatCurrency(parseInt(data?.maxPrice), "en-NG")}
         </span>
         <h3 className="font-semibold capitalize underline underline-offset-1">
           <Link href={`/shop/${data?.slug}?productId=${data?._id}`}>

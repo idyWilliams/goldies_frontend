@@ -1,81 +1,30 @@
 "use client";
-import AdminTable from "@/components/admin-component/AdminTable";
-import { productList } from "@/utils/adminData";
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
-import { CiSearch } from "react-icons/ci";
-import { Column } from "react-table";
+import AdminPagination from "@/components/admin-component/AdminPagination";
+import DataTable from "@/components/admin-component/DataTable";
+import MobileProductCard from "@/components/admin-component/MobileProductCard";
+import ProductOptionModal from "@/components/admin-component/ProductOptionModal";
+import ProductSortBy from "@/components/admin-component/ProductSortBy";
+import { Button } from "@/components/ui/button";
+import { formatCurrency } from "@/helper/formatCurrency";
+import { IProduct, ProductParams } from "@/interfaces/product.interface";
+import useProducts from "@/services/hooks/products/useProducts";
 import {
-  ColumnDef,
-  createColumnHelper,
-  useReactTable,
+  createColumnHelper
 } from "@tanstack/react-table";
-import ProductTable from "@/components/admin-component/ProductTable";
 import {
   Add,
-  ArrowDown,
-  ArrowDown2,
-  Data,
   Edit,
   Eye,
-  Trash,
+  Trash
 } from "iconsax-react";
-import MobileProductCard from "@/components/admin-component/MobileProductCard";
+import { Loader2Icon } from "lucide-react";
+import moment from "moment";
+import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import ProductOptionModal from "@/components/admin-component/ProductOptionModal";
-import { setProducts } from "@/redux/features/product/productSlice";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
-import MenuPopup from "@/components/MenuPopup";
-import ProductSortBy from "@/components/admin-component/ProductSortBy";
-import AdminAuth from "@/components/admin-component/AdminAuth";
-import { useQuery } from "@tanstack/react-query";
-import { getAllProducts } from "@/services/hooks/products";
-import { Button } from "@/components/ui/button";
-import { IProduct, ProductParams } from "@/interfaces/product.interface";
-
-export type Product = {
-  _id: string;
-  name: string;
-  description: string;
-  shapes: string[];
-  sizes: string[];
-  productType: string;
-  toppings: string[];
-  category: {
-    name: string;
-    id: string;
-    _id: string;
-  };
-  subCategory: {
-    name: string;
-    id: string;
-    _id: string;
-  }[];
-  minPrice: string;
-  maxPrice: string;
-  images: string[];
-  flavour: string[];
-  createdAt: string;
-  updatedAt: string;
-  status: string;
-  quantity: string;
-};
-
-type Product2 = {
-  _id: string;
-  name: string;
-  images: string[];
-  category: {
-    name: string;
-    id: string;
-    _id: string;
-  };
-  minPrice: string;
-  maxPrice: string;
-  createdAt: string;
-  status: string;
-};
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
+import { CiSearch } from "react-icons/ci";
+import { IoIosArrowDown, IoIosArrowUp, IoMdClose } from "react-icons/io";
 
 const statusColor = (status: string) => {
   switch (status?.toLowerCase()) {
@@ -99,103 +48,103 @@ const statusColor = (status: string) => {
 
 const columnHelper = createColumnHelper<IProduct>();
 
-export default function Page() {
+export default function ProductsPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
   const [showModal, setShowModal] = useState(false);
   const [action, setAction] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<IProduct>();
   const [isOpen, setOpen] = useState(false);
   const [sortType, setSortType] = useState("recentlyAdded");
   const [searchValue, setSearchValue] = useState("");
-  const [data, setData] = useState<Product[]>([]);
+  const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
+  const [currentPageIndex, setCurrentPageIndex] = useState(
+    parseInt(searchParams.get("page") || "1", 10),
+  );
+  const itemsPerPage = 10;
+  const sortDropdownRef = useRef<HTMLDivElement>(null);
 
-  const router = useRouter();
   const handleAddNew = () => {
     router.push(`/admin/create-products`);
   };
 
-  const params: ProductParams = {
-    page: 1,
-    limit: 15,
-  };
-
-  const {
-    data: allProducts,
-    isLoading,
-    isSuccess,
-    refetch,
-    isError,
-  } = useQuery({
-    queryKey: ["allProducts"],
-    queryFn: async () => getAllProducts(params),
+  const [params, setParams] = useState<ProductParams>({
+    page: currentPageIndex,
+    limit: itemsPerPage,
   });
 
   useEffect(() => {
-    if (!isSuccess) return;
-    setData(allProducts?.products);
-  }, [allProducts?.products, isSuccess]);
+    const handler = setTimeout(() => {
+      setDebouncedSearchValue(searchValue);
+    }, 300); // 300ms delay
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchValue]);
 
   useEffect(() => {
-    if (!isSuccess) return;
+    const newParams: ProductParams = {
+      page: currentPageIndex,
+      limit: itemsPerPage,
+    };
 
-    const sortProducts = (type: string) => {
-      switch (type) {
-        case "recentlyAdded":
-          setData(
-            allProducts?.products
-              ?.slice()
-              ?.sort(
-                (a: any, b: any) =>
-                  new Date(b.addedDate).getTime() -
-                  new Date(a.addedDate).getTime(),
-              ),
-          );
-          return;
-        case "highToLow":
-          setData(
-            allProducts?.products
-              ?.slice()
-              ?.sort((a: any, b: any) => b.priceFrom - a.priceFrom),
-          );
-          return;
-        case "lowToHigh":
-          setData(
-            allProducts?.products
-              ?.slice()
-              ?.sort((a: any, b: any) => a.priceFrom - b.priceFrom),
-          );
-          return;
-        case "available":
-          setData(
-            allProducts?.products?.filter(
-              (a: any) => a?.status === "available",
-            ),
-          );
-          return;
-        default:
-          setData(allProducts?.products);
-          return;
+    if (searchValue) {
+      newParams.searchQuery = searchValue;
+    }
+
+    // Update URL with new search query and page
+    const currentParams = new URLSearchParams(searchParams.toString());
+    currentParams.set("page", currentPageIndex.toString());
+
+    if (debouncedSearchValue) {
+      currentParams.set("searchQuery", debouncedSearchValue);
+    } else {
+      currentParams.delete("searchQuery");
+    }
+
+    router.push(`${pathname}?${currentParams.toString()}`);
+    setParams(newParams);
+  }, [currentPageIndex, debouncedSearchValue, pathname, router, searchParams]);
+
+  const {
+    isLoading,
+    isError,
+    refetch,
+    totalPages,
+    products: allProducts,
+  } = useProducts(params);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchValue(value);
+  };
+
+  const clearInput = () => {
+    setSearchValue("");
+    setDebouncedSearchValue("");
+    setCurrentPageIndex(1);
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        sortDropdownRef.current &&
+        !sortDropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
       }
     };
 
-    sortProducts(sortType);
-  }, [allProducts?.products, isSuccess, sortType]);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
-  useEffect(() => {
-    if (!isSuccess) return;
-
-    const filteredProducts = allProducts?.products?.filter(
-      (item: any) =>
-        item?.name.toLowerCase().includes(searchValue) ||
-        item?._id.toString().toLowerCase().includes(searchValue),
-    );
-    setData(filteredProducts);
-  }, [allProducts?.products, isSuccess, searchValue]);
-
-  const handleChange = (e: any) => {
-    const value = e.target.value;
-    setSearchValue(value);
-    console.log(value, "value");
-  };
   const columns = [
     columnHelper.accessor((row) => row, {
       id: "productName",
@@ -210,10 +159,10 @@ export default function Page() {
               alt={info.cell.row.original.name}
             />
             <div className="flex flex-col">
-              <h3 className="whitespace-nowrap font-bold">
+              <p className="whitespace-nowrap font-bold text-[15px]">
                 {info.cell.row.original.name}
-              </h3>
-              <span className="uppercase">
+              </p>
+              <span className="uppercase text-[15px]">
                 ID:&nbsp;{info.cell.row.original._id.slice(0, 6)}
               </span>
             </div>
@@ -225,7 +174,7 @@ export default function Page() {
     columnHelper.accessor((row) => row.category, {
       id: "category",
       cell: (info) => (
-        <span className="whitespace-nowrap capitalize">
+        <span className="whitespace-nowrap capitalize text-[15px]">
           {info.cell.row.original.category.name}
         </span>
       ),
@@ -233,36 +182,26 @@ export default function Page() {
     }),
     columnHelper.accessor((row) => row, {
       id: "price",
-      cell: (info) => (
-        <span className="whitespace-nowrap">
-          &euro;{info.cell.row.original.minPrice} - &euro;
-          {info.cell.row.original.maxPrice}
+      cell: ({ row }) => (
+        <span className="whitespace-nowrap text-[15px]">
+          {formatCurrency(parseInt(row.original.minPrice), "en-NG")} -{" "}
+          {formatCurrency(parseInt(row.original.maxPrice), "en-NG")}
         </span>
       ),
-      header: () => <span>Product</span>,
+      header: () => <span>Price</span>,
     }),
     columnHelper.accessor("createdAt", {
-      header: () => <span>AddedDate</span>,
-      cell: (info) => {
-        const date = new Date(info.cell.row.original.createdAt);
-
-        const formattedDate = date.toLocaleDateString("en-US", {
-          day: "2-digit",
-          month: "short",
-          year: "numeric",
-        });
-
-        return <span>{formattedDate}</span>;
-      },
+      header: () => <span>Added Date</span>,
+      cell: ({ row }) => (
+        <span className="text-nowrap text-[15px]">
+          {moment(row.original.createdAt).format("MMM DD, YYYY HH:mm A")}
+        </span>
+      ),
     }),
-    // columnHelper.accessor("quantity", {
-    //   header: () => <span>Qnty</span>,
-    //
-    // }),
+
     columnHelper.accessor((row) => row, {
       id: "status",
-      cell: (info) =>
-        statusColor(info.cell.row.original?.status || "available"),
+      cell: (info) => statusColor(info.cell.row.original?.status),
       header: () => <span>Status</span>,
     }),
     columnHelper.accessor((row) => row, {
@@ -305,80 +244,123 @@ export default function Page() {
   ];
 
   return (
-    <>
-      <section className="w-full px-4 pt-6">
-        <div className="flex items-center justify-between">
-          <div className="mb-5">
-            <h1 className="text-lg font-extrabold">Products</h1>
-            <p className="text-sm">List of all available products created</p>
-          </div>
-          <button
-            className="flex cursor-pointer items-center gap-2 rounded-md bg-black px-5 py-2.5 text-sm text-goldie-300"
-            onClick={handleAddNew}
-          >
-            <Add size={15} /> ADD NEW
-          </button>
+    <div className="h-full w-full px-4 pt-6">
+      {/* top heading */}
+      <div className="flex items-start justify-between gap-6 lg:items-center">
+        <div className="mb-5">
+          <h1 className="text-lg font-extrabold">Products</h1>
+          <p className="text-sm">List of all available products created</p>
         </div>
+        <Button
+          className="flex cursor-pointer items-center gap-2 rounded-md bg-black text-goldie-300"
+          onClick={handleAddNew}
+        >
+          <Add size={15} /> ADD NEW
+        </Button>
+      </div>
 
-        <div className="my-6 flex items-center justify-between gap-2 md:hidden">
-          <label htmlFor="search" className="relative block w-[500px] ">
-            <input
-              value={searchValue}
-              type="text"
-              name="search"
-              autoComplete="search"
-              placeholder="search for product name, product ID..."
-              className="w-full rounded-[50px] px-4 py-1 placeholder:text-xs focus:border-black focus:ring-black lg:py-2"
-              onChange={(e) => handleChange(e)}
-            />
+      {/* Search and Sort */}
+      <div className="my-6 flex items-center justify-between gap-2 md:hidden">
+        <label htmlFor="search" className="relative block w-[500px]">
+          <input
+            value={searchValue}
+            type="text"
+            name="search"
+            autoComplete="search"
+            placeholder="Search..."
+            className="w-full rounded-[50px] px-4 py-2 pr-10 placeholder:text-sm focus:border-black focus:ring-black"
+            onChange={handleChange}
+          />
+          {searchValue ? (
+            <button
+              onClick={clearInput}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+            >
+              <IoMdClose />
+            </button>
+          ) : (
             <span className="absolute right-3 top-1/2 -translate-y-1/2">
               <CiSearch />
             </span>
-          </label>
+          )}
+        </label>
 
-          <button
-            className="relative flex min-w-[83px] cursor-pointer items-center justify-between rounded-md bg-black px-3 py-2 text-[10px] text-goldie-300 md:hidden"
+        <div ref={sortDropdownRef} className="relative">
+          <Button
+            className="bg-black text-goldie-300 md:hidden"
             onClick={() => setOpen((prev) => !prev)}
           >
-            Sort by {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
-          </button>
+            Sort by{" "}
+            {!isOpen ? (
+              <IoIosArrowDown className="ml-2" />
+            ) : (
+              <IoIosArrowUp className="ml-2" />
+            )}
+          </Button>
           {isOpen && (
-            <ProductSortBy setSortType={setSortType} sortType={sortType} />
+            <ProductSortBy
+              setOpen={setOpen}
+              setSortType={setSortType}
+              sortType={sortType}
+            />
           )}
         </div>
+      </div>
 
-        <div className="hidden md:block md:overflow-x-scroll">
-          {isError && (
-            <div>
-              <p>An error occured</p>
-              <Button onClick={() => refetch()}>Try Again</Button>
-            </div>
-          )}
-          {isLoading && (
-            <div className="py-8">
-              <p>The products is loading</p>
-            </div>
-          )}
+      {/* Products Table */}
 
-          {isSuccess && allProducts?.products?.length >= 1 && !isError ? (
-            <div>
-              <ProductTable
-                columns={columns}
-                Tdata={data}
-                statusType="product"
-                filteredTabs={["All", "Available", "Unavailable", "Disabled"]}
+      {isLoading ? (
+        <div className="flex w-full items-center justify-center py-10">
+          <Loader2Icon className="mr-2 animate-spin" />
+          <p>Fetching Products...</p>
+        </div>
+      ) : isError ? (
+        <div className="py-5 text-center text-red-500">
+          <p className="mb-4 text-center text-red-500">
+            Failed to load products. Please try again.
+          </p>
+          <Button onClick={() => refetch()}>Retry</Button>
+        </div>
+      ) : allProducts.length > 0 ? (
+        <>
+          <div className="hidden md:block md:overflow-x-scroll">
+            <DataTable
+              columns={columns}
+              data={allProducts}
+              filteredTabs={[
+                "All",
+                "Available",
+                "Unavailable",
+                "Disabled",
+                "Out of Stock",
+              ]}
+              statusKey="status"
+              searchKeys={["name", "category", "subCategory"]}
+              currentPage={currentPageIndex}
+              totalPages={totalPages}
+              setCurrentPage={setCurrentPageIndex}
+            />
+          </div>
+          <div className="block space-y-5 md:hidden">
+            {allProducts.map((product: IProduct, index: number) => (
+              <MobileProductCard data={product} key={index} />
+            ))}
+
+            {totalPages > 1 && (
+              <AdminPagination
+                totalPage={totalPages}
+                page={currentPageIndex}
+                setPage={setCurrentPageIndex}
               />
-            </div>
-          ) : (
-            <>{/* <p>No products</p> */}</>
-          )}
+            )}
+          </div>
+        </>
+      ) : (
+        <div>
+          <p className="text-center text-gray-500">No products found.</p>
         </div>
-        <div className="block space-y-5 md:hidden">
-          {data.map((product: any, index: number) => (
-            <MobileProductCard data={product} key={index} />
-          ))}
-        </div>
-      </section>
+      )}
+
       {showModal && (
         <ProductOptionModal
           action={action}
@@ -386,32 +368,6 @@ export default function Page() {
           setShowModal={setShowModal}
         />
       )}
-    </>
+    </div>
   );
 }
-
-type ss = {
-  _id: string;
-  name: string;
-  description: string;
-  shapes: string[];
-  sizes: string[];
-  productType: string;
-  toppings: string[];
-  category: {
-    name: string;
-    id: string;
-    _id: string;
-  };
-  subCategory: {
-    name: string;
-    id: string;
-    _id: string;
-  }[];
-  minPrice: string;
-  maxPrice: string;
-  images: string[];
-  flavour: string[];
-  createdAt: string;
-  updatedAt: string;
-};

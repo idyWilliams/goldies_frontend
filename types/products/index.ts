@@ -42,6 +42,7 @@ export type formValuesType = {
   productType: string;
   maxPrice: number;
   minPrice: number;
+  status: string;
 };
 
 type CategoryOptionsType =
@@ -109,6 +110,7 @@ export interface CreateProductMobilePropTypes {
       setAddOn: React.Dispatch<React.SetStateAction<Option[]>>;
     };
   };
+  editId: string;
 }
 
 type ProductSubCategories = {

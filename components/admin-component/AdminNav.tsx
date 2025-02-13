@@ -1,35 +1,24 @@
 "use client";
-import Link from "next/link";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { CheckIcon } from "@radix-ui/react-icons";
+import { Bag, Lock1, User, UserCirlceAdd } from "iconsax-react";
 import Image from "next/image";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { BsList, BsSearch, BsX } from "react-icons/bs";
 import { FaRegUserCircle } from "react-icons/fa";
 import {
   IoIosArrowDown,
   IoIosArrowUp,
   IoMdNotificationsOutline,
 } from "react-icons/io";
-import { BsList, BsSearch, BsX } from "react-icons/bs";
-import AdminSideBar from "./AdminSideBar";
 import MobileSideBar from "./MobileSideBar";
-import MenuPopup from "../MenuPopup";
-import { BiHeart, BiStore } from "react-icons/bi";
-import {
-  Bag,
-  Lock1,
-  SearchNormal1,
-  Setting2,
-  User,
-  UserCirlceAdd,
-} from "iconsax-react";
-import { useRouter } from "next/navigation";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { BellIcon, CheckIcon } from "@radix-ui/react-icons";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -39,48 +28,26 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { adminLogOut, getAdmin } from "@/services/hooks/admin-auth";
-import { useQuery } from "@tanstack/react-query";
-import useAdmin from "@/services/hooks/admin/use_admin";
+import { useAuth } from "@/context/AuthProvider";
+import { cn } from "@/lib/utils";
+import { adminLogOut } from "@/services/hooks/admin-auth";
 import CurrentTime from "./CurrentTime";
 
 export default function AdminNav() {
-  const [admin, setAdmin] = useState<any>();
   const router = useRouter();
-  const [sticky, setSticky] = useState(false);
-  const [open, setIsOpen] = useState(false);
+  const [openSider, setIsOpenSidebar] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
-  const adminStored = useAdmin();
-
-  const { data, isPending, isError, isSuccess } = useQuery({
-    queryKey: ["admin"],
-    queryFn: () => getAdmin(adminStored?._id as string),
-  });
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setSticky(window.scrollY >= 300);
-    };
-    window.addEventListener("scroll", handleScroll);
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    !isPending && isSuccess ? setAdmin(data?.admin) : setAdmin(null);
-  }, [data?.admin, isPending, isSuccess]);
+  const { auth } = useAuth();
 
   return (
     <>
-      <nav
-        className={`${sticky ? "shadow-[0_0_50px_rgba(0,0,0,0.5)] lg:fixed" : "lg:absolute"} sticky left-0 top-0  z-[999] w-full bg-black py-3`}
-      >
+      <nav className={` fixed left-0 top-0 z-50 w-full bg-black py-3`}>
         <div className="flex items-center justify-between px-4">
           <div className="flex items-center gap-3">
             <span
-              className="inline-block text-goldie-300 lg:hidden"
-              onClick={() => setIsOpen(true)}
+              className="inline-block cursor-pointer text-goldie-300 lg:hidden"
+              onClick={() => setIsOpenSidebar(true)}
             >
               <BsList size={24} />
             </span>
@@ -141,20 +108,29 @@ export default function AdminNav() {
               <CurrentTime text="text-goldie-300" />
             </div>
 
-            <button
-              onClick={() => setOpen((prev) => !prev)}
-              className="flex items-center gap-2 border-l border-goldie-300 border-opacity-40 pl-4 text-goldie-300"
-            >
-              <FaRegUserCircle size={20} />{" "}
-              <span className="hidden text-sm capitalize md:inline-flex md:items-center md:gap-3">
-                {isSuccess && admin ? admin?.userName : "No username"}
-                {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
-              </span>
-            </button>
-            {isOpen && (
-              <MenuPopup className="absolute -right-3 top-10 z-40 w-[190px] rounded-md bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
+            <Popover>
+              <PopoverTrigger asChild>
+                <button
+                  onClick={() => setOpen((prev) => !prev)}
+                  className="flex items-center gap-2 border-l border-goldie-300 border-opacity-40 pl-4 text-goldie-300"
+                >
+                  <FaRegUserCircle size={20} />{" "}
+                  <div className="hidden text-sm capitalize md:flex md:items-center md:gap-3">
+                    <div className="flex flex-col">
+                      <span>
+                        {auth?.admin ? auth?.admin?.userName : "No username"}
+                      </span>
+                      <span className="text-xs">
+                        {auth?.admin ? auth?.admin?.role : "No Role"}
+                      </span>
+                    </div>
+                    {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
+                  </div>
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[190px] rounded-md border-[#E4D064] bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
                 <div className="mb-2 flex items-center justify-start gap-3 border-b border-black border-opacity-20 p-2 pb-3 sm:hidden">
-                  <CurrentTime text="text-black" isOpen={isOpen} />
+                  {auth?.admin ? auth?.admin?.userName : "No username"}
                 </div>
                 <div className="">
                   <span
@@ -182,36 +158,27 @@ export default function AdminNav() {
                 >
                   Logout
                 </span>
-              </MenuPopup>
-            )}
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
         <div
-          className={`fixed top-0 h-screen w-full duration-300 ${open ? "left-0" : "-left-full"}`}
+          className={`fixed top-0 h-screen w-full duration-300 lg:hidden ${openSider ? "left-0" : "-left-full"}`}
         >
           <span
             className="absolute left-3 top-4 z-50 inline-block cursor-pointer text-goldie-300"
-            onClick={() => setIsOpen(false)}
+            onClick={() => setIsOpenSidebar(false)}
           >
             <BsX size={30} />
           </span>
           <div
-            onClick={() => setIsOpen(false)}
-            className={`fixed  top-0 z-30 h-screen w-full bg-black bg-opacity-50 ${open ? "left-0" : "-left-full"}`}
+            onClick={() => setIsOpenSidebar(false)}
+            className={`fixed  top-0 z-30 h-screen w-full bg-black bg-opacity-50 ${openSider ? "left-0" : "-left-full"}`}
           ></div>
           <div className="absolute left-0 top-0 z-[40] h-screen w-[250px]">
-            <MobileSideBar />
+            <MobileSideBar onClose={() => setIsOpenSidebar(false)} />
           </div>
         </div>
-        {/* {open && (
-          <div
-            className={`fixed top-0 z-50 bg-black bg-opacity-50 duration-300 ${open ? "left-0" : "-left-full"}`}
-          >
-            <div className="absolute left-0 top-0 h-screen w-[250px]">
-              <MobileSideBar />
-            </div>
-          </div>
-        )} */}
       </nav>
     </>
   );

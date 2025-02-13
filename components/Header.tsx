@@ -3,7 +3,9 @@ import useActivePath from "@/app/_hooks/useActivePath";
 import { useAuth } from "@/context/AuthProvider";
 import { cn } from "@/helper/cn";
 import { RootState } from "@/redux/store";
+import { USER_DETAILS, USER_TOKEN_NAME } from "@/utils/constants";
 import { Ghost } from "iconsax-react";
+import Cookies from 'js-cookie';
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -49,6 +51,9 @@ const Header = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("userToken");
     localStorage.setItem("isLogin", JSON.stringify(false));
+    Cookies.remove(USER_TOKEN_NAME);
+    Cookies.remove(USER_DETAILS);
+    router.replace("/sign-in");
 
     if (
       pathname.includes("/my-account") ||

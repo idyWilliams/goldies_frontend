@@ -14,6 +14,7 @@ import {
   addProductToCart,
   decrementProductQty,
   incrementProductQty,
+  setBuyNowProduct,
   // resetToastMessage,
 } from "@/redux/features/product/productSlice";
 import { cakeProducts1, cakeTimes } from "@/utils/cakeData";
@@ -97,8 +98,8 @@ const schema = yup.object().shape({
   sizes: yup.string().required("Size is required"),
   toppings: yup.string().required("Topping is required"),
   flavours: yup.string().required("Flavour is required"),
-  cakeTimes: yup.string().required("cakeTimes is required"),
-  // message: yup.string().required("Input any additional info"),
+  cakeTimes: yup.string().required("When do you need your cake?"),
+  message: yup.string(),
 });
 
 interface FormValues {
@@ -122,10 +123,8 @@ const exampleImage =
   "https://firebasestorage.googleapis.com/v0/b/goldie-b3ba7.appspot.com/o/products%2Fbanana-cake-with-cinnamon-cream-102945-1.webp?alt=media&token=32e645da-9327-4f7f-9f79-a2cba1102676";
 
 function CakeDetailsPage() {
-  const activeProduct = useUserPdctStore((state) => state.activeProduct);
-  const setActiveProduct = useUserPdctStore((state) => state.setActiveProduct);
-  const allProducts = useUserPdctStore((state) => state.allProducts);
-  const setAllProducts = useUserPdctStore((state) => state.setAllProducts);
+  const { activeProduct, setActiveProduct, allProducts, setAllProducts } =
+    useUserPdctStore();
   const queryParams = useSearchParams();
   const productId = queryParams.get("productId");
   const [isLoaded, setIsLoaded] = useState(false);
@@ -147,23 +146,11 @@ function CakeDetailsPage() {
   };
 
   const [featuredPdcts, setFeaturedProducts] = useState<any[] | null>(null);
-
   const [showReviews, setShowReviews] = useState(false);
-  // const [loading, setLoading] = useState(true);
-  const [flavour, setFlavour] = useState<SelectOptionType>(null);
-  const [duration, setDuration] = useState<SelectOptionType>(null);
-  const [addon, setAddon] = useState<SelectOptionType>(null);
-  const [size, setSize] = useState<SelectOptionType>(null);
   const [quantity, setQuantity] = useState<number>(1);
   const router = useRouter();
   const dispatch = useDispatch();
-  const cart = useSelector((state: RootState) => state.product.cart);
-  // const toastMessage = useSelector(
-  //   (state: RootState) => state.product.toastMessage,
-  // );
-  const [time, setTime] = useState("");
-  const [message, setMessage] = useState("");
-  const [age, setAge] = useState("");
+
   const {
     register,
     handleSubmit,
@@ -172,16 +159,6 @@ function CakeDetailsPage() {
   } = useForm({
     resolver: yupResolver(schema),
   });
-
-  // register,
-  // handleSubmit,
-
-  // reset,
-
-  // const handleChange = (event: SelectChangeEvent) => {
-  //   setAge(event.target.value as string);
-  // };
-
 
   const { data, isError, isLoading, isPending } = useQuery({
     queryKey: ["allProducts", productId],
@@ -237,27 +214,9 @@ function CakeDetailsPage() {
       const getSimilarProducts = allProducts.filter(
         (product: { slug: string }) => product.slug !== activeProduct?.slug,
       );
-      console.log(getSimilarProducts);
-
       setFeaturedProducts(getSimilarProducts);
     }
   }, [allProducts, activeProduct?.slug]);
-
-  // useEffect(() => {
-  //   if (featuredPdcts) console.log(featuredPdcts);
-  // }, [featuredPdcts]);
-
-  const cartTotal = Object.values(cart).reduce((acc, current) => {
-    return acc + parseFloat(current.maxPrice) * (current.quantity as number);
-  }, 0);
-  console.log(cart, "cart");
-
-  // const cakes = addSlugToCakes(allProducts);
-
-  // console.log(cakes, "kkk");
-  // const cakeProduct = useMemo(() => cakes, [cakes]);
-
-  // console.log(getSimilarProducts);
 
   function create(value: any) {
     if (value !== null) {
@@ -266,14 +225,23 @@ function CakeDetailsPage() {
     }
   }
 
-  // const handleClick = () => {
-  //   console.log(getProduct.id);
-  //   // setShapes(null)
-  // };
-  const handleClick = handleSubmit((data) => {
+  const handleAddToCart = handleSubmit((data) => {
     if (data.sizes && data.toppings && data.cakeTimes) {
-      dispatch(addProductToCart({ id: activeProduct?._id as string }));
-      console.log("add to cart>>>", activeProduct?._id);
+      dispatch(
+        addProductToCart({
+          id: activeProduct?._id as string,
+          quantity: quantity,
+          cakeDetails: {
+            size: data.sizes,
+            topping: data.toppings,
+            flavour: data.flavours,
+            cakeTime: data.cakeTimes,
+            message: data.message,
+          },
+        }),
+      );
+
+      console.log("added product>>", data);
     } else {
       console.error(
         "Please fill in all required fields before adding to cart.",
@@ -281,39 +249,35 @@ function CakeDetailsPage() {
     }
   });
 
-  // console.log(shapes, "shapes")
+  const handleBuyNow = handleSubmit((data) => {
+    if (data.sizes && data.toppings && data.cakeTimes) {
+      // Dispatch action to store product details in Redux state
+      dispatch(
+        setBuyNowProduct({
+          id: activeProduct?._id as string,
+          quantity: quantity,
+          cakeDetails: {
+            size: data.sizes,
+            topping: data.toppings,
+            flavour: data.flavours,
+            cakeTime: data.cakeTimes,
+            message: data.message,
+          },
+        }),
+      );
+
+      // Navigate to billing page
+      router.push(`/billing?buyNow=true&productId=${activeProduct?._id}`);
+    } else {
+      console.error(
+        "Please fill in all required fields before proceeding to checkout.",
+      );
+    }
+  });
 
   const navigateToCart = () => {
     router.push("/cart");
   };
-
-  // useEffect(() => {
-  //   if (getProduct) {
-  //     setLoading(false);
-  //   }
-  // }, [getProduct]);
-
-  // useEffect(() => {
-  //   if (toastMessage) {
-  //     toast(
-  //       <div className="flex items-center gap-2 p-3">
-  //         <Image
-  //           src={getProduct?.imageUrl?.src}
-  //           alt={getProduct?.name}
-  //           width={40}
-  //           height={40}
-  //         />
-  //         <strong>{toastMessage}</strong>
-  //       </div>,
-  //     );
-
-  //     dispatch(resetToastMessage());
-  //   }
-  // }, [toastMessage, dispatch, getProduct?.imageUrl?.src, getProduct?.name]);
-
-  // if (loading) {
-  //   return <div>Loading...</div>;
-  // }
 
   if (!activeProduct) {
     return <div>Product not found.</div>;
@@ -449,8 +413,6 @@ function CakeDetailsPage() {
                         control={control}
                         name="sizes"
                         render={({ field: { value, onChange, ref } }) => {
-                          console.log(value, "vavav");
-
                           return (
                             <Select
                               options={cakeSizes}
@@ -465,7 +427,9 @@ function CakeDetailsPage() {
                         }}
                       />
                       {errors.sizes && (
-                        <p className="text-red-500">{errors.sizes.message}</p>
+                        <p className="text-sm text-red-500">
+                          {errors.sizes.message}
+                        </p>
                       )}
                     </label>
                     <label htmlFor="toppings" className="block w-full">
@@ -477,8 +441,6 @@ function CakeDetailsPage() {
                         control={control}
                         name="toppings"
                         render={({ field: { value, onChange, ref } }) => {
-                          console.log(value, "vavav");
-
                           return (
                             <Select
                               options={toppings}
@@ -493,7 +455,7 @@ function CakeDetailsPage() {
                         }}
                       />
                       {errors.toppings && (
-                        <p className="text-red-500">
+                        <p className="text-sm text-red-500">
                           {errors.toppings.message}
                         </p>
                       )}
@@ -507,8 +469,6 @@ function CakeDetailsPage() {
                         control={control}
                         name="flavours"
                         render={({ field: { value, onChange, ref } }) => {
-                          console.log(value, "vavav");
-
                           return (
                             <Select
                               options={flavours}
@@ -523,7 +483,7 @@ function CakeDetailsPage() {
                         }}
                       />
                       {errors.flavours && (
-                        <p className="text-red-500">
+                        <p className="text-sm text-red-500">
                           {errors.flavours.message}
                         </p>
                       )}
@@ -537,8 +497,6 @@ function CakeDetailsPage() {
                         control={control}
                         name="cakeTimes"
                         render={({ field: { value, onChange, ref } }) => {
-                          console.log(value, "vavav");
-
                           return (
                             <Select
                               options={cakeTimes}
@@ -556,7 +514,7 @@ function CakeDetailsPage() {
                         48hours is the minimum time required for all cake orders
                       </p>
                       {errors.cakeTimes && (
-                        <p className="text-red-500">
+                        <p className="text-sm text-red-500">
                           {errors.cakeTimes.message}
                         </p>
                       )}
@@ -566,7 +524,7 @@ function CakeDetailsPage() {
                         Additional Cake Details
                       </span>
                       <textarea
-                        // {...register("message")}
+                        {...register("message")}
                         name="message"
                         id="message"
                         className="form-textarea h-[120px] w-full rounded-lg border-2 border-neutral-900 focus:border-neutral-900 focus:ring-neutral-900"
@@ -598,20 +556,21 @@ function CakeDetailsPage() {
                       </span>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-3 after:grid mt-4">
+                  <div className="mt-4 grid grid-cols-2 gap-3 after:grid">
                     <Button
-                    size={'lg'}
                       type="button"
-                      variant={'secondary'}
+                      size={"lg"}
+                      variant={"secondary"}
                       className="cursor-pointer bg-neutral-300 px-4 py-2 text-neutral-900"
+                      onClick={handleBuyNow}
                     >
                       Buy now
                     </Button>
                     <Button
-                    size={'lg'}
-                      onClick={handleClick}
                       type="submit"
+                      size={"lg"}
                       className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
+                      onClick={handleAddToCart}
                     >
                       Add to cart
                     </Button>

@@ -44,7 +44,7 @@ const CreateProductImages = ({
         {!images.image1 && (
           <div className="text-balance px-3 text-center text-sm text-neutral-400">
             Drop files here or
-            <label htmlFor="image1" className="cursor-pointer italic underline">
+            <label htmlFor="image1" className="cursor-pointer italic underline text-nowrap">
               click here
             </label>
             &nbsp;to upload.

@@ -7,6 +7,8 @@ import {
   Users,
 } from "@/services/types";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import Cookies from "js-cookie";
+import { ADMIN_TOKEN_NAME } from "@/utils/constants";
 
 // INVITE ADMIN
 export const inviteAdmin = async (data: InviteAdmin) => {
@@ -91,5 +93,7 @@ export const adminLogOut = async (router: AppRouterInstance) => {
   localStorage.setItem("isLogin", JSON.stringify(false));
   localStorage.removeItem("adminToken");
   localStorage.removeItem("admin");
+  Cookies.remove(ADMIN_TOKEN_NAME);
+
   router.replace("/admin-signin");
 };

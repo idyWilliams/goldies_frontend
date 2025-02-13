@@ -19,7 +19,7 @@ export default function InformationAndPricing({
       <div>
         <div>
           <label htmlFor="productName" className="">
-            <span className="mb-1 mt-6 block text-[12px] after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+            <span className="mb-1 mt-6 block  after:ml-1  after:text-[#E10] after:content-['*']">
               Product Name
             </span>
             <input
@@ -30,11 +30,11 @@ export default function InformationAndPricing({
               autoComplete="off"
               id="productName"
               placeholder="Product name"
-              className="mb-4 w-full rounded-sm border-none bg-gray-100 placeholder:text-xs"
+              className="mb-4 w-full rounded-sm border-neutral-300 bg-white "
             />
           </label>
           <label htmlFor="productDescription" className="">
-            <span className="mb-1 block text-[12px] after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+            <span className="mb-1 block  after:ml-1  after:text-[#E10] after:content-['*']">
               Product Description
             </span>
             <textarea
@@ -44,22 +44,22 @@ export default function InformationAndPricing({
               autoComplete="off"
               id="productDescription"
               placeholder="Product Description"
-              className="h-[110px] w-full resize-none rounded-sm border-none bg-gray-100 placeholder:text-[10px]"
+              className="h-[110px] w-full resize-none rounded-sm border-neutral-300 bg-white "
             />
           </label>
 
           <div className="">
             <div className="mt-3 w-full">
-              <h2 className="mb-1 text-[12px] after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+              <label className="mb-1 after:ml-1  after:text-[#E10] after:content-['*']">
                 Product Category
-              </h2>
+              </label>
 
               <select
                 name="category"
                 value={category}
                 // value={category === "select_category" ? "" : category}
                 id="category"
-                className="form-select w-full rounded-md border-neutral-300 text-[12px] text-neutral-400"
+                className="form-select w-full rounded-md border-neutral-300 "
                 onChange={handleChange}
               >
                 <option value={""}>Select category</option>
@@ -76,11 +76,11 @@ export default function InformationAndPricing({
               </select>
             </div>
             <div className="mt-3 w-full">
-              <h2
-                className={`${!category ? "opacity-50" : ""} mb-1 text-[12px] after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']`}
+              <label
+                className={`${!category ? "opacity-50" : ""} mb-1  after:ml-1  after:text-[#E10] after:content-['*']`}
               >
                 Subcategory
-              </h2>
+              </label>
               <div className={`${!category ? "cursor-not-allowed" : ""}`}>
                 <MultiSelect
                   disabled={!category}
@@ -94,14 +94,14 @@ export default function InformationAndPricing({
             </div>
 
             <div className="mt-3 w-full">
-              <h2 className="mb-1 text-[12px] after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+              <label className="mb-1 after:ml-1 after:text-[#E10] after:content-['*']">
                 Product Type
-              </h2>
+              </label>
 
               <select
                 id="productType"
                 name="productType"
-                className="form-select w-full rounded-md border-neutral-300 text-xs text-neutral-400"
+                className="form-select w-full rounded-md border-neutral-300"
                 onChange={handleChange}
                 value={formValues.productType}
               >
@@ -115,15 +115,15 @@ export default function InformationAndPricing({
             </div>
           </div>
           <div className="">
-            <h1 className="my-3 text-[14px] font-semibold ">Product Pricing</h1>
+            <h1 className="my-3 text-lg font-semibold ">Product Pricing</h1>
             <div className="flex h-full gap-4">
               <label htmlFor="minPrice" className="block">
-                <span className="mb-1 inline-block text-[12px] after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+                <span className="mb-1 inline-block  after:ml-1  after:text-[#E10] after:content-['*']">
                   Price From
                 </span>
                 <div className="relative overflow-hidden rounded-md border bg-gray-100 focus-within:border-black">
                   <span className="absolute left-0 top-0 flex h-full w-10 items-center justify-center rounded-sm bg-white font-bold">
-                    &euro;
+                    ₦
                   </span>
                   <input
                     name="minPrice"
@@ -139,12 +139,12 @@ export default function InformationAndPricing({
                 </div>
               </label>
               <label htmlFor="maxPrice" className="block">
-                <span className="mb-1 inline-block text-[12px] after:ml-1 after:text-2xl after:text-[#E10] after:content-['*']">
+                <span className="mb-1 inline-block  after:ml-1  after:text-[#E10] after:content-['*']">
                   Price To
                 </span>
                 <div className="relative overflow-hidden rounded-md border bg-gray-100 focus-within:border-black">
                   <span className="absolute left-0 top-0 flex h-full w-10 items-center justify-center rounded-sm bg-white font-bold">
-                    &euro;
+                    ₦
                   </span>
                   <input
                     name="maxPrice"

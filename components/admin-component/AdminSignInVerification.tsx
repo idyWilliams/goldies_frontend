@@ -1,20 +1,22 @@
 "use client";
-import React, { useContext, useState } from "react";
-import { RiUserSharedLine } from "react-icons/ri";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { Controller, useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import AuthContext, { useAuth } from "@/context/AuthProvider";
+import { useAuth } from "@/context/AuthProvider";
 import { verifyOTP } from "@/services/hooks/admin-auth";
+import { ADMIN_TOKEN_NAME } from "@/utils/constants";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation } from "@tanstack/react-query";
+import Cookies from 'js-cookie';
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Controller, useForm } from "react-hook-form";
+import { RiUserSharedLine } from "react-icons/ri";
+import { toast } from "sonner";
+import * as yup from "yup";
 
 const validationSchema = yup.object().shape({
   otp: yup.string().required("otp required"),
@@ -41,7 +43,6 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
     otpVerify
       .mutateAsync({ ...data, email })
       .then((res: any) => {
-        console.log(res);
         // UPDATE THE AUTH PROVIDER
         setIsLogin(true);
         setRole(res?.admin?.role);
@@ -56,13 +57,16 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
           JSON.stringify({ token: res?.token, ...res?.admin }),
         );
         localStorage.setItem("adminToken", res?.token);
+
+        Cookies.set(ADMIN_TOKEN_NAME, res?.token)
         router.push("/admin");
       })
       .catch((error: any) => {
         console.log(error);
+        toast.error(error?.response?.data?.message || error?.message);
+
       });
 
-    console.log(data);
   };
 
   return (

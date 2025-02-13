@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { CgSpinner } from "react-icons/cg";
@@ -23,15 +24,16 @@ const CreateProductHeader = ({
       </h1>
 
       <div className="flex items-center gap-4">
-        <button
+        <Button
           type="button"
-          className="relative rounded-md bg-neutral-400 px-10 py-2 text-[12px] text-neutral-900"
+          variant={'secondary'}
+          className="relative rounded-md bg-neutral-400 px-10 py-2 text-sm"
           onClick={handleBackClick}
         >
           Cancel
-        </button>
-        <button
-          className="relative rounded-md bg-black px-10 py-2 text-[12px] text-goldie-300 disabled:pointer-events-none disabled:opacity-75"
+        </Button>
+        <Button
+          className="relative rounded-md bg-black px-10 py-2 text-sm text-goldie-300 disabled:pointer-events-none disabled:opacity-75"
           type="submit"
           disabled={isSubmitting}
         >
@@ -42,7 +44,7 @@ const CreateProductHeader = ({
           <span className={`${isSubmitting ? "opacity-0" : "opacity-100"}`}>
             Save Changes
           </span>
-        </button>
+        </Button>
       </div>
     </div>
   );

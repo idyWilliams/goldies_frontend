@@ -89,10 +89,10 @@
 //   const [sortType, setSortType] = useState("recentlyAdded");
 //   const [searchValue, setSearchValue] = useState("");
 //   const [currentPageIndex, setCurrentPageIndex] = useState(1);
-//   // const [totalPages, setTotalPages] = useState<number>(1);
+//   const [totalPages, setTotalPages] = useState<number>(1);
 //   const [totalProducts, setTotalProducts] = useState<number>(0);
 
-//   const { products, isPending, totalPages } = useProducts(
+//   const { products, isPending, pages, allProducts } = useProducts(
 //     currentPageIndex,
 //     itemsPerPage,
 //     // setTotalPages,

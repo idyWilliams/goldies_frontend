@@ -7,18 +7,15 @@ import React, { useEffect, useState } from "react";
 import { productList } from "@/utils/adminData";
 import { useQuery } from "@tanstack/react-query";
 import { getProduct } from "@/services/hooks/products";
-import { Product } from "../page";
+import { IProduct } from "@/interfaces/product.interface";
+import { formatCurrency } from "@/helper/formatCurrency";
 
-type Data = {
-  id: number;
-  name: string;
-  age: number;
-};
 
 export default function Page({ params }: { params: { details: string } }) {
   const [selectedImage, setSelectedImage] = useState(0);
   const router = useRouter();
-  const [product, setProduct] = useState<Product | null>();
+  const [product, setProduct] = useState<IProduct | null>();
+
   const { data, isSuccess, isError, isLoading } = useQuery({
     queryFn: async () => getProduct(params.details),
     queryKey: ["product"],
@@ -93,8 +90,7 @@ export default function Page({ params }: { params: { details: string } }) {
                 <div className="mb-5">
                   <p className="font-semibold">Product Price:</p>
                   <p>
-                    &euro;
-                    {product?.minPrice} - &euro;{product?.maxPrice}
+                   {formatCurrency(parseInt(product?.minPrice!), "en-NG")} - {formatCurrency(parseInt(product?.maxPrice!), "en-NG")}
                   </p>
                 </div>
                 <div className="mb-5">

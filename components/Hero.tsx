@@ -40,7 +40,7 @@ const Hero = () => {
         //   clickable: true,
         // }}
         modules={[Autoplay, Pagination, Navigation]}
-        className="mySwiper h-[40vh] w-full xl:h-screen"
+        className="mySwiper h-[70vh] w-full xl:h-screen"
       >
         <SwiperSlide
           style={{ display: "flex" }}
@@ -229,12 +229,12 @@ const Hero = () => {
         </SwiperSlide>
       </Swiper>
       {/* STATS */}
-      <section className="bg-neutral-950 py-10">
-        <div className="wrapper flex items-center justify-between sm:justify-evenly sm:gap-8">
+      <section className="bg-neutral-950 py-3">
+        <div className="wrapper flex items-center justify-between sm:justify-evenly sm:gap-8 flex-col md:flex-row divide-y md:divide-y-0 divide-gray-800 w-full">
           <EachElement
             of={stats}
             render={(item: any, index: number) => (
-              <div key={index} className="">
+              <div key={index} className="w-full text-center py-2">
                 <h3 className="text-xl font-bold text-goldie-300">
                   {item?.value}
                 </h3>

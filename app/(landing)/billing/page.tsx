@@ -4,25 +4,26 @@ import BreadCrumbs from "@/components/BreadCrumbs";
 
 import EachElement from "@/helper/EachElement";
 import { cn } from "@/helper/cn";
-import { billingFormData } from "@/utils/formData";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { useState } from "react";
-import { CountryDropdown } from "react-country-region-selector";
-import "react-phone-input-2/lib/style.css";
-import { Controller, useForm } from "react-hook-form";
-import PhoneInput from "react-phone-input-2";
-import * as yup from "yup";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import Image from "next/image";
-import { toast } from "sonner";
+import { useAppSelector } from "@/redux/hook";
 import {
   detailsBillings,
   initPayment,
   orderCreate,
   updateDetailsBillings,
+  verifyPayment,
 } from "@/services/hooks/payment";
+import { billingFormData } from "@/utils/formData";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
+import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { CountryDropdown } from "react-country-region-selector";
+import { Controller, useForm } from "react-hook-form";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import { toast } from "sonner";
+import * as yup from "yup";
 
 const form1Schema = yup.object().shape({
   firstName: yup.string().required("First name is required"),
@@ -55,13 +56,26 @@ const form2Schema = yup.object().shape({
 });
 
 const Page = () => {
-  const cart = useSelector((state: RootState) => state.product.cart);
+  const queryParams = useSearchParams();
+  const router = useRouter();
+  const { cart, buyNowProduct } = useAppSelector((state) => state.product);
+
+  // Get URL parameters
+  const isBuyNow = queryParams.get("buyNow") === "true";
+  const productIdParam = queryParams.get("productId");
+
+  // Determine which products to use
+  const products = isBuyNow && buyNowProduct ? [buyNowProduct] : cart;
+
   const [country1, setCountry1] = useState("");
   const [country2, setCountry2] = useState("");
   const [phone1, setPhone1] = useState("");
   const [phone2, setPhone2] = useState("");
   const [selectedMethod, setSelectedMethod] = useState<string>("option1");
   const [isBillingInfoSaved, setIsBillingInfoSaved] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+
   // const form1 = useForm({ resolver: yupResolver(form1Schema) });
   const form1 = useForm({
     resolver: yupResolver(form1Schema),
@@ -73,19 +87,37 @@ const Page = () => {
       phoneNumber: "",
       address: "",
       country: "",
-      save: false, 
+      save: false,
     },
   });
   const form2 = useForm({ resolver: yupResolver(form2Schema) });
   const [submitForm1, setSubmitForm1] = useState(true);
+
+  useEffect(() => {
+    if (isBuyNow && !buyNowProduct) {
+      toast.error("Invalid product selection");
+      router.push("/shop");
+    }
+  }, [isBuyNow, buyNowProduct, router]);
+
   const paymentInit = useMutation({
     mutationFn: initPayment,
   });
+
   const billingDetails = useMutation({ mutationFn: detailsBillings });
   const updateBillingDetails = useMutation({
     mutationFn: updateDetailsBillings,
   });
   const createOrder = useMutation({ mutationFn: orderCreate });
+
+  useEffect(() => {
+    const reference = queryParams.get("reference");
+
+    if (reference) {
+      verifyAndCreateOrder(reference);
+    }
+  }, []);
+
   const {
     register,
     control,
@@ -109,22 +141,138 @@ const Page = () => {
   };
 
   const deliveryFee = 50.5;
-  const orderTotal = Object.values(cart).reduce((acc, current) => {
-    return (
-      deliveryFee + acc + parseFloat(current.maxPrice) * (current.quantity as number)
-    );
+  const orderTotal = products.reduce((acc, current) => {
+    return acc + parseFloat(current.maxPrice) * (current.quantity as number);
   }, 0);
 
-  const onSubmitForm1 = (data: any) => {
-    console.log("Form 1 submitted:", data);
-    console.log("Cart data", cart);
-    console.log("orderTotal", orderTotal);
+  const totalWithDelivery = orderTotal + deliveryFee;
 
+  const onSubmitForm1 = async (data: any) => {
+    setIsProcessingPayment(true);
+    toast.loading("Initializing payment...");
+
+    try {
+      const callbackUrl =
+        process.env.NODE_ENV === "development"
+          ? "http://localhost:7009/billing"
+          : "https://goldies-frontend-v3.vercel.app/billing";
+
+      const paymentData = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        amount: orderTotal,
+        callbackUrl: callbackUrl,
+      };
+
+      // Step 1: Initialize Payment
+      const paymentRes = await paymentInit.mutateAsync(paymentData);
+      if (
+        !paymentRes?.data?.authorization_url ||
+        !paymentRes?.data?.reference
+      ) {
+        throw new Error("Payment initialization failed.");
+      }
+
+      console.log(">>>> Payment", paymentRes);
+
+      localStorage.setItem("goldies_formData", JSON.stringify(data));
+
+      toast.success("Redirecting to payment...");
+      window.location.href = paymentRes.data.authorization_url;
+    } catch (error: any) {
+      console.error("Payment Init Error:", error);
+      toast.error(error.message || "Payment initialization failed.");
+    } finally {
+      setIsProcessingPayment(false);
+    }
+  };
+
+  // This function should run after successful payment callback
+  const verifyAndCreateOrder = async (reference: string) => {
+    setIsSubmitting(true);
+    toast.loading("Verifying payment...");
+
+    try {
+      const formDataString = localStorage.getItem("goldies_formData");
+
+      if (!formDataString) throw new Error("Billing information missing.");
+
+      const data = JSON.parse(formDataString);
+
+      // Step 2: Verify Payment
+      const verifyRes = await verifyPayment(reference);
+      if (!verifyRes?.data?.status || verifyRes.data.status !== "success") {
+        throw new Error("Payment verification failed.");
+      }
+
+      toast.success("Payment verified! Creating order...");
+
+      // Step 3: Create Order
+      const ItemID = products.map((item) => item._id);
+      const orderInfo = {
+        orderedItems: ItemID,
+        fee: {
+          subTotal: totalWithDelivery - deliveryFee,
+          total: orderTotal,
+          deliveryFee,
+        },
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        country: data.country,
+        cityOrTown: data.city,
+        streetAddress: data.address,
+        phoneNumber: data.phoneNumber,
+      };
+
+      const orderRes = await createOrder.mutateAsync(orderInfo);
+      if (!orderRes?.error) {
+        toast.success("Order Successfully Created");
+      } else {
+        throw new Error(orderRes.message || "Failed to create order.");
+      }
+
+      // Step 4: Save Billing Info (If Checked)
+      if (data.save) {
+        const billingInfo = {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          country: data.country,
+          cityOrTown: data.city,
+          streetAddress: data.address,
+          phoneNumber: data.phoneNumber,
+          defaultBillingInfo: true,
+        };
+
+        if (isBillingInfoSaved) {
+          await updateBillingDetails.mutateAsync(billingInfo);
+          toast.success("Billing info updated successfully!");
+        } else {
+          await billingDetails.mutateAsync(billingInfo);
+          setIsBillingInfoSaved(true);
+          toast.success("Billing info saved successfully!");
+        }
+      }
+
+      router.push("/my-orders");
+    } catch (error: any) {
+      toast.error(error.message || "An error occurred.");
+      console.error("Error:", error);
+    } finally {
+      setIsSubmitting(false);
+      localStorage.removeItem("goldies_formData");
+    }
+  };
+
+  const onSubmitForm2 = (data: any) => {
+    console.log("Form 2 submitted:", data);
+    console.log("Cart data", cart);
     const callbackUrl =
       process.env.NODE_ENV === "development"
         ? "http://localhost:7009/my-orders"
         : "https://goldies-frontend-v3.vercel.app/my-orders";
-
     const paymentData = {
       firstName: data.firstName,
       lastName: data.lastName,
@@ -132,27 +280,13 @@ const Page = () => {
       amount: orderTotal,
       callbackUrl: callbackUrl,
     };
-    // console.log("Payment Data:", paymentData);
+    console.log("Payment Data:", paymentData);
 
-    const isSaveChecked = data.save;
-    // console.log("isSaveChecked is ", isSaveChecked);
-
-    const billingInfo = {
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email,
-      country: data.country,
-      cityOrTown: data.city,
-      streetAddress: data.address,
-      phoneNumber: data.phoneNumber,
-      defaultBillingInfo: true,
-    };
-
-    const ItemID = Object.values(cart).map((item) => item._id);
+    const ItemID = products.map((item) => item._id);
     const orderInfo = {
       orderedItems: ItemID,
       fee: {
-        subTotal: orderTotal - deliveryFee,
+        subTotal: totalWithDelivery - deliveryFee,
         total: orderTotal,
         deliveryFee: deliveryFee,
       },
@@ -166,6 +300,7 @@ const Page = () => {
     };
 
     console.log("orderInfo: ", orderInfo);
+
     createOrder
       .mutateAsync(orderInfo)
       .then((res: any) => {
@@ -192,114 +327,6 @@ const Page = () => {
         console.error("Order Error:", err.message);
       });
 
-    if (isSaveChecked && isBillingInfoSaved) {
-      console.log("Updating billing info");
-      updateBillingDetails
-        .mutateAsync(billingInfo)
-        .then((res: any) => {
-          if (res?.success) {
-            toast.success("Account Successfully Updated");
-          }
-        })
-        .catch((err: any) => {
-          toast.error("An error occurred while updating the billing info.");
-          console.error("Update Error:", err.message);
-        });
-    } else if (isSaveChecked && !isBillingInfoSaved) {
-      console.log("Saving billing info");
-      billingDetails.mutateAsync(billingInfo)
-        .then((res: any) => {
-          if (res?.success) {
-            setIsBillingInfoSaved(true);
-            toast.success("Billing info saved successfully!");
-          }
-        })
-        .catch((err: any) => {
-        toast.error("An error occurred while saving the billing info.");
-        console.error("Save Error:", err.message);
-      })
-    } else if (!isSaveChecked) {
-      toast.error("'Save this Information' is not checked.");
-    }
-
-    paymentInit
-      .mutateAsync(paymentData)
-      .then((res: any) => {
-        if (res?.data?.authorization_url) {
-          window.location.href = res?.data?.authorization_url;
-          toast.success("Redirecting....");
-        } else {
-          console.error("Failed to initialize payment.");
-        }
-      })
-      .catch((err) => {
-        console.error("Error: ", err);
-        console.log(err.message);
-        toast.error(err.message);
-      });
-  };
-
-  const onSubmitForm2 = (data: any) => {
-    console.log("Form 2 submitted:", data);
-    console.log("Cart data", cart);
-    const callbackUrl =
-      process.env.NODE_ENV === "development"
-        ? "http://localhost:7009/my-orders"
-        : "https://goldies-frontend-v3.vercel.app/my-orders";
-    const paymentData = {
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email,
-      amount: orderTotal,
-      callbackUrl: callbackUrl,
-    };
-    console.log("Payment Data:", paymentData);
-
-       const ItemID = Object.values(cart).map((item) => item._id);
-    const orderInfo = {
-      orderedItems: ItemID,
-      fee: {
-        subTotal: orderTotal - deliveryFee,
-        total: orderTotal,
-        deliveryFee: deliveryFee,
-      },
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email,
-      country: data.country,
-      cityOrTown: data.city,
-      streetAddress: data.address,
-      phoneNumber: data.phoneNumber,
-    };
-
-    console.log("orderInfo: ", orderInfo);
-
-     createOrder
-      .mutateAsync(orderInfo)
-      .then((res: any) => {
-        if (!res?.error) {
-          const newOrder = {
-            name: "placeholder",
-            id: orderInfo.orderedItems.join(","),
-            date: new Date().toLocaleDateString(),
-            quantity: orderInfo.orderedItems.length,
-            price: orderInfo.fee.total.toFixed(2),
-            status: res?.data?.order?.orderStatus,
-            total: Number(orderInfo.fee.deliveryFee),
-            shippingFee: Number(orderInfo.fee.deliveryFee),
-          };
-          console.log("neworder", newOrder);
-          toast.success(res.message || "Order Successfully Created");
-        } else {
-          console.error("Order creation failed. Response:", res);
-          toast.error(res.message || "Failed to create order.");
-        }
-      })
-      .catch((err: any) => {
-        toast.error("An error occurred while creating the order.");
-        console.error("Order Error:", err.message);
-      });
-    
     paymentInit
       .mutateAsync(paymentData)
       .then((res: any) => {
@@ -340,9 +367,11 @@ const Page = () => {
             />
           </div>
         </div>
-        <section className="bg-neutral-100 px-4 py-6">
-          <div className="grid-cols-2 gap-4 md:grid lg:mx-auto lg:max-w-5xl lg:grid-cols-[1fr_400px] lg:gap-8 xl:max-w-6xl">
-            <div>
+
+        <section className="w-full bg-neutral-100 px-4 py-6">
+          <div className="mx-auto grid-cols-2 gap-8 md:grid lg:max-w-5xl lg:grid-cols-[1fr_400px] lg:gap-8 xl:max-w-6xl">
+            {/* billing form */}
+            <div className="w-full lg:w-4/5">
               <div className="mb-4">
                 <h2 className="text-xl font-semibold">Billing Details</h2>
                 <p>This field is required before Payment</p>
@@ -507,9 +536,16 @@ const Page = () => {
                 </div>
               </form>
 
+              <div className="mt-8">
+                <h3 className="text-xl font-medium">Shipping method</h3>
+                <p className="text-neutral-500">
+                  This is the address where your product will be delivered
+                </p>
+              </div>
+
               <div className="mt-3 inline-flex flex-col space-y-2">
                 <label
-                  htmlFor="info"
+                  htmlFor="option1"
                   className="inline-flex items-center gap-2"
                 >
                   <input
@@ -523,8 +559,9 @@ const Page = () => {
                   />
                   <span>Same as billing address</span>
                 </label>
+
                 <label
-                  htmlFor="options"
+                  htmlFor="option2"
                   className="inline-flex items-center gap-2"
                 >
                   <input
@@ -542,23 +579,14 @@ const Page = () => {
 
               <form id="form2">
                 <div>
-                  <div className="h-min overflow-hidden">
+                  <div className="">
                     {selectedMethod === "option2" && (
                       <div
                         className={cn(
-                          "mt-2 h-0 origin-top space-y-3 duration-300",
+                          "mt-2 h-0 space-y-3 duration-300",
                           selectedMethod === "option2" && "h-[610px]",
                         )}
                       >
-                        <div className="mt-8">
-                          <h3 className="text-xl font-medium">
-                            Shipping method
-                          </h3>
-                          <p className="text-neutral-500">
-                            This is the address where your product will be
-                            delivered
-                          </p>
-                        </div>
                         <EachElement
                           of={billingFormData}
                           render={(data: any, index: number) => {
@@ -702,32 +730,33 @@ const Page = () => {
                           }}
                         />
 
-                        {/* <label
-                        htmlFor="save"
-                        className="inline-flex items-center gap-2"
-                      >
-                        <input
-                          type="checkbox"
-                          name="save"
-                          id="save"
-                          className="form-checkbox"
-                        />
-                        <span>Save this information</span>
-                      </label> */}
+                        <label
+                          htmlFor="save"
+                          className="inline-flex items-center gap-2"
+                        >
+                          <input
+                            type="checkbox"
+                            name="save"
+                            id="save"
+                            className="form-checkbox"
+                          />
+                          <span>Save this information</span>
+                        </label>
                       </div>
                     )}
                   </div>
                 </div>
               </form>
             </div>
+
             {/* order summary */}
             <div className="mt-3 md:mt-0">
               <h3 className="mb-3 hidden text-xl font-semibold md:block">
                 Order Summary
               </h3>
-              <section>
-                {Object.values(cart).length >= 1 &&
-                  Object.values(cart).map((item, i) => {
+              <div className="divide-y">
+                {products.length >= 1 &&
+                  products.map((item, i) => {
                     return (
                       <div key={i} className=" space-y-3 p-2 md:bg-white">
                         <div className="grid grid-cols-[50px_1fr] gap-2 rounded-md bg-white p-4 md:bg-transparent md:p-0">
@@ -753,19 +782,19 @@ const Page = () => {
                       </div>
                     );
                   })}
-              </section>
-              <div className="">
+              </div>
+              <div className="bordert-t border">
                 <div className="space-y-3 p-2 md:bg-white">
                   <div className="flex items-center justify-between">
                     <ul className="flex flex-col gap-3">
                       <li>SubTotal</li>
                       <li>Delivery Fees</li>
-                      <li>Total</li>
+                      <li className="font-bold">Total</li>
                     </ul>
                     <ul className="flex flex-col gap-3 ">
-                      <li>&euro;{orderTotal}</li>
-                      <li>&euro; {deliveryFee}</li>
-                      <li>&euro;{orderTotal + deliveryFee}</li>
+                      <li>&euro;{orderTotal.toFixed(2)}</li>
+                      <li>&euro;{deliveryFee.toFixed(2)}</li>
+                      <li>&euro;{totalWithDelivery.toFixed(2)}</li>
                     </ul>
                   </div>
                 </div>

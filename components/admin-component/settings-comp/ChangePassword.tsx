@@ -70,7 +70,7 @@ export default function ChangePassword() {
       const update = await updatePassword.mutateAsync({
         newPassword,
         currentPassword,
-        id: admin?._id!,
+        id: admin?._id as string,
       });
 
       toast.success("Password Updated!!!");
