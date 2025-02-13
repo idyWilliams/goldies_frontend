@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import Card from "../Card";
 import moment from "moment";
+import { Button } from "../ui/button";
 
 const statusColor = (status: string) => {
   switch (status) {
@@ -60,38 +61,38 @@ export default function MobileOrderCard({ data }: { data: IOrder[] }) {
         {filteredData.map((data: IOrder, index: number) => {
           return (
             <Card key={index} className="bg-white p-4 shadow-xl">
-              <div>
-                <div>
-                  <div className="grid grid-cols-[50px_1fr] items-center gap-2">
-                    
-                    <div className="grid grid-cols-[1fr_0.5fr]">
-                      <div className="flex flex-col items-start">
-                        <span className="inline-block text-sm font-semibold">
-                          {data.orderId}
-                        </span>
-                        <span className="mb-1.5 mt-1 inline-block text-sm font-medium">
-                          {formatCurrency(data.fee.total, "en-NG")}
-                        </span>
-                      </div>
-                      <div className=" text-right ">
-                        <span className="">{data.createdAt}
-                          {moment(data.createdAt).format("MMM DD, YYYY HH:mm A")}
-                        </span>
-                        <span className="text-sm">
-                          {statusColor(data.orderStatus)}
-                        </span>
-                      </div>
-                    </div>
+              <div className="flex flex-col gap-3">
+                <div className="grid grid-cols-2">
+                  <div className="flex flex-col items-start">
+                    <span className="inline-block text-sm font-semibold">
+                      Order ID: {data.orderId}
+                    </span>
+                    <span className="mb-1.5 mt-1 inline-block text-sm font-medium">
+                      <span className="font-semibold">Total:</span>{" "}
+                      {formatCurrency(data.fee.total, "en-NG")}
+                    </span>
+                    <span className="mb-1.5 mt-1 inline-block text-sm font-medium">
+                      <span className="font-semibold">Billing Name:</span>{" "}
+                      {data?.firstName + " " + data.lastName}
+                    </span>
+                  </div>
+                  <div className="flex flex-col text-right ">
+                    <span className="text-sm">
+                      {moment(data.createdAt).format("MMM DD, YYYY HH:mm A")}
+                    </span>
+                    <span className="text-sm">
+                      {statusColor(data.orderStatus)}
+                    </span>
                   </div>
                 </div>
 
-                <div className="mt-6 flex justify-end">
-                  <button
-                    className="h-[29px] w-[97px] rounded-sm bg-goldie-300  text-black"
+                <div className="flex justify-end">
+                  <Button
+                    className="rounded-sm bg-goldie-300 hover:bg-goldie-400 text-black"
                     onClick={() => router.push(`/admin/orders/${data._id}`)}
                   >
                     View Details
-                  </button>
+                  </Button>
                 </div>
               </div>
             </Card>
