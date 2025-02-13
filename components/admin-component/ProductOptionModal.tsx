@@ -1,14 +1,13 @@
 import { cn } from "@/helper/cn";
 import { IProduct } from "@/interfaces/product.interface";
+import Goldie from "@/public/assets/goldis-gold-logo.png";
 import { deleteProduct } from "@/services/hooks/products";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+import { CloseSquare } from "iconsax-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React from "react";
 import { toast } from "sonner";
-import Goldie from "@/public/assets/goldis-gold-logo.png";
-import { CloseSquare } from "iconsax-react";
 
 interface ErrorResponse {
   message: string;
@@ -52,7 +51,7 @@ export default function ProductOptionModal({
   return (
     <div
       className={cn(
-        "fixed left-0 top-0 flex h-full w-full items-center justify-center bg-black bg-opacity-45 p-4",
+        "fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-black bg-opacity-45 p-4",
       )}
     >
       <div className="w-full rounded-lg bg-neutral-900 sm:w-[400px] md:w-[500px]">

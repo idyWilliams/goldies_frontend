@@ -1,20 +1,9 @@
-import React, { useState } from "react";
-import Card from "../Card";
-import { orderList } from "@/utils/adminData";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { formatCurrency } from "@/helper/formatCurrency";
 import { IOrder } from "@/interfaces/order.interface";
-
-type Product = {
-  id: string;
-  image: any;
-  productName: string;
-  orderDate: string;
-  billingName: string;
-  priceFrom: number;
-  totalPrice: number;
-  status: string;
-};
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import Card from "../Card";
+import moment from "moment";
 
 const statusColor = (status: string) => {
   switch (status) {
@@ -81,11 +70,13 @@ export default function MobileOrderCard({ data }: { data: IOrder[] }) {
                           {data.orderId}
                         </span>
                         <span className="mb-1.5 mt-1 inline-block text-sm font-medium">
-                          &euro;{data.fee.total}
+                          {formatCurrency(data.fee.total, "en-NG")}
                         </span>
                       </div>
                       <div className=" text-right ">
-                        <span className="text-xs">{data.createdAt}</span>
+                        <span className="">{data.createdAt}
+                          {moment(data.createdAt).format("MMM DD, YYYY HH:mm A")}
+                        </span>
                         <span className="text-sm">
                           {statusColor(data.orderStatus)}
                         </span>
@@ -96,7 +87,7 @@ export default function MobileOrderCard({ data }: { data: IOrder[] }) {
 
                 <div className="mt-6 flex justify-end">
                   <button
-                    className="h-[29px] w-[97px] rounded-sm bg-goldie-300 text-xs text-black"
+                    className="h-[29px] w-[97px] rounded-sm bg-goldie-300  text-black"
                     onClick={() => router.push(`/admin/orders/${data._id}`)}
                   >
                     View Details

@@ -1,40 +1,17 @@
 "use client";
-import AdminTable from "@/components/admin-component/AdminTable";
-import { orderList, productList } from "@/utils/adminData";
-import Image from "next/image";
-import React, { useEffect, useMemo, useState } from "react";
-import { CiSearch } from "react-icons/ci";
-import { Column } from "react-table";
-import {
-  ColumnDef,
-  createColumnHelper,
-  useReactTable,
-} from "@tanstack/react-table";
-import ProductTable from "@/components/admin-component/ProductTable";
-import {
-  Add,
-  ArrowDown,
-  ArrowDown2,
-  Data,
-  Edit,
-  Eye,
-  Trash,
-} from "iconsax-react";
-import MobileProductCard from "@/components/admin-component/MobileProductCard";
-import MobileOrderCard from "@/components/admin-component/MobileOrderCard";
-import OrderDetailsModal from "@/components/admin-component/OrderDetailsModal";
-import { useRouter } from "next/navigation";
-import AdminAuth from "@/components/admin-component/AdminAuth";
-import { useQuery } from "@tanstack/react-query";
-import { adminGetAllOrders } from "@/services/hooks/payment";
-import { IOrder } from "@/interfaces/order.interface";
-import Loading from "../loading";
-import { Button } from "@/components/ui/button";
-import { Loader2Icon } from "lucide-react";
 import AdminPagination from "@/components/admin-component/AdminPagination";
-import momemt from "moment";
-import { formatCurrency } from "@/helper/formatCurrency";
 import DataTable from "@/components/admin-component/DataTable";
+import MobileOrderCard from "@/components/admin-component/MobileOrderCard";
+import { Button } from "@/components/ui/button";
+import { formatCurrency } from "@/helper/formatCurrency";
+import { IOrder } from "@/interfaces/order.interface";
+import { adminGetAllOrders } from "@/services/hooks/payment";
+import { useQuery } from "@tanstack/react-query";
+import { createColumnHelper } from "@tanstack/react-table";
+import { Loader2Icon } from "lucide-react";
+import moment from "moment";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 
 const statusColor = (status: string) => {
   switch (status.toLowerCase()) {
@@ -70,7 +47,7 @@ export default function OrderPage() {
   const [selectedStatus, setSelectedStatus] = useState("All");
   const itemsPerPage = 10;
 
-  const { data, isLoading, isSuccess, refetch, isError } = useQuery({
+  const { data, isLoading, refetch, isError } = useQuery({
     queryKey: ["adminAllOrders"],
     queryFn: async () => adminGetAllOrders(),
   });
@@ -131,7 +108,7 @@ export default function OrderPage() {
       header: () => <span>Order Date</span>,
       cell: ({ row }) => (
         <span>
-          {momemt(row.original.createdAt).format("MMM DD, YYYY HH:mm A")}
+          {moment(row.original.createdAt).format("MMM DD, YYYY HH:mm A")}
         </span>
       ),
     }),
@@ -174,7 +151,6 @@ export default function OrderPage() {
         </div>
       ) : processedOrders.length > 0 ? (
         <>
-          
           <div className="hidden md:block">
             <DataTable
               columns={columns}
@@ -189,6 +165,14 @@ export default function OrderPage() {
           </div>
           <div className="block md:hidden">
             <MobileOrderCard data={paginatedOrders} />
+
+            {totalPages > 1 && (
+              <AdminPagination
+                totalPage={totalPages}
+                page={currentPage}
+                setPage={setCurrentPage}
+              />
+            )}
           </div>
         </>
       ) : (

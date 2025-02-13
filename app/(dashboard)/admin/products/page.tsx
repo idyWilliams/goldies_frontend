@@ -1,43 +1,30 @@
 "use client";
-import AdminTable from "@/components/admin-component/AdminTable";
-import { productList } from "@/utils/adminData";
-import Image from "next/image";
-import React, { useEffect, useMemo, useState } from "react";
-import { CiSearch } from "react-icons/ci";
-import { Column } from "react-table";
+import AdminPagination from "@/components/admin-component/AdminPagination";
+import DataTable from "@/components/admin-component/DataTable";
+import MobileProductCard from "@/components/admin-component/MobileProductCard";
+import ProductOptionModal from "@/components/admin-component/ProductOptionModal";
+import ProductSortBy from "@/components/admin-component/ProductSortBy";
+import { Button } from "@/components/ui/button";
+import { formatCurrency } from "@/helper/formatCurrency";
+import { IProduct, ProductParams } from "@/interfaces/product.interface";
+import useProducts from "@/services/hooks/products/useProducts";
 import {
-  ColumnDef,
-  createColumnHelper,
-  useReactTable,
+  createColumnHelper
 } from "@tanstack/react-table";
-import ProductTable from "@/components/admin-component/ProductTable";
 import {
   Add,
-  ArrowDown,
-  ArrowDown2,
-  Data,
   Edit,
   Eye,
-  Trash,
+  Trash
 } from "iconsax-react";
-import MobileProductCard from "@/components/admin-component/MobileProductCard";
+import { Loader2Icon } from "lucide-react";
+import moment from "moment";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import ProductOptionModal from "@/components/admin-component/ProductOptionModal";
-import { setProducts } from "@/redux/features/product/productSlice";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
-import MenuPopup from "@/components/MenuPopup";
-import ProductSortBy from "@/components/admin-component/ProductSortBy";
-import AdminAuth from "@/components/admin-component/AdminAuth";
-import { useQuery } from "@tanstack/react-query";
-import { getAllProducts } from "@/services/hooks/products";
-import { Button } from "@/components/ui/button";
-import { IProduct, ProductParams } from "@/interfaces/product.interface";
-import { Loader2Icon } from "lucide-react";
-import momemt from "moment";
-import { formatCurrency } from "@/helper/formatCurrency";
-import DataTable from "@/components/admin-component/DataTable";
-import useProducts from "@/services/hooks/products/useProducts";
+import React, { useEffect, useRef, useState } from "react";
+import { CiSearch } from "react-icons/ci";
+import { IoIosArrowDown, IoIosArrowUp, IoMdClose } from "react-icons/io";
 
 const statusColor = (status: string) => {
   switch (status?.toLowerCase()) {
@@ -72,10 +59,12 @@ export default function ProductsPage() {
   const [isOpen, setOpen] = useState(false);
   const [sortType, setSortType] = useState("recentlyAdded");
   const [searchValue, setSearchValue] = useState("");
+  const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
   const [currentPageIndex, setCurrentPageIndex] = useState(
     parseInt(searchParams.get("page") || "1", 10),
   );
   const itemsPerPage = 10;
+  const sortDropdownRef = useRef<HTMLDivElement>(null);
 
   const handleAddNew = () => {
     router.push(`/admin/create-products`);
@@ -87,25 +76,38 @@ export default function ProductsPage() {
   });
 
   useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchValue(searchValue);
+    }, 300); // 300ms delay
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchValue]);
+
+  useEffect(() => {
     const newParams: ProductParams = {
       page: currentPageIndex,
       limit: itemsPerPage,
-      searchQuery: searchValue,
     };
+
+    if (searchValue) {
+      newParams.searchQuery = searchValue;
+    }
 
     // Update URL with new search query and page
     const currentParams = new URLSearchParams(searchParams.toString());
     currentParams.set("page", currentPageIndex.toString());
 
-    if (searchValue) {
-      currentParams.set("searchQuery", searchValue);
+    if (debouncedSearchValue) {
+      currentParams.set("searchQuery", debouncedSearchValue);
     } else {
       currentParams.delete("searchQuery");
     }
 
     router.push(`${pathname}?${currentParams.toString()}`);
     setParams(newParams);
-  }, [currentPageIndex, searchValue, pathname, router, searchParams]);
+  }, [currentPageIndex, debouncedSearchValue, pathname, router, searchParams]);
 
   const {
     isLoading,
@@ -115,10 +117,33 @@ export default function ProductsPage() {
     products: allProducts,
   } = useProducts(params);
 
-  const handleChange = (e: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearchValue(value);
   };
+
+  const clearInput = () => {
+    setSearchValue("");
+    setDebouncedSearchValue("");
+    setCurrentPageIndex(1);
+  };
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        sortDropdownRef.current &&
+        !sortDropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const columns = [
     columnHelper.accessor((row) => row, {
@@ -169,7 +194,7 @@ export default function ProductsPage() {
       header: () => <span>Added Date</span>,
       cell: ({ row }) => (
         <span className="text-nowrap">
-          {momemt(row.original.createdAt).format("MMM DD, YYYY HH:mm A")}
+          {moment(row.original.createdAt).format("MMM DD, YYYY HH:mm A")}
         </span>
       ),
     }),
@@ -221,17 +246,17 @@ export default function ProductsPage() {
   return (
     <div className="h-full w-full px-4 pt-6">
       {/* top heading */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between gap-6 lg:items-center">
         <div className="mb-5">
           <h1 className="text-lg font-extrabold">Products</h1>
           <p className="text-sm">List of all available products created</p>
         </div>
-        <button
-          className="flex cursor-pointer items-center gap-2 rounded-md bg-black px-5 py-2.5 text-sm text-goldie-300"
+        <Button
+          className="flex cursor-pointer items-center gap-2 rounded-md bg-black text-goldie-300"
           onClick={handleAddNew}
         >
           <Add size={15} /> ADD NEW
-        </button>
+        </Button>
       </div>
 
       {/* Search and Sort */}
@@ -242,24 +267,44 @@ export default function ProductsPage() {
             type="text"
             name="search"
             autoComplete="search"
-            placeholder="search for product name, product ID..."
-            className="w-full rounded-[50px] px-4 py-1 placeholder:text-xs focus:border-black focus:ring-black lg:py-2"
+            placeholder="Search..."
+            className="w-full rounded-[50px] px-4 py-2 pr-10 placeholder:text-sm focus:border-black focus:ring-black"
             onChange={handleChange}
           />
-          <span className="absolute right-3 top-1/2 -translate-y-1/2">
-            <CiSearch />
-          </span>
+          {searchValue ? (
+            <button
+              onClick={clearInput}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+            >
+              <IoMdClose />
+            </button>
+          ) : (
+            <span className="absolute right-3 top-1/2 -translate-y-1/2">
+              <CiSearch />
+            </span>
+          )}
         </label>
 
-        <button
-          className="relative flex min-w-[83px] cursor-pointer items-center justify-between rounded-md bg-black px-3 py-2 text-[10px] text-goldie-300 md:hidden"
-          onClick={() => setOpen((prev) => !prev)}
-        >
-          Sort by {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
-        </button>
-        {isOpen && (
-          <ProductSortBy setSortType={setSortType} sortType={sortType} />
-        )}
+        <div ref={sortDropdownRef} className="relative">
+          <Button
+            className="bg-black text-goldie-300 md:hidden"
+            onClick={() => setOpen((prev) => !prev)}
+          >
+            Sort by{" "}
+            {!isOpen ? (
+              <IoIosArrowDown className="ml-2" />
+            ) : (
+              <IoIosArrowUp className="ml-2" />
+            )}
+          </Button>
+          {isOpen && (
+            <ProductSortBy
+              setOpen={setOpen}
+              setSortType={setSortType}
+              sortType={sortType}
+            />
+          )}
+        </div>
       </div>
 
       {/* Products Table */}
@@ -300,6 +345,14 @@ export default function ProductsPage() {
             {allProducts.map((product: IProduct, index: number) => (
               <MobileProductCard data={product} key={index} />
             ))}
+
+            {totalPages > 1 && (
+              <AdminPagination
+                totalPage={totalPages}
+                page={currentPageIndex}
+                setPage={setCurrentPageIndex}
+              />
+            )}
           </div>
         </>
       ) : (

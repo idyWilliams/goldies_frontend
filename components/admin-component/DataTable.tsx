@@ -89,7 +89,7 @@ export default function DataTable<T>({
       {/* Filter Tabs & Search Bar */}
       <div
         className={cn(
-          "flex items-center justify-between gap-2 mb-6",
+          "flex items-center justify-between gap-2 mb-6 p-[2px]",
           filteredTabs?.length >= 1 && "mb-6",
         )}
       >
@@ -116,7 +116,7 @@ export default function DataTable<T>({
               name="search"
               autoComplete="off"
               placeholder="Search..."
-              className="w-full rounded-[50px] px-4 py-1 placeholder:text-xs focus:border-black focus:ring-black"
+              className="w-full rounded-[50px] px-4 py-1 placeholder:text-sm focus:border-black focus:ring-black pr-10"
               onChange={(e) => setSearchValue(e.target.value)}
             />
             <span className="absolute right-3 top-1/2 -translate-y-1/2">

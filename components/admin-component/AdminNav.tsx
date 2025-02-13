@@ -43,25 +43,7 @@ export default function AdminNav() {
   const [isOpen, setOpen] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
   const { auth } = useAuth();
-  // const adminStored = useAdmin();
-
-  // const { data, isPending, isError, isSuccess } = useQuery({
-  //   queryKey: ["admin"],
-  //   queryFn: () => getAdmin(adminStored?._id as string),
-  // });
-
-  // useEffect(() => {
-  //   const handleScroll = () => {
-  //     setSticky(window.scrollY >= 300);
-  //   };
-  //   window.addEventListener("scroll", handleScroll);
-
-  //   return () => window.removeEventListener("scroll", handleScroll);
-  // }, []);
-
-  // useEffect(() => {
-  //   !isPending && isSuccess ? setAdmin(data?.admin) : setAdmin(null);
-  // }, [data?.admin, isPending, isSuccess]);
+  
 
   return (
     <>
@@ -69,7 +51,7 @@ export default function AdminNav() {
         <div className="flex items-center justify-between px-4">
           <div className="flex items-center gap-3">
             <span
-              className="inline-block text-goldie-300 lg:hidden"
+              className="inline-block text-goldie-300 lg:hidden cursor-pointer"
               onClick={() => setIsOpen(true)}
             >
               <BsList size={24} />
