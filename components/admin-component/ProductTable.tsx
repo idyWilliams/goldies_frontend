@@ -14,7 +14,7 @@ interface TableProps {
   columns: any;
   Tdata: any[];
   filteredTabs?: string[];
-  statusType?: "order" | "product";
+  statusType?: "order" | "product" | "customer";
   showSearchBar?: boolean;
 }
 
