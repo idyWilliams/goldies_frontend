@@ -53,6 +53,7 @@ const reviews = [
 
 const Testimonials = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
   const clientInitails = (name: string) => {
     const value = name.split(" ");
     let initials: string = "";
@@ -69,7 +70,7 @@ const Testimonials = () => {
         <div className="wrapper">
           <h2
             data-aos="fade-down"
-            className="text-center text-xl font-bold capitalize  text-goldie-300 sm:text-2xl md:text-center md:text-3xl"
+            className="text-center text-xl font-bold capitalize  text-goldie-300  md:text-center md:text-2xl"
           >
             What our Customers said about Goldies
           </h2>

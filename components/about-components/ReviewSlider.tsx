@@ -29,7 +29,7 @@ const reviews = [
 const ReviewSlider = () => {
   return (
     <Swiper
-      className="hide-scroll-bar"
+      className="hide-scroll-bar review-swiper"
       spaceBetween={50}
       slidesPerView={3}
       onSlideChange={() => console.log("slide change")}
@@ -61,18 +61,18 @@ const ReviewSlider = () => {
       {reviews?.map((item: any, index: number) => (
         <SwiperSlide key={index} className="">
           <div
-            className="flex flex-col items-center rounded-md bg-white p-4"
+            className="flex flex-col items-center rounded-md bg-white p-4 py-8"
             key={index}
           >
             <div className="mb-2 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-t from-goldie-400 to-goldie-300 text-xl font-bold">
               {initials(item?.name)}
             </div>
-            <h3 className="mb-1.5 text-xl font-bold">{item?.name}</h3>
+            <h3 className="mb-1.5 text-lg font-bold">{item?.name}</h3>
             <p className="text-balance text-center text-neutral-700">
               {item?.comment}
             </p>
             <span className="mt-6 inline-block">
-              <BsFacebook size={44} />
+              <BsFacebook size={24} />
             </span>
           </div>
         </SwiperSlide>
