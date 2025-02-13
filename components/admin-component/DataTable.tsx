@@ -89,7 +89,7 @@ export default function DataTable<T>({
       {/* Filter Tabs & Search Bar */}
       <div
         className={cn(
-          "flex items-center justify-between gap-2 mb-6 p-[2px]",
+          "mb-6 flex items-center justify-between gap-2 p-[2px]",
           filteredTabs?.length >= 1 && "mb-6",
         )}
       >
@@ -116,7 +116,7 @@ export default function DataTable<T>({
               name="search"
               autoComplete="off"
               placeholder="Search..."
-              className="w-full rounded-[50px] px-4 py-1 placeholder:text-sm focus:border-black focus:ring-black pr-10"
+              className="w-full rounded-[50px] px-4 py-1 pr-10 placeholder:text-sm focus:border-black focus:ring-black"
               onChange={(e) => setSearchValue(e.target.value)}
             />
             <span className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -156,15 +156,11 @@ export default function DataTable<T>({
                   className="odd:bg-goldie-300 odd:bg-opacity-20"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-4 py-4">
-                      {cell.column.id === "createdAt"
-                        ? moment(cell.getValue() as string).format(
-                            "MMM DD, YYYY HH:mm A",
-                          )
-                        : flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
+                    <td key={cell.id} className="px-4 py-3">
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
                     </td>
                   ))}
                 </tr>

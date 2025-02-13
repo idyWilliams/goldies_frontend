@@ -65,7 +65,7 @@ export default function Page() {
             <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-500">
               <span className="text-white">{initials(fullName)}</span>
             </div>
-            <h3 className="font-bold">{fullName}</h3>
+            <span className="text-[15px]">{fullName}</span>
           </div>
         );
       },
@@ -75,7 +75,7 @@ export default function Page() {
     columnHelper.accessor((row) => row.email, {
       id: "email",
       cell: ({ row }) => (
-        <span>
+        <span className="text-[15px]">
           {row.original?.email}
         </span>
       ),
@@ -85,7 +85,7 @@ export default function Page() {
     columnHelper.accessor((row) => row.phoneNumber, {
       id: "phoneNumber",
       cell: ({ row }) => (
-        <span>
+        <span className="text-[15px]">
           {row.original?.phoneNumber ? `+${row.original.phoneNumber}` : "N/A"}
         </span>
       ),
@@ -97,7 +97,7 @@ export default function Page() {
       id: "createdAt",
       cell: ({ row }) => {
         return (
-          <span>
+          <span className="text-[15px]">
             {moment(row.original.createdAt).format("MMM DD, YYYY HH:mm A")}
           </span>
         );

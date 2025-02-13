@@ -89,27 +89,29 @@ export default function OrderPage() {
       id: "orderId",
       header: () => <span>Order ID</span>,
       cell: ({ row }) => (
-        <span className="capitalize">{row.original?.orderId}</span>
+        <span className="capitalize text-[15px]">{row.original?.orderId}</span>
       ),
     }),
     columnHelper.accessor("firstName", {
       header: () => <span>Billing Name</span>,
       cell: ({ row }) => (
-        <span className="capitalize">
+        <span className="capitalize text-[15px]">
           {row.original?.firstName + " " + row.original?.lastName}
         </span>
       ),
     }),
     columnHelper.accessor("fee.total", {
       cell: ({ row }) => (
-        <span>{formatCurrency(row.original.fee.total, "en-NG")}</span>
+        <span className="text-[15px]">{formatCurrency(row.original.fee.total, "en-NG")}</span>
       ),
       header: () => <span>Total</span>,
     }),
-    columnHelper.accessor("createdAt", {
+
+    columnHelper.accessor((row) => row, {
+      id: 'createdAt',
       header: () => <span>Order Date</span>,
       cell: ({ row }) => (
-        <span>
+        <span className="text-[15px]">
           {moment(row.original.createdAt).format("MMM DD, YYYY HH:mm A")}
         </span>
       ),

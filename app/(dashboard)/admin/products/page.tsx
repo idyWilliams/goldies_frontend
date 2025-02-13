@@ -159,10 +159,10 @@ export default function ProductsPage() {
               alt={info.cell.row.original.name}
             />
             <div className="flex flex-col">
-              <h3 className="whitespace-nowrap font-bold">
+              <p className="whitespace-nowrap font-bold text-[15px]">
                 {info.cell.row.original.name}
-              </h3>
-              <span className="uppercase">
+              </p>
+              <span className="uppercase text-[15px]">
                 ID:&nbsp;{info.cell.row.original._id.slice(0, 6)}
               </span>
             </div>
@@ -174,7 +174,7 @@ export default function ProductsPage() {
     columnHelper.accessor((row) => row.category, {
       id: "category",
       cell: (info) => (
-        <span className="whitespace-nowrap capitalize">
+        <span className="whitespace-nowrap capitalize text-[15px]">
           {info.cell.row.original.category.name}
         </span>
       ),
@@ -183,7 +183,7 @@ export default function ProductsPage() {
     columnHelper.accessor((row) => row, {
       id: "price",
       cell: ({ row }) => (
-        <span className="whitespace-nowrap">
+        <span className="whitespace-nowrap text-[15px]">
           {formatCurrency(parseInt(row.original.minPrice), "en-NG")} -{" "}
           {formatCurrency(parseInt(row.original.maxPrice), "en-NG")}
         </span>
@@ -193,7 +193,7 @@ export default function ProductsPage() {
     columnHelper.accessor("createdAt", {
       header: () => <span>Added Date</span>,
       cell: ({ row }) => (
-        <span className="text-nowrap">
+        <span className="text-nowrap text-[15px]">
           {moment(row.original.createdAt).format("MMM DD, YYYY HH:mm A")}
         </span>
       ),
