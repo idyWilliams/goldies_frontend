@@ -45,9 +45,9 @@ const Footer = () => {
     }
   }, [isPending, isSuccess, data]);
 
-  const getYear = () =>{
+  const getYear = () => {
     return new Date().getFullYear();
-  }
+  };
 
   return (
     <section className="relative mt-auto grid min-h-[500px] w-full bg-neutral-900 pt-3">
@@ -61,21 +61,23 @@ const Footer = () => {
               Be the first to know about updates on new recipes.
             </p>
           </div>
-          <div className="flex h-min items-center rounded-md md:bg-white md:p-2">
+          <div className="flex h-min w-full items-center rounded-md md:bg-white md:p-2">
             <form
-              id="newsLetter"
-              className="flex w-full flex-col gap-2 md:flex-row md:items-center md:justify-center"
+              onSubmit={(e) => e.preventDefault()}
+              className="flex w-full flex-col items-center gap-4 md:flex-row"
             >
-              <label htmlFor="email" className="flex-grow">
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  placeholder="Enter your email"
-                  className="form-input w-full rounded-md border-none bg-white p-3 placeholder:text-sm focus:ring-0 md:w-auto md:py-0"
-                />
-              </label>
-              <Button className=" text-goldie-300 md:mt-0 md:w-auto">
+              <input
+                type="email"
+                name="email"
+                id="email"
+                placeholder="Enter your email"
+                className="w-full rounded-md border-0 focus:ring-0"
+              />
+              <Button
+                size={"lg"}
+                type="submit"
+                className=" w-full text-goldie-300 md:mt-0 md:w-auto"
+              >
                 Subscribe
               </Button>
             </form>
@@ -120,16 +122,16 @@ const Footer = () => {
               <h3 className="font-bold text-white">Company</h3>
               <hr className="mb-2 w-[35px] border border-goldie-300" />
             </div>
-            <Link href={"/shop"} className="hover:underline w-fit">
+            <Link href={"/shop"} className="w-fit hover:underline">
               Products
             </Link>
-            <Link href={"/about-us"} className="hover:underline w-fit">
+            <Link href={"/about-us"} className="w-fit hover:underline">
               About Us
             </Link>
-            <Link href={"/testimonials"} className="hover:underline w-fit">
+            <Link href={"/testimonials"} className="w-fit hover:underline">
               Testimonies
             </Link>
-            <Link href={"/contact"} className="hover:underline w-fit">
+            <Link href={"/contact"} className="w-fit hover:underline">
               Contact Us
             </Link>
           </div>
@@ -157,7 +159,7 @@ const Footer = () => {
                       <Link
                         key={index}
                         href={`/shop?cat=${encodeURIComponent(category?.name?.toLowerCase())}`}
-                        className="hover:underline w-fit "
+                        className="w-fit hover:underline "
                       >
                         {category?.name}
                       </Link>
@@ -229,10 +231,10 @@ const Footer = () => {
             ©Goldies {getYear()} All Rights Reserved
           </p>
           <div className="inline-flex gap-8">
-            <Link href={"/"} className="text-xs text-white md:text-sm">
+            <Link href={"#"} className="text-xs text-white md:text-sm">
               Terms of Service
             </Link>
-            <Link href={"/"} className="text-xs text-white md:text-sm">
+            <Link href={"#"} className="text-xs text-white md:text-sm">
               Privacy Policy
             </Link>
           </div>

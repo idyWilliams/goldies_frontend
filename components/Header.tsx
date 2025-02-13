@@ -53,6 +53,7 @@ const Header = () => {
     localStorage.setItem("isLogin", JSON.stringify(false));
     Cookies.remove(USER_TOKEN_NAME);
     Cookies.remove(USER_DETAILS);
+    router.replace("/sign-in");
 
     if (
       pathname.includes("/my-account") ||
