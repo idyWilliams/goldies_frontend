@@ -2,11 +2,9 @@
 import AdminAuth from "@/components/admin-component/AdminAuth";
 import AdminNav from "@/components/admin-component/AdminNav";
 import AdminSideBar from "@/components/admin-component/AdminSideBar";
-import React, { useEffect } from "react";
-import NextTopLoader from "nextjs-toploader";
-import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthProvider";
-import { getAdmin } from "@/services/hooks/admin-auth";
+import NextTopLoader from "nextjs-toploader";
+import React, { useEffect } from "react";
 
 function AdminLayout({ children }: { children: React.ReactNode }) {
   const { setAuth } = useAuth();

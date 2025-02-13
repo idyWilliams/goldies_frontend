@@ -1,4 +1,5 @@
 "use client";
+import { useAuth } from "@/context/AuthProvider";
 import { adminLogOut } from "@/services/hooks/admin-auth";
 import {
   Cake,
@@ -11,72 +12,65 @@ import {
 } from "iconsax-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
 import { CiLogout } from "react-icons/ci";
 import { IoPeopleOutline } from "react-icons/io5";
 
 export default function AdminSideBar() {
   const router = useRouter();
   const pathname = usePathname();
+  const { auth } = useAuth();
 
-  const [role, setRole] = useState("");
-
-  useEffect(() => {
-    const storedAdmin =
-      JSON.parse(localStorage.getItem("admin") as string) || null;
-
-    setRole(storedAdmin ? storedAdmin?.role : null);
-  }, []);
+  
 
   return (
-    <section className="z-40 hidden fixed top-0 bottom-0 w-[220px] flex-col bg-black py-4 lg:flex lg:pt-24">
+    <section className="fixed bottom-0 top-0 z-40 hidden w-[220px] flex-col bg-black py-4 lg:flex lg:pt-24">
       {/* <div className="my-2 mb-7 border-b border-goldie-300 border-opacity-50"></div> */}
-      <div className="flex flex-col items-start gap-2 6 px-4">
+      <div className="6 flex flex-col items-start gap-2 px-4">
         <Link
           href={"/admin"}
-          className={`w-full py-2 flex items-center gap-2 whitespace-nowrap text-sm duration-300 hover:text-goldie-300 ${pathname === "/admin" ? "text-goldie-300" : "text-neutral-500"}`}
+          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname === "/admin" ? "text-goldie-300" : "text-neutral-500"}`}
         >
           <Home2 size="20" /> Overview
         </Link>
         <Link
           href={"/admin/products"}
-          className={`w-full py-2 flex items-center gap-2 whitespace-nowrap text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/products") ? "text-goldie-300" : "text-neutral-500"}`}
+          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/products") ? "text-goldie-300" : "text-neutral-500"}`}
         >
           <Cake size="20" />
           Products
         </Link>
         <Link
           href={"/admin/customers"}
-          className={`w-full py-2 flex items-center gap-2 whitespace-nowrap text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/customers") ? "text-goldie-300" : "text-neutral-500"}`}
+          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/customers") ? "text-goldie-300" : "text-neutral-500"}`}
         >
           <IoPeopleOutline size={20} />
           Customers
         </Link>
         <Link
           href={"/admin/orders"}
-          className={`w-full py-2 flex items-center gap-2 whitespace-nowrap text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/orders") ? "text-goldie-300" : "text-neutral-500"}`}
+          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/orders") ? "text-goldie-300" : "text-neutral-500"}`}
         >
           <ShoppingBag size="20" />
           Orders
         </Link>
         <Link
           href={"/admin/create-products"}
-          className={`w-full py-2 flex items-center gap-2 whitespace-nowrap text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/create-products") ? "text-goldie-300" : "text-neutral-500"}`}
+          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/create-products") ? "text-goldie-300" : "text-neutral-500"}`}
         >
           <FolderAdd size="20" />
           Create Products
         </Link>
         <Link
           href={"/admin/manage-categories"}
-          className={`w-full py-2 flex items-center gap-2 whitespace-nowrap text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/manage-categories") ? "text-goldie-300" : "text-neutral-500"}`}
+          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/manage-categories") ? "text-goldie-300" : "text-neutral-500"}`}
         >
           <Category2 size="20" />
           Manage Categories
         </Link>
-        {role === "super_admin" && (
+        {auth?.admin?.role === "super_admin" && (
           <Link
             href={"/admin/invite"}
-            className={`w-full py-2 flex items-center gap-2 whitespace-nowrap text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/manage-categories") ? "text-goldie-300" : "text-neutral-500"}`}
+            className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/manage-categories") ? "text-goldie-300" : "text-neutral-500"}`}
           >
             <UserAdd size="20" />
             Invite Admin
@@ -84,14 +78,14 @@ export default function AdminSideBar() {
         )}
         <Link
           href={"/admin/settings"}
-          className={`w-full py-2 flex items-center gap-2 whitespace-nowrap text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/settings") ? "text-goldie-300" : "text-neutral-500"}`}
+          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/settings") ? "text-goldie-300" : "text-neutral-500"}`}
         >
           <Setting2 size="20" />
           Settings
         </Link>
 
         <span
-          className={`w-full py-2 flex items-center gap-2 whitespace-nowrap text-sm text-neutral-500 duration-300 hover:text-goldie-300`}
+          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm text-neutral-500 duration-300 hover:text-goldie-300`}
           onClick={() => adminLogOut(router)}
         >
           <CiLogout size={20} />

@@ -7,7 +7,7 @@ type Steps = {
   description: string;
 };
 
-export default function   Stepper({
+export default function Stepper({
   checkoutStep,
   currentStep,
 }: {
@@ -43,38 +43,28 @@ export default function   Stepper({
 
   return (
     <div className="bg-black p-4">
-      {" "}
       <div>
-        {" "}
         <div className="flex w-full flex-col items-center justify-center">
-          {" "}
-          <h1 className="text-[11.27px] font-bold text-[#D9D9D9]">
-            {" "}
-            Step {currentStep}{" "}
-          </h1>{" "}
-          <p className="text-[8.76px] text-[#D9D9D9]">
-            {" "}
-            {currentStepProps.description}{" "}
-          </p>{" "}
-        </div>{" "}
-        <div className="baall mt-4 flex items-center justify-center gap-2">
-          {" "}
+          <h1 className="text-lg font-bold text-[#D9D9D9]">
+            Step {currentStep}
+          </h1>
+          <p className=" text-[#D9D9D9]"> {currentStepProps.description} </p>
+        </div>
+        <div className="mt-4 flex items-center justify-center gap-2">
           {newStep.map((step, index) => (
             <div key={index} className="flex items-center justify-center gap-2">
-              {" "}
               <div
-                className={`${step.completed ? "bg-[#14AE56]" : " bg-[#D9D9D9]"} flex h-[32px] w-[32px] items-center justify-center rounded-full ${step.selected && "bg-[#E4D064]"} text-[10px] text-black`}
+                className={`${step.completed ? "bg-[#14AE56] text-white" : " bg-[#D9D9D9]"} flex h-[32px] w-[32px] items-center justify-center rounded-full ${step.selected && "bg-[#E4D064]"} text-sm text-black`}
               >
-                {" "}
-                {step.completed ? index + 1 : index + 1}{" "}
-              </div>{" "}
+                {step.completed ? index + 1 : index + 1}
+              </div>
               {index < newStep.length - 1 && (
                 <hr className="w-[47px] border-[#D9D9D9]" />
-              )}{" "}
+              )}
             </div>
-          ))}{" "}
-        </div>{" "}
-      </div>{" "}
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

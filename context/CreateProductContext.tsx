@@ -6,6 +6,6 @@ export interface createProductContextValue {
   //   displayStep: (sellersStep: any) => JSX.Element | undefined;
   handleClick: (direction: string) => void;
 }
-export const createProductContext = createContext<createProductContextValue>(
+export const CreateProductContext = createContext<createProductContextValue>(
   {} as createProductContextValue,
 );

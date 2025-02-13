@@ -110,6 +110,7 @@ export interface CreateProductMobilePropTypes {
       setAddOn: React.Dispatch<React.SetStateAction<Option[]>>;
     };
   };
+  editId: string;
 }
 
 type ProductSubCategories = {
@@ -127,10 +128,7 @@ type CategoryOptions = {
   subCategories: any[];
 };
 export interface InformationAndPricingType {
-  category: {
-    name: string;
-    id: string;
-  };
+  category: string;
   subCategory: any[];
   categoryOptions: CategoryOptions[] | undefined;
   subcategories: ProductSubCategories[];

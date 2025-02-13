@@ -7,8 +7,10 @@ import { IUser } from "@/interfaces/user.interface";
 import { getUsers } from "@/services/hooks/admin-auth";
 import { useQuery } from "@tanstack/react-query";
 import { createColumnHelper } from "@tanstack/react-table";
+import { Eye } from "iconsax-react";
 import { Loader2Icon } from "lucide-react";
 import moment from "moment";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
@@ -56,8 +58,8 @@ export default function Page() {
   const columns = [
     columnHelper.accessor((row) => row, {
       id: "customerName",
-      cell: (info) => {
-        const fullName = `${info.cell.row.original.firstName} ${info.cell.row.original.lastName}`;
+      cell: ({ row }) => {
+        const fullName = `${row.original.lastName} ${row.original.firstName}`;
         return (
           <div className="grid grid-cols-[50px_1fr] items-center gap-2">
             <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-500">
@@ -70,11 +72,18 @@ export default function Page() {
       header: () => <span>Customers</span>,
       footer: (info) => info.column.id,
     }),
-    // columnHelper.accessor("createdAt", {
-    //   header: () => <span>Date Onboarded</span>,
-    //   footer: (info) => info.column.id,
-    // }),
-    columnHelper.accessor((row) => row, {
+    columnHelper.accessor((row) => row.phoneNumber, {
+      id: "phoneNumber",
+      cell: ({ row }) => (
+        <span>
+          {row.original?.phoneNumber ? `+${row.original.phoneNumber}` : "N/A"}
+        </span>
+      ),
+      header: () => <span>Contact Number</span>,
+      footer: (info) => info.column.id,
+    }),
+
+    columnHelper.accessor((row) => row.createdAt, {
       id: "createdAt",
       cell: ({ row }) => {
         return (
@@ -84,14 +93,8 @@ export default function Page() {
         );
       },
       header: () => <span>Date Onboarded</span>,
-      footer: (info) => info.column.id,
     }),
-    columnHelper.accessor((row) => row.phoneNumber, {
-      id: "contactNumber",
-      cell: ({ row }) => <span>{row.original.phoneNumber || "N/A"}</span>,
-      header: () => <span>Contact Number </span>,
-      footer: (info) => info.column.id,
-    }),
+
     // columnHelper.accessor("orders", {
     //   cell: (info) => <span>{info.row.original.orders ?? 0}</span>,
     //   header: () => <span>Orders</span>,
@@ -110,13 +113,15 @@ export default function Page() {
 
     columnHelper.accessor((row) => row, {
       id: "action",
-      cell: (info) => (
-        <span
-          className="cursor-pointer text-blue-400"
-          onClick={() => handleView(info.cell.row.original.id)}
-        >
-          View More
-        </span>
+      cell: ({ row }) => (
+        <div className="inline-flex items-center ">
+          <Link
+            href={`/admin/customers/${row.original.id}`}
+            className="cursor-pointer text-blue-700"
+          >
+            <Eye size={20} />
+          </Link>
+        </div>
       ),
       header: () => <span>Actions</span>,
       footer: (info) => info.column.id,

@@ -9,7 +9,7 @@ import { Bag, Lock1, User, UserCirlceAdd } from "iconsax-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { BsList, BsSearch, BsX } from "react-icons/bs";
 import { FaRegUserCircle } from "react-icons/fa";
 import {
@@ -28,22 +28,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import { adminLogOut, getAdmin } from "@/services/hooks/admin-auth";
-import useAdmin from "@/services/hooks/admin/use_admin";
-import { useQuery } from "@tanstack/react-query";
-import CurrentTime from "./CurrentTime";
 import { useAuth } from "@/context/AuthProvider";
+import { cn } from "@/lib/utils";
+import { adminLogOut } from "@/services/hooks/admin-auth";
+import CurrentTime from "./CurrentTime";
 
 export default function AdminNav() {
-  // const [admin, setAdmin] = useState<any>();
   const router = useRouter();
-  const [sticky, setSticky] = useState(false);
-  const [open, setIsOpen] = useState(false);
+  const [openSider, setIsOpenSidebar] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
   const { auth } = useAuth();
-  
 
   return (
     <>
@@ -51,8 +46,8 @@ export default function AdminNav() {
         <div className="flex items-center justify-between px-4">
           <div className="flex items-center gap-3">
             <span
-              className="inline-block text-goldie-300 lg:hidden cursor-pointer"
-              onClick={() => setIsOpen(true)}
+              className="inline-block cursor-pointer text-goldie-300 lg:hidden"
+              onClick={() => setIsOpenSidebar(true)}
             >
               <BsList size={24} />
             </span>
@@ -168,31 +163,22 @@ export default function AdminNav() {
           </div>
         </div>
         <div
-          className={`fixed top-0 h-screen w-full duration-300 lg:hidden ${open ? "left-0" : "-left-full"}`}
+          className={`fixed top-0 h-screen w-full duration-300 lg:hidden ${openSider ? "left-0" : "-left-full"}`}
         >
           <span
             className="absolute left-3 top-4 z-50 inline-block cursor-pointer text-goldie-300"
-            onClick={() => setIsOpen(false)}
+            onClick={() => setIsOpenSidebar(false)}
           >
             <BsX size={30} />
           </span>
           <div
-            onClick={() => setIsOpen(false)}
-            className={`fixed  top-0 z-30 h-screen w-full bg-black bg-opacity-50 ${open ? "left-0" : "-left-full"}`}
+            onClick={() => setIsOpenSidebar(false)}
+            className={`fixed  top-0 z-30 h-screen w-full bg-black bg-opacity-50 ${openSider ? "left-0" : "-left-full"}`}
           ></div>
           <div className="absolute left-0 top-0 z-[40] h-screen w-[250px]">
-            <MobileSideBar />
+            <MobileSideBar onClose={() => setIsOpenSidebar(false)} />
           </div>
         </div>
-        {/* {open && (
-          <div
-            className={`fixed top-0 z-50 bg-black bg-opacity-50 duration-300 ${open ? "left-0" : "-left-full"}`}
-          >
-            <div className="absolute left-0 top-0 h-screen w-[250px]">
-              <MobileSideBar />
-            </div>
-          </div>
-        )} */}
       </nav>
     </>
   );
