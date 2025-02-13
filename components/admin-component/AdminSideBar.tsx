@@ -20,8 +20,6 @@ export default function AdminSideBar() {
   const pathname = usePathname();
   const { auth } = useAuth();
 
-  
-
   return (
     <section className="fixed bottom-0 top-0 z-40 hidden w-[220px] flex-col bg-black py-4 lg:flex lg:pt-24">
       {/* <div className="my-2 mb-7 border-b border-goldie-300 border-opacity-50"></div> */}
@@ -84,13 +82,13 @@ export default function AdminSideBar() {
           Settings
         </Link>
 
-        <span
-          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm text-neutral-500 duration-300 hover:text-goldie-300`}
+        <button
+          className={`flex w-full cursor-pointer items-center gap-2 whitespace-nowrap py-2 text-sm text-neutral-500 duration-300 hover:text-goldie-300`}
           onClick={() => adminLogOut(router)}
         >
           <CiLogout size={20} />
           Logout
-        </span>
+        </button>
       </div>
     </section>
   );

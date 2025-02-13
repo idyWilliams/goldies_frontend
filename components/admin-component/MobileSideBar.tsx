@@ -95,6 +95,7 @@ export default function MobileSideBar({ onClose }: { onClose: () => void }) {
             Settings
           </button>
         </Link>
+        
         <button
           className={`flex w-full cursor-pointer items-center gap-2 whitespace-nowrap py-2 text-sm text-neutral-500 duration-300 hover:text-goldie-300`}
           onClick={onClose}
