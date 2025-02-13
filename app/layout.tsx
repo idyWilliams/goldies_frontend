@@ -1,20 +1,19 @@
 "use client";
 import type { Metadata } from "next";
-import { ReactNode, Suspense } from "react";
+import { ReactNode, Suspense, useEffect } from "react";
 import "./globals.css";
 
+import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/context/AuthProvider";
 import { ProductProvider } from "@/context/ProductInfoContext";
 import { ShoppingCartProvider } from "@/context/ShoppingCartContext";
 import { cn } from "@/helper/cn";
-import { BASEURL } from "@/services/api";
 import tomatoGrotesk from "@/utils/font";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { usePathname } from "next/navigation";
-import StoreProvider from "./StoreProvider";
-import { Toaster } from "@/components/ui/sonner";
 import Loading from "./(landing)/loading";
+import StoreProvider from "./StoreProvider";
 
 const metadata: Metadata = {
   title: "Goldies Confectioneries | Buy Delicious Cakes Online",
@@ -29,7 +28,6 @@ declare global {
   }
 }
 
-console.log("Current NODE_ENV:", process.env.NODE_ENV, BASEURL);
 
 const queryClient = new QueryClient();
 
@@ -76,7 +74,7 @@ export default function RootLayout({
               <StoreProvider>
                 <ProductProvider>
                   <Suspense fallback={<Loading />}>
-                    <div className="min-h-dvh">{children}</div>
+                    <main>{children}</main>
                     <Toaster position="top-right" richColors expand={true} />
                   </Suspense>
                 </ProductProvider>
