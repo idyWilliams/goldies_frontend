@@ -72,6 +72,16 @@ export default function Page() {
       header: () => <span>Customers</span>,
       footer: (info) => info.column.id,
     }),
+    columnHelper.accessor((row) => row.email, {
+      id: "email",
+      cell: ({ row }) => (
+        <span>
+          {row.original?.email}
+        </span>
+      ),
+      header: () => <span>Contact Number</span>,
+      footer: (info) => info.column.id,
+    }),
     columnHelper.accessor((row) => row.phoneNumber, {
       id: "phoneNumber",
       cell: ({ row }) => (
@@ -116,7 +126,7 @@ export default function Page() {
       cell: ({ row }) => (
         <div className="inline-flex items-center ">
           <Link
-            href={`/admin/customers/${row.original.id}`}
+            href={`/admin/customers/${row.original?._id}`}
             className="cursor-pointer text-blue-700"
           >
             <Eye size={20} />
@@ -187,7 +197,7 @@ export default function Page() {
                           <button
                             className="bg-black px-5 py-2 text-sm text-goldie-300"
                             onClick={() =>
-                              router.push(`/admin/customers/${item.id}`)
+                              router.push(`/admin/customers/${item._id}`)
                             }
                           >
                             More Info

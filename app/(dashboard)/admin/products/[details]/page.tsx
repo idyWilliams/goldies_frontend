@@ -10,16 +10,12 @@ import { getProduct } from "@/services/hooks/products";
 import { IProduct } from "@/interfaces/product.interface";
 import { formatCurrency } from "@/helper/formatCurrency";
 
-type Data = {
-  id: number;
-  name: string;
-  age: number;
-};
 
 export default function Page({ params }: { params: { details: string } }) {
   const [selectedImage, setSelectedImage] = useState(0);
   const router = useRouter();
   const [product, setProduct] = useState<IProduct | null>();
+
   const { data, isSuccess, isError, isLoading } = useQuery({
     queryFn: async () => getProduct(params.details),
     queryKey: ["product"],

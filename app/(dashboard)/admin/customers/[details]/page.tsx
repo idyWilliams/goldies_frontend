@@ -3,22 +3,32 @@ import AdminAuth from "@/components/admin-component/AdminAuth";
 import CustomerOrder from "@/components/admin-component/CustomerOrder";
 import BillingInfo from "@/components/admin-component/customers/BillingInfo";
 import ContactInfo from "@/components/admin-component/customers/ContactInfo";
+import { IUser } from "@/interfaces/user.interface";
+import { getUser } from "@/services/hooks/users";
 import { customers } from "@/utils/adminData";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, Call, Location, Sms } from "iconsax-react";
 import { useRouter } from "next/navigation";
 
 import React, { useEffect, useState } from "react";
 
-export default function Page({ params }: any) {
+export default function Page({ params }: { params: { details: string } }) {
   const [activeSec, setActiveSec] = useState("contact");
-  const [customer, setCustomer] = useState<any>();
+  const [customer, setCustomer] = useState<IUser>();
   const router = useRouter();
-  useEffect(() => {
-    const info = customers.find((info: any) => params.details * 1 === info.id);
-    setCustomer(info);
-  }, [params?.details]);
 
-  console.log(params, customer);
+  // const { data, isSuccess, isError, isLoading } = useQuery({
+  //   queryFn: async () => getUser(),
+  //   queryKey: ["user"],
+  // });
+
+  // useEffect(() => {
+  //   if (!isSuccess) return;
+
+  //   console.log("getUser>>", data);
+  //   // setUser(data?);
+  // }, [isSuccess]);
+
   const handleViewMore = () => {
     if (activeSec === "contact") {
       setActiveSec("billing");

@@ -8,8 +8,10 @@ import { IOrder } from "@/interfaces/order.interface";
 import { adminGetAllOrders } from "@/services/hooks/payment";
 import { useQuery } from "@tanstack/react-query";
 import { createColumnHelper } from "@tanstack/react-table";
+import { Eye } from "iconsax-react";
 import { Loader2Icon } from "lucide-react";
 import moment from "moment";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
@@ -121,12 +123,14 @@ export default function OrderPage() {
     columnHelper.accessor("_id", {
       header: () => <span>Actions</span>,
       cell: ({ row }) => (
-        <button
-          className="rounded-[50px] bg-goldie-300 px-4 py-1 text-black"
-          onClick={() => router.push(`/admin/orders/${row.original._id}`)}
-        >
-          View Details
-        </button>
+        <div className="inline-flex items-center ">
+          <Link
+            href={`/admin/orders/${row.original._id}`}
+            className="cursor-pointer text-blue-700"
+          >
+            <Eye size={20} />
+          </Link>
+        </div>
       ),
     }),
   ];
