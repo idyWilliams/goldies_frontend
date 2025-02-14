@@ -155,7 +155,7 @@ const Page = () => {
                   </label>
 
                   <Link
-                    href="/forgot-password"
+                    href="/admin-forgot-password"
                     className="text-sm hover:text-goldie-400"
                   >
                     Forgot password?

@@ -179,6 +179,11 @@ export const productSlice = createSlice({
       state.buyNowProduct = null;
       localStorage.removeItem("goldies_buyNow");
     },
+
+    clearCart: (state) => {
+      state.cart = [];
+      localStorage.removeItem("cart");
+    },
   },
 });
 
@@ -190,6 +195,7 @@ export const {
   decrementProductQty,
   setBuyNowProduct,
   clearBuyNowProduct,
+  clearCart
 } = productSlice.actions;
 
 export default productSlice.reducer;

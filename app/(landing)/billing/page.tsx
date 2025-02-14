@@ -16,7 +16,11 @@ import EachElement from "@/helper/EachElement";
 import { cn } from "@/helper/cn";
 import { formatCurrency } from "@/helper/formatCurrency";
 import { IBillingInfo } from "@/interfaces/user.interface";
-import { useAppSelector } from "@/redux/hook";
+import {
+  clearBuyNowProduct,
+  clearCart,
+} from "@/redux/features/product/productSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import {
   getAllBllingInfo,
   initPayment,
@@ -101,6 +105,7 @@ const Page = () => {
   const [isPaymentProcessingModalOpen, setIsPaymentProcessingModalOpen] =
     useState(false);
   const hasVerified = useRef(false);
+  const dispatch = useAppDispatch();
 
   const { data, isLoading, refetch, isError } = useQuery({
     queryKey: ["allBllingInfo"],
@@ -371,6 +376,11 @@ const Page = () => {
           toast.success("Billing info saved successfully!");
         }
 
+        dispatch(() => {
+          clearCart();
+          clearBuyNowProduct();
+        });
+        
         window.location.href = "/my-orders";
       }
     } catch (error: any) {
@@ -448,7 +458,7 @@ const Page = () => {
       <section className="w-full bg-neutral-100 px-4 py-12">
         <div className="mx-auto grid-cols-2 gap-8 md:grid lg:max-w-5xl lg:grid-cols-[1fr_400px] lg:gap-8 xl:max-w-6xl">
           {/* billing form */}
-          <div className="w-full lg:w-4/5">
+          <div className="w-full lg:w-[85%]">
             <div className="mb-4">
               {billingInfos?.length > 0 ? (
                 <>
@@ -468,9 +478,9 @@ const Page = () => {
                 {billingInfos.map((info: IBillingInfo) => (
                   <label
                     key={info._id}
-                    className="relative cursor-pointer overflow-hidden rounded-2xl border bg-white p-4 hover:border-neutral-900 has-[:checked]:border-neutral-900"
+                    className="relative flex cursor-pointer items-center overflow-hidden rounded-2xl border bg-white p-4 hover:border-neutral-900 has-[:checked]:border-neutral-900 "
                   >
-                    <div className="grid grid-cols-[1fr_5fr_1fr] items-center gap-2">
+                    <div className="grid w-full grid-cols-[1fr_5fr_1fr] items-center gap-2">
                       <div className="flex justify-center">
                         <input
                           type="radio"
@@ -499,7 +509,7 @@ const Page = () => {
                           {info.firstName} {info.lastName}
                         </h3>
                         <p className="text-sm text-neutral-600">
-                          {info.cityOrTown}, {info.country}
+                          {info.cityOrTown},{info.state} <br /> {info.country}
                         </p>
                         <p className="line-clamp-1 truncate text-sm">
                           {info.streetAddress}
