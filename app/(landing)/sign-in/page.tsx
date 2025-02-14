@@ -78,133 +78,130 @@ const Page = () => {
   };
 
   return (
-    <>
-      <div className="mt-[64px]" />
-      <section className="py-10">
-        <div className="wrapper">
-          <div className="flex flex-col items-center sm:mx-auto sm:w-[500px] sm:border sm:bg-white sm:p-6 sm:shadow-lg">
-            <span className="flex h-20 w-20 items-center justify-center rounded-full bg-goldie-300 bg-opacity-35">
-              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-goldie-300 bg-opacity-35">
-                <RiUserSharedLine size={30} />
-              </span>
+    <section className="py-10">
+      <div className="wrapper">
+        <div className="flex flex-col items-center sm:mx-auto sm:w-[500px] sm:border sm:bg-white sm:p-6 sm:shadow-lg">
+          <span className="flex h-20 w-20 items-center justify-center rounded-full bg-goldie-300 bg-opacity-35">
+            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-goldie-300 bg-opacity-35">
+              <RiUserSharedLine size={30} />
             </span>
-            <div className="mb-4 mt-6 text-center">
-              <h1 className="mb-1 text-2xl font-bold capitalize">Sign In</h1>
-              <p className="text-balance text-neutral-600">
-                Welcome Back! Sign in to continue
-              </p>
-            </div>
-            <div className="w-full">
-              <form
-                id="signin"
-                className="grid gap-5"
-                onSubmit={handleSubmit(onSubmit)}
-              >
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="mb-1 inline-block font-medium capitalize"
-                  >
-                    Email Address
-                  </label>
+          </span>
+          <div className="mb-4 mt-6 text-center">
+            <h1 className="mb-1 text-2xl font-bold capitalize">Sign In</h1>
+            <p className="text-balance text-neutral-600">
+              Welcome Back! Sign in to continue
+            </p>
+          </div>
+          <div className="w-full">
+            <form
+              id="signin"
+              className="grid gap-5"
+              onSubmit={handleSubmit(onSubmit)}
+            >
+              <div>
+                <label
+                  htmlFor="email"
+                  className="mb-1 inline-block font-medium capitalize"
+                >
+                  Email Address
+                </label>
+                <input
+                  {...register("email")}
+                  type="email"
+                  className={cn(
+                    "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
+                    errors?.email
+                      ? "border border-red-600 focus:border-red-600"
+                      : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
+                  )}
+                  name="email"
+                  placeholder="Your email"
+                />
+                {errors?.email && (
+                  <p className={cn("mt-1 text-sm text-red-600")}>
+                    {errors.email?.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label
+                  htmlFor="password"
+                  className="relative mb-1 inline-block font-medium capitalize"
+                >
+                  Password
+                </label>
+                <div className="relative">
                   <input
-                    {...register("email")}
-                    type="email"
+                    {...register("password")}
+                    type={visible ? "text" : "password"}
                     className={cn(
                       "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
-                      errors?.email
+                      errors?.password
                         ? "border border-red-600 focus:border-red-600"
                         : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
                     )}
-                    name="email"
-                    placeholder="Your email"
+                    name="password"
+                    placeholder="Your password"
                   />
-                  {errors?.email && (
-                    <p className={cn("mt-1 text-sm text-red-600")}>
-                      {errors.email?.message}
-                    </p>
-                  )}
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="password"
-                    className="relative mb-1 inline-block font-medium capitalize"
+                  <span
+                    onClick={handleToggle}
+                    className="absolute bottom-[14px] right-3 cursor-pointer text-neutral-800"
                   >
-                    Password
-                  </label>
-                  <div className="relative">
-                    <input
-                      {...register("password")}
-                      type={visible ? "text" : "password"}
-                      className={cn(
-                        "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
-                        errors?.password
-                          ? "border border-red-600 focus:border-red-600"
-                          : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
-                      )}
-                      name="password"
-                      placeholder="Your password"
-                    />
-                    <span
-                      onClick={handleToggle}
-                      className="absolute bottom-[14px] right-3 cursor-pointer text-neutral-800"
-                    >
-                      {visible ? (
-                        <BsEyeSlash size={20} />
-                      ) : (
-                        <AiOutlineEye size={20} />
-                      )}
-                    </span>
-                  </div>
-                  {errors?.password && (
-                    <p className={cn("mt-1 text-sm text-red-600")}>
-                      {errors.password?.message}
-                    </p>
-                  )}
+                    {visible ? (
+                      <BsEyeSlash size={20} />
+                    ) : (
+                      <AiOutlineEye size={20} />
+                    )}
+                  </span>
                 </div>
-                <div className="flex items-center justify-between">
-                  <label htmlFor="agree" className="flex items-center gap-3">
-                    <input
-                      checked={isChecked}
-                      onChange={(e) => setIsChecked(e.target.checked)}
-                      type="checkbox"
-                      name="agree"
-                      id="agree"
-                      // checked
-                      className="checked:focus:ring-neutral-800, form-checkbox h-4 w-4
+                {errors?.password && (
+                  <p className={cn("mt-1 text-sm text-red-600")}>
+                    {errors.password?.message}
+                  </p>
+                )}
+              </div>
+              <div className="flex items-center justify-between">
+                <label htmlFor="agree" className="flex items-center gap-3">
+                  <input
+                    checked={isChecked}
+                    onChange={(e) => setIsChecked(e.target.checked)}
+                    type="checkbox"
+                    name="agree"
+                    id="agree"
+                    // checked
+                    className="checked:focus:ring-neutral-800, form-checkbox h-4 w-4
                        checked:bg-goldie-300 checked:hover:bg-neutral-800 
                        focus:ring-neutral-800 "
-                    />
-                    <span className="text-sm">Keep me signed in</span>
-                  </label>
+                  />
+                  <span className="text-sm">Keep me signed in</span>
+                </label>
 
-                  <Link
-                    href="/forgot-password"
-                    className="text-sm hover:text-goldie-400"
-                  >
-                    Forgot password?
-                  </Link>
-                </div>
-                <Button
-                  disabled={userLogin?.isPending}
-                  className="mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300"
+                <Link
+                  href="/forgot-password"
+                  className="text-sm hover:text-goldie-400"
                 >
-                  {userLogin?.isPending ? "Loading...." : "Sign In"}
-                </Button>
+                  Forgot password?
+                </Link>
+              </div>
+              <Button
+                disabled={userLogin?.isPending}
+                className="mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300"
+              >
+                {userLogin?.isPending ? "Loading...." : "Sign In"}
+              </Button>
 
-                <p className="text-center">
-                  Don’t have an account? &nbsp;
-                  <Link href="/sign-up" className="text-goldie-300">
-                    Sign Up
-                  </Link>
-                </p>
-              </form>
-            </div>
+              <p className="text-center">
+                Don’t have an account? &nbsp;
+                <Link href="/sign-up" className="text-goldie-300">
+                  Sign Up
+                </Link>
+              </p>
+            </form>
           </div>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 };
 

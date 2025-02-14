@@ -107,7 +107,7 @@ export default function ProductsPage() {
 
     router.push(`${pathname}?${currentParams.toString()}`);
     setParams(newParams);
-  }, [currentPageIndex, debouncedSearchValue, pathname, router, searchParams]);
+  }, [currentPageIndex,searchValue, debouncedSearchValue, pathname, router, searchParams]);
 
   const {
     isLoading,

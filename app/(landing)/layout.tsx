@@ -66,11 +66,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [pathname, router]);
 
   return (
-    <>
+    <div className="min-h-dvh">
       <NextTopLoader color="#262626" showSpinner={false} height={4} />
       <Header />
-      <main className="min-h-dvh">{children}</main>
+      <main className="">{children}</main>
       <Footer />
-    </>
+    </div>
   );
 }

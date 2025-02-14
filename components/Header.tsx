@@ -88,7 +88,7 @@ const Header = () => {
   return (
     <>
       <header
-        className={`${sticky ? "fixed shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "absolute border-b border-neutral-900"} left-0 top-0 z-50 flex  w-full items-center bg-goldie-300 py-3 lg:h-20`}
+        className={`${sticky ? "sticky shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "relative border-b border-neutral-900"} left-0 top-0 z-50 flex  w-full items-center bg-goldie-300 py-3 lg:h-20`}
       >
         <div className="wrapper flex items-center justify-between">
           <div className="flex items-center gap-3">

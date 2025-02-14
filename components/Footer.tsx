@@ -1,21 +1,18 @@
 "use client";
-import Link from "next/link";
+import { Call, Location, Sms } from "iconsax-react";
 import Image from "next/image";
-import Img from "../public/assets/goldis-gold-logo.png";
+import Link from "next/link";
 import {
   BsFacebook,
   BsInstagram,
   BsLinkedin,
   BsTwitterX,
 } from "react-icons/bs";
-import { Call, Location, Sms } from "iconsax-react";
+import Img from "../public/assets/goldis-gold-logo.png";
 // import { categories } from "@/utils/cakeCategories";
-import { useEffect, useState } from "react";
-import React from "react";
-import { useQuery } from "@tanstack/react-query";
 import { fetchCategories } from "@/services/hooks/category";
-import { fetchSubCategories } from "@/services/hooks/category";
-import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 
 // Contact Details Constants

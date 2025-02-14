@@ -79,9 +79,6 @@ export default function Page({ params }: { params: { token: string } }) {
   };
 
   return (
-    <>
-      <>
-        <div className="mt-[64px] lg:mt-20"></div>
         <section className="py-12">
           <div className="mx-auto flex w-full items-center justify-center bg-white px-4 py-10 sm:w-[560px] md:h-[70vh] md:w-[640px] lg:w-[500px]">
             {isExpired && <ResetLinkExpired />}
@@ -202,7 +199,5 @@ export default function Page({ params }: { params: { token: string } }) {
             </div>
           </div>
         </section>
-      </>
-    </>
   );
 }

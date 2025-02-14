@@ -267,7 +267,7 @@ function CakeDetailsPage() {
       );
 
       // Navigate to billing page
-      router.push(`/billing?buyNow=true&productId=${activeProduct?._id}`);
+      router.push(`/billing?buyNow=true`);
     } else {
       console.error(
         "Please fill in all required fields before proceeding to checkout.",
@@ -297,29 +297,28 @@ function CakeDetailsPage() {
   };
 
   return (
-    <>
-      <>
-        <div className="mt-[64px] lg:mt-20" />
-        <section className="bg-black py-4">
-          <div className="wrapper">
-            <BreadCrumbs
-              items={[
-                {
-                  name: "Home",
-                  link: "/",
-                },
-                {
-                  name: "Shop",
-                  link: "/shop",
-                },
-                {
-                  name: activeProduct ? activeProduct.name : "",
-                  link: "/shop/cakes",
-                },
-              ]}
-            />
-          </div>
-        </section>
+    <div>
+      <div className="bg-black py-4">
+        <div className="wrapper">
+          <BreadCrumbs
+            items={[
+              {
+                name: "Home",
+                link: "/",
+              },
+              {
+                name: "Shop",
+                link: "/shop",
+              },
+              {
+                name: activeProduct ? activeProduct.name : "",
+                link: "/shop/cakes",
+              },
+            ]}
+          />
+        </div>
+      </div>
+      <div className="py-12">
         <section className="">
           <div className="wrapper py-4 md:grid md:grid-cols-2 md:items-start md:gap-4 lg:justify-evenly lg:gap-8 xl:grid-cols-[40%_50%] xl:gap-10">
             <div className="relative w-full overflow-hidden rounded-md md:h-3/4">
@@ -605,8 +604,8 @@ function CakeDetailsPage() {
             )}
           </div>
         </section>
-      </>
-    </>
+      </div>
+    </div>
   );
 }
 
