@@ -32,7 +32,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { CheckCircle, Edit2Icon } from "lucide-react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CountryDropdown } from "react-country-region-selector";
 import { Controller, useForm } from "react-hook-form";
 import PhoneInput from "react-phone-input-2";
@@ -94,10 +94,10 @@ const Page = () => {
   );
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingInfo, setEditingInfo] = useState<IBillingInfo | null>(null);
-  const [isOrderCreated, setIsOrderCreated] = useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isPaymentProcessingModalOpen, setIsPaymentProcessingModalOpen] =
     useState(false);
+  const hasVerified = useRef(false);
 
   const { data, isLoading, refetch, isError } = useQuery({
     queryKey: ["allBllingInfo"],
@@ -141,10 +141,11 @@ const Page = () => {
   useEffect(() => {
     const reference = queryParams.get("reference");
 
-    if (reference && !isOrderCreated) {
+    if (reference && !hasVerified.current) {
+      hasVerified.current = true; // Prevent duplicate execution
       verifyAndCreateOrder(reference);
     }
-  }, [queryParams, isOrderCreated]);
+  }, [queryParams]);
 
   // Add this effect to reset form with billing info when data loads
   useEffect(() => {
@@ -178,7 +179,6 @@ const Page = () => {
         address: editingInfo.streetAddress,
         city: editingInfo.cityOrTown,
         country: editingInfo.country,
-        save: editingInfo.defaultBillingInfo,
       });
     }
   }, [editingInfo, form1]);
@@ -211,7 +211,6 @@ const Page = () => {
         phoneNumber: data.phone,
         streetAddress: data.address,
         cityOrTown: data.city,
-        defaultBillingInfo: data.save,
       };
 
       await updateBillingDetails.mutateAsync(billingInfo);
@@ -256,6 +255,8 @@ const Page = () => {
     setIsPaymentProcessingModalOpen(true); // Open the modal
     setIsProcessingPayment(true);
 
+    console.log("form submission>>>", data);
+
     try {
       const callbackUrl =
         process.env.NODE_ENV === "development"
@@ -263,8 +264,8 @@ const Page = () => {
           : "https://goldies-frontend-v3.vercel.app/billing";
 
       const paymentData = {
-        firstName: data.firstName,
-        lastName: data.lastName,
+        first_name: data.firstName,
+        last_name: data.lastName,
         email: data.email,
         amount: totalWithDelivery,
         callbackUrl: callbackUrl,
@@ -293,8 +294,6 @@ const Page = () => {
 
   // This function should run after successful payment callback
   const verifyAndCreateOrder = async (reference: string) => {
-    if (isOrderCreated) return;
-
     setIsPaymentModalOpen(true); // Open the modal
     setIsSubmitting(true);
 
@@ -330,38 +329,29 @@ const Page = () => {
       };
 
       const orderRes = await createOrder.mutateAsync(orderInfo);
-      if (!orderRes?.error) {
-        setIsOrderCreated(true);
-      } else {
-        throw new Error(orderRes.message || "Failed to create order.");
-      }
 
-      // Step 4: Save Billing Info (If Checked)
-      if (data.save) {
-        const billingInfo = {
-          _id: data._id,
-          firstName: data.firstName,
-          lastName: data.lastName,
-          email: data.email,
-          country: data.country,
-          cityOrTown: data.city,
-          streetAddress: data.address,
-          phoneNumber: data.phoneNumber,
-          defaultBillingInfo: true,
-        };
+      if (!orderRes.error) {
+        // Step 4: Save Billing Info (If Checked)
+        if (data.save) {
+          const billingInfo = {
+            _id: data._id,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            email: data.email,
+            country: data.country,
+            cityOrTown: data.city,
+            streetAddress: data.address,
+            phoneNumber: data.phoneNumber,
+            defaultBillingInfo: true,
+          };
 
-        if (isBillingInfoSaved) {
-          await updateBillingDetails.mutateAsync(billingInfo);
-          toast.success("Billing info updated successfully!");
-        } else {
+          // Save billing info only if it hasn't been saved before
           await saveBilling.mutateAsync(billingInfo);
-          setIsBillingInfoSaved(true);
           toast.success("Billing info saved successfully!");
         }
       }
 
-      // router.push("/my-orders");
-      window.location.href = "/my-orders";
+      // window.location.href = "/my-orders";
     } catch (error: any) {
       toast.error(error.message || "An error occurred.");
       console.error("Error:", error);
