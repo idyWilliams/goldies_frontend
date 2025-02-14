@@ -2,6 +2,7 @@
 import BreadCrumbs from "@/components/BreadCrumbs";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/helper/formatCurrency";
+import { IBillingInfo } from "@/interfaces/user.interface";
 import illustration from "@/public/assets/illistration-removebg-preview.png";
 import {
   decrementProductQty,
@@ -10,6 +11,8 @@ import {
   setProducts,
 } from "@/redux/features/product/productSlice";
 import { useAppSelector } from "@/redux/hook";
+import { getAllBllingInfo } from "@/services/hooks/payment";
+import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -21,6 +24,16 @@ const CartPage = () => {
   const dispatch = useDispatch();
   const { cart } = useAppSelector((state) => state.product);
   const router = useRouter();
+  const { data, isLoading, refetch, isError } = useQuery({
+    queryKey: ["allBllingInfo"],
+    queryFn: async () => getAllBllingInfo(),
+  });
+
+  const billingInfos = data?.user as IBillingInfo[];
+
+  const defaultBillingInfo = billingInfos?.find(
+    (info) => info.defaultBillingInfo,
+  );
 
   const cartItems = Object.values(cart);
 
@@ -35,8 +48,6 @@ const CartPage = () => {
   );
 
   const handleCheckout = () => {
-    console.log(cart, "cart");
-    console.log(cartTotal, "cartTotal");
     router.push("/billing");
   };
 
@@ -69,23 +80,25 @@ const CartPage = () => {
 
           {cartItems.length > 0 && (
             <div className="mb-5 grid grid-cols-[2fr_1fr] border-b border-goldie-300 pb-2 sm:grid-cols-[2fr_1fr_1fr]">
-              <p className="text-goldie-300">Product</p>
-              <p className="hidden text-goldie-300 md:block">Quantity</p>
-              <p className="text-goldie-300">Sub Total</p>
+              <p className="text-lg font-semibold text-goldie-300">Product</p>
+              <p className="hidden text-lg font-semibold text-goldie-300 md:block">
+                Quantity
+              </p>
+              <p className="text-lg font-semibold text-goldie-300">Sub Total</p>
             </div>
           )}
 
           {/* CART FOR DESKTOP */}
-          <div className="hidden sm:block">
+          <div className="hidden divide-y divide-gray-400 sm:block">
             {cartItems.map((item, i) => {
               return (
                 <div
                   key={i}
-                  className="w-full items-start justify-start sm:inline-grid sm:grid-cols-[2fr_1fr_1fr]"
+                  className="w-full items-start justify-start py-3 sm:inline-grid sm:grid-cols-[2fr_1fr_1fr]"
                 >
-                  <div className="flex gap-3">
+                  <div className="flex gap-4">
                     <Link href={`/shop/${item?.slug}?productId=${item?._id}`}>
-                      <figure className="h-[80px] w-[100px]">
+                      <figure className="h-[80px] w-[80px]">
                         <Image
                           src={item.images[0]}
                           alt="Lemon Cake"
@@ -95,9 +108,7 @@ const CartPage = () => {
                         />
                       </figure>
                     </Link>
-                    <h3 className="text-lg font-bold text-goldie-300">
-                      {item.name}
-                    </h3>
+                    <h3 className="text-goldie-300">{item.name}</h3>
                   </div>
                   <div className="inline-flex w-[100px] items-center justify-start gap-3 rounded-[50px] bg-white px-1.5 py-1">
                     <span
@@ -108,7 +119,7 @@ const CartPage = () => {
                     >
                       <BsDash size={24} />
                     </span>
-                    <span className="font-bold">{item.quantity}</span>
+                    <span className="">{item.quantity}</span>
                     <span
                       onClick={() =>
                         dispatch(incrementProductQty({ id: item._id }))
@@ -119,7 +130,7 @@ const CartPage = () => {
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-xl text-goldie-300">
+                    <span className=" text-goldie-300">
                       {formatCurrency(parseInt(item.maxPrice), "en-NG")}
                     </span>
                     <span
@@ -155,9 +166,7 @@ const CartPage = () => {
                     </figure>
 
                     <div className="flex flex-col">
-                      <h3 className="text-lg font-bold text-goldie-300">
-                        {item.name}
-                      </h3>
+                      <h3 className=" text-goldie-300">{item.name}</h3>
                       <div className="mt-3 inline-flex w-fit items-center gap-3 rounded-[50px] bg-white px-1.5 py-1">
                         <span
                           onClick={() =>
@@ -167,7 +176,7 @@ const CartPage = () => {
                         >
                           <BsDash size={20} />
                         </span>
-                        <span className="font-bold">{item.quantity}</span>
+                        <span className="">{item.quantity}</span>
                         <span
                           onClick={() =>
                             dispatch(incrementProductQty({ id: item._id }))
@@ -180,7 +189,7 @@ const CartPage = () => {
                     </div>
                   </div>
                   <div className="flex flex-col items-start ">
-                    <span className="inline-block text-lg text-goldie-300">
+                    <span className="inline-block  text-goldie-300">
                       {formatCurrency(parseInt(item.maxPrice), "en-NG")}
                     </span>
                   </div>
@@ -213,29 +222,45 @@ const CartPage = () => {
                   <h3 className="mb-1 font-bold text-goldie-300">
                     Shipping Address
                   </h3>
-                  <p className="text-goldie-300">
-                    123 Westborough Street, London
-                  </p>
+                  {!defaultBillingInfo ? (
+                    <p className="text-gray-400">No shipping address</p>
+                  ) : (
+                    <p className="text-goldie-300">
+                      {defaultBillingInfo?.streetAddress}
+                      <br />
+                      {defaultBillingInfo?.cityOrTown},
+                      {defaultBillingInfo?.state}
+                      <br />
+                      {defaultBillingInfo?.country}
+                    </p>
+                  )}
                 </div>
                 <div className="flex flex-wrap justify-end">
                   <div className="mt-6 flex w-full flex-wrap items-start justify-between sm:mt-0">
                     <ul className="flex flex-col gap-3 text-goldie-300">
                       <li>Product Total</li>
-                      <li>Options Total</li>
+                      {/* <li>Options Total</li> */}
                       <li>Grand Total</li>
                     </ul>
-                    <ul className="flex flex-col gap-3 text-goldie-300">
-                      <li>&euro;{cartTotal}</li>
-                      <li>&euro;100.00</li>
-                      <li>&euro;{cartTotal + 100}</li>
+                    <ul className="flex flex-col gap-3 text-goldie-300 ">
+                      <li className="text-right">
+                        {formatCurrency(cartTotal, "en-NG")}
+                      </li>
+                      {/* <li className="text-right">
+                        {formatCurrency(100, "en-NG")}
+                      </li> */}
+                      <li className="text-right">
+                        {formatCurrency(cartTotal, "en-NG")}
+                      </li>
                     </ul>
                   </div>
-                  <button
+                  <Button
+                    size={"lg"}
                     onClick={handleCheckout}
-                    className="mt-7 cursor-pointer self-end rounded-full bg-goldie-300 px-5 py-2"
+                    className="mt-7 self-end rounded-full bg-goldie-300 text-black hover:bg-goldie-400"
                   >
                     Checkout
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>

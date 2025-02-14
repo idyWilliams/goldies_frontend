@@ -15,7 +15,7 @@ export const verifyPayment = async (reference: string) => {
   return res.data;
 };
 
-export const detailsBillings = async (billingInfo: any) => {
+export const saveBillingDetails = async (billingInfo: any) => {
   const response = await instance.post(
     "/user/save_billing_details",
     billingInfo,
@@ -25,16 +25,36 @@ export const detailsBillings = async (billingInfo: any) => {
 };
 
 export const updateDetailsBillings = async (billingInfo: any) => {
-  const userId = billingInfo._id;
+  const id = billingInfo._id;
   try {
-    const response = await instance.post(
-      `/user/update_billing_info/${userId}`,
+    const response = await instance.patch(
+      `/user/update_billing_info/${id}`,
       billingInfo,
     );
-    console.log("resUpdateBillingInfo is", response.data);
     return response.data;
   } catch (error) {
     console.error("Error updating billing info:", error);
+    throw error;
+  }
+};
+export const deleteBilling = async (id: string) => {
+  try {
+    const response = await instance.delete(`/user/delete_billing_info/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting billing info:", error);
+    throw error;
+  }
+};
+
+export const setDefaultBilling = async (id: string) => {
+  try {
+    const response = await instance.patch(
+      `/user/update_default_billing_info/${id}`,
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting billing info:", error);
     throw error;
   }
 };
@@ -53,7 +73,6 @@ export const orderCreate = async (orderInfo: any) => {
 export const getOrderByUser = async () => {
   try {
     const response = await instance.get("/order/get_specific_user_order");
-    console.log("userOrder", response.data);
     return response.data;
   } catch (error) {
     console.log("error getting user specific order", error);
@@ -71,7 +90,7 @@ export const getOrderByOrderId = async (orderId: string) => {
   }
 };
 
-export const adminGetAllOrders =async()=>{
+export const adminGetAllOrders = async () => {
   try {
     const response = await instance.get(`/order/get_all_order`);
     return response.data;
@@ -79,4 +98,4 @@ export const adminGetAllOrders =async()=>{
     console.log("error getting admin all orders", error);
     throw error;
   }
-}
+};

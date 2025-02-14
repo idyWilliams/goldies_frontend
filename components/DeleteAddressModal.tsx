@@ -1,81 +1,83 @@
-import React from "react";
-import { Button } from "./ui/button";
-import goldis from "../public/assets/goldis-gold-logo.png";
-import close from "../public/assets/close-square.png";
-import {
-  Dialog,
-  //   DialogContent,
-  //   DialogDescription,
-  //   DialogHeader,
-  //   DialogTitle,
-  //   DialogTrigger,
-} from "@/components/ui/dialog";
 import Image from "next/image";
+import close from "../public/assets/close-square.png";
+import goldis from "../public/assets/goldis-gold-logo.png";
+import { Button } from "./ui/button";
+import { IBillingInfo } from "@/interfaces/user.interface";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteBilling } from "@/services/hooks/payment";
+import { toast } from "sonner";
+import { AxiosError } from "axios";
 
-const DeleteAddressModal = ({ onClose }: any) => {
+interface DeleteProps {
+  onClose: () => void;
+  data: IBillingInfo;
+}
+
+interface ErrorResponse {
+  message: string;
+  [key: string]: any;
+}
+
+const DeleteAddressModal = ({ onClose, data }: DeleteProps) => {
+  const queryClient = useQueryClient();
+
+  const handleDeleteProduct = useMutation({
+    mutationFn: deleteBilling,
+    onSuccess: (data) => {
+      toast.success(data?.message);
+      queryClient.invalidateQueries({ queryKey: ["allBllingInfo"] });
+      onClose();
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      const resError = error.response?.data;
+      console.error(resError);
+      const errorMessage = resError?.message ? resError?.message : resError;
+      toast.error(`Error: ${errorMessage}`);
+    },
+  });
+
+  const handleConfirm = () => {
+    handleDeleteProduct.mutate(data?._id);
+  };
+
   return (
-    <Dialog>
-      <div className=" fixed top-60 z-50 rounded-lg border-4 border-black bg-black md:w-1/2">
-        <div className="border-6 flex flex-col gap-6  p-5 text-[#fff]">
-          <header className="flex justify-between ">
+    <div className="rounded-lg border-4 border-black bg-black">
+      <div className="border-6 flex flex-col gap-6  p-5 text-[#fff]">
+        <div className="flex justify-between ">
+          <Image
+            src={goldis}
+            className="flex w-[100px] items-center"
+            alt="Goldis Logo sm"
+          />
+          <button onClick={onClose} className="">
             <Image
-              src={goldis}
-              className="flex w-[100px] items-center"
-              alt="Goldis Logo sm"
+              src={close}
+              className="flex w-[30px] items-center"
+              alt="close"
             />
-            <button onClick={onClose} className="">
-              <Image
-                src={close}
-                className="flex w-[30px] items-center"
-                alt="close"
-              />
-            </button>
-          </header>
-          
-          <div className=" font-[400px] text-[14px] ">
-            Are you sure you want to delete your address from the account information? Deleting
-            your address means you will remove the all information under it and cant be undone.
-          </div>
-          <div className="flex gap-6">
-            <Button variant="outline" size="lg" className="bg-goldie-300 text-[#0F0904;]" >
-              Yes, Edit
-            </Button>
-            <Button variant="destructive" size="lg" onClick={onClose}>
-              No, Continue
-            </Button>
-            {/* use button components */}
-            {/* <button
-              //   onClick={onClose}
-              type="submit"
-              className="w-30 rounded-md border-2 bg-goldie-300 px-6 py-1 text-sm"
-            >
-              Yes, Edit
-            </button>
-            <button
-              //   onClick={onClose}
-              className="w-30 rounded-md border-2 bg-red-600 px-6 py-1 text-sm text-white"
-            >
-              No, Continue
-            </button> */}
-          </div>
+          </button>
+        </div>
+
+        <div className=" text-[14px] font-[400px] ">
+          Are you sure you want to delete your address from the account
+          information? Deleting your address means you will remove the all
+          information under it and cant be undone.
+        </div>
+        <div className="flex items-center gap-4">
+          <Button
+            className="bg-goldie-300 text-[#0F0904;] hover:bg-goldie-400"
+            onClick={handleConfirm}
+          >
+            Yes, Continue
+          </Button>
+          <Button variant="destructive" onClick={onClose}>
+            No
+          </Button>
         </div>
       </div>
-    </Dialog>
+    </div>
   );
 };
 
 export default DeleteAddressModal;
 
-{
-  /* <DialogTrigger>Open</DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription>
-            Are you sure you want to delete Milestone Cakes categories? Deleting
-            // this category means you will remove the category, products and //
-            subcategories under it and cant be undone..
-          </DialogDescription>
-        </DialogHeader>
-      </DialogContent> */
-}

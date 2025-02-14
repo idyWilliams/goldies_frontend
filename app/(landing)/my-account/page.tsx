@@ -17,7 +17,7 @@ import arrow from "@/public/assets/back-arrow.png";
 import frontarrow from "@/public/assets/frontArrow.png";
 import { useQuery } from "@tanstack/react-query";
 import { getUser } from "@/services/hooks/users";
-import { IShippingAddress, IUser } from "@/interfaces/user.interface";
+import { IBillingInfo, IUser } from "@/interfaces/user.interface";
 
 const tabs = [
   {
@@ -82,11 +82,7 @@ const Page = () => {
       case 2:
         return <SavedItems />;
       case 3:
-        return (
-          <MyAddresses
-            myaddresses={data?.user?.billingInfo as IShippingAddress[]}
-          />
-        );
+        return <MyAddresses />;
       // case 4:
       //   return <ChangePassword />;
       default:

@@ -267,7 +267,7 @@ function CakeDetailsPage() {
       );
 
       // Navigate to billing page
-      router.push(`/billing?buyNow=true&productId=${activeProduct?._id}`);
+      router.push(`/billing?buyNow=true`);
     } else {
       console.error(
         "Please fill in all required fields before proceeding to checkout.",

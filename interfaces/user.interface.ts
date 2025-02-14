@@ -7,14 +7,14 @@ export interface IUser {
   email: string;
   phoneNumber: string;
   favorites: IProduct[];
-  billingInfo: IShippingAddress[];
+  billingInfo: IBillingInfo[];
   createdAt: string;
   updatedAt: string;
   hashedPassword?: string;
 }
 
-export interface IShippingAddress {
-  id: string;
+export interface IBillingInfo {
+  _id: string;
   firstName: string;
   lastName: string;
   streetAddress: string;
@@ -22,6 +22,7 @@ export interface IShippingAddress {
   state: string;
   country: string;
   phoneNumber: string;
+  email: string;
   defaultBillingInfo: boolean;
 }
 

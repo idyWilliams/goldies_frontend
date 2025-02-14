@@ -12,7 +12,7 @@ const useFormValues = () => {
     productType: "",
     maxPrice: 0,
     minPrice: 0,
-    status: "Available",
+    status: "available",
   });
 
   const [categoryData, setCategoryData] = useState<{

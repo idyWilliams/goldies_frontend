@@ -42,15 +42,11 @@ export interface IProduct {
   maxPrice: string;
   images: string[];
   flavour: string[];
+  slug: string;
+  status: string;
+  productCode: string;
   createdAt: string;
   updatedAt: string;
-  slug: string;
-  weight?: string;
-  ingredients?: string[];
-  allergens?: string[];
-  available?: boolean;
-  bestSeller?: boolean;
-  status: string;
 }
 
 export interface ProductParams {
@@ -60,4 +56,6 @@ export interface ProductParams {
   searchQuery?: string;
   page?: number;
   limit?: number;
+  sortBy?: string; // "createdAt"
+  order?: string; //"asc" or "desc"
 }
