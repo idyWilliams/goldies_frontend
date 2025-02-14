@@ -169,11 +169,21 @@ const EditBillingForm = ({
             control={control}
             render={({ field }) => (
               <CountryDropdown
+<<<<<<< HEAD
                 {...field}
                 value={field.value || country}
                 onChange={(country) => {
                   field.onChange(country);
                   setCountry(country);
+=======
+                value={field.value}
+                onChange={(val) => {
+                  field.onChange(val);
+                  setCountry(val);
+                  // Reset state when country changes
+                  setValue("state", "");
+                  setState("");
+>>>>>>> b8943c0e9fcc5c30170e77286af55dfe02951844
                 }}
                 classes={cn(
                   "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
