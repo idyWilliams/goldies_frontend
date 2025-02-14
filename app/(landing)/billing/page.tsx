@@ -16,7 +16,11 @@ import EachElement from "@/helper/EachElement";
 import { cn } from "@/helper/cn";
 import { formatCurrency } from "@/helper/formatCurrency";
 import { IBillingInfo } from "@/interfaces/user.interface";
-import { useAppSelector } from "@/redux/hook";
+import {
+  clearBuyNowProduct,
+  clearCart,
+} from "@/redux/features/product/productSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import {
   getAllBllingInfo,
   initPayment,
@@ -101,6 +105,7 @@ const Page = () => {
   const [isPaymentProcessingModalOpen, setIsPaymentProcessingModalOpen] =
     useState(false);
   const hasVerified = useRef(false);
+  const dispatch = useAppDispatch();
 
   const { data, isLoading, refetch, isError } = useQuery({
     queryKey: ["allBllingInfo"],
@@ -371,6 +376,11 @@ const Page = () => {
           toast.success("Billing info saved successfully!");
         }
 
+        dispatch(() => {
+          clearCart();
+          clearBuyNowProduct();
+        });
+        
         window.location.href = "/my-orders";
       }
     } catch (error: any) {
