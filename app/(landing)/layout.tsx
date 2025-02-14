@@ -66,7 +66,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [pathname, router]);
 
   return (
-    <div className="min-h-dvh">
+    <div className="min-h-dvh relative">
       <NextTopLoader color="#262626" showSpinner={false} height={4} />
       <Header />
       <main className="">{children}</main>

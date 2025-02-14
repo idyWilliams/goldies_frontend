@@ -1,19 +1,20 @@
 "use client";
+import { fetchCategories } from "@/services/hooks/category";
+import { subscribeNewsletter } from "@/services/hooks/mail";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Call, Location, Sms } from "iconsax-react";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
   BsFacebook,
   BsInstagram,
   BsLinkedin,
   BsTwitterX,
 } from "react-icons/bs";
-import Img from "../public/assets/goldis-gold-logo.png";
-// import { categories } from "@/utils/cakeCategories";
-import { fetchCategories } from "@/services/hooks/category";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import goldis from "../public/assets/goldis-gold-logo.png";
 import { Button } from "./ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 
 // Contact Details Constants
 const CONTACT_DETAILS = {
@@ -27,11 +28,20 @@ const mapLink = `https://www.google.com/maps/search/?api=1&query=${address}`;
 
 const Footer = () => {
   const [categories, setCategories] = useState<any[]>([]);
-  const [subCategories, setSubCategories] = useState<any[]>([]);
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
 
   const { data, isPending, isSuccess } = useQuery({
     queryFn: fetchCategories,
     queryKey: ["all categories"],
+  });
+
+  const subscribeToNewsletter = useMutation({
+    mutationFn: subscribeNewsletter,
+    onSuccess: () => {
+      setNewsletterEmail("");
+      setOpenDialog(true);
+    },
   });
 
   useEffect(() => {
@@ -45,6 +55,19 @@ const Footer = () => {
   const getYear = () => {
     return new Date().getFullYear();
   };
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail.trim()) return;
+    await subscribeToNewsletter.mutateAsync({ email: newsletterEmail });
+  };
+
+  const SOCIAL_LINKS = [
+    { icon: BsFacebook, href: "#" },
+    { icon: BsInstagram, href: "#" },
+    { icon: BsTwitterX, href: "#" },
+    { icon: BsLinkedin, href: "#" },
+  ];
 
   return (
     <section className="relative mt-auto grid min-h-[500px] w-full bg-neutral-900">
@@ -60,7 +83,7 @@ const Footer = () => {
           </div>
           <div className="flex h-min w-full items-center rounded-md md:bg-white md:p-2">
             <form
-              onSubmit={(e) => e.preventDefault()}
+              onSubmit={handleSubscribe}
               className="flex w-full flex-col items-center gap-4 md:flex-row"
             >
               <input
@@ -69,22 +92,57 @@ const Footer = () => {
                 id="email"
                 placeholder="Enter your email"
                 className="w-full rounded-md border-0 focus:ring-0"
+                value={newsletterEmail}
+                onChange={(e) => setNewsletterEmail(e.target.value)}
               />
               <Button
                 size={"lg"}
                 type="submit"
                 className=" w-full text-goldie-300 md:mt-0 md:w-auto"
+                aria-label="Subscribe to Newsletter"
               >
                 Subscribe
               </Button>
             </form>
           </div>
+
+          {/* Success Dialog */}
+          <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+            <DialogContent className=" border-black bg-black text-center">
+              <DialogHeader>
+                <DialogTitle className="text-center text-goldie-300">
+                  <div className="flex justify-between ">
+                    <Image
+                      src={goldis}
+                      className="flex w-[100px] items-center"
+                      alt="Goldis Logo sm"
+                    />
+                  </div>
+                </DialogTitle>
+              </DialogHeader>
+              <div className="py-4">
+                <h2 className="text-3xl mb-4 font-bold text-goldie-300">
+                  Success!
+                </h2>
+                <p className="text-white">
+                  Thank you for subscribing to our newsletter!
+                </p>
+                <Button
+                  onClick={() => setOpenDialog(false)}
+                  className="mx-auto mt-8 w-fit bg-goldie-300 text-[#0F0904;] hover:bg-goldie-400"
+                >
+                  Close
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
+
         <div className="mt-20 grid justify-between gap-y-8 lg:grid-cols-5">
           <div className="space-y-4">
             <div>
               <Image
-                src={Img}
+                src={goldis}
                 alt="logo"
                 width={100}
                 height={100}
@@ -100,18 +158,11 @@ const Footer = () => {
               <hr className="w-[35px] border border-goldie-300" />
             </div>
             <div className="flex gap-2 text-white">
-              <Link href={""} className="">
-                <BsFacebook />
-              </Link>
-              <Link href={""} className="">
-                <BsInstagram />
-              </Link>
-              <Link href={""} className="">
-                <BsTwitterX />
-              </Link>
-              <Link href={""} className="">
-                <BsLinkedin />
-              </Link>
+              {SOCIAL_LINKS.map(({ icon: Icon, href }, index) => (
+                <Link key={index} href={href}>
+                  <Icon />
+                </Link>
+              ))}
             </div>
           </div>
           <div className="inline-flex flex-col space-y-3 text-white">
@@ -139,11 +190,13 @@ const Footer = () => {
             </div>
             <div className="flex flex-col gap-3">
               {isPending ? (
-                <div className="flex flex-col gap-2 bg-neutral-900 ">
-                  <div className="h-5 w-4/5 animate-pulse rounded bg-neutral-700"></div>
-                  <div className="h-5 w-4/5 animate-pulse rounded bg-neutral-700"></div>
-                  <div className="h-5 w-4/5 animate-pulse rounded bg-neutral-700"></div>
-                  <div className="h-4 w-3/5 animate-pulse rounded bg-neutral-700"></div>
+                <div className="flex flex-col gap-2">
+                  {Array.from({ length: 4 }).map((_, index) => (
+                    <div
+                      key={index}
+                      className="h-5 w-4/5 animate-pulse rounded bg-neutral-700"
+                    ></div>
+                  ))}
                 </div>
               ) : categories.length === 0 ? (
                 <p>No categories found.</p>
