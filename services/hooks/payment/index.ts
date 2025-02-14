@@ -5,7 +5,6 @@ export const initPayment = async (paymentData: any) => {
     "/payments/initialize_payment",
     paymentData,
   );
-  console.log("resInitPayment is", response.data);
   return response.data;
 };
 
@@ -20,7 +19,6 @@ export const saveBillingDetails = async (billingInfo: any) => {
     "/user/save_billing_details",
     billingInfo,
   );
-  console.log("resBillingInfo is", response.data);
   return response.data;
 };
 

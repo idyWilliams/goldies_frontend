@@ -206,9 +206,9 @@ const ShopPage = () => {
   };
 
   return (
-    <>
+    <div className="">
       {/* BREADCRUMBS */}
-      <div className="bg-black pb-4 pt-20 lg:pt-[96px]">
+      <div className="bg-black py-4">
         <div className="wrapper">
           <BreadCrumbs
             items={[
@@ -225,7 +225,7 @@ const ShopPage = () => {
         </div>
       </div>
 
-      <section className="relative py-6 xl:bg-neutral-100">
+      <section className="relative py-6 xl:bg-neutral-100 pb-10">
         <div className="wrapper">
           <div className="mx-auto w-full">
             <div className="mb-4 flex items-center justify-between border-b border-neutral-400 pb-4 lg:grid lg:grid-cols-[85%_10%] xl:hidden">
@@ -390,7 +390,7 @@ const ShopPage = () => {
           </FilterSidebar>
         </div>
       </section>
-    </>
+    </div>
   );
 };
 

@@ -44,7 +44,7 @@ export default function Page() {
   };
 
   return (
-    <section className="mt-[64px] lg:mt-20">
+    <section className="">
       <div className="relative h-[200px] w-full md:h-[300px]">
         <div className="relative z-20 flex h-full w-full flex-col items-center justify-center px-4">
           <h1 className="text-2xl font-bold text-white md:text-3xl lg:mb-2 lg:text-5xl">
@@ -73,7 +73,7 @@ export default function Page() {
         />
       </div>
       <div className=" bg-neutral-300">
-        <div className="mx-auto grid gap-5 px-4 py-10 md:grid-cols-[300px_1fr] lg:w-[800px] lg:pt-40 xl:w-[1000px]">
+        <div className="mx-auto grid gap-5 px-4 py-16 md:grid-cols-[300px_1fr] lg:w-[800px]  xl:w-[1000px]">
           <div className="flex flex-col justify-center bg-black px-10 pb-14 pt-10 md:rounded-md">
             <h3 className="text-[24px] font-bold text-white">Opening Hours</h3>
             <p className="text-[16px] text-goldie-300">

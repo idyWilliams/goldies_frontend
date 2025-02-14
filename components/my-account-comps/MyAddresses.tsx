@@ -43,7 +43,7 @@ const MyAddresses = () => {
     mutationFn: setDefaultBilling,
   });
 
-  const handleDefault = async(data: IBillingInfo) => {
+  const handleDefault = async (data: IBillingInfo) => {
     if (!data) {
       toast.error("No billing information selected to set as default");
       return;
@@ -65,7 +65,8 @@ const MyAddresses = () => {
     email: info.email,
     phone: info.phoneNumber,
     address: info.streetAddress,
-    state: info.cityOrTown,
+    state: info.state,
+    city: info.cityOrTown,
     country: info.country,
   });
 
@@ -133,8 +134,10 @@ const MyAddresses = () => {
                   <p className="text-neutral-600">
                     {item?.streetAddress} <br />{" "}
                     <span>
-                      {item?.cityOrTown}, {item?.country}
+                      {item?.cityOrTown}, {item?.state}
                     </span>
+                    <br />
+                    <span>{item?.country}</span>
                   </p>
                   <p className="text-neutral-600">+{item?.phoneNumber}</p>
                 </div>
