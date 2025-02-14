@@ -34,6 +34,14 @@ export const billingFormData = [
     required: true,
   },
   {
+    label: "State",
+    name: "state",
+    place_holder: "Enter State",
+    error_message: "State is required",
+    type: "text",
+    required: true,
+  },
+  {
     label: "City/Town",
     name: "city",
     place_holder: "Enter city/town",

@@ -70,7 +70,6 @@ const columns = [
   }),
 ];
 
-
 const MyOrders = () => {
   const router = useRouter();
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
@@ -122,154 +121,146 @@ const MyOrders = () => {
   }, [totalPages, currentPage]);
 
   return (
-    <>
-      <div className="mt-[64px]" />
-      <section className="bg-neutral-100 py-6">
-        <div className="wrapper">
-          <h1 className="mb-8 border-b pb-3 text-2xl font-semibold">
-            All Orders
-          </h1>
+    <section className="bg-neutral-100 py-6">
+      <div className="wrapper">
+        <h1 className="mb-8 border-b pb-3 text-2xl font-semibold">
+          All Orders
+        </h1>
 
-          {isPending ? (
-            <div className="flex w-full items-center justify-center py-10">
-              <Loader2Icon className="mr-2 animate-spin" />
-              <p>Fetching Your Orders...</p>
-            </div>
-          ) : isError ? (
-            <div className="py-5 text-center">
-              <p className="mb-4 text-center text-red-500">
-                Failed to load orders. Please try again.
-              </p>
+        {isPending ? (
+          <div className="flex w-full items-center justify-center py-10">
+            <Loader2Icon className="mr-2 animate-spin" />
+            <p>Fetching Your Orders...</p>
+          </div>
+        ) : isError ? (
+          <div className="py-5 text-center">
+            <p className="mb-4 text-center text-red-500">
+              Failed to load orders. Please try again.
+            </p>
 
-              <Button onClick={() => refetch()}>Retry</Button>
+            <Button onClick={() => refetch()}>Retry</Button>
+          </div>
+        ) : processedOrders.length > 0 ? (
+          <>
+            <div className="hidden lg:block">
+              <DataTable
+                columns={columns}
+                data={paginatedOrders}
+                filteredTabs={["All", "Pending", "Completed", "Cancelled"]}
+                statusKey="orderStatus"
+                searchKeys={["orderId"]}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                setCurrentPage={setCurrentPage}
+              />
             </div>
-          ) : processedOrders.length > 0 ? (
-            <>
-              <div className="hidden lg:block">
-                <DataTable
-                  columns={columns}
-                  data={paginatedOrders}
-                  filteredTabs={["All", "Pending", "Completed", "Cancelled"]}
-                  statusKey="orderStatus"
-                  searchKeys={["orderId"]}
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  setCurrentPage={setCurrentPage}
+
+            <div className="lg:hidden">
+              <div className="flex gap-1">
+                <EachElement
+                  of={["All", "Pending", "Delivered", "Cancelled"]}
+                  render={(tabs: string, index: number) => (
+                    <button
+                      key={index}
+                      className={`w-fit rounded-sm border px-2 ${selectedTabs === tabs ? "bg-black text-goldie-300" : "border-neutral-200 bg-white"}`}
+                      onClick={() => {}}
+                    >
+                      {tabs}
+                    </button>
+                  )}
+                />
+              </div>
+              <div className="mt-5 grid gap-5 md:grid-cols-2">
+                <EachElement
+                  of={paginatedOrders}
+                  render={(order: IOrder, index: number) => {
+                    return (
+                      <div key={index} className="rounded-md bg-white p-4">
+                        <ul className="space-y-3">
+                          <li>
+                            <div className="flex items-center justify-between">
+                              <span>{order?.orderId}</span>
+                              {/* <span>{orders.orderId}</span> */}
+                              <span>
+                                <StatusColumn status={order?.orderStatus} />
+                              </span>
+                            </div>
+                          </li>
+                          <li>
+                            <div className="flex items-center justify-between bg-goldie-50 px-1 py-2">
+                              <span>Order Quantity</span>
+                              <span>{order?.orderedItems.length} products</span>
+                            </div>
+                          </li>
+                          <li>
+                            <div className="flex items-center justify-between">
+                              <span>Amount</span>
+                              <span>
+                                <span>
+                                  {formatCurrency(order?.fee.subTotal, "en-NG")}
+                                </span>
+                              </span>
+                            </div>
+                          </li>
+                          <li>
+                            <div className="flex items-center justify-between bg-goldie-50 px-1 py-2">
+                              <span>Shipping</span>
+                              <span>
+                                <span>
+                                  {formatCurrency(
+                                    order?.fee.deliveryFee,
+                                    "en-NG",
+                                  )}
+                                </span>
+                              </span>
+                            </div>
+                          </li>
+                          <li>
+                            <div className="flex items-center justify-between border-t pt-2">
+                              <span>Total</span>
+                              <span>
+                                <span>
+                                  {formatCurrency(order?.fee?.total, "en-NG")}
+                                </span>
+                              </span>
+                            </div>
+                          </li>
+                          <li>
+                            <div className="flex items-center justify-between">
+                              <span>Date:</span>
+                              <button
+                                onClick={() =>
+                                  router.push(`/my-orders/${order?._id}`)
+                                }
+                                className="inline-flex items-center gap-2 bg-neutral-900 px-2 py-1 text-sm text-goldie-300"
+                              >
+                                <span>View</span> <Eye size={20} />
+                              </button>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    );
+                  }}
                 />
               </div>
 
-              <div className="lg:hidden">
-                <div className="flex gap-1">
-                  <EachElement
-                    of={["All", "Pending", "Delivered", "Cancelled"]}
-                    render={(tabs: string, index: number) => (
-                      <button
-                        key={index}
-                        className={`w-fit rounded-sm border px-2 ${selectedTabs === tabs ? "bg-black text-goldie-300" : "border-neutral-200 bg-white"}`}
-                        onClick={() => {}}
-                      >
-                        {tabs}
-                      </button>
-                    )}
-                  />
-                </div>
-                <div className="mt-5 grid gap-5 md:grid-cols-2">
-                  <EachElement
-                    of={paginatedOrders}
-                    render={(order: IOrder, index: number) => {
-                      return (
-                        <div key={index} className="rounded-md bg-white p-4">
-                          <ul className="space-y-3">
-                            <li>
-                              <div className="flex items-center justify-between">
-                                <span>{order?.orderId}</span>
-                                {/* <span>{orders.orderId}</span> */}
-                                <span>
-                                  <StatusColumn status={order?.orderStatus} />
-                                </span>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="flex items-center justify-between bg-goldie-50 px-1 py-2">
-                                <span>Order Quantity</span>
-                                <span>
-                                  {order?.orderedItems.length} products
-                                </span>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="flex items-center justify-between">
-                                <span>Amount</span>
-                                <span>
-                                  <span>
-                                    {formatCurrency(
-                                      order?.fee.subTotal,
-                                      "en-NG",
-                                    )}
-                                  </span>
-                                </span>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="flex items-center justify-between bg-goldie-50 px-1 py-2">
-                                <span>Shipping</span>
-                                <span>
-                                  <span>
-                                    {formatCurrency(
-                                      order?.fee.deliveryFee,
-                                      "en-NG",
-                                    )}
-                                  </span>
-                                </span>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="flex items-center justify-between border-t pt-2">
-                                <span>Total</span>
-                                <span>
-                                  <span>
-                                    {formatCurrency(order?.fee?.total, "en-NG")}
-                                  </span>
-                                </span>
-                              </div>
-                            </li>
-                            <li>
-                              <div className="flex items-center justify-between">
-                                <span>Date:</span>
-                                <button
-                                  onClick={() =>
-                                    router.push(`/my-orders/${order?._id}`)
-                                  }
-                                  className="inline-flex items-center gap-2 bg-neutral-900 px-2 py-1 text-sm text-goldie-300"
-                                >
-                                  <span>View</span> <Eye size={20} />
-                                </button>
-                              </div>
-                            </li>
-                          </ul>
-                        </div>
-                      );
-                    }}
-                  />
-                </div>
-
-                {totalPages > 1 && (
-                  <AdminPagination
-                    totalPage={totalPages}
-                    page={currentPage}
-                    setPage={setCurrentPage}
-                  />
-                )}
-              </div>
-            </>
-          ) : (
-            <div>
-              <p className="text-center text-gray-500">You have no orders</p>
+              {totalPages > 1 && (
+                <AdminPagination
+                  totalPage={totalPages}
+                  page={currentPage}
+                  setPage={setCurrentPage}
+                />
+              )}
             </div>
-          )}
-        </div>
-      </section>
-    </>
+          </>
+        ) : (
+          <div>
+            <p className="text-center text-gray-500">You have no orders</p>
+          </div>
+        )}
+      </div>
+    </section>
   );
 };
 

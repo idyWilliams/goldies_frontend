@@ -59,7 +59,7 @@ const CartPage = () => {
   }, [dispatch]);
 
   return (
-    <section className="relative bg-gradient-to-br from-black to-neutral-700 py-16 pt-20">
+    <section className="relative bg-gradient-to-br from-black to-neutral-700 py-16 pt-1">
       <div className="wrapper">
         <div className="">
           <BreadCrumbs

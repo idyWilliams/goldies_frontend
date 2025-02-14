@@ -13,10 +13,11 @@ interface EditBillingFormProps {
     firstName: string;
     lastName: string;
     email: string;
+    city: string;
     phone: string;
-    state: string;
-    country: string;
     address: string;
+    country: string;
+    state: string;
   };
   onSubmit: (data: any) => void;
   onClose: () => void;
@@ -33,6 +34,7 @@ const schema = yup.object().shape({
     .max(15, "Valid Phone Number must not exceed 12 characters"),
   address: yup.string().required("Shipping address is required"),
   state: yup.string().required("Shipping address is required"),
+  city: yup.string().required("Shipping address is required"),
   country: yup.string().required("Shipping address is required"),
 });
 
@@ -50,6 +52,7 @@ const EditBillingForm = ({
     handleSubmit,
     control,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -57,11 +60,15 @@ const EditBillingForm = ({
   });
 
   useEffect(() => {
-    // reset(defaultValues);
+    reset(defaultValues);
     setPhone(defaultValues.phone);
     setCountry(defaultValues.country);
     setState(defaultValues.state);
-  }, [defaultValues, reset]);
+
+    // Manually set form values for country and state
+    setValue("country", defaultValues.country);
+    setValue("state", defaultValues.state);
+  }, [defaultValues, reset, setValue]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -81,7 +88,9 @@ const EditBillingForm = ({
             )}
           />
           {errors?.firstName && (
-            <p className="text-red-600 text-xs">{String(errors?.firstName?.message)}</p>
+            <p className="text-xs text-red-600">
+              {String(errors?.firstName?.message)}
+            </p>
           )}
         </label>
         {/* last name */}
@@ -99,7 +108,9 @@ const EditBillingForm = ({
             )}
           />
           {errors?.lastName && (
-            <p className="text-red-600 text-xs">{String(errors?.lastName?.message)}</p>
+            <p className="text-xs text-red-600">
+              {String(errors?.lastName?.message)}
+            </p>
           )}
         </label>
         {/* email */}
@@ -153,30 +164,47 @@ const EditBillingForm = ({
         {/* country */}
         <label htmlFor="country">
           <span className="mb-1 inline-block text-sm font-medium">Country</span>
-          <CountryDropdown
-            value={country}
-            onChange={setCountry}
-            classes={cn(
-              "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
-              errors.country && "border-red-600 focus:border-red-600",
+          <Controller
+            name="country"
+            control={control}
+            render={({ field }) => (
+              <CountryDropdown
+                {...field}
+                value={field.value || country}
+                onChange={(country) => {
+                  field.onChange(country);
+                  setCountry(country);
+                }}
+                classes={cn(
+                  "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
+                  errors.country && "border-red-600 focus:border-red-600",
+                )}
+              />
             )}
           />
+          {errors?.country && (
+            <p className="text-xs text-red-600">
+              {String(errors?.country?.message)}
+            </p>
+          )}
         </label>
-        {/* state/regoin */}
+
+        {/* state */}
         <label htmlFor="state" className="block w-full">
           <span className="mb-1 inline-block text-sm font-medium">State</span>
           <Controller
             name="state"
             control={control}
             rules={{ required: true }}
-            render={({ field: { onChange, value } }) => (
+            render={({ field }) => (
               <RegionDropdown
+                {...field}
                 disableWhenEmpty={true}
                 country={country}
-                value={value || state}
-                onChange={(region) => {
-                  onChange(region);
-                  setState(region);
+                value={field.value || state}
+                onChange={(state) => {
+                  field.onChange(state);
+                  setState(state);
                 }}
                 classes={cn(
                   "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
@@ -186,7 +214,29 @@ const EditBillingForm = ({
             )}
           />
           {errors?.state && (
-            <p className="text-red-600 text-xs">{String(errors?.state?.message)}</p>
+            <p className="text-xs text-red-600">
+              {String(errors?.state?.message)}
+            </p>
+          )}
+        </label>
+        {/* city */}
+        <label htmlFor="city" className="block w-full">
+          <span className="mb-1 inline-block text-sm font-medium">
+            City/Town
+          </span>
+          <input
+            type="text"
+            {...register("city")}
+            id="city"
+            className={cn(
+              "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
+              errors.city && "border-red-600 focus:border-red-600",
+            )}
+          />
+          {errors?.city && (
+            <p className="text-xs text-red-600">
+              {String(errors?.city?.message)}
+            </p>
           )}
         </label>
         {/* adddress */}
@@ -204,7 +254,9 @@ const EditBillingForm = ({
             )}
           />
           {errors?.address && (
-            <p className="text-red-600 text-xs">{String(errors?.address?.message)}</p>
+            <p className="text-xs text-red-600">
+              {String(errors?.address?.message)}
+            </p>
           )}
         </label>
       </div>

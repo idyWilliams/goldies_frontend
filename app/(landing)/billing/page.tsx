@@ -33,7 +33,7 @@ import { CheckCircle, Edit2Icon } from "lucide-react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { CountryDropdown } from "react-country-region-selector";
+import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
 import { Controller, useForm } from "react-hook-form";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
@@ -52,6 +52,7 @@ const form1Schema = yup.object().shape({
   address: yup.string().required("Shipping address is required"),
   city: yup.string().required("Shipping address is required"),
   country: yup.string().required("Shipping address is required"),
+  state: yup.string().required("Shipping address is required"),
   save: yup.boolean().default(false),
 });
 
@@ -67,26 +68,28 @@ const form2Schema = yup.object().shape({
   address: yup.string().required("Shipping address is required"),
   city: yup.string().required("Shipping address is required"),
   country: yup.string().required("Shipping address is required"),
+  state: yup.string().required("Shipping address is required"),
   save: yup.boolean().default(false),
 });
 
 const Page = () => {
-  const queryParams = useSearchParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const { cart, buyNowProduct } = useAppSelector((state) => state.product);
 
   // Get URL parameters
-  const isBuyNow = queryParams.get("buyNow") === "true";
+  const isBuyNow = searchParams.get("buyNow") === "true";
 
   // Determine which products to use
   const products = isBuyNow && buyNowProduct ? [buyNowProduct] : cart;
 
   const [country1, setCountry1] = useState("");
   const [country2, setCountry2] = useState("");
+  const [state1, setState1] = useState("");
+  const [state2, setState2] = useState("");
   const [phone1, setPhone1] = useState("");
   const [phone2, setPhone2] = useState("");
   const [selectedMethod, setSelectedMethod] = useState<string>("option1");
-  const [isBillingInfoSaved, setIsBillingInfoSaved] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [selectedBillingId, setSelectedBillingId] = useState<string | null>(
@@ -116,6 +119,7 @@ const Page = () => {
       phoneNumber: "",
       address: "",
       country: "",
+      state: "",
       save: false,
     },
   });
@@ -139,13 +143,23 @@ const Page = () => {
   const createOrder = useMutation({ mutationFn: orderCreate });
 
   useEffect(() => {
-    const reference = queryParams.get("reference");
+    const reference = searchParams.get("reference");
 
     if (reference && !hasVerified.current) {
       hasVerified.current = true; // Prevent duplicate execution
-      verifyAndCreateOrder(reference);
+      verifyAndCreateOrder(reference).then(() => {
+        // Remove 'reference' from URL without reloading
+        const newParams = new URLSearchParams(searchParams);
+        newParams.delete("reference");
+
+        window.history.replaceState(
+          {},
+          "",
+          `${window.location.pathname}?${newParams.toString()}`,
+        );
+      });
     }
-  }, [queryParams]);
+  }, [searchParams]);
 
   // Add this effect to reset form with billing info when data loads
   useEffect(() => {
@@ -163,6 +177,7 @@ const Page = () => {
         address: defaultBilling.streetAddress,
         city: defaultBilling.cityOrTown,
         country: defaultBilling.country,
+        state: defaultBilling.state,
         save: false,
       });
     }
@@ -172,13 +187,14 @@ const Page = () => {
   useEffect(() => {
     if (editingInfo) {
       form1.reset({
-        firstName: editingInfo.firstName,
-        lastName: editingInfo.lastName,
-        email: editingInfo.email,
-        phoneNumber: editingInfo.phoneNumber,
-        address: editingInfo.streetAddress,
-        city: editingInfo.cityOrTown,
-        country: editingInfo.country,
+        firstName: editingInfo?.firstName,
+        lastName: editingInfo?.lastName,
+        email: editingInfo?.email,
+        phoneNumber: editingInfo?.phoneNumber,
+        address: editingInfo?.streetAddress,
+        city: editingInfo?.cityOrTown,
+        country: editingInfo?.country,
+        state: editingInfo?.state,
       });
     }
   }, [editingInfo, form1]);
@@ -191,7 +207,8 @@ const Page = () => {
     email: info.email,
     phone: info.phoneNumber,
     address: info.streetAddress,
-    state: info.cityOrTown,
+    city: info.cityOrTown,
+    state: info?.state,
     country: info.country,
   });
 
@@ -202,6 +219,8 @@ const Page = () => {
       return;
     }
 
+    console.log("data on edit>>", data);
+
     try {
       const billingInfo = {
         _id: data._id,
@@ -211,6 +230,8 @@ const Page = () => {
         phoneNumber: data.phone,
         streetAddress: data.address,
         cityOrTown: data.city,
+        state: data.state,
+        country: data.country,
       };
 
       await updateBillingDetails.mutateAsync(billingInfo);
@@ -254,8 +275,6 @@ const Page = () => {
   const onSubmitForm1 = async (data: any) => {
     setIsPaymentProcessingModalOpen(true); // Open the modal
     setIsProcessingPayment(true);
-
-    console.log("form submission>>>", data);
 
     try {
       const callbackUrl =
@@ -326,6 +345,7 @@ const Page = () => {
         cityOrTown: data.city,
         streetAddress: data.address,
         phoneNumber: data.phoneNumber,
+        state: data.state,
       };
 
       const orderRes = await createOrder.mutateAsync(orderInfo);
@@ -342,6 +362,7 @@ const Page = () => {
             cityOrTown: data.city,
             streetAddress: data.address,
             phoneNumber: data.phoneNumber,
+            state: data.state,
             defaultBillingInfo: true,
           };
 
@@ -349,9 +370,9 @@ const Page = () => {
           await saveBilling.mutateAsync(billingInfo);
           toast.success("Billing info saved successfully!");
         }
-      }
 
-      // window.location.href = "/my-orders";
+        window.location.href = "/my-orders";
+      }
     } catch (error: any) {
       toast.error(error.message || "An error occurred.");
       console.error("Error:", error);
@@ -373,8 +394,8 @@ const Page = () => {
           : "https://goldies-frontend-v3.vercel.app/billing";
 
       const paymentData = {
-        firstName: data.firstName,
-        lastName: data.lastName,
+        first_name: data.firstName,
+        last_name: data.lastName,
         email: data.email,
         amount: totalWithDelivery,
         callbackUrl: callbackUrl,
@@ -406,7 +427,7 @@ const Page = () => {
   };
 
   return (
-    <div className="mt-[64px] flex h-full w-full flex-col bg-red-400 lg:mt-20">
+    <div className="flex h-full w-full flex-col bg-red-400">
       <div className=" bg-black py-3 ">
         <div className="wrapper">
           <BreadCrumbs
@@ -424,7 +445,7 @@ const Page = () => {
         </div>
       </div>
 
-      <section className="h-full w-full bg-neutral-100 px-4 py-6">
+      <section className="w-full bg-neutral-100 px-4 py-12">
         <div className="mx-auto grid-cols-2 gap-8 md:grid lg:max-w-5xl lg:grid-cols-[1fr_400px] lg:gap-8 xl:max-w-6xl">
           {/* billing form */}
           <div className="w-full lg:w-4/5">
@@ -466,6 +487,7 @@ const Page = () => {
                               address: info.streetAddress,
                               city: info.cityOrTown,
                               country: info.country,
+                              state: info.state,
                               save: false,
                             });
                           }}
@@ -587,6 +609,42 @@ const Page = () => {
                                   onChange={(country) => {
                                     field.onChange(country);
                                     setCountry1(country);
+                                  }}
+                                  classes={cn(
+                                    "form-input block w-full rounded border-0 bg-neutral-50 py-2.5 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
+                                  )}
+                                />
+                              )}
+                            />
+                            {form1.formState.errors.country && (
+                              <p className="text-red-600">
+                                {form1.formState.errors.country?.message}
+                              </p>
+                            )}
+                          </div>
+                        );
+
+                      if (data?.name === "state")
+                        return (
+                          <div key={index}>
+                            <label
+                              htmlFor={data.name}
+                              className="mb-1 inline-block text-sm"
+                            >
+                              {data.label}
+                            </label>
+                            <Controller
+                              name={data?.name}
+                              control={form1?.control}
+                              rules={{ required: true }}
+                              render={({ field }) => (
+                                <RegionDropdown
+                                  {...field}
+                                  country={country1}
+                                  value={field.value || state1}
+                                  onChange={(state) => {
+                                    field.onChange(state);
+                                    setState1(state);
                                   }}
                                   classes={cn(
                                     "form-input block w-full rounded border-0 bg-neutral-50 py-2.5 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
@@ -743,7 +801,7 @@ const Page = () => {
                     <div
                       className={cn(
                         "mt-2 h-0 space-y-3 duration-300",
-                        selectedMethod === "option2" && "h-[610px]",
+                        selectedMethod === "option2" && "h-full",
                       )}
                     >
                       <EachElement
@@ -796,6 +854,41 @@ const Page = () => {
                                       onChange={(country) => {
                                         field.onChange(country);
                                         setCountry2(country);
+                                      }}
+                                      classes={cn(
+                                        "form-input block w-full rounded border-0 bg-neutral-50 py-2.5 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
+                                      )}
+                                    />
+                                  )}
+                                />
+                                {form2.formState.errors.country && (
+                                  <p className="text-red-600">
+                                    {form2.formState.errors.country?.message}
+                                  </p>
+                                )}
+                              </div>
+                            );
+                          if (data?.name === "state")
+                            return (
+                              <div key={index}>
+                                <label
+                                  htmlFor={data.name}
+                                  className="mb-1 inline-block text-sm"
+                                >
+                                  {data.label}
+                                </label>
+                                <Controller
+                                  name={data?.name}
+                                  control={form2?.control}
+                                  rules={{ required: true }}
+                                  render={({ field }) => (
+                                    <RegionDropdown
+                                      {...field}
+                                      country={country2}
+                                      value={field.value || state2}
+                                      onChange={(state) => {
+                                        field.onChange(state);
+                                        setState2(state);
                                       }}
                                       classes={cn(
                                         "form-input block w-full rounded border-0 bg-neutral-50 py-2.5 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",

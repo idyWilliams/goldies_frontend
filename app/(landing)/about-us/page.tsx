@@ -12,7 +12,6 @@ import AboutImg from "@/public/assets/abt-img.jpg";
 const AboutUs = () => {
   return (
     <>
-      <div className="mt-[64px] lg:mt-20" />
       {/* ====== ABOUT BANNER ====== */}
       <section
         // style={{

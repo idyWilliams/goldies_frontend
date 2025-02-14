@@ -123,8 +123,7 @@ const Page = () => {
   }, [activeTab, router]);
 
   return (
-    <>
-      <div className="mt-[65px] lg:mt-20"></div>
+    <div>
       <div className="bg-black">
         <div className={cn("wrapper px-4 py-3")}>
           <BreadCrumbs
@@ -251,7 +250,7 @@ const Page = () => {
           )}
         </div>
       </section>
-    </>
+    </div>
   );
 };
 

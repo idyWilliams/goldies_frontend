@@ -78,7 +78,7 @@ const Page = () => {
 
   return (
     <>
-      <div className="mt-[65px] bg-neutral-900 py-3 lg:mt-20">
+      <div className=" bg-neutral-900 py-3 ">
         <div className="wrapper">
           <BreadCrumbs
             items={[
@@ -103,7 +103,7 @@ const Page = () => {
         </div>
       </div>
       <div className="wrapper ">
-        <div className="py-6">
+        <div className="py-6 pb-12">
           <h3 className="text-2xl font-semibold">Product Categories</h3>
           {isPending && !categories && <UserCategoriesSkeleton />}
           {isError && !categories && (

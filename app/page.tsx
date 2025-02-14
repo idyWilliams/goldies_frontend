@@ -20,8 +20,8 @@ const Home = () => {
   return (
     <>
       <Layout>
-        <div className="mt-[64px] lg:mt-[80px]" />
-        <main className="overflow-hidden">
+        <div className="" />
+        <main className="">
           <Hero />
           <CakeCategory />
           <FeaturedProducts />
