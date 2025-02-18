@@ -261,6 +261,7 @@ const CreateSubategory = () => {
           subCategory: updatedSubCategory,
           subCategoryId: activeSubcategory?._id,
         });
+        setActiveSubcategory(null);
       }
     } catch (error) {
       console.error(error);
