@@ -75,7 +75,7 @@ const CategoriesCards = ({
                 <p className="mt-1">
                   <span className="  font-semibold">Description:&nbsp;</span>
                   <span
-                    className={` ${isClamped ? "line-clamp-7" : "line-clamp-none"} break-all `}
+                    className={` ${isClamped ? "line-clamp-7" : "line-clamp-none"}`}
                     onClick={() => setIsClamped((old) => !old)}
                   >
                     {item?.description}
