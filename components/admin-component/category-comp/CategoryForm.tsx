@@ -222,7 +222,6 @@ export default function CategoryForm() {
 
     onSuccess: () => {
       router.push("/admin/manage-categories");
-      toast.success("Category created successfully");
     },
 
     onError: (error, newCategory, context) => {
