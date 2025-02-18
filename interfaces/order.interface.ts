@@ -12,6 +12,7 @@ export interface IOrder {
   email: string;
   country: string;
   cityOrTown: string;
+  state: string;
   streetAddress: string;
   phoneNumber: string;
   orderedItems: string[]; 
