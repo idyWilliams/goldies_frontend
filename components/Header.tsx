@@ -5,7 +5,7 @@ import { cn } from "@/helper/cn";
 import { RootState } from "@/redux/store";
 import { USER_DETAILS, USER_TOKEN_NAME } from "@/utils/constants";
 import { Ghost } from "iconsax-react";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -34,10 +34,8 @@ const Header = () => {
   const pathname = usePathname();
   const router = useRouter();
   const cart = useSelector((state: RootState) => state.product.cart);
-  const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(false);
-  const [user, setUser] = useState<any | null>(null);
-  const { isLogin, auth, setIsLogin, setAuth } = useAuth();
+  const { auth, setIsLogin } = useAuth();
   const [showModal, setShowModal] = useState<boolean>(false);
 
   const handleClick = () => {
@@ -74,16 +72,6 @@ const Header = () => {
   }, []);
 
   const navigateToLogin = useActivePath();
-
-  useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user") as string);
-    setUser(storedUser?.user);
-    setAuth(storedUser);
-    if (typeof window !== "undefined") {
-      const isLoggedIn = JSON.parse(localStorage.getItem("isLogin") as string);
-      setIsLogin(Boolean(isLoggedIn));
-    }
-  }, [setAuth, setIsLogin]);
 
   return (
     <>
@@ -170,10 +158,10 @@ const Header = () => {
                     className="flex items-center gap-2"
                   >
                     <FaRegUserCircle size={20} />
-                    {!isLogin ? (
+                    {!auth?.user ? (
                       <span>Account</span>
                     ) : (
-                      <span>{user?.firstName}</span>
+                      <span>{auth?.user?.firstName}</span>
                     )}
                     {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
                   </button>
@@ -183,7 +171,7 @@ const Header = () => {
                     <span
                       // href={isLogin ? "/my-account" : "/sign-in"}
                       onClick={() => {
-                        isLogin
+                        auth?.user
                           ? router.push("/my-account")
                           : navigateToLogin();
                       }}
@@ -195,7 +183,9 @@ const Header = () => {
                     <span
                       // href={isLogin ? "/my-orders" : "/sign-in"}
                       onClick={() => {
-                        isLogin ? router.push("/my-orders") : navigateToLogin();
+                        auth?.user
+                          ? router.push("/my-orders")
+                          : navigateToLogin();
                       }}
                       className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
                     >
@@ -205,7 +195,7 @@ const Header = () => {
 
                     <span
                       onClick={() => {
-                        isLogin
+                        auth?.user
                           ? router.push("/saved-items")
                           : navigateToLogin();
                       }}
@@ -216,7 +206,7 @@ const Header = () => {
                     </span>
                   </div>
                   <div className="my-2 border-b border-black border-opacity-50"></div>
-                  {isLogin ? (
+                  {auth?.user ? (
                     <Button
                       className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
                       onClick={() => logOut()}
@@ -243,9 +233,8 @@ const Header = () => {
         setShow={setShow}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        isLogin={isLogin}
         logOut={logOut}
-        user={user}
+        user={auth?.user!}
       />
 
       <SessionModal

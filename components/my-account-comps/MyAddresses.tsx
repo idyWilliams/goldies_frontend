@@ -21,6 +21,7 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import EditBillingForm from "./EditBillingForm";
+import { Skeleton } from "../ui/skeleton";
 
 const MyAddresses = () => {
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -98,6 +99,22 @@ const MyAddresses = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div>
+        <div className="mb-4 border-b border-neutral-200 pb-4">
+          <Skeleton className="mb-2 h-6 w-[300px]" />
+          <Skeleton className="h-4 w-[300px]" />
+        </div>
+        <div className="space-y-3 md:grid md:grid-cols-2 md:gap-3 md:space-y-0">
+          {[...Array(2)].map((_, index) => (
+            <Skeleton key={index} className="h-[240px]" />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="mb-4 border-b border-neutral-200 pb-4">
@@ -105,12 +122,7 @@ const MyAddresses = () => {
         <p>Manage your personal and frequently used shipping addresses.</p>
       </div>
 
-      {isLoading ? (
-        <div className="flex w-full items-center justify-center py-10">
-          <Loader2Icon className="mr-2 animate-spin" />
-          <p>Fetching shipping address...</p>
-        </div>
-      ) : billingInfos && billingInfos.length > 0 ? (
+      {billingInfos && billingInfos.length > 0 ? (
         <div className="grid gap-3 lg:grid-cols-2">
           <EachElement
             of={billingInfos}

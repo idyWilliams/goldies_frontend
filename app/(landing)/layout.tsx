@@ -10,13 +10,14 @@ import { userLogOut } from "@/services/hooks/user-auth";
 import NextTopLoader from "nextjs-toploader";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  const { setIsLogin, setAuth } = useAuth();
+  const { setAuth } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    const storedUser = JSON.parse(localStorage.getItem("user") as string);
-    const userToken = storedUser ? storedUser?.token : null;
+    const parsedUser = JSON.parse(localStorage.getItem("user") as string);
+    setAuth((prev) => ({ ...prev, user: parsedUser?.user }));
+    const userToken = parsedUser ? parsedUser?.token : null;
 
     const handleSession = () => {
       if (
@@ -60,13 +61,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         console.log("InValid session admin");
       }
     } catch (error) {
-      console.log("Error decoding token:", error, storedUser, userToken);
+      console.log("Error decoding token:", error, userToken);
       // setIsLogin(false);
     }
-  }, [pathname, router]);
+  }, [pathname, router, setAuth]);
 
   return (
-    <div className="min-h-dvh relative">
+    <div className="relative min-h-dvh">
       <NextTopLoader color="#262626" showSpinner={false} height={4} />
       <Header />
       <main className="">{children}</main>

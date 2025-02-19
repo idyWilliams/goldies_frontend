@@ -1,40 +1,21 @@
-import { cn } from "@/helper/cn";
-import { getOrderColor } from "@/helper/getOrderColor";
-import { useEffect, useState } from "react";
-import { BsThreeDots } from "react-icons/bs";
-import { recentOrders } from "./Orders";
-import { chunkArray } from "@/helper/chunkArray";
-import Image from "next/image";
-import img from "@/public/assets/banana-cake-with-cinnamon-cream-102945-1.jpeg";
 import { addSlugToCakes } from "@/helper";
-import { savedItems } from "@/utils/cakeData";
-import Link from "next/link";
-import ProductCard from "../shop-components/ProductCard";
+import EachElement from "@/helper/EachElement";
 import useSavedItems from "@/services/hooks/products/useSavedItems";
 import useUserPdctStore from "@/zustand/userProductStore/store";
-import EachElement from "@/helper/EachElement";
+import Link from "next/link";
+import { useEffect } from "react";
+import ProductCard from "../shop-components/ProductCard";
 
 let itemsPerPage = 2;
 const SavedItems = () => {
-  const [cakes, setCakes] = useState<any[]>(addSlugToCakes(savedItems));
-  const [currentPageIndex, setCurrentPageIndex] = useState(1);
-  const setFavProducts = useUserPdctStore((state) => state.setFavProducts);
-  const favProducts = useUserPdctStore((state) => state.favProducts);
-
-  const { favorites } = useSavedItems();
+  const { favProducts, setFavProducts } = useUserPdctStore();
+  const { favorites, isFetching } = useSavedItems();
 
   useEffect(() => {
     if (favorites) {
       setFavProducts(favorites);
     }
   }, [favorites, setFavProducts]);
-
-  // useEffect(() => {
-  //   setCakes((prev: any) => prev.filter((item: any) => item?.id > 5));
-  // }, []);
-  useEffect(() => {
-    setCakes((prev: any) => prev.filter((item: any) => item?.id > 5));
-  }, []);
 
   return (
     <div>
@@ -51,14 +32,22 @@ const SavedItems = () => {
           },
         )} */}
 
-        {favProducts && (
-          <EachElement
-            of={addSlugToCakes(favProducts)}
-            render={(item: any, index: number) => {
-              if (index > 1) return;
-              return <ProductCard data={item} key={item._id} />;
-            }}
-          />
+        {!isFetching && favProducts.length === 0 ? (
+          <div className="h-40 py-8">
+            <p className="text-center text-lg text-gray-500">
+              You have no saved products.
+            </p>
+          </div>
+        ) : (
+          favProducts && (
+            <EachElement
+              of={addSlugToCakes(favProducts)}
+              render={(item: any, index: number) => {
+                if (index > 1) return;
+                return <ProductCard data={item} key={item._id} />;
+              }}
+            />
+          )
         )}
       </div>
 

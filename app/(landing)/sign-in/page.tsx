@@ -25,11 +25,12 @@ const validationSchema = yup.object().shape({
 });
 
 const Page = () => {
-  const { setIsLogin, activePathRef } = useAuth();
+  const { setIsLogin, setAuth } = useAuth();
   const [isChecked, setIsChecked] = useState(false);
   const router = useRouter();
   const [visible, setVisible] = useState(false);
   const [password, setPassword] = useState("");
+
   const userLogin = useMutation({
     mutationFn: loginUser,
   });
@@ -53,6 +54,8 @@ const Page = () => {
       .mutateAsync(data)
       .then((res: any) => {
         setIsLogin(true);
+        setAuth({ user: res?.user });
+
         localStorage.setItem("isLogin", JSON.stringify(true));
         localStorage.removeItem("userToken");
         localStorage.removeItem("user");
@@ -66,7 +69,7 @@ const Page = () => {
         Cookies.set(USER_DETAILS, userToken);
         Cookies.set(USER_TOKEN_NAME, res?.token);
 
-        router.push(`${activePathRef.current ? activePathRef.current : "/"}`);
+        router.push(`/`);
         reset();
       })
       .catch((err: any) => {

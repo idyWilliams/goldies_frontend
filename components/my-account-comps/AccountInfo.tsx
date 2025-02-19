@@ -11,7 +11,7 @@ import "react-phone-input-2/lib/style.css";
 import { toast } from "sonner";
 import * as yup from "yup";
 import ConfirmDeletion from "./ConfirmDeletion";
-
+import { Skeleton } from "../ui/skeleton";
 
 const schema = yup.object().shape({
   firstName: yup.string().required("First name is required"),
@@ -27,7 +27,13 @@ const schema = yup.object().shape({
   // country: yup.string().required("Country is required"),
 });
 
-const AccountInfo = ({ fetchedUser }: { fetchedUser: IUser }) => {
+const AccountInfo = ({
+  fetchedUser,
+  isLoading,
+}: {
+  fetchedUser: IUser;
+  isLoading: boolean;
+}) => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [user, setUser] = useState<any>(null);
@@ -83,7 +89,6 @@ const AccountInfo = ({ fetchedUser }: { fetchedUser: IUser }) => {
     const storedUser = JSON.parse(localStorage.getItem("user") as string);
     if (storedUser) {
       setUser(storedUser.user);
-      console.log("stored is", storedUser.user);
     } else {
       toast.error("Session expired! Please log in again");
       router.push("/sign-in");
@@ -150,7 +155,27 @@ const AccountInfo = ({ fetchedUser }: { fetchedUser: IUser }) => {
     // console.log("Form errors:", errors);
   };
 
+  if (isLoading) {
+    return (
+      <div>
+        <div className="mb-4 border-b border-neutral-200 pb-4">
+          <Skeleton className="mb-2 h-6 w-[200px]" />
+          <Skeleton className="h-4 w-[300px]" />
+        </div>
+        <div className="space-y-4 md:grid md:grid-cols-2 md:gap-3 md:space-y-0">
+          <Skeleton className="h-10" />
+          <Skeleton className="h-10" />
+          <Skeleton className="h-10" />
+          <Skeleton className="h-10" />
+          <Skeleton className="h-10 w-32" />
+        </div>
 
+        <div className="mt-4">
+          <Skeleton className="h-10 w-32 ml-auto" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="">

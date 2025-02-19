@@ -15,13 +15,11 @@ interface MobileNavProps {
   setShow: (value: boolean) => void;
   isOpen: boolean;
   setIsOpen: (value: boolean) => void;
-  isLogin: boolean;
   logOut: () => void;
   user: IUser;
 }
 
 const MobileNav: React.FC<MobileNavProps> = ({
-  isLogin,
   isOpen,
   logOut,
   pathname,
@@ -54,11 +52,7 @@ const MobileNav: React.FC<MobileNavProps> = ({
                 className="flex items-center gap-2"
               >
                 <FaRegUserCircle size={20} />
-                {!isLogin ? (
-                  <span>Account</span>
-                ) : (
-                  <span>{user?.firstName}</span>
-                )}
+                {!user ? <span>Account</span> : <span>{user?.firstName}</span>}
                 {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
               </button>
             </PopoverTrigger>
@@ -69,7 +63,7 @@ const MobileNav: React.FC<MobileNavProps> = ({
                   onClick={() => {
                     setIsOpen(false);
                     setShow(false);
-                    isLogin ? router.push("/my-account") : navigateToLogin();
+                    user ? router.push("/my-account") : navigateToLogin();
                   }}
                   className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
                 >
@@ -81,7 +75,7 @@ const MobileNav: React.FC<MobileNavProps> = ({
                   onClick={() => {
                     setIsOpen(false);
                     setShow(false);
-                    isLogin ? router.push("/my-orders") : navigateToLogin();
+                    user ? router.push("/my-orders") : navigateToLogin();
                   }}
                   className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
                 >
@@ -93,7 +87,7 @@ const MobileNav: React.FC<MobileNavProps> = ({
                   onClick={() => {
                     setIsOpen(false);
                     setShow(false);
-                    isLogin ? router.push("/saved-items") : navigateToLogin();
+                    user ? router.push("/saved-items") : navigateToLogin();
                   }}
                   className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
                 >
@@ -102,7 +96,7 @@ const MobileNav: React.FC<MobileNavProps> = ({
                 </span>
               </div>
               <div className="my-2 border-b border-black border-opacity-50"></div>
-              {isLogin ? (
+              {user ? (
                 <Button
                   className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
                   onClick={() => {

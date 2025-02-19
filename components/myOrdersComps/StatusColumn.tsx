@@ -1,6 +1,6 @@
 const StatusColumn = ({ status }: { status: string }) => {
   switch (status?.toLowerCase()) {
-    case "delivered":
+    case "completed":
       return (
         <span className="bg-green-700 px-2 py-1 text-sm text-white lg:bg-transparent lg:text-base lg:text-green-700">
           {status}

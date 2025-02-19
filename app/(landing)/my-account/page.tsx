@@ -18,6 +18,7 @@ import frontarrow from "@/public/assets/frontArrow.png";
 import { useQuery } from "@tanstack/react-query";
 import { getUser } from "@/services/hooks/users";
 import { IBillingInfo, IUser } from "@/interfaces/user.interface";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const tabs = [
   {
@@ -43,11 +44,10 @@ const tabs = [
 ];
 
 const Page = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const tabQuery = searchParams.get("tab");
   const [activeTab, setActiveTab] = useState<any>(null);
-  // const [activeDesktopTab, setActiveDesktopTab] = useState<any>(0);
-  const router = useRouter();
   const [isMobileView, setIsMobileView] = useState(false);
   const [fetchedUser, setFetcheduser] = useState<IUser>();
 
@@ -62,7 +62,7 @@ const Page = () => {
     }
   }, [tabQuery]);
 
-  const { data, isError } = useQuery({
+  const { data, isError, isLoading } = useQuery({
     queryKey: ["user"],
     queryFn: getUser,
   });
@@ -73,10 +73,36 @@ const Page = () => {
     }
   }, [data]);
 
-  function switchTabs(index: any) {
+  function switchTabs(index: number) {
+    if (isLoading) {
+      return (
+        <div>
+          <div className="mb-4 border-b border-neutral-200 pb-4">
+            <Skeleton className="mb-2 h-6 w-[200px]" />
+            <Skeleton className="h-4 w-[300px]" />
+          </div>
+          <div className="space-y-4 md:grid md:grid-cols-2 md:gap-3 md:space-y-0">
+            <Skeleton className="h-10" />
+            <Skeleton className="h-10" />
+            <Skeleton className="h-10" />
+            <Skeleton className="h-10" />
+            <Skeleton className="h-10 w-32" />
+          </div>
+
+          <div className="mt-4">
+            <Skeleton className="ml-auto h-10 w-32" />
+          </div>
+        </div>
+      );
+    }
     switch (index) {
       case 0:
-        return <AccountInfo fetchedUser={fetchedUser as IUser} />;
+        return (
+          <AccountInfo
+            isLoading={isLoading}
+            fetchedUser={fetchedUser as IUser}
+          />
+        );
       case 1:
         return <Orders />;
       case 2:
@@ -86,7 +112,7 @@ const Page = () => {
       // case 4:
       //   return <ChangePassword />;
       default:
-        break;
+        return null;
     }
   }
 
@@ -146,7 +172,7 @@ const Page = () => {
         </h1>
 
         <div className="  w-full gap-4 tabular-nums md:grid md:grid-cols-[30%_1fr] md:items-start md:justify-between lg:mx-auto lg:max-w-[1000px] xl:max-w-[1140px]">
-          <div className="mb-4  h-full w-full flex-wrap gap-2 border-b border-neutral-200 pb-10 md:my-0 md:flex-col md:bg-white md:p-4">
+          <div className="mb-4 h-auto w-full flex-wrap gap-2 border-b border-neutral-200 pb-10 md:my-0 md:flex-col md:bg-white md:p-4">
             {isMobileView ? (
               activeTab === null ? (
                 <EachElement
@@ -208,6 +234,12 @@ const Page = () => {
                   {switchTabs(activeTab)}
                 </div>
               )
+            ) : isLoading ? (
+              <div className="space-y-2">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+              </div>
             ) : (
               <EachElement
                 of={tabs}
