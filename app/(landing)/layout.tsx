@@ -67,7 +67,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [pathname, router, setAuth]);
 
   return (
-    <div className="relative min-h-dvh">
+    <div className="relative min-h-dvh flex flex-col">
       <NextTopLoader color="#262626" showSpinner={false} height={4} />
       <Header />
       <main className="">{children}</main>
