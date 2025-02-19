@@ -11,6 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import EachElement from "@/helper/EachElement";
 import { cn } from "@/helper/cn";
@@ -106,6 +107,14 @@ const Page = () => {
     useState(false);
   const hasVerified = useRef(false);
   const dispatch = useAppDispatch();
+
+  // Redirect if no valid products
+  useEffect(() => {
+    if ((isBuyNow && !buyNowProduct) || (!isBuyNow && cart.length === 0)) {
+      toast.error("No products to checkout");
+      router.push("/shop");
+    }
+  }, [isBuyNow, buyNowProduct, cart, router]);
 
   const { data, isLoading, refetch, isError } = useQuery({
     queryKey: ["allBllingInfo"],
@@ -380,7 +389,7 @@ const Page = () => {
           clearCart();
           clearBuyNowProduct();
         });
-        
+
         window.location.href = "/my-orders";
       }
     } catch (error: any) {
@@ -436,6 +445,11 @@ const Page = () => {
     setSelectedMethod(event.target.value);
   };
 
+  // If no products, render nothing while redirecting
+  if ((isBuyNow && !buyNowProduct) || (!isBuyNow && cart.length === 0)) {
+    return null;
+  }
+
   return (
     <div className="flex h-full w-full flex-col bg-red-400">
       <div className=" bg-black py-3 ">
@@ -473,7 +487,12 @@ const Page = () => {
               )}
             </div>
 
-            {billingInfos?.length > 0 ? (
+            {isLoading ? (
+              <div className="mb-6 grid gap-2 md:grid-cols-2">
+                <Skeleton className="w-full h-24 rounded-2xl" />
+                <Skeleton className="w-full h-24 rounded-2xl" />
+              </div>
+            ) : billingInfos?.length > 0 ? (
               <div className="mb-6 grid gap-2 md:grid-cols-2">
                 {billingInfos.map((info: IBillingInfo) => (
                   <label

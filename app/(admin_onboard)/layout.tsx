@@ -1,11 +1,40 @@
-import React, { ReactNode } from "react";
+"use client";
+import { jwtDecode } from "jwt-decode";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ReactNode, useEffect, useState } from "react";
 
 const Layout = ({ children }: { children: ReactNode }) => {
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const storedAdmin = localStorage.getItem("admin");
+
+    if (storedAdmin) {
+      try {
+        const { token } = JSON.parse(storedAdmin);
+        const decodedToken: { exp: number } = jwtDecode(token);
+        const sessionExpired = Date.now() > decodedToken.exp * 1000;
+
+        if (!sessionExpired) {
+          // Redirect authenticated admin to dashboard
+          router.replace("/admin");
+        }
+      } catch (error) {
+        console.error("Error decoding token:", error);
+      }
+    }
+
+    setIsLoading(false); 
+  }, [router]);
+
+  if (isLoading) return null;
+
   return (
-    <>
-      <section
+    
+      <div
         style={{
           background:
             "linear-gradient(rgba(255,255,255,1), rgba(255,255,255,0.9)), url(/assets/vectorBG.jpg)",
@@ -28,8 +57,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
 
           <>{children}</>
         </div>
-      </section>
-    </>
+      </div>
   );
 };
 

@@ -68,7 +68,7 @@ export default function AdminSideBar() {
         {auth?.admin?.role === "super_admin" && (
           <Link
             href={"/admin/invite"}
-            className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/manage-categories") ? "text-goldie-300" : "text-neutral-500"}`}
+            className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/invite") ? "text-goldie-300" : "text-neutral-500"}`}
           >
             <UserAdd size="20" />
             Invite Admin

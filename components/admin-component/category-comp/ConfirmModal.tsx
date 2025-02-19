@@ -186,7 +186,7 @@ const ConfirmModal: React.FC<ModalProps> = ({ catOrSub }) => {
               `Are you sure you want to edit ${catOrSub.isCategory ? `${activeCategory?.name} category` : `${activeSubcategory?.name} subcategory`}? Editing this ${catOrSub?.isCategory ? "category" : "subcategory"} means you will overwrite the previous ${catOrSub?.isCategory ? "category" : "subcategory"} information.`}
 
             {actionType === "delete" &&
-              `Are you sure you want to delete ${catOrSub.isCategory ? `${activeCategory?.name} category` : `${activeSubcategory?.name} subcategory`}? Deleting this ${catOrSub?.isCategory ? "category" : "subcategory"} means you will remove the ${catOrSub?.isCategory && "category, "}products and subcategories under it and can't be undone`}
+              `Are you sure you want to delete ${catOrSub.isCategory ? `${activeCategory?.name} category` : `${activeSubcategory?.name} subcategory`}? Deleting this ${catOrSub?.isCategory ? "category" : "subcategory"} means you will remove the ${catOrSub?.isCategory && "category, "} products and subcategories under it and can't be undone`}
           </p>
 
           <div className="mt-5 space-x-3">

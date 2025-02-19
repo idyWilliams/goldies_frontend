@@ -16,18 +16,18 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 const statusColor = (status: string) => {
-  switch (status.toLowerCase()) {
-    case "success":
+  switch (status) {
+    case "completed":
       return (
         <div className="inline-flex items-center gap-2 rounded-[50px] border border-green-700 bg-green-700 bg-opacity-10 px-3 py-[2px] text-sm text-green-700">
           <span className="h-2 w-2 rounded-full bg-green-700"></span>
-          Success
+          Completed
         </div>
       );
-    case "failed":
+    case "cancelled":
       return (
         <div className="inline-flex items-center gap-2 rounded-[50px] border border-red-700 bg-red-700 bg-opacity-10 px-3 py-[2px] text-sm text-red-700">
-          <span className="h-2 w-2 rounded-full bg-red-700"></span> Failed
+          <span className="h-2 w-2 rounded-full bg-red-700"></span> Cancelled
         </div>
       );
     case "pending":
@@ -89,26 +89,28 @@ export default function OrderPage() {
       id: "orderId",
       header: () => <span>Order ID</span>,
       cell: ({ row }) => (
-        <span className="capitalize text-[15px]">{row.original?.orderId}</span>
+        <span className="text-[15px] capitalize">{row.original?.orderId}</span>
       ),
     }),
     columnHelper.accessor("firstName", {
       header: () => <span>Billing Name</span>,
       cell: ({ row }) => (
-        <span className="capitalize text-[15px]">
+        <span className="text-[15px] capitalize">
           {row.original?.firstName + " " + row.original?.lastName}
         </span>
       ),
     }),
     columnHelper.accessor("fee.total", {
       cell: ({ row }) => (
-        <span className="text-[15px]">{formatCurrency(row.original.fee.total, "en-NG")}</span>
+        <span className="text-[15px]">
+          {formatCurrency(row.original.fee.total, "en-NG")}
+        </span>
       ),
       header: () => <span>Total</span>,
     }),
 
     columnHelper.accessor((row) => row, {
-      id: 'createdAt',
+      id: "createdAt",
       header: () => <span>Order Date</span>,
       cell: ({ row }) => (
         <span className="text-[15px]">

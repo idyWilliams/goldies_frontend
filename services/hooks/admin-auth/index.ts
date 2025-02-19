@@ -43,6 +43,12 @@ export const getUsers = async () => {
   return response.data;
 };
 
+// GET single USER
+export const getUserById = async (id: string) => {
+  const response = await instance.get("/user/" + id);
+  return response.data;
+};
+
 // ADMIN PROFILE UPDATE
 export const updateAdminProfile = async (data: {
   userName: string;
