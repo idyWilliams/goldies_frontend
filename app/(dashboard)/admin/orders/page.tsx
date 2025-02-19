@@ -15,7 +15,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
-export const statusColor = (status: "pending" | "completed" | "cancelled") => {
+const statusColor = (status: string) => {
   switch (status) {
     case "completed":
       return (

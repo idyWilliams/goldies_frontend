@@ -64,7 +64,6 @@ export const getAllBllingInfo = async () => {
 
 export const orderCreate = async (orderInfo: any) => {
   const response = await instance.post("/order/create_order", orderInfo);
-  console.log("resOrderCreate is", response.data);
   return response.data;
 };
 
@@ -80,7 +79,6 @@ export const getOrderByUser = async () => {
 export const getOrderByOrderId = async (orderId: string) => {
   try {
     const response = await instance.get(`/order/get_order/${orderId}`);
-    console.log("OrderByID", response.data);
     return response.data;
   } catch (error) {
     console.log("error getting user specific order by Id", error);
@@ -94,6 +92,24 @@ export const adminGetAllOrders = async () => {
     return response.data;
   } catch (error) {
     console.log("error getting admin all orders", error);
+    throw error;
+  }
+};
+
+export const updateOrderStatus = async ({
+  id,
+  orderStatus,
+}: {
+  id: string;
+  orderStatus: string;
+}) => {
+  try {
+    const response = await instance.patch(`/order/update_order_status/${id}`, {
+      orderStatus,
+    });
+    return response.data;
+  } catch (error) {
+    console.log("error updating status", error);
     throw error;
   }
 };

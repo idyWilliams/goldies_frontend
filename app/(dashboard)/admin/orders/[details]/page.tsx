@@ -7,26 +7,27 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatCurrency } from "@/helper/formatCurrency";
 import { IOrder } from "@/interfaces/order.interface";
-import { getOrderByOrderId } from "@/services/hooks/payment";
-import { useQuery } from "@tanstack/react-query";
+import { getOrderByOrderId, updateOrderStatus } from "@/services/hooks/payment";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { ArrowLeft } from "iconsax-react";
 import moment from "moment";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { statusColor } from "../page";
+import { CgSpinner } from "react-icons/cg";
+import { toast } from "sonner";
 
 const LoadingSkeleton = () => {
   return (
     <div className="grid gap-5">
       {/* Order Details Section */}
-      <div className="grid grid-cols-[55%_1fr] gap-5">
+      <div className="grid gap-5 lg:grid-cols-[55%_1fr]">
         {/* Left Side: Order Info */}
         <div className="rounded-md bg-white p-4">
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <Skeleton className="h-5 w-32" /> {/* Order ID */}
             <Skeleton className="h-6 w-20" /> {/* Status */}
           </div>
-          <div className="my-4 flex items-center justify-between">
+          <div className="my-4 grid gap-4 md:grid-cols-2">
             <div className="grid gap-2">
               <Skeleton className="h-4 w-20" /> {/* Name Label */}
               <Skeleton className="h-5 w-36" /> {/* Name */}
@@ -35,19 +36,19 @@ const LoadingSkeleton = () => {
               <Skeleton className="h-4 w-20" /> {/* Email Label */}
               <Skeleton className="h-5 w-48" /> {/* Email */}
             </div>
-            <div className="grid gap-2">
+            <div className="grid gap-2 md:col-span-2">
               <Skeleton className="h-4 w-24" /> {/* Contact Label */}
               <Skeleton className="h-5 w-28" /> {/* Contact No */}
             </div>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="grid gap-4 md:grid-cols-2">
             <div className="grid gap-2">
               <Skeleton className="h-4 w-32" /> {/* Billing Address Label */}
-              <Skeleton className="h-5 w-60" /> {/* Address */}
+              <Skeleton className="h-5 w-full md:w-60" /> {/* Address */}
             </div>
             <div className="grid gap-2">
               <Skeleton className="h-4 w-24" /> {/* Order Date Label */}
-              <Skeleton className="h-5 w-32" /> {/* Order Date */}
+              <Skeleton className="h-5 w-full md:w-32" /> {/* Order Date */}
             </div>
           </div>
         </div>
@@ -56,36 +57,37 @@ const LoadingSkeleton = () => {
           <Skeleton className="mb-2 h-4 w-32" /> {/* Order Note Label */}
           <Skeleton className="h-20 w-full" /> {/* Placeholder Text */}
           <div className="mt-4">
-            <Skeleton className="mb-2 h-4 w-36" />{" "}
-            {/* Shipping Address Label */}
-            <Skeleton className="h-5 w-60" /> {/* Address */}
+            <Skeleton className="mb-2 h-4 w-36" /> {/* Shipping Address Label */}
+            <Skeleton className="h-5 w-full md:w-60" /> {/* Address */}
           </div>
         </div>
       </div>
+
       {/* Ordered Items Section */}
       <Skeleton className="h-6 w-48" /> {/* Ordered Items Label */}
-      <div className="grid grid-cols-[70%_1fr] gap-5">
+      <div className="grid gap-5 lg:grid-cols-[70%_1fr]">
         <div className="rounded-md bg-white p-6">
           {/* Table Headers */}
-          <div className="grid grid-cols-[40%_15%_20%_25%] gap-5">
+          <div className="hidden gap-5 md:grid md:grid-cols-[40%_15%_20%_25%]">
             <Skeleton className="h-5 w-24" />
             <Skeleton className="h-5 w-16" />
             <Skeleton className="h-5 w-20" />
             <Skeleton className="h-5 w-24" />
           </div>
+
           {/* Table Rows (3 Sample Items) */}
           {[...Array(3)].map((_, i) => (
             <div
               key={i}
-              className="mt-3 grid grid-cols-[40%_15%_20%_25%] gap-5"
+              className="mt-3 grid gap-5 md:grid-cols-[40%_15%_20%_25%]"
             >
               <div className="flex items-center gap-2">
                 <Skeleton className="h-8 w-8 rounded-md" /> {/* Image */}
                 <Skeleton className="h-5 w-32" /> {/* Product Name */}
               </div>
-              <Skeleton className="h-5 w-10" /> {/* Quantity */}
-              <Skeleton className="h-5 w-14" /> {/* Price */}
-              <Skeleton className="h-5 w-16" /> {/* Total */}
+              <Skeleton className="h-5 w-10 hidden md:block" /> {/* Quantity */}
+              <Skeleton className="h-5 w-14 hidden md:block" /> {/* Price */}
+              <Skeleton className="h-5 w-16 hidden md:block" /> {/* Total */}
             </div>
           ))}
         </div>
@@ -104,14 +106,49 @@ const LoadingSkeleton = () => {
   );
 };
 
+const statusColor = (status: string) => {
+  switch (status) {
+    case "completed":
+      return (
+        <div className="inline-flex items-center gap-2 rounded-[50px] border border-green-700 bg-green-700 bg-opacity-10 px-3 py-[2px] text-sm text-green-700">
+          <span className="h-2 w-2 rounded-full bg-green-700"></span>
+          Completed
+        </div>
+      );
+    case "cancelled":
+      return (
+        <div className="inline-flex items-center gap-2 rounded-[50px] border border-red-700 bg-red-700 bg-opacity-10 px-3 py-[2px] text-sm text-red-700">
+          <span className="h-2 w-2 rounded-full bg-red-700"></span> Cancelled
+        </div>
+      );
+    case "pending":
+      return (
+        <div className="inline-flex items-center gap-2 rounded-[50px] border border-orange-600 bg-orange-600 bg-opacity-10 px-3 py-[2px] text-sm text-orange-600">
+          <span className="h-2 w-2 rounded-full bg-orange-600"></span> Pending
+        </div>
+      );
+    default:
+      return;
+  }
+};
+
+
 export default function Page({ params }: { params: { details: string } }) {
   const router = useRouter();
   const [order, setOrder] = useState<IOrder>();
   const [openStatus, setOpenStatus] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  const { data, isSuccess, isError, isLoading } = useQuery({
+  const { data, isSuccess, isError, isLoading, refetch } = useQuery({
     queryFn: async () => getOrderByOrderId(params.details),
     queryKey: ["getOrderByOrderId", params.details],
+  });
+
+  const updateStatus = useMutation({
+    mutationFn: updateOrderStatus,
+    onSuccess: () => {
+      refetch();
+    },
   });
 
   useEffect(() => {
@@ -120,11 +157,24 @@ export default function Page({ params }: { params: { details: string } }) {
     }
   }, [isSuccess, data]);
 
-  const handleUpdateStatus = (newStatus: string) => {
-    setOpenStatus(false);
-
-    // TODO: Call API to update order status
-    console.log(`Order status updated to: ${newStatus}`);
+  const handleUpdateStatus = async (newStatus: string) => {
+    setIsUpdating(true);
+    try {
+      await updateStatus.mutateAsync({
+        id: params.details,
+        orderStatus: newStatus,
+      });
+      toast.success(
+        newStatus === "completed"
+          ? "The order has been marked as completed!"
+          : "The order has been cancelled.",
+      );
+    } catch (error) {
+      console.error("Failed to update order status:", error);
+    } finally {
+      setOpenStatus(false);
+      setIsUpdating(false);
+    }
   };
 
   return (
@@ -141,22 +191,33 @@ export default function Page({ params }: { params: { details: string } }) {
         <div>
           <Popover open={openStatus} onOpenChange={setOpenStatus}>
             <PopoverTrigger asChild>
-              <button className="rounded-sm bg-black px-6 py-2 text-sm text-goldie-300">
-                Update Status
+              <button
+                className="relative rounded-sm bg-black px-6 py-2 text-sm text-goldie-300 disabled:pointer-events-none disabled:opacity-75"
+                disabled={isUpdating}
+              >
+                <span
+                  className={`${isUpdating ? "block" : "hidden"} absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2`}
+                >
+                  <CgSpinner className=" h-6 w-6  animate-spin " />
+                </span>
+
+                <span className={`${isUpdating ? "opacity-0" : "opacity-100"}`}>
+                  Update Status
+                </span>
               </button>
             </PopoverTrigger>
 
             <PopoverContent className="w-40 rounded-md border-[#E4D064] bg-[#E4D064] p-2 shadow-md">
               <div className="flex flex-col">
                 <button
-                  className="flex items-center gap-2 rounded-md p-2 hover:bg-black hover:bg-opacity-20 text-sm duration-300"
-                  onClick={() => handleUpdateStatus("Complete")}
+                  className="flex items-center gap-2 rounded-md p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
+                  onClick={() => handleUpdateStatus("completed")}
                 >
-                  Complete
+                  Completed
                 </button>
                 <button
-                  className="flex items-center gap-2 rounded-md p-2 hover:bg-black hover:bg-opacity-20 text-sm duration-300"
-                  onClick={() => handleUpdateStatus("Cancelled")}
+                  className="flex items-center gap-2 rounded-md p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
+                  onClick={() => handleUpdateStatus("cancelled")}
                 >
                   Cancel
                 </button>
