@@ -40,7 +40,7 @@ export default function AdminNav() {
   const [openSearch, setOpenSearch] = useState(false);
   const { auth } = useAuth();
 
-  const formatRole = (status: string) => status.replace(/_/g, " ");
+  const formatRole = (status: string) => status?.replace(/_/g, " ");
 
   return (
     <>
@@ -77,11 +77,11 @@ export default function AdminNav() {
                   autoComplete="off"
                   id="search"
                   placeholder="Search..."
-                  className={`${openSearch ? "lg:w-[400px] px-4" : "w-0 px-0"} border-none bg-transparent text-[13px] text-goldie-300 duration-300 placeholder:text-goldie-300 placeholder:text-opacity-50 focus:border-0 focus:outline-none focus:ring-0`}
+                  className={`${openSearch ? "px-4 lg:w-[400px]" : "w-0 px-0"} border-none bg-transparent text-[13px] text-goldie-300 duration-300 placeholder:text-goldie-300 placeholder:text-opacity-50 focus:border-0 focus:outline-none focus:ring-0`}
                 />
               </label>
               <span
-                className={`${openSearch ? "rounded-l-none bg-opacity-20" : "rounded-l-md bg-opacity-0"} inline-flex h-10 w-10 items-center justify-center rounded-r-md bg-goldie-300  duration-300 cursor-pointer`}
+                className={`${openSearch ? "rounded-l-none bg-opacity-20" : "rounded-l-md bg-opacity-0"} inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-r-md  bg-goldie-300 duration-300`}
                 onClick={() => setOpenSearch((prev) => !prev)}
               >
                 {openSearch ? (
@@ -123,7 +123,9 @@ export default function AdminNav() {
                         {auth?.admin ? auth?.admin?.userName : "No username"}
                       </span>
                       <span className="text-xs">
-                        {auth?.admin? formatRole(auth?.admin?.role) : "No Role"}
+                        {auth?.admin
+                          ? formatRole(auth?.admin?.role)
+                          : "No Role"}
                       </span>
                     </div>
                     {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
@@ -137,16 +139,20 @@ export default function AdminNav() {
                 <div className="">
                   <span
                     className="flex cursor-pointer items-center gap-2  whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
-                    onClick={() => router.push(`/admin/settings?tab=profile`)}
+                    onClick={() => {
+                      setOpen(false);
+                      router.push(`/admin/settings?tab=profile`);
+                    }}
                   >
                     <User size={20} />
                     My Account
                   </span>
                   <span
                     className="flex cursor-pointer items-center gap-2  whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
-                    onClick={() =>
-                      router.push(`/admin/settings?tab=change-password`)
-                    }
+                    onClick={() => {
+                      setOpen(false);
+                      router.push(`/admin/settings?tab=change-password`);
+                    }}
                   >
                     <Lock1 size={20} />
                     Change Password
