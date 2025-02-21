@@ -119,7 +119,7 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
 
             <div className="flex items-center justify-center">
               <Link
-                href="/admin-sign-in"
+                href="/admin-signin"
                 className="text-center text-sm hover:text-goldie-400"
               >
                 Resend code
