@@ -16,7 +16,7 @@ import * as yup from "yup";
 // import { toast } from "sonner";
 import { USER_DETAILS, USER_TOKEN_NAME } from "@/utils/constants";
 import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 
 const validationSchema = yup.object().shape({
@@ -28,8 +28,11 @@ const Page = () => {
   const { setIsLogin, setAuth } = useAuth();
   const [isChecked, setIsChecked] = useState(false);
   const router = useRouter();
+  const queryParams = useSearchParams();
   const [visible, setVisible] = useState(false);
   const [password, setPassword] = useState("");
+
+  const callbackUrl = queryParams.get("callbackUrl") || "/";
 
   const userLogin = useMutation({
     mutationFn: loginUser,
@@ -69,7 +72,7 @@ const Page = () => {
         Cookies.set(USER_DETAILS, userToken);
         Cookies.set(USER_TOKEN_NAME, res?.token);
 
-        router.push(`/`);
+        router.push(callbackUrl);
         reset();
       })
       .catch((err: any) => {
