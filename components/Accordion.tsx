@@ -9,9 +9,11 @@ type AccordionProp = {
 };
 export default function Accordion({ arr }: AccordionProp) {
   const [openIndex, setOpenIndex] = useState(null);
+
   const handleClick = (index: any) => {
     setOpenIndex(index === openIndex ? null : index);
   };
+  
   return (
     <div className="mt-4 space-y-3">
       {arr.map((item: any, i: number) => (

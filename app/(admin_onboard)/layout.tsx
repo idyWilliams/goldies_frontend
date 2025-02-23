@@ -7,30 +7,30 @@ import { ReactNode, useEffect, useState } from "react";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const storedAdmin = localStorage.getItem("admin");
+  // useEffect(() => {
+  //   const storedAdmin = localStorage.getItem("admin");
 
-    if (storedAdmin) {
-      try {
-        const { token } = JSON.parse(storedAdmin);
-        const decodedToken: { exp: number } = jwtDecode(token);
-        const sessionExpired = Date.now() > decodedToken.exp * 1000;
+  //   if (storedAdmin) {
+  //     try {
+  //       const { token } = JSON.parse(storedAdmin);
+  //       const decodedToken: { exp: number } = jwtDecode(token);
+  //       const sessionExpired = Date.now() > decodedToken.exp * 1000;
 
-        if (!sessionExpired) {
-          // Redirect authenticated admin to dashboard
-          router.replace("/admin");
-        }
-      } catch (error) {
-        console.error("Error decoding token:", error);
-      }
-    }
+  //       if (!sessionExpired) {
+  //         // Redirect authenticated admin to dashboard
+  //         router.replace("/admin");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error decoding token:", error);
+  //     }
+  //   }
 
-    setIsLoading(false); 
-  }, [router]);
+  //   setIsLoading(false); 
+  // }, [router]);
 
-  if (isLoading) return null;
+  // if (isLoading) return null;
 
   return (
     

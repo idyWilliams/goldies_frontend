@@ -10,9 +10,9 @@ import { verifyOTP } from "@/services/hooks/admin-auth";
 import { ADMIN_TOKEN_NAME } from "@/utils/constants";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
-import Cookies from 'js-cookie';
+import Cookies from "js-cookie";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { RiUserSharedLine } from "react-icons/ri";
 import { toast } from "sonner";
@@ -24,8 +24,11 @@ const validationSchema = yup.object().shape({
 
 const AdminSignInVerification = ({ email }: { email: string }) => {
   const { setIsLogin, setRole, setAuth } = useAuth();
-
+  const queryParams = useSearchParams();
   const router = useRouter();
+
+  const callbackUrl = queryParams.get("callbackUrl") || "/admin";
+
   const otpVerify = useMutation({
     mutationFn: verifyOTP,
   });
@@ -58,15 +61,13 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
         );
         localStorage.setItem("adminToken", res?.token);
 
-        Cookies.set(ADMIN_TOKEN_NAME, res?.token)
-        router.push("/admin");
+        Cookies.set(ADMIN_TOKEN_NAME, res?.token);
+        router.push(callbackUrl);
       })
       .catch((error: any) => {
         console.log(error);
         toast.error(error?.response?.data?.message || error?.message);
-
       });
-
   };
 
   return (
@@ -119,7 +120,7 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
 
             <div className="flex items-center justify-center">
               <Link
-                href="/admin-sign-in"
+                href="/admin-signin"
                 className="text-center text-sm hover:text-goldie-400"
               >
                 Resend code

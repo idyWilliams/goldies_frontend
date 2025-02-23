@@ -63,8 +63,8 @@ export function DialogCloseButton({
             </div>
           </DialogTitle>
           <DialogDescription className=" p-4 text-base leading-7 text-white ">
-            You have to be logged to continue with this action. Login now or
-            close to keep checking.
+            You have to login to continue with this action. Login now or close
+            to keep checking.
           </DialogDescription>
         </DialogHeader>
 

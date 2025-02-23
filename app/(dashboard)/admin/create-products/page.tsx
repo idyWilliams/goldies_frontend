@@ -168,6 +168,7 @@ export default function Page() {
     setFlavours,
     setAddOn,
     setCategoryData,
+    formValues.status
   ]);
 
   const submitProduct = useMutation({

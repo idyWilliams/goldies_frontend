@@ -3,13 +3,13 @@ import Accordion from "@/components/Accordion";
 import ChangePassword from "@/components/admin-component/settings-comp/ChangePassword";
 import ProfileInfo from "@/components/admin-component/settings-comp/ProfileInfo";
 import { Lock1, Profile } from "iconsax-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import Info from "@/public/assets/rafiki.svg";
 import Reset from "@/public/assets/reset-password.svg";
 import Image from "next/image";
 import { cn } from "@/helper/cn";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const tabs = [
   {
@@ -25,8 +25,10 @@ const tabs = [
 ];
 
 export default function Page() {
-  const [selectedTab, setSelectedTab] = useState(0);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const tabQuery = searchParams.get("tab");
+  const [selectedTab, setSelectedTab] = useState(0);
 
   const items = [
     {
@@ -39,9 +41,21 @@ export default function Page() {
     },
   ];
 
+  useEffect(() => {
+      if (tabQuery) {
+        const activeTabIndex = tabs.findIndex(
+          (tabObj) =>
+            tabObj.label.toLowerCase().replace(/ /g, "-") ===
+            tabQuery.toLowerCase(),
+        );
+        setSelectedTab(activeTabIndex >= 0 ? activeTabIndex : 0);
+      }
+    }, [tabQuery]);
+
   const handleTab = (index: number, value: string) => {
     setSelectedTab(index);
     router.replace(`/admin/settings?tab=${encodeURIComponent(value)}`);
+    window.scrollTo(0, 0);
   };
 
   return (
