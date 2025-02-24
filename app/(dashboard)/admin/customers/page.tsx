@@ -13,12 +13,16 @@ import moment from "moment";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { CiSearch } from "react-icons/ci";
+import { IoMdClose } from "react-icons/io";
 
 const columnHelper = createColumnHelper<IUser>();
 
 export default function Page() {
   const router = useRouter();
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
+  const [searchValue, setSearchValue] = useState("");
+
   const itemsPerPage = 10;
 
   const { data, isPending, isError, refetch } = useQuery({
@@ -26,13 +30,31 @@ export default function Page() {
     queryFn: getUsers,
   });
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+  };
+
+  const clearInput = () => {
+    setSearchValue("");
+  };
+
   const processedUsers = useMemo<IUser[]>(() => {
     if (!data?.users) return [];
 
     let filtered = data.users as IUser[];
 
+    if (searchValue) {
+      filtered = filtered.filter(
+        (user) =>
+          user?.firstName?.toLowerCase().includes(searchValue.toLowerCase()) ||
+          user?.lastName?.toLowerCase().includes(searchValue.toLowerCase()) ||
+          user?.email?.toLowerCase().includes(searchValue.toLowerCase()) ||
+          user?.phoneNumber?.toLowerCase().includes(searchValue.toLowerCase()),
+      );
+    }
+
     return filtered;
-  }, [data?.users]);
+  }, [data?.users, searchValue]);
 
   const totalPages = Math.ceil(processedUsers.length / itemsPerPage);
 
@@ -50,10 +72,6 @@ export default function Page() {
       setCurrentPageIndex(totalPages);
     }
   }, [totalPages, currentPageIndex]);
-
-  const handleView = (id: string) => {
-    router.push(`/admin/customers/${id}`);
-  };
 
   const columns = [
     columnHelper.accessor((row) => row, {
@@ -75,9 +93,7 @@ export default function Page() {
     columnHelper.accessor((row) => row.email, {
       id: "email",
       cell: ({ row }) => (
-        <span className="text-[15px]">
-          {row.original?.email}
-        </span>
+        <span className="text-[15px]">{row.original?.email}</span>
       ),
       header: () => <span>Contact Number</span>,
       footer: (info) => info.column.id,
@@ -143,6 +159,35 @@ export default function Page() {
         <h1 className="text-lg font-extrabold uppercase">Customers</h1>
         <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
 
+        <div className="my-6 flex flex-col-reverse items-center justify-between gap-4 md:flex-row">
+          {/* search input */}
+          <div className="w-full max-w-[500px]">
+            <label htmlFor="search" className="relative block w-full">
+              <input
+                value={searchValue}
+                type="text"
+                name="search"
+                autoComplete="search"
+                placeholder="Search..."
+                className="w-full rounded-[50px] px-4 py-2 pr-10 placeholder:text-sm focus:border-black focus:ring-black"
+                onChange={handleChange}
+              />
+              {searchValue ? (
+                <button
+                  onClick={clearInput}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                >
+                  <IoMdClose />
+                </button>
+              ) : (
+                <span className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <CiSearch />
+                </span>
+              )}
+            </label>
+          </div>
+        </div>
+
         {isPending ? (
           <div className="flex w-full items-center justify-center py-10">
             <Loader2Icon className="mr-2 animate-spin" />
@@ -161,7 +206,6 @@ export default function Page() {
               <DataTable
                 columns={columns}
                 data={paginatedUsers}
-                searchKeys={["lastName", "firstName", "email"]}
                 currentPage={currentPageIndex}
                 totalPages={totalPages}
                 setCurrentPage={setCurrentPageIndex}
