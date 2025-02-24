@@ -59,7 +59,9 @@ const ShopPage = () => {
   const [order, setOrder] = useState<string>(queryOrder);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const mobileDropdownRef = useRef<HTMLDivElement>(null);
 
   const {
     data: categoryData,
@@ -172,6 +174,13 @@ const ShopPage = () => {
       ) {
         setIsDropdownOpen(false);
       }
+
+      if (
+        mobileDropdownRef.current &&
+        !mobileDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsMobileDropdownOpen(false);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -253,26 +262,11 @@ const ShopPage = () => {
   };
 
   const handleSortChange = (sortBy: string, order: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-
-  if (sortBy === "default") {
-    params.delete("sortBy");
-    params.delete("order");
-  } else {
-    params.set("sortBy", sortBy);
-    params.set("order", order);
-  }
-
-  // Reset to the first page when sorting changes
-  params.set("page", "1");
-
-  // Update the URL
-  router.push(`${pathname}?${params.toString()}`);
-  
     setSortBy(sortBy);
     setOrder(order);
     setCurrentPageIndex(1);
     setIsDropdownOpen(false);
+    setIsMobileDropdownOpen(false);
   };
 
   return (
@@ -298,6 +292,7 @@ const ShopPage = () => {
       <section className="relative py-6 pb-10 xl:bg-neutral-100">
         <div className="wrapper">
           <div className="mx-auto w-full">
+            {/* MOBILE PRODUCT DISPLAY */}
             <div className="mb-4 flex items-start justify-between border-b border-neutral-400 pb-2 lg:grid lg:grid-cols-[85%_10%] xl:hidden">
               <div className="items-center justify-between lg:flex">
                 <div>
@@ -306,17 +301,16 @@ const ShopPage = () => {
                   </h3>
                   <span>{querySubCat && captalizedName(querySubCat)}</span>
                 </div>
-                {/* MOBILE PRODUCT DISPLAY */}
                 <span className="mt-4 text-sm text-neutral-500 lg:text-base">
                   Showing {allProducts.length} of {totalProducts} results
                 </span>
               </div>
 
-              <div className="flex items-end justify-end flex-col gap-3">
+              <div className="flex flex-col items-end justify-end gap-3">
                 {/* filter button */}
                 <button
                   onClick={() => setShowFilter(true)}
-                  className="inline-flex cursor-pointer items-center gap-3 border border-black border-opacity-10 bg-neutral-50 p-2 xl:hidden"
+                  className="inline-flex cursor-pointer items-center gap-3 border border-black border-opacity-10 bg-neutral-50 p-2 "
                 >
                   <span>Filter</span>
                   <span>
@@ -329,8 +323,10 @@ const ShopPage = () => {
                   <span className="text-nowrap">Sort by:</span>
                   <div className="relative">
                     <button
-                      className="cursor-pointer items-center justify-center gap-3 border border-black border-opacity-10 bg-neutral-50 p-2 inline-flex"
-                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                      className="inline-flex cursor-pointer items-center justify-center gap-3 border border-black border-opacity-10 bg-neutral-50 p-2"
+                      onClick={() =>
+                        setIsMobileDropdownOpen(!isMobileDropdownOpen)
+                      }
                     >
                       <span>
                         {sortBy === "default"
@@ -350,9 +346,9 @@ const ShopPage = () => {
                       </span>
                     </button>
                     {/* Sort Dropdown */}
-                    {isDropdownOpen && (
+                    {isMobileDropdownOpen && (
                       <div
-                        ref={dropdownRef}
+                        ref={mobileDropdownRef}
                         className="absolute right-0 top-full z-10 mt-2 w-40 rounded-lg border border-neutral-200 bg-white shadow-lg"
                       >
                         <ul className="py-2">
