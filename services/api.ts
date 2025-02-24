@@ -36,9 +36,9 @@ instance.interceptors.request.use((config) => {
 });
 
 // Optional: Log Axios instance configuration for debugging
-console.log("Axios Instance Configuration:", {
-  baseURL: BASEURL,
-  headers: instance.defaults.headers,
-});
+// console.log("Axios Instance Configuration:", {
+//   baseURL: BASEURL,
+//   headers: instance.defaults.headers,
+// });
 
 export default instance;
