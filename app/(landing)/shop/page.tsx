@@ -5,7 +5,7 @@ import FilterSidebar from "@/components/custom-filter/FilterSideBar";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { ArrowDown2, Shuffle } from "iconsax-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IoList } from "react-icons/io5";
 
 import AdminPagination from "@/components/admin-component/AdminPagination";
@@ -43,6 +43,8 @@ const ShopPage = () => {
   const queryMaxPrice = searchParams.get("maxPrice")
     ? Number(searchParams.get("maxPrice"))
     : null;
+  const querySortBy = searchParams.get("sortBy") || "default";
+  const queryOrder = searchParams.get("order") || "asc";
 
   const [showFilter, setShowFilter] = useState(false);
   const [currentPageIndex, setCurrentPageIndex] = useState(
@@ -51,9 +53,13 @@ const ShopPage = () => {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [categories, setCategories] = useState<UCategory[]>([]);
   const [openIndexes, setOpenIndexes] = useState<number[]>([]);
-
   const [minPrice, setMinPrice] = useState<number>(queryMinPrice ?? 0);
   const [maxPrice, setMaxPrice] = useState<number>(queryMaxPrice ?? 1000);
+  const [sortBy, setSortBy] = useState<string>(querySortBy);
+  const [order, setOrder] = useState<string>(queryOrder);
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const {
     data: categoryData,
@@ -81,6 +87,8 @@ const ShopPage = () => {
   const [params, setParams] = useState<ProductParams>({
     page: currentPageIndex,
     limit: itemsPerPage,
+    sortBy: querySortBy,
+    order: queryOrder,
   });
 
   useEffect(() => {
@@ -101,9 +109,30 @@ const ShopPage = () => {
       newParams.maxPrice = queryMaxPrice;
     }
 
+    // Only include sortBy and order if they are not default
+    if (sortBy !== "default") {
+      newParams.sortBy = sortBy;
+      newParams.order = order;
+    }
+
     // Update URL with new page using router
     const currentParams = new URLSearchParams(searchParams.toString());
     currentParams.set("page", currentPageIndex.toString());
+
+    if (currentPageIndex !== 1) {
+      currentParams.set("page", currentPageIndex.toString());
+    } else {
+      currentParams.delete("page");
+    }
+
+    if (sortBy !== "default") {
+      currentParams.set("sortBy", sortBy);
+      currentParams.set("order", order);
+    } else {
+      currentParams.delete("sortBy");
+      currentParams.delete("order");
+    }
+
     router.push(`${pathname}?${currentParams.toString()}`);
 
     setParams(newParams); // Update params state when URL changes
@@ -112,6 +141,8 @@ const ShopPage = () => {
     queryMinPrice,
     queryMaxPrice,
     currentPageIndex,
+    sortBy,
+    order,
     pathname,
     router,
     searchParams,
@@ -132,6 +163,23 @@ const ShopPage = () => {
     });
   }, []);
 
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const handleClick = (index: number) => {
     setOpenIndexes(
       (prev) =>
@@ -144,7 +192,6 @@ const ShopPage = () => {
   const handleRangeChange = (newMin: number, newMax: number) => {
     setMinPrice(newMin);
     setMaxPrice(newMax);
-    // console.log("Updated values:", { newMin, newMax });
   };
 
   const handleSelectedItem = (id: string, isChecked: boolean) => {
@@ -205,6 +252,13 @@ const ShopPage = () => {
     router.push(pathname); // Reset URL params
   };
 
+  const handleSortChange = (sortBy: string, order: string) => {
+    setSortBy(sortBy);
+    setOrder(order);
+    setCurrentPageIndex(1);
+    setIsDropdownOpen(false);
+  };
+
   return (
     <div className="">
       {/* BREADCRUMBS */}
@@ -225,7 +279,7 @@ const ShopPage = () => {
         </div>
       </div>
 
-      <section className="relative py-6 xl:bg-neutral-100 pb-10">
+      <section className="relative py-6 pb-10 xl:bg-neutral-100">
         <div className="wrapper">
           <div className="mx-auto w-full">
             <div className="mb-4 flex items-center justify-between border-b border-neutral-400 pb-4 lg:grid lg:grid-cols-[85%_10%] xl:hidden">
@@ -324,14 +378,58 @@ const ShopPage = () => {
                       Showing {allProducts.length} of {totalProducts} results
                     </span>
                   </div>
-                  <div
-                    // onClick={() => setShowFilter(true)}
-                    className="hidden cursor-pointer items-center justify-center gap-3 border border-black border-opacity-10 bg-neutral-50 p-2 xl:inline-flex"
-                  >
-                    <span>Sort</span>
-                    <span>
-                      <ArrowDown2 size={20} />
-                    </span>
+                  <div className="relative">
+                    <button
+                      className="hidden cursor-pointer items-center justify-center gap-3 border border-black border-opacity-10 bg-neutral-50 p-2 xl:inline-flex"
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    >
+                      <span>Sort</span>
+                      <span>
+                        <ArrowDown2 size={20} />
+                      </span>
+                    </button>
+                    {/* Sort Dropdown */}
+                    {isDropdownOpen && (
+                      <div
+                        ref={dropdownRef}
+                        className="absolute right-0 top-full z-10 mt-2 w-40 rounded-lg border border-neutral-200 bg-white shadow-lg"
+                      >
+                        <ul className="py-2">
+                          <li
+                            className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                            onClick={() => handleSortChange("default", "asc")}
+                          >
+                            Default
+                          </li>
+                          <li
+                            className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                            onClick={() => handleSortChange("name", "asc")}
+                          >
+                            A-Z
+                          </li>
+                          <li
+                            className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                            onClick={() => handleSortChange("name", "desc")}
+                          >
+                            Z-A
+                          </li>
+                          <li
+                            className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                            onClick={() =>
+                              handleSortChange("createdAt", "desc")
+                            }
+                          >
+                            Newest
+                          </li>
+                          <li
+                            className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                            onClick={() => handleSortChange("createdAt", "asc")}
+                          >
+                            Oldest
+                          </li>
+                        </ul>
+                      </div>
+                    )}
                   </div>
                 </div>
 

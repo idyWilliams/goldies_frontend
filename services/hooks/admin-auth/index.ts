@@ -49,6 +49,12 @@ export const getUserById = async (id: string) => {
   return response.data;
 };
 
+// GET user orders
+export const getUserOrdersById = async (id: string) => {
+  const response = await instance.get("/admin/orders/" + id);
+  return response.data;
+};
+
 // ADMIN PROFILE UPDATE
 export const updateAdminProfile = async (data: {
   userName: string;
