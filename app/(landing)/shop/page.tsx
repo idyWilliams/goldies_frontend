@@ -339,7 +339,11 @@ const ShopPage = () => {
                                 ? "Newest"
                                 : sortBy === "createdAt" && order === "asc"
                                   ? "Oldest"
-                                  : "Sort"}
+                                  : sortBy === "maxPrice" && order === "asc"
+                                    ? "Price: Low to High"
+                                    : sortBy === "maxPrice" && order === "desc"
+                                      ? "Price: High to Low"
+                                      : "Sort"}
                       </span>
                       <span>
                         <ArrowDown2 size={18} />
@@ -349,7 +353,7 @@ const ShopPage = () => {
                     {isMobileDropdownOpen && (
                       <div
                         ref={mobileDropdownRef}
-                        className="absolute right-0 top-full z-10 mt-2 w-40 rounded-lg border border-neutral-200 bg-white shadow-lg"
+                        className="absolute right-0 top-full z-10 mt-2 w-fit rounded-lg border border-neutral-200 bg-white shadow-lg"
                       >
                         <ul className="py-2">
                           <li
@@ -383,6 +387,18 @@ const ShopPage = () => {
                             onClick={() => handleSortChange("createdAt", "asc")}
                           >
                             Oldest
+                          </li>
+                          <li
+                            className="cursor-pointer px-4 py-2 hover:bg-neutral-100 text-nowrap"
+                            onClick={() => handleSortChange("maxPrice", "asc")}
+                          >
+                            Price: Low to High
+                          </li>
+                          <li
+                            className="cursor-pointer px-4 py-2 hover:bg-neutral-100 text-nowrap"
+                            onClick={() => handleSortChange("maxPrice", "desc")}
+                          >
+                            Price: High to Low
                           </li>
                         </ul>
                       </div>
@@ -485,7 +501,11 @@ const ShopPage = () => {
                                   ? "Newest"
                                   : sortBy === "createdAt" && order === "asc"
                                     ? "Oldest"
-                                    : "Sort"}
+                                    : sortBy === "maxPrice" && order === "asc"
+                                      ? "Price: Low to High"
+                                      : sortBy === "maxPrice" && order === "desc"
+                                        ? "Price: High to Low"
+                                        : "Sort"}
                         </span>
                         <span>
                           <ArrowDown2 size={18} />
@@ -495,7 +515,7 @@ const ShopPage = () => {
                       {isDropdownOpen && (
                         <div
                           ref={dropdownRef}
-                          className="absolute right-0 top-full z-10 mt-2 w-40 rounded-lg border border-neutral-200 bg-white shadow-lg"
+                          className="absolute right-0 top-full z-10 mt-2 w-fit rounded-lg border border-neutral-200 bg-white shadow-lg"
                         >
                           <ul className="py-2">
                             <li
@@ -531,6 +551,18 @@ const ShopPage = () => {
                               }
                             >
                               Oldest
+                            </li>
+                            <li
+                              className="cursor-pointer px-4 py-2 hover:bg-neutral-100 text-nowrap"
+                              onClick={() => handleSortChange("maxPrice", "asc")}
+                            >
+                              Price: Low to High
+                            </li>
+                            <li
+                              className="cursor-pointer px-4 py-2 hover:bg-neutral-100 text-nowrap"
+                              onClick={() => handleSortChange("maxPrice", "desc")}
+                            >
+                              Price: High to Low
                             </li>
                           </ul>
                         </div>
