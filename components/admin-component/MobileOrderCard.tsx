@@ -8,12 +8,14 @@ import { Button } from "../ui/button";
 
 const statusColor = (status: string) => {
   switch (status) {
-    case "success":
+    case "completed":
       return (
-        <div className="text-sm font-semibold text-green-700">Success</div>
+        <div className="text-sm font-semibold text-green-700">Completed</div>
       );
-    case "failed":
-      return <div className="text-sm font-semibold text-red-700">Failed</div>;
+    case "cancelled":
+      return (
+        <div className="text-sm font-semibold text-red-700">Cancelled</div>
+      );
     case "pending":
       return (
         <div className="text-sm font-semibold text-orange-600">Pending</div>
@@ -43,7 +45,7 @@ export default function MobileOrderCard({ data }: { data: IOrder[] }) {
   return (
     <div className="">
       <div className="mt-3 flex items-center gap-1">
-        {["All", "Pending", "Success", "Failed"].map(
+        {["All", "Pending", "Completed", "Cancelled"].map(
           (tabs: string, index: number) => (
             <button
               key={index}
@@ -62,33 +64,39 @@ export default function MobileOrderCard({ data }: { data: IOrder[] }) {
           return (
             <Card key={index} className="bg-white p-4 shadow-xl">
               <div className="flex flex-col gap-3">
-                <div className="grid grid-cols-2">
-                  <div className="flex flex-col items-start">
-                    <span className="inline-block text-sm font-semibold">
-                      Order ID: {data.orderId}
-                    </span>
-                    <span className="mb-1.5 mt-1 inline-block text-sm font-medium">
-                      <span className="font-semibold">Total:</span>{" "}
-                      {formatCurrency(data.fee.total, "en-NG")}
-                    </span>
-                    <span className="mb-1.5 mt-1 inline-block text-sm font-medium">
+                <div className="flex flex-col">
+                  <div className="grid grid-cols-2">
+                    <div className="flex flex-col items-start">
+                      <span className="inline-block text-sm font-semibold">
+                        Order ID: {data.orderId}
+                      </span>
+                      <span className="mb-1.5 mt-1 inline-block text-sm font-medium">
+                        <span className="font-semibold">Total:</span>{" "}
+                        {formatCurrency(data.fee.total, "en-NG")}
+                      </span>
+                    </div>
+
+                    {/* timestamp */}
+                    <div className="flex flex-col text-right ">
+                      <span className="text-sm">
+                        {moment(data.createdAt).format("MMM DD, YYYY HH:mm A")}
+                      </span>
+                      <span className="text-sm">
+                        {statusColor(data.orderStatus)}
+                      </span>
+                    </div>
+                  </div>
+                  <div>
+                    <span className="mb-1.5 inline-block text-sm font-medium">
                       <span className="font-semibold">Billing Name:</span>{" "}
                       {data?.firstName + " " + data.lastName}
-                    </span>
-                  </div>
-                  <div className="flex flex-col text-right ">
-                    <span className="text-sm">
-                      {moment(data.createdAt).format("MMM DD, YYYY HH:mm A")}
-                    </span>
-                    <span className="text-sm">
-                      {statusColor(data.orderStatus)}
                     </span>
                   </div>
                 </div>
 
                 <div className="flex justify-end">
                   <Button
-                    className="rounded-sm bg-goldie-300 hover:bg-goldie-400 text-black"
+                    className="rounded-sm bg-goldie-300 text-black hover:bg-goldie-400"
                     onClick={() => router.push(`/admin/orders/${data._id}`)}
                   >
                     View Details
