@@ -73,12 +73,12 @@ const CreateProductImages = ({
               >
                 Replace
               </label>
-              <button
+              {/* <button
                 className="cursor-pointer rounded-md bg-goldie-300 px-6 py-2"
                 onClick={() => handleRemove(1)}
               >
                 Remove
-              </button>
+              </button> */}
             </div>
           </div>
         )}
@@ -116,12 +116,12 @@ const CreateProductImages = ({
               >
                 Replace
               </label>
-              <button
+              {/* <button
                 className="cursor-pointer rounded-md bg-goldie-300 px-6 py-2"
                 onClick={() => handleRemove(2)}
               >
                 Remove
-              </button>
+              </button> */}
             </div>
           </div>
         )}
@@ -159,12 +159,12 @@ const CreateProductImages = ({
               >
                 Replace
               </label>
-              <button
+              {/* <button
                 className="cursor-pointer rounded-md bg-goldie-300 px-6 py-2"
                 onClick={() => handleRemove(3)}
               >
                 Remove
-              </button>
+              </button> */}
             </div>
           </div>
         )}
@@ -202,12 +202,12 @@ const CreateProductImages = ({
               >
                 Replace
               </label>
-              <button
+              {/* <button
                 className="cursor-pointer rounded-md bg-goldie-300 px-6 py-2"
                 onClick={() => handleRemove(4)}
               >
                 Remove
-              </button>
+              </button> */}
             </div>
           </div>
         )}

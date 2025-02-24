@@ -8,7 +8,7 @@ import {
   TruckRemove,
 } from "iconsax-react";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import Pagination from "../custom-filter/Pagination";
 import { customerOrders } from "@/utils/adminData";
@@ -19,6 +19,8 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import ProductTable from "@/components/admin-component/ProductTable";
+import { useQuery } from "@tanstack/react-query";
+import { getUserOrdersById } from "@/services/hooks/admin-auth";
 
 const statusColor = (status: string) => {
   switch (status.toLowerCase()) {
@@ -68,33 +70,49 @@ interface ITableProps {
   filteredTabs: any;
 }
 
-let itemsPerPage = 6;
-export default function CustomerOrder({ id }: any) {
+export default function CustomerOrder({ id }: { id: string }) {
   const router = useRouter();
   const [orders, setOrders] = useState(customerOrders);
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
-  const handleNext = () => {
-    if (currentPageIndex !== chunkArray(orders, itemsPerPage).length) {
-      setCurrentPageIndex(currentPageIndex + 1);
-      window.scroll(0, 0);
-    } else {
-      return;
-    }
-  };
+  const itemsPerPage = 10;
 
-  const handlePaginateClick = (index: number) => {
-    setCurrentPageIndex(index + 1);
-    window.scroll(0, 0);
-  };
+  const { data, isSuccess, isError, isLoading } = useQuery({
+    queryKey: ["getUserOrdersById", id],
+    queryFn: async () => getUserOrdersById(id),
+  });
 
-  const handlePrev = () => {
-    if (currentPageIndex !== 1) {
-      setCurrentPageIndex(currentPageIndex - 1);
-      window.scroll(0, 0);
-    } else {
-      return;
-    }
-  };
+  console.log("orders id: " + id)
+  console.log("orders: " + data)
+
+  // const processedOrders = useMemo<IOrder[]>(() => {
+  //     if (!ordersResponse?.userOrder) return [];
+  
+  //     let filtered = ordersResponse?.userOrder as IOrder[];
+  //     if (selectedStatus !== "All") {
+  //       filtered = filtered.filter(
+  //         (order) =>
+  //           order.orderStatus.toLowerCase() === selectedStatus.toLowerCase(),
+  //       );
+  //     }
+  //     return filtered;
+  //   }, [ordersResponse?.userOrder, selectedStatus]);
+  
+  //   const totalPages = Math.ceil(processedOrders.length / itemsPerPage);
+  
+  //   const paginatedOrders = useMemo(
+  //     () =>
+  //       processedOrders.slice(
+  //         (currentPageIndex - 1) * itemsPerPage,
+  //         currentPageIndex * itemsPerPage,
+  //       ),
+  //     [processedOrders, currentPageIndex],
+  //   );
+  
+    // useEffect(() => {
+    //   if (currentPage > totalPages && totalPages > 0) {
+    //     setCurrentPageIndex(totalPages);
+    //   }
+    // }, [totalPages, currentPage]);
 
   const columns = [
     columnHelper.accessor((row) => row, {
@@ -252,15 +270,7 @@ export default function CustomerOrder({ id }: any) {
           },
         )}
 
-        <Pagination
-          className="lg:hidden"
-          onNext={handleNext}
-          onPrev={handlePrev}
-          onPaginateClick={handlePaginateClick}
-          itemsPerPage={itemsPerPage}
-          currentPageIndex={currentPageIndex}
-          arr={orders}
-        />
+        
       </div>
       <div className="hidden  md:block md:overflow-x-auto">
         <ProductTable
