@@ -168,14 +168,9 @@ export default function OrderPage() {
       <h1 className="text-lg font-extrabold">Orders</h1>
       <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
 
-      <div className="my-6 flex items-center justify-between gap-4 flex-col-reverse md:flex-row">
+      <div className="my-6 flex flex-col-reverse items-center justify-between gap-4 md:flex-row">
         {/* Filter Tabs */}
-        <div
-          className={cn(
-            "mb-6 flex items-center justify-between gap-2 p-[2px]",
-            filteredTabs?.length >= 1 && "mb-6",
-          )}
-        >
+        <div className={cn("flex items-center justify-between gap-2 p-[2px]")}>
           <div className="flex items-center gap-1">
             {filteredTabs?.map((tab, index) => (
               <button
