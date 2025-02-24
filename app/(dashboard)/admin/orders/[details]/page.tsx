@@ -57,12 +57,12 @@ const LoadingSkeleton = () => {
           <Skeleton className="mb-2 h-4 w-32" /> {/* Order Note Label */}
           <Skeleton className="h-20 w-full" /> {/* Placeholder Text */}
           <div className="mt-4">
-            <Skeleton className="mb-2 h-4 w-36" /> {/* Shipping Address Label */}
+            <Skeleton className="mb-2 h-4 w-36" />{" "}
+            {/* Shipping Address Label */}
             <Skeleton className="h-5 w-full md:w-60" /> {/* Address */}
           </div>
         </div>
       </div>
-
       {/* Ordered Items Section */}
       <Skeleton className="h-6 w-48" /> {/* Ordered Items Label */}
       <div className="grid gap-5 lg:grid-cols-[70%_1fr]">
@@ -85,9 +85,9 @@ const LoadingSkeleton = () => {
                 <Skeleton className="h-8 w-8 rounded-md" /> {/* Image */}
                 <Skeleton className="h-5 w-32" /> {/* Product Name */}
               </div>
-              <Skeleton className="h-5 w-10 hidden md:block" /> {/* Quantity */}
-              <Skeleton className="h-5 w-14 hidden md:block" /> {/* Price */}
-              <Skeleton className="h-5 w-16 hidden md:block" /> {/* Total */}
+              <Skeleton className="hidden h-5 w-10 md:block" /> {/* Quantity */}
+              <Skeleton className="hidden h-5 w-14 md:block" /> {/* Price */}
+              <Skeleton className="hidden h-5 w-16 md:block" /> {/* Total */}
             </div>
           ))}
         </div>
@@ -131,7 +131,6 @@ const statusColor = (status: string) => {
       return;
   }
 };
-
 
 export default function Page({ params }: { params: { details: string } }) {
   const router = useRouter();
@@ -181,50 +180,54 @@ export default function Page({ params }: { params: { details: string } }) {
     <section className=" px-4 py-5">
       <div className="mb-5 flex items-center justify-between border-b border-neutral-500 pb-5">
         <span
-          className="inline-flex items-center gap-2"
+          className="inline-flex items-center gap-2 cursor-pointer"
           onClick={() => router.push("/admin/orders")}
         >
           <ArrowLeft />
           <span className="font-bold uppercase">Order Details</span>
         </span>
 
-        <div>
-          <Popover open={openStatus} onOpenChange={setOpenStatus}>
-            <PopoverTrigger asChild>
-              <button
-                className="relative rounded-sm bg-black px-6 py-2 text-sm text-goldie-300 disabled:pointer-events-none disabled:opacity-75"
-                disabled={isUpdating}
-              >
-                <span
-                  className={`${isUpdating ? "block" : "hidden"} absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2`}
-                >
-                  <CgSpinner className=" h-6 w-6  animate-spin " />
-                </span>
-
-                <span className={`${isUpdating ? "opacity-0" : "opacity-100"}`}>
-                  Update Status
-                </span>
-              </button>
-            </PopoverTrigger>
-
-            <PopoverContent className="w-40 rounded-md border-[#E4D064] bg-[#E4D064] p-2 shadow-md">
-              <div className="flex flex-col">
+        {order?.orderStatus === "pending" && (
+          <div>
+            <Popover open={openStatus} onOpenChange={setOpenStatus}>
+              <PopoverTrigger asChild>
                 <button
-                  className="flex items-center gap-2 rounded-md p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
-                  onClick={() => handleUpdateStatus("completed")}
+                  className="relative rounded-sm bg-black px-6 py-2 text-sm text-goldie-300 disabled:pointer-events-none disabled:opacity-75"
+                  disabled={isUpdating}
                 >
-                  Completed
+                  <span
+                    className={`${isUpdating ? "block" : "hidden"} absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2`}
+                  >
+                    <CgSpinner className=" h-6 w-6  animate-spin " />
+                  </span>
+
+                  <span
+                    className={`${isUpdating ? "opacity-0" : "opacity-100"}`}
+                  >
+                    Update Status
+                  </span>
                 </button>
-                <button
-                  className="flex items-center gap-2 rounded-md p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
-                  onClick={() => handleUpdateStatus("cancelled")}
-                >
-                  Cancel
-                </button>
-              </div>
-            </PopoverContent>
-          </Popover>
-        </div>
+              </PopoverTrigger>
+
+              <PopoverContent className="w-40 rounded-md border-[#E4D064] bg-[#E4D064] p-2 shadow-md">
+                <div className="flex flex-col">
+                  <button
+                    className="flex items-center gap-2 rounded-md p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
+                    onClick={() => handleUpdateStatus("completed")}
+                  >
+                    Completed
+                  </button>
+                  <button
+                    className="flex items-center gap-2 rounded-md p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
+                    onClick={() => handleUpdateStatus("cancelled")}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
+        )}
       </div>
 
       {isLoading ? (
