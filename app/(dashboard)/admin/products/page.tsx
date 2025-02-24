@@ -7,16 +7,10 @@ import ProductSortBy from "@/components/admin-component/ProductSortBy";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/helper/formatCurrency";
 import { IProduct, ProductParams } from "@/interfaces/product.interface";
+import { cn } from "@/lib/utils";
 import useProducts from "@/services/hooks/products/useProducts";
-import {
-  createColumnHelper
-} from "@tanstack/react-table";
-import {
-  Add,
-  Edit,
-  Eye,
-  Trash
-} from "iconsax-react";
+import { createColumnHelper } from "@tanstack/react-table";
+import { Add, Edit, Eye, Trash } from "iconsax-react";
 import { Loader2Icon } from "lucide-react";
 import moment from "moment";
 import Image from "next/image";
@@ -53,11 +47,13 @@ export default function ProductsPage() {
   const router = useRouter();
   const pathname = usePathname();
 
+  const querySortBy = searchParams.get("sortBy") || "default";
+  const queryOrder = searchParams.get("order") || "asc";
+
   const [showModal, setShowModal] = useState(false);
   const [action, setAction] = useState("");
   const [selectedProduct, setSelectedProduct] = useState<IProduct>();
   const [isOpen, setOpen] = useState(false);
-  const [sortType, setSortType] = useState("recentlyAdded");
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
   const [currentPageIndex, setCurrentPageIndex] = useState(
@@ -66,6 +62,9 @@ export default function ProductsPage() {
   const itemsPerPage = 10;
   const sortDropdownRef = useRef<HTMLDivElement>(null);
 
+  const [sortBy, setSortBy] = useState<string>(querySortBy);
+  const [order, setOrder] = useState<string>(queryOrder);
+
   const handleAddNew = () => {
     router.push(`/admin/create-products`);
   };
@@ -73,6 +72,8 @@ export default function ProductsPage() {
   const [params, setParams] = useState<ProductParams>({
     page: currentPageIndex,
     limit: itemsPerPage,
+    sortBy: querySortBy,
+    order: queryOrder,
   });
 
   useEffect(() => {
@@ -95,9 +96,21 @@ export default function ProductsPage() {
       newParams.searchQuery = searchValue;
     }
 
+    // Only include sortBy and order if they are not default
+    if (sortBy !== "default") {
+      newParams.sortBy = sortBy;
+      newParams.order = order;
+    }
+
     // Update URL with new search query and page
     const currentParams = new URLSearchParams(searchParams.toString());
     currentParams.set("page", currentPageIndex.toString());
+
+    if (currentPageIndex !== 1) {
+      currentParams.set("page", currentPageIndex.toString());
+    } else {
+      currentParams.delete("page");
+    }
 
     if (debouncedSearchValue) {
       currentParams.set("searchQuery", debouncedSearchValue);
@@ -105,9 +118,26 @@ export default function ProductsPage() {
       currentParams.delete("searchQuery");
     }
 
+    if (sortBy !== "default") {
+      currentParams.set("sortBy", sortBy);
+      currentParams.set("order", order);
+    } else {
+      currentParams.delete("sortBy");
+      currentParams.delete("order");
+    }
+
     router.push(`${pathname}?${currentParams.toString()}`);
     setParams(newParams);
-  }, [currentPageIndex,searchValue, debouncedSearchValue, pathname, router, searchParams]);
+  }, [
+    currentPageIndex,
+    searchValue,
+    debouncedSearchValue,
+    pathname,
+    router,
+    searchParams,
+    sortBy,
+    order,
+  ]);
 
   const {
     isLoading,
@@ -159,10 +189,10 @@ export default function ProductsPage() {
               alt={info.cell.row.original.name}
             />
             <div className="flex flex-col">
-              <p className="whitespace-nowrap font-bold text-[15px]">
+              <p className="whitespace-nowrap text-[15px] font-bold">
                 {info.cell.row.original.name}
               </p>
-              <span className="uppercase text-[15px]">
+              <span className="text-[15px] uppercase">
                 ID:&nbsp;{info.cell.row.original._id.slice(0, 6)}
               </span>
             </div>
@@ -174,7 +204,7 @@ export default function ProductsPage() {
     columnHelper.accessor((row) => row.category, {
       id: "category",
       cell: (info) => (
-        <span className="whitespace-nowrap capitalize text-[15px]">
+        <span className="whitespace-nowrap text-[15px] capitalize">
           {info.cell.row.original.category.name}
         </span>
       ),
@@ -246,48 +276,51 @@ export default function ProductsPage() {
   return (
     <div className="h-full w-full px-4 pt-6">
       {/* top heading */}
-      <div className="flex items-start justify-between gap-6 lg:items-center">
+      <div className="flex items-start justify-between gap-6 ">
         <div className="mb-5">
           <h1 className="text-lg font-extrabold">Products</h1>
           <p className="text-sm">List of all available products created</p>
         </div>
         <Button
-          className="flex cursor-pointer items-center gap-2 rounded-md bg-black text-goldie-300"
+          className="flex cursor-pointer items-center gap-1 rounded-md bg-black text-goldie-300"
           onClick={handleAddNew}
         >
-          <Add size={15} /> ADD NEW
+          <Add size={15} />
+          <span>New Product</span>
         </Button>
       </div>
 
       {/* Search and Sort */}
-      <div className="my-6 flex items-center justify-between gap-2 md:hidden">
-        <label htmlFor="search" className="relative block w-[500px]">
-          <input
-            value={searchValue}
-            type="text"
-            name="search"
-            autoComplete="search"
-            placeholder="Search..."
-            className="w-full rounded-[50px] px-4 py-2 pr-10 placeholder:text-sm focus:border-black focus:ring-black"
-            onChange={handleChange}
-          />
-          {searchValue ? (
-            <button
-              onClick={clearInput}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
-            >
-              <IoMdClose />
-            </button>
-          ) : (
-            <span className="absolute right-3 top-1/2 -translate-y-1/2">
-              <CiSearch />
-            </span>
-          )}
-        </label>
+      <div className="my-6 flex items-center justify-between gap-2 ">
+        <div className="w-full max-w-[500px]">
+          <label htmlFor="search" className="relative block w-full">
+            <input
+              value={searchValue}
+              type="text"
+              name="search"
+              autoComplete="search"
+              placeholder="Search..."
+              className="w-full rounded-[50px] px-4 py-2 pr-10 placeholder:text-sm focus:border-black focus:ring-black"
+              onChange={handleChange}
+            />
+            {searchValue ? (
+              <button
+                onClick={clearInput}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+              >
+                <IoMdClose />
+              </button>
+            ) : (
+              <span className="absolute right-3 top-1/2 -translate-y-1/2">
+                <CiSearch />
+              </span>
+            )}
+          </label>
+        </div>
 
         <div ref={sortDropdownRef} className="relative">
           <Button
-            className="bg-black text-goldie-300 md:hidden"
+            className="bg-black text-goldie-300 "
             onClick={() => setOpen((prev) => !prev)}
           >
             Sort by{" "}
@@ -299,9 +332,14 @@ export default function ProductsPage() {
           </Button>
           {isOpen && (
             <ProductSortBy
+              sortBy={sortBy}
+              order={order}
+              onSortChange={(sortBy, order) => {
+                setSortBy(sortBy);
+                setOrder(order);
+                setCurrentPageIndex(1);
+              }}
               setOpen={setOpen}
-              setSortType={setSortType}
-              sortType={sortType}
             />
           )}
         </div>
@@ -327,15 +365,6 @@ export default function ProductsPage() {
             <DataTable
               columns={columns}
               data={allProducts}
-              filteredTabs={[
-                "All",
-                "Available",
-                "Unavailable",
-                "Disabled",
-                "Out of Stock",
-              ]}
-              statusKey="status"
-              searchKeys={["name", "category", "subCategory"]}
               currentPage={currentPageIndex}
               totalPages={totalPages}
               setCurrentPage={setCurrentPageIndex}

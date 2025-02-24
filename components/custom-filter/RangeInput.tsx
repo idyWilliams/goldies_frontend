@@ -68,18 +68,18 @@ const RangeInput = ({ min, max, minValue, maxValue, onChange }: RangeInputProps)
         {/* Min Value Display */}
         <div className="absolute left-[3px] mt-5 text-xs text-neutral-300">
           <input
-            value={`€ ${minValue}`}
+            value={`₦ ${minValue}`}
             disabled
-            className="form-input w-[80px] rounded-2xl border-neutral-400 text-center text-[#333] disabled:border-neutral-300 disabled:text-neutral-400"
+            className="form-input w-[100px] rounded-2xl border-neutral-400 text-center text-[#333] disabled:border-neutral-300 disabled:text-neutral-400"
           />
         </div>
 
         {/* Max Value Display */}
         <div className="absolute -right-[4px] mt-5 text-xs text-neutral-300">
           <input
-            value={`€ ${maxValue}`}
+            value={`₦ ${maxValue}`}
             disabled
-            className="form-input w-[80px] rounded-2xl border-neutral-400 text-center text-[#333] disabled:border-neutral-300 disabled:text-neutral-400"
+            className="form-input w-[100px] rounded-2xl border-neutral-400 text-center text-[#333] disabled:border-neutral-300 disabled:text-neutral-400"
           />
         </div>
       </div>

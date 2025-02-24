@@ -59,7 +59,9 @@ const ShopPage = () => {
   const [order, setOrder] = useState<string>(queryOrder);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const mobileDropdownRef = useRef<HTMLDivElement>(null);
 
   const {
     data: categoryData,
@@ -172,6 +174,13 @@ const ShopPage = () => {
       ) {
         setIsDropdownOpen(false);
       }
+
+      if (
+        mobileDropdownRef.current &&
+        !mobileDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsMobileDropdownOpen(false);
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -257,6 +266,7 @@ const ShopPage = () => {
     setOrder(order);
     setCurrentPageIndex(1);
     setIsDropdownOpen(false);
+    setIsMobileDropdownOpen(false);
   };
 
   return (
@@ -282,7 +292,8 @@ const ShopPage = () => {
       <section className="relative py-6 pb-10 xl:bg-neutral-100">
         <div className="wrapper">
           <div className="mx-auto w-full">
-            <div className="mb-4 flex items-center justify-between border-b border-neutral-400 pb-4 lg:grid lg:grid-cols-[85%_10%] xl:hidden">
+            {/* MOBILE PRODUCT DISPLAY */}
+            <div className="mb-4 flex items-start justify-between border-b border-neutral-400 pb-2 lg:grid lg:grid-cols-[85%_10%] xl:hidden">
               <div className="items-center justify-between lg:flex">
                 <div>
                   <h3 className="text-2xl font-bold text-black">
@@ -290,19 +301,110 @@ const ShopPage = () => {
                   </h3>
                   <span>{querySubCat && captalizedName(querySubCat)}</span>
                 </div>
-                {/* MOBILE PRODUCT DISPLAY */}
-                <span className="text-sm text-neutral-500 lg:text-base">
+                <span className="mt-4 text-sm text-neutral-500 lg:text-base">
                   Showing {allProducts.length} of {totalProducts} results
                 </span>
               </div>
-              <div
-                onClick={() => setShowFilter(true)}
-                className="inline-flex cursor-pointer items-center gap-3 border border-black p-2 xl:hidden"
-              >
-                <span>Filter</span>
-                <span>
-                  <Shuffle size={20} />
-                </span>
+
+              <div className="flex flex-col items-end justify-end gap-3">
+                {/* filter button */}
+                <button
+                  onClick={() => setShowFilter(true)}
+                  className="inline-flex cursor-pointer items-center gap-3 border border-black border-opacity-10 bg-neutral-50 p-2 "
+                >
+                  <span>Filter</span>
+                  <span>
+                    <Shuffle size={18} />
+                  </span>
+                </button>
+
+                {/* sort and order */}
+                <div className="flex items-center  gap-3">
+                  <span className="text-nowrap">Sort by:</span>
+                  <div className="relative">
+                    <button
+                      className="inline-flex cursor-pointer items-center justify-center gap-3 border border-black border-opacity-10 bg-neutral-50 p-2"
+                      onClick={() =>
+                        setIsMobileDropdownOpen(!isMobileDropdownOpen)
+                      }
+                    >
+                      <span>
+                        {sortBy === "default"
+                          ? "Sort"
+                          : sortBy === "name" && order === "asc"
+                            ? "A-Z"
+                            : sortBy === "name" && order === "desc"
+                              ? "Z-A"
+                              : sortBy === "createdAt" && order === "desc"
+                                ? "Newest"
+                                : sortBy === "createdAt" && order === "asc"
+                                  ? "Oldest"
+                                  : sortBy === "maxPrice" && order === "asc"
+                                    ? "Price: Low to High"
+                                    : sortBy === "maxPrice" && order === "desc"
+                                      ? "Price: High to Low"
+                                      : "Sort"}
+                      </span>
+                      <span>
+                        <ArrowDown2 size={18} />
+                      </span>
+                    </button>
+                    {/* Sort Dropdown */}
+                    {isMobileDropdownOpen && (
+                      <div
+                        ref={mobileDropdownRef}
+                        className="absolute right-0 top-full z-10 mt-2 w-fit rounded-lg border border-neutral-200 bg-white shadow-lg"
+                      >
+                        <ul className="py-2">
+                          <li
+                            className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                            onClick={() => handleSortChange("default", "asc")}
+                          >
+                            Default
+                          </li>
+                          <li
+                            className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                            onClick={() => handleSortChange("name", "asc")}
+                          >
+                            A-Z
+                          </li>
+                          <li
+                            className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                            onClick={() => handleSortChange("name", "desc")}
+                          >
+                            Z-A
+                          </li>
+                          <li
+                            className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                            onClick={() =>
+                              handleSortChange("createdAt", "desc")
+                            }
+                          >
+                            Newest
+                          </li>
+                          <li
+                            className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                            onClick={() => handleSortChange("createdAt", "asc")}
+                          >
+                            Oldest
+                          </li>
+                          <li
+                            className="cursor-pointer px-4 py-2 hover:bg-neutral-100 text-nowrap"
+                            onClick={() => handleSortChange("maxPrice", "asc")}
+                          >
+                            Price: Low to High
+                          </li>
+                          <li
+                            className="cursor-pointer px-4 py-2 hover:bg-neutral-100 text-nowrap"
+                            onClick={() => handleSortChange("maxPrice", "desc")}
+                          >
+                            Price: High to Low
+                          </li>
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -366,70 +468,106 @@ const ShopPage = () => {
 
               {/* product grid */}
               <div className="w-full bg-white p-4">
-                <div className="mb-4 flex items-center justify-between border-b border-neutral-400 pb-4 lg:grid lg:grid-cols-[85%_10%]">
-                  <div className="items-center justify-between lg:flex">
+                <div className="mb-4 flex items-start justify-between border-b border-neutral-400 pb-2 lg:grid lg:grid-cols-[75%_25%]">
+                  <div className="flex flex-col">
                     <div>
                       <h3 className="text-2xl font-bold text-black">
                         {queryCat ? captalizedName(queryCat) : "All Cakes"}
                       </h3>
                       <span>{querySubCat && captalizedName(querySubCat)}</span>
                     </div>
-                    <span className="text-sm text-neutral-500 lg:text-base">
+
+                    <span className="mt-4 text-sm text-neutral-500 lg:text-base">
                       Showing {allProducts.length} of {totalProducts} results
                     </span>
                   </div>
-                  <div className="relative">
-                    <button
-                      className="hidden cursor-pointer items-center justify-center gap-3 border border-black border-opacity-10 bg-neutral-50 p-2 xl:inline-flex"
-                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    >
-                      <span>Sort</span>
-                      <span>
-                        <ArrowDown2 size={20} />
-                      </span>
-                    </button>
-                    {/* Sort Dropdown */}
-                    {isDropdownOpen && (
-                      <div
-                        ref={dropdownRef}
-                        className="absolute right-0 top-full z-10 mt-2 w-40 rounded-lg border border-neutral-200 bg-white shadow-lg"
+
+                  {/* sort and order */}
+                  <div className="flex items-center justify-end gap-3">
+                    <span className="text-nowrap">Sort by:</span>
+                    <div className="relative">
+                      <button
+                        className="hidden cursor-pointer items-center justify-center gap-3 border border-black border-opacity-10 bg-neutral-50 p-2 xl:inline-flex"
+                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                       >
-                        <ul className="py-2">
-                          <li
-                            className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
-                            onClick={() => handleSortChange("default", "asc")}
-                          >
-                            Default
-                          </li>
-                          <li
-                            className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
-                            onClick={() => handleSortChange("name", "asc")}
-                          >
-                            A-Z
-                          </li>
-                          <li
-                            className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
-                            onClick={() => handleSortChange("name", "desc")}
-                          >
-                            Z-A
-                          </li>
-                          <li
-                            className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
-                            onClick={() =>
-                              handleSortChange("createdAt", "desc")
-                            }
-                          >
-                            Newest
-                          </li>
-                          <li
-                            className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
-                            onClick={() => handleSortChange("createdAt", "asc")}
-                          >
-                            Oldest
-                          </li>
-                        </ul>
-                      </div>
-                    )}
+                        <span>
+                          {sortBy === "default"
+                            ? "Sort"
+                            : sortBy === "name" && order === "asc"
+                              ? "A-Z"
+                              : sortBy === "name" && order === "desc"
+                                ? "Z-A"
+                                : sortBy === "createdAt" && order === "desc"
+                                  ? "Newest"
+                                  : sortBy === "createdAt" && order === "asc"
+                                    ? "Oldest"
+                                    : sortBy === "maxPrice" && order === "asc"
+                                      ? "Price: Low to High"
+                                      : sortBy === "maxPrice" && order === "desc"
+                                        ? "Price: High to Low"
+                                        : "Sort"}
+                        </span>
+                        <span>
+                          <ArrowDown2 size={18} />
+                        </span>
+                      </button>
+                      {/* Sort Dropdown */}
+                      {isDropdownOpen && (
+                        <div
+                          ref={dropdownRef}
+                          className="absolute right-0 top-full z-10 mt-2 w-fit rounded-lg border border-neutral-200 bg-white shadow-lg"
+                        >
+                          <ul className="py-2">
+                            <li
+                              className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                              onClick={() => handleSortChange("default", "asc")}
+                            >
+                              Default
+                            </li>
+                            <li
+                              className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                              onClick={() => handleSortChange("name", "asc")}
+                            >
+                              A-Z
+                            </li>
+                            <li
+                              className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                              onClick={() => handleSortChange("name", "desc")}
+                            >
+                              Z-A
+                            </li>
+                            <li
+                              className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                              onClick={() =>
+                                handleSortChange("createdAt", "desc")
+                              }
+                            >
+                              Newest
+                            </li>
+                            <li
+                              className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                              onClick={() =>
+                                handleSortChange("createdAt", "asc")
+                              }
+                            >
+                              Oldest
+                            </li>
+                            <li
+                              className="cursor-pointer px-4 py-2 hover:bg-neutral-100 text-nowrap"
+                              onClick={() => handleSortChange("maxPrice", "asc")}
+                            >
+                              Price: Low to High
+                            </li>
+                            <li
+                              className="cursor-pointer px-4 py-2 hover:bg-neutral-100 text-nowrap"
+                              onClick={() => handleSortChange("maxPrice", "desc")}
+                            >
+                              Price: High to Low
+                            </li>
+                          </ul>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
 

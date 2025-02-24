@@ -1,36 +1,88 @@
 import React from "react";
 
 interface ProductSortByProps {
-  setSortType: (value: string) => void;
-  sortType: string;
-  setOpen: (value: boolean) => void;
+  sortBy: string;
+  order: string;
+  onSortChange: (sortBy: string, order: string) => void;
+  setOpen: (isOpen: boolean) => void;
 }
 
-const sortOption = [
-  { label: "Recently Added", value: "recentlyAdded" },
-  { label: "High To Low Price", value: "highToLow" },
-  { label: "Low To High Price", value: "lowToHigh" },
-  { label: "Status: Available", value: "available" },
-];
 export default function ProductSortBy({
-  setSortType,
-  sortType,
+  onSortChange,
+  order,
+  sortBy,
   setOpen,
 }: ProductSortByProps) {
+  const handleSortChange = (sortBy: string, order: string) => {
+    onSortChange(sortBy, order);
+    setOpen(false); // Close the dropdown after selecting an option
+  };
+
+  // Function to check if a sorting option is active
+  const isActive = (optionSortBy: string, optionOrder: string) => {
+    return sortBy === optionSortBy && order === optionOrder;
+  };
+
   return (
     <div className="absolute right-0 top-full z-40 w-[180px] rounded-md bg-black p-2 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
-      {sortOption.map((option: any, index: number) => (
-        <span
-          key={index}
-          className={`mb-2 inline-flex w-full cursor-pointer items-center justify-center whitespace-nowrap rounded-[3px] p-1 px-2 text-sm text-goldie-300 ${sortType === option.value ? "bg-[#E4D064] bg-opacity-20" : "bg-black"}`}
-          onClick={() => {
-            setSortType(option.value);
-            setOpen(false);
-          }}
+      <ul className="py-2">
+        <li
+          className={`cursor-pointer px-4 py-2 text-goldie-300 hover:bg-[#E4D064] hover:bg-opacity-20 ${
+            isActive("default", "asc") ? "bg-[#E4D064] bg-opacity-20" : ""
+          }`}
+          onClick={() => handleSortChange("default", "asc")}
         >
-          {option.label}
-        </span>
-      ))}
+          Default
+        </li>
+        <li
+          className={`cursor-pointer px-4 py-2 text-goldie-300 hover:bg-[#E4D064] hover:bg-opacity-20 ${
+            isActive("name", "asc") ? "bg-[#E4D064] bg-opacity-20" : ""
+          }`}
+          onClick={() => handleSortChange("name", "asc")}
+        >
+          A-Z
+        </li>
+        <li
+          className={`cursor-pointer px-4 py-2 text-goldie-300 hover:bg-[#E4D064] hover:bg-opacity-20 ${
+            isActive("name", "desc") ? "bg-[#E4D064] bg-opacity-20" : ""
+          }`}
+          onClick={() => handleSortChange("name", "desc")}
+        >
+          Z-A
+        </li>
+        <li
+          className={`cursor-pointer px-4 py-2 text-goldie-300 hover:bg-[#E4D064] hover:bg-opacity-20 ${
+            isActive("createdAt", "desc") ? "bg-[#E4D064] bg-opacity-20" : ""
+          }`}
+          onClick={() => handleSortChange("createdAt", "desc")}
+        >
+          Newest
+        </li>
+        <li
+          className={`cursor-pointer px-4 py-2 text-goldie-300 hover:bg-[#E4D064] hover:bg-opacity-20 ${
+            isActive("createdAt", "asc") ? "bg-[#E4D064] bg-opacity-20" : ""
+          }`}
+          onClick={() => handleSortChange("createdAt", "asc")}
+        >
+          Oldest
+        </li>
+        <li
+          className={`cursor-pointer px-4 py-2 text-goldie-300 hover:bg-[#E4D064] hover:bg-opacity-20 ${
+            isActive("maxPrice", "asc") ? "bg-[#E4D064] bg-opacity-20" : ""
+          }`}
+          onClick={() => handleSortChange("maxPrice", "asc")}
+        >
+          Price: Low to High
+        </li>
+        <li
+          className={`cursor-pointer px-4 py-2 text-goldie-300 hover:bg-[#E4D064] hover:bg-opacity-20 ${
+            isActive("maxPrice", "desc") ? "bg-[#E4D064] bg-opacity-20" : ""
+          }`}
+          onClick={() => handleSortChange("maxPrice", "desc")}
+        >
+          Price: High to Low
+        </li>
+      </ul>
     </div>
   );
 }

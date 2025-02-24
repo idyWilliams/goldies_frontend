@@ -106,12 +106,12 @@ export default function CreateSubcategoryImage({
             >
               Replace
             </label>
-            <button
+            {/* <button
               onClick={handleRemoveCateImg}
               className="cursor-pointer rounded-md bg-goldie-300 px-6 py-2"
             >
               Remove
-            </button>
+            </button> */}
           </div>
         </div>
       )}

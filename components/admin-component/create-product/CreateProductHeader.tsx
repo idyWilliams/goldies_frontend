@@ -15,7 +15,7 @@ const CreateProductHeader = ({
   const router = useRouter();
 
   const handleBackClick = () => {
-    router.push('/admin/products');
+    router.push("/admin/products");
   };
   return (
     <div className="flex items-center justify-between">
@@ -26,7 +26,7 @@ const CreateProductHeader = ({
       <div className="flex items-center gap-4">
         <Button
           type="button"
-          variant={'secondary'}
+          variant={"secondary"}
           className="relative rounded-md bg-neutral-400 px-10 py-2 text-sm"
           onClick={handleBackClick}
         >
@@ -42,7 +42,7 @@ const CreateProductHeader = ({
           />
 
           <span className={`${isSubmitting ? "opacity-0" : "opacity-100"}`}>
-            Save Changes
+            {editId ? "Save Changes" : "Create"}
           </span>
         </Button>
       </div>

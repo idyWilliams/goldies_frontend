@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import EachElement from "@/helper/EachElement";
 import { formatCurrency } from "@/helper/formatCurrency";
 import { IOrder } from "@/interfaces/order.interface";
+import { cn } from "@/lib/utils";
 import { getOrderByUser } from "@/services/hooks/payment";
 import { useQuery } from "@tanstack/react-query";
 import { createColumnHelper } from "@tanstack/react-table";
@@ -16,6 +17,8 @@ import moment from "moment";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { CiSearch } from "react-icons/ci";
+import { IoMdClose } from "react-icons/io";
 
 const columnHelper = createColumnHelper<IOrder>();
 const columns = [
@@ -72,11 +75,10 @@ const columns = [
 
 const MyOrders = () => {
   const router = useRouter();
-  const [currentPageIndex, setCurrentPageIndex] = useState(1);
-  const [selectedTabs, setSelectedTabs] = useState("All");
-  const [filteredData, setFilteredData] = useState<IOrder[]>([]);
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchValue, setSearchValue] = useState("");
+
   const itemsPerPage = 10;
 
   const {
@@ -90,6 +92,14 @@ const MyOrders = () => {
     queryFn: getOrderByUser,
   });
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+  };
+
+  const clearInput = () => {
+    setSearchValue("");
+  };
+
   const processedOrders = useMemo<IOrder[]>(() => {
     if (!ordersResponse?.userOrder) return [];
 
@@ -100,8 +110,15 @@ const MyOrders = () => {
           order.orderStatus.toLowerCase() === selectedStatus.toLowerCase(),
       );
     }
+
+    if (searchValue) {
+      filtered = filtered.filter((order) =>
+        order?.orderId?.toLowerCase().includes(searchValue.toLowerCase()),
+      );
+    }
+
     return filtered;
-  }, [ordersResponse?.userOrder, selectedStatus]);
+  }, [ordersResponse?.userOrder, selectedStatus, searchValue]);
 
   const totalPages = Math.ceil(processedOrders.length / itemsPerPage);
 
@@ -120,12 +137,64 @@ const MyOrders = () => {
     }
   }, [totalPages, currentPage]);
 
+  const filteredTabs = ["All", "Pending", "Completed", "Cancelled"];
+
   return (
     <section className="bg-neutral-100 py-6">
       <div className="wrapper">
         <h1 className="mb-8 border-b pb-3 text-2xl font-semibold">
           All Orders
         </h1>
+
+        <div className="my-6 flex flex-col-reverse items-center justify-between gap-4 md:flex-row">
+          {/* Filter Tabs */}
+          <div
+            className={cn("flex items-center justify-between gap-2 p-[2px]")}
+          >
+            <div className="flex items-center gap-1">
+              {filteredTabs?.map((tab, index) => (
+                <button
+                  key={index}
+                  className={`w-fit rounded-sm border px-2 ${
+                    selectedStatus === tab
+                      ? "bg-black text-goldie-300"
+                      : "border-neutral-200 bg-white"
+                  }`}
+                  onClick={() => setSelectedStatus(tab)}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* search input */}
+          <div className="w-full max-w-[500px]">
+            <label htmlFor="search" className="relative block w-full">
+              <input
+                value={searchValue}
+                type="text"
+                name="search"
+                autoComplete="search"
+                placeholder="Search Order ID..."
+                className="w-full rounded-[50px] px-4 py-2 pr-10 placeholder:text-sm focus:border-black focus:ring-black"
+                onChange={handleChange}
+              />
+              {searchValue ? (
+                <button
+                  onClick={clearInput}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                >
+                  <IoMdClose />
+                </button>
+              ) : (
+                <span className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <CiSearch />
+                </span>
+              )}
+            </label>
+          </div>
+        </div>
 
         {isPending ? (
           <div className="flex w-full items-center justify-center py-10">
@@ -146,9 +215,6 @@ const MyOrders = () => {
               <DataTable
                 columns={columns}
                 data={paginatedOrders}
-                filteredTabs={["All", "Pending", "Completed", "Cancelled"]}
-                statusKey="orderStatus"
-                searchKeys={["orderId"]}
                 currentPage={currentPage}
                 totalPages={totalPages}
                 setCurrentPage={setCurrentPage}
@@ -156,20 +222,6 @@ const MyOrders = () => {
             </div>
 
             <div className="lg:hidden">
-              <div className="flex gap-1">
-                <EachElement
-                  of={["All", "Pending", "Delivered", "Cancelled"]}
-                  render={(tabs: string, index: number) => (
-                    <button
-                      key={index}
-                      className={`w-fit rounded-sm border px-2 ${selectedTabs === tabs ? "bg-black text-goldie-300" : "border-neutral-200 bg-white"}`}
-                      onClick={() => {}}
-                    >
-                      {tabs}
-                    </button>
-                  )}
-                />
-              </div>
               <div className="mt-5 grid gap-5 md:grid-cols-2">
                 <EachElement
                   of={paginatedOrders}

@@ -34,7 +34,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     };
 
     if (!userToken) {
-      console.error("User token is missing.");
+      // console.error("User token is missing.");
       handleSession();
       return;
     }
@@ -45,11 +45,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       const currentTime = new Date().getTime();
       const sessionExpired = currentTime > storedTimestamp;
 
-      console.log("sessioninfo:", {
-        storedTimestamp,
-        currentTime,
-        sessionExpired,
-      });
+      // console.log("sessioninfo:", {
+      //   storedTimestamp,
+      //   currentTime,
+      //   sessionExpired,
+      // });
 
       // When User session is still valid
       if (!sessionExpired) {
