@@ -11,6 +11,10 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { recentOrders } from "@/utils/adminData";
 import { useQuery } from "@tanstack/react-query";
 import { getOrderByOrderId } from "@/services/hooks/payment";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import moment from "moment";
+import { formatCurrency } from "@/helper/formatCurrency";
 
 type MyOrderList = {
   id: number;
@@ -100,87 +104,122 @@ const columns = [
   columnHelper.accessor("price", {
     header: () => <span>Amount</span>,
     cell: (info) => (
-      <div className="">&euro;{info.cell.row.original.price}</div>
+      <div>{formatCurrency(info.cell.row.original.price, "en-NG")}</div>
+
     ),
   }),
   columnHelper.accessor("total", {
     header: () => <span>Shipping</span>,
     cell: (info) => (
-      <div className="">&euro;{info.cell.row.original.total}</div>
+      <div>{formatCurrency(info.cell.row.original.total, "en-NG")}</div>
     ),
   }),
 ];
 
-const MyOrderDetails = ({ params }: { params: any }) => {
+const MyOrderDetails = ({ params }: { params: { order: string } }) => {
   const { order: id } = params;
-  const [order, setOrder] = useState<any>();
-  const [isLoading, setIsLoading] = useState<boolean>(true); // To handle loading state
-  const [error, setError] = useState<string | null>(null);
-  // const { data: orderById, isPending, isSuccess, isError, } = useQuery({
-  //   queryKey: ["Order By Id"],
-  //   // queryFn: getOrderByOrderId,
-  // });
 
-  // console.log('orderbyId: ', orderById)
-
-  //   const orderId = orderbyId.order.map((order: any) => ({
-  //   date: new Date(order.createdAt).toLocaleDateString(),
-  //   id: order._id,
-  //   name: order?.placeholder,
-  //   price: order?.fee?.total,
-  //   quantity: order?.orderedItems?.lengths,
-  //   shippingFee: order?.fee?.deliveryFee,
-  //   status: order?.orderStatus,
-
-  // }))
-
-  // {name: 'Strawberry Sponge Cake', id: 'B736383836hgdy73', date: '2024-05-06', price: '300.00', status: 'Pending', …}
-  // date: "2024-05-06"
-  // id: "B736383836hgdy73"
-  // name: "Strawberry Sponge Cake"
-  // price: "300.00"
-  // quantity: 2
-  // shippingFee: 5.5
-  // status: "Pending"
-  // total: 100
-
-  // useEffect(() => {
-  //   const orderDetails = recentOrders.find((order) => order?.id === id);
-
-  //   console.log(orderDetails);
-
-  //   setOrder(orderDetails);
-  // }, [params, id]);
-  useEffect(() => {
-    const fetchOrderDetails = async () => {
-      try {
-        setIsLoading(true);
-        const orderDetails = await getOrderByOrderId(id); // Fetch order details from API
-        console.log("orderDetails: ", orderDetails);
-        setOrder(orderDetails);
-        if (orderDetails.error) {
-          setError(orderDetails.message || "Failed to fetch order details.");
-        } else {
-          setOrder(orderDetails.order);
-        }
-      } catch (err) {
-        setError("Failed to fetch order details.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchOrderDetails();
-  }, [id]);
+  const {
+    data: order,
+    isError,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryFn: async () => getOrderByOrderId(id),
+    queryKey: ["getOrderByOrderId", id],
+  });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <section className="bg-neutral-100 py-6">
+        <div className="wrapper">
+          <div className="py-0">
+            <Skeleton className="h-8 w-24" />
+          </div>
+          <hr className="mb-4 border-0 border-b pb-3" />
+          <div className="space-y-5 lg:hidden">
+            <div className="rounded-md bg-white p-4">
+              <ul className="space-y-3">
+                <li>
+                  <Skeleton className="h-6 w-full" />
+                </li>
+                <li>
+                  <Skeleton className="h-6 w-full" />
+                </li>
+                <li>
+                  <Skeleton className="h-6 w-full" />
+                </li>
+                <li>
+                  <Skeleton className="h-6 w-full" />
+                </li>
+              </ul>
+            </div>
+            <div className="rounded-md bg-white p-4">
+              <ul className="space-y-3">
+                <li>
+                  <Skeleton className="h-6 w-full" />
+                </li>
+                <li>
+                  <Skeleton className="h-6 w-full" />
+                </li>
+              </ul>
+            </div>
+            <div className="rounded-md bg-white p-4">
+              <ul className="space-y-3">
+                <li>
+                  <Skeleton className="h-6 w-full" />
+                </li>
+                <li>
+                  <Skeleton className="h-6 w-full" />
+                </li>
+                <li>
+                  <Skeleton className="h-6 w-full" />
+                </li>
+                <li>
+                  <Skeleton className="h-6 w-full" />
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div className="hidden lg:mx-auto lg:block xl:max-w-[90%]">
+            <div className="rounded-md bg-white p-5">
+              <Skeleton className="h-8 w-24" />
+              <div className="mt-3 flex justify-between">
+                <div className="flex flex-col gap-5">
+                  <Skeleton className="h-6 w-48" />
+                  <Skeleton className="h-6 w-48" />
+                  <Skeleton className="h-6 w-48" />
+                  <Skeleton className="h-6 w-48" />
+                </div>
+                <div className="flex flex-col gap-5">
+                  <Skeleton className="h-6 w-48" />
+                  <Skeleton className="h-6 w-48" />
+                  <Skeleton className="h-6 w-48" />
+                </div>
+              </div>
+            </div>
+            <div className="mt-5">
+              <Skeleton className="h-64 w-full" />
+              <div className="mt-5 flex justify-end">
+                <Skeleton className="h-24 w-[300px]" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
   }
 
-  // If there's an error, display the error message
-  if (error) {
-    return <div>{error}</div>;
+  if (isError) {
+    <div className="py-5 text-center">
+      <p className="mb-4 text-center text-red-500">
+        Failed to load order details. Please try again.
+      </p>
+
+      <Button onClick={() => refetch()}>Retry</Button>
+    </div>;
   }
+
   if (!order) {
     return <div>No order details available.</div>;
   }
@@ -204,12 +243,10 @@ const MyOrderDetails = ({ params }: { params: any }) => {
             <ul className="space-y-3">
               <li>
                 <div className="flex items-center justify-between">
-                  {/* <span>Order ID: #GOL{order?.id.slice(0, 4)}</span> */}
                   {order.orderId}
 
                   <span>
                     <StatusColumn status={order?.orderStatus} />
-                    {/* {order?.orderStatus} */}
                   </span>
                 </div>
               </li>
@@ -240,9 +277,8 @@ const MyOrderDetails = ({ params }: { params: any }) => {
               <li>
                 <div className="flex items-center justify-between">
                   <span>Order Date:</span>
-                  {/* <span>{order?.date.replace(/-/g, "/")}</span> */}
                   <span>
-                    {new Date(order?.createdAt).toISOString().split("T")[0]}
+                    {moment(order?.createdAt).format("MMM DD, YYYY HH:mm A")}
                   </span>
                 </div>
               </li>
@@ -352,10 +388,7 @@ const MyOrderDetails = ({ params }: { params: any }) => {
         <div className="hidden lg:mx-auto lg:block xl:max-w-[90%]">
           {/* ORDER DETAILS */}
           <div className="rounded-md bg-white p-5">
-            <span className="font-semibold ">
-              {/* Order ID : #GOL{order?.id?.slice(0, 4)} */}
-              {order.orderId}
-            </span>
+            <span className="font-semibold ">{order.orderId}</span>
 
             <div className="mt-3 flex justify-between">
               <div className="flex flex-col gap-5">
@@ -386,7 +419,6 @@ const MyOrderDetails = ({ params }: { params: any }) => {
                 <ul>
                   <li className="font-medium">Status</li>
                   <li>{getStatus(order?.orderStatus)}</li>
-                  {/* <li>{order?.orderStatus}</li> */}
                 </ul>
                 <ul>
                   <li className="font-medium">Contact No</li>
@@ -394,9 +426,8 @@ const MyOrderDetails = ({ params }: { params: any }) => {
                 </ul>
                 <ul>
                   <li className="font-medium">Order Date</li>
-                  {/* <li className="text-neutral-600">{order?.date}</li> */}
                   <li className="text-neutral-600">
-                    {new Date(order?.createdAt).toISOString().split("T")[0]}
+                    {moment(order?.createdAt).format("MMM DD, YYYY HH:mm A")}
                   </li>
                 </ul>
               </div>
@@ -416,15 +447,17 @@ const MyOrderDetails = ({ params }: { params: any }) => {
               <div className="flex w-[300px] flex-col gap-3 bg-white p-4">
                 <div className="inline-flex items-center justify-between">
                   <span>Subtotal</span>
-                  <span>€{order.fee.subTotal}</span>
+                  <span>{formatCurrency(order?.fee?.subTotal!, "en-NG")}</span>
                 </div>
                 <div className="inline-flex items-center justify-between">
                   <span>Tax</span>
-                  <span>€{order.fee.deliveryFee}</span>
+                  <span>
+                    {formatCurrency(order?.fee?.deliveryFee!, "en-NG")}
+                  </span>
                 </div>
                 <div className="inline-flex items-center justify-between border-t pt-3">
                   <span>Total</span>
-                  <span>€{order.fee.total}</span>
+                  <span>{formatCurrency(order?.fee?.total!, "en-NG")}</span>
                 </div>
               </div>
             </div>

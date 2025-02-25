@@ -8,7 +8,7 @@ import EachElement from "@/helper/EachElement";
 import { formatCurrency } from "@/helper/formatCurrency";
 import { IOrder } from "@/interfaces/order.interface";
 import { cn } from "@/lib/utils";
-import { getOrderByUser } from "@/services/hooks/payment";
+import { getOrdersByUser } from "@/services/hooks/payment";
 import { useQuery } from "@tanstack/react-query";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Eye } from "iconsax-react";
@@ -88,8 +88,8 @@ const MyOrders = () => {
     isError,
     refetch,
   } = useQuery({
-    queryKey: ["orderByUser"],
-    queryFn: getOrderByUser,
+    queryKey: ["ordersByUser"],
+    queryFn: getOrdersByUser,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
