@@ -67,7 +67,7 @@ export const orderCreate = async (orderInfo: any) => {
   return response.data;
 };
 
-export const getOrderByUser = async () => {
+export const getOrdersByUser = async () => {
   try {
     const response = await instance.get("/order/get_specific_user_order");
     return response.data;

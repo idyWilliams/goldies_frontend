@@ -1,22 +1,22 @@
+import { Skeleton } from "@/components/ui/skeleton"; // Import Skeleton from ShadCN
 import { cn } from "@/helper/cn";
 import { formatCurrency } from "@/helper/formatCurrency";
 import { getOrderColor } from "@/helper/getOrderColor";
 import { IOrder } from "@/interfaces/order.interface";
-import { getOrderByUser } from "@/services/hooks/payment";
+import { getOrdersByUser } from "@/services/hooks/payment";
 import { useQuery } from "@tanstack/react-query";
 import moment from "moment";
 import Link from "next/link";
 import { useMemo } from "react";
 import { BsThreeDots } from "react-icons/bs";
-import { Skeleton } from "@/components/ui/skeleton"; // Import Skeleton from ShadCN
 
 const Orders = () => {
   const {
     data: ordersResponse,
     isPending,
   } = useQuery({
-    queryKey: ["orderByUser"],
-    queryFn: getOrderByUser,
+    queryKey: ["ordersByUser"],
+    queryFn: getOrdersByUser,
   });
 
   const processedOrders = useMemo<IOrder[]>(() => {
