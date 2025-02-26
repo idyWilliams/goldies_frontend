@@ -22,21 +22,21 @@ const statusColor = (status: string) => {
   switch (status) {
     case "completed":
       return (
-        <div className="inline-flex items-center gap-2 rounded-[50px] border border-green-700 bg-green-700 bg-opacity-10 px-3 py-[2px] text-sm text-green-700">
+        <div className="inline-flex items-center gap-2 rounded-[50px] border border-green-700 bg-green-700 bg-opacity-10 px-3 py-[2px] text-sm text-green-700 capitalize">
           <span className="h-2 w-2 rounded-full bg-green-700"></span>
-          Completed
+          {status}
         </div>
       );
     case "cancelled":
       return (
-        <div className="inline-flex items-center gap-2 rounded-[50px] border border-red-700 bg-red-700 bg-opacity-10 px-3 py-[2px] text-sm text-red-700">
-          <span className="h-2 w-2 rounded-full bg-red-700"></span> Cancelled
+        <div className="inline-flex items-center gap-2 rounded-[50px] border border-red-700 bg-red-700 bg-opacity-10 px-3 py-[2px] text-sm text-red-700 capitalize">
+          <span className="h-2 w-2 rounded-full bg-red-700"></span> {status}
         </div>
       );
     case "pending":
       return (
-        <div className="inline-flex items-center gap-2 rounded-[50px] border border-orange-600 bg-orange-600 bg-opacity-10 px-3 py-[2px] text-sm text-orange-600">
-          <span className="h-2 w-2 rounded-full bg-orange-600"></span> Pending
+        <div className="inline-flex items-center gap-2 rounded-[50px] border border-orange-600 bg-orange-600 bg-opacity-10 px-3 py-[2px] text-sm text-orange-600 capitalize">
+          <span className="h-2 w-2 rounded-full bg-orange-600"></span> {status}
         </div>
       );
     default:
