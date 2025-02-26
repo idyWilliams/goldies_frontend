@@ -234,7 +234,7 @@ export default function Page({ params }: { params: { details: string } }) {
         <LoadingSkeleton />
       ) : (
         <>
-          <div className="hidden lg:block">
+          <div className="hidden md:block">
             <div className="grid grid-cols-[55%_1fr] gap-5">
               <div className="rounded-md bg-white p-3">
                 <div className="flex items-center justify-between">
