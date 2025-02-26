@@ -1,9 +1,3 @@
-export interface ICategory {
-  name: string;
-  id: string;
-  _id: string;
-}
-
 export interface UCategory {
   _id: string;
   name: string;
@@ -23,9 +17,12 @@ export interface ICategories {
 }
 
 export interface ISubCategory {
-  name: string;
-  id: string;
   _id: string;
+  name: string;
+  categoryId: string;
+  image: string;
+  description: string;
+  status: boolean;
 }
 
 export interface IProduct {
@@ -36,8 +33,8 @@ export interface IProduct {
   sizes: string[];
   productType: string;
   toppings: string[];
-  category: ICategory;
-  subCategory: ISubCategory[];
+  category: UCategory;
+  subCategories: ISubCategory[];
   minPrice: string;
   maxPrice: string;
   images: string[];

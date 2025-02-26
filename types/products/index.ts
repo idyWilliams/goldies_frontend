@@ -58,15 +58,10 @@ type CategoryOptionsType =
 export interface CreatePdctCatAndSubCatPropType {
   categoryOptions: CategoryOptionsType;
   category: string;
-  subcatOptions: {
-    label: string;
-    value: any;
-    id: any;
-    disabled: boolean;
-  }[];
+  subCategoriesOptions: SubCategoriesOption[];
   handleChange: (e: any) => void;
-  subCategory: Option[];
-  setSubCategory: React.Dispatch<React.SetStateAction<Option[]>>;
+  subCategories: SubCategoriesOption[];
+  setSubCategories: React.Dispatch<React.SetStateAction<SubCategoriesOption[]>>;
 }
 
 export interface CreateProductMobilePropTypes {
@@ -81,12 +76,7 @@ export interface CreateProductMobilePropTypes {
     imagesRef: React.MutableRefObject<(File | null)[]>;
     category: string;
     categoryOptions: CategoryOptionsType;
-    subcatOptions: {
-      label: string;
-      value: any;
-      id: any;
-      disabled: boolean;
-    }[];
+    subCategoriesOptions: SubCategoriesOption[];
     multiSelect: {
       categoryData: {
         name: string;
@@ -98,8 +88,10 @@ export interface CreateProductMobilePropTypes {
           id: string;
         }>
       >;
-      subCategory: Option[];
-      setSubCategory: React.Dispatch<React.SetStateAction<Option[]>>;
+      subCategories: SubCategoriesOption[];
+      setSubCategories: React.Dispatch<
+        React.SetStateAction<SubCategoriesOption[]>
+      >;
       shapes: Option[];
       setShapes: React.Dispatch<React.SetStateAction<Option[]>>;
       flavour: Option[];
@@ -113,7 +105,7 @@ export interface CreateProductMobilePropTypes {
   editId: string;
 }
 
-type ProductSubCategories = {
+export type SubCategoriesOption = {
   label: string;
   value: any;
   id: any;
@@ -129,10 +121,10 @@ type CategoryOptions = {
 };
 export interface InformationAndPricingType {
   category: string;
-  subCategory: any[];
+  subCategories: SubCategoriesOption[];
   categoryOptions: CategoryOptions[] | undefined;
-  subcategories: ProductSubCategories[];
-  setSubCategory: React.Dispatch<React.SetStateAction<any[]>>;
+  subCategoriesOptions: SubCategoriesOption[];
+  setSubCategories: React.Dispatch<React.SetStateAction<SubCategoriesOption[]>>;
   formValues: formValuesType;
   handleChange: (e: any) => void;
 }

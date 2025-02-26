@@ -53,12 +53,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       // When User session is still valid
       if (!sessionExpired) {
-        console.log("Valid session admin");
+        console.log("Valid session user");
 
         return;
       } else {
         handleSession();
-        console.log("InValid session admin");
+        console.log("InValid session user");
       }
     } catch (error) {
       console.log("Error decoding token:", error, userToken);

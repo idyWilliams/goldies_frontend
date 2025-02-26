@@ -21,7 +21,7 @@ const CreateProductPricing = ({
           </span>
           <div className="relative overflow-hidden rounded-md border bg-gray-100 focus-within:border-black">
             <span className="absolute left-0 top-0 flex h-full w-10 items-center justify-center rounded-sm bg-white font-bold">
-              &euro;
+              ₦
             </span>
             <input
               name="minPrice"
@@ -43,7 +43,7 @@ const CreateProductPricing = ({
           </span>
           <div className="relative overflow-hidden rounded-md border bg-gray-100 focus-within:border-black">
             <span className="absolute left-0 top-0 flex h-full w-10 items-center justify-center rounded-sm bg-white font-bold">
-              &euro;
+            ₦
             </span>
             <input
               name="maxPrice"

@@ -23,8 +23,9 @@ import CreatePdctType from "@/components/admin-component/create-product/CreatePd
 import { useMediaQuery } from "react-responsive";
 import useFormValues from "@/services/hooks/category/useFormValues";
 import { useRouter, useSearchParams } from "next/navigation";
-import { IProduct } from "@/interfaces/product.interface";
+import { IProduct, ISubCategory } from "@/interfaces/product.interface";
 import { Option } from "react-multi-select-component";
+import { SubCategoriesOption } from "@/types/products";
 
 interface ErrorResponse {
   message: string;
@@ -45,14 +46,14 @@ export default function Page() {
     imagesRef,
     category,
     categoryOptions,
-    subcatOptions,
+    subCategoriesOptions,
     multiSelect,
   } = data;
 
   const {
     categoryData,
-    subCategory,
-    setSubCategory,
+    subCategories,
+    setSubCategories,
     shapes,
     setShapes,
     flavour,
@@ -87,11 +88,13 @@ export default function Page() {
     }));
 
   const convertToOptionsWithId = (
-    items: { name: string; id: string }[],
-  ): Option[] =>
+    items: ISubCategory[],
+  ): SubCategoriesOption[] =>
     items.map((item) => ({
       label: item.name,
-      value: item.id,
+      value: item._id,
+      id: item._id,
+      disabled: !item.status,
     }));
 
   useEffect(() => {
@@ -99,16 +102,16 @@ export default function Page() {
       setFormValues({
         productName: product.name,
         productDescription: product.description,
-        category: product.category.id,
+        category: product.category._id,
         productType: product.productType,
         maxPrice: Number(product.maxPrice),
         minPrice: Number(product.minPrice),
-        status: "Available",
+        status: product.status,
       });
 
       setCategoryData({
         name: product.category.name,
-        id: product.category.id,
+        id: product.category._id,
       });
 
       setImages(
@@ -122,15 +125,7 @@ export default function Page() {
           : { image1: "", image2: "", image3: "", image4: "" },
       );
 
-      setSubCategory(
-        product.subCategory.map((sub: any) => ({
-          label: sub.name,
-          value: sub.id,
-          id: sub.id,
-        })),
-      );
-
-      setSubCategory(convertToOptionsWithId(product.subCategory));
+      setSubCategories(convertToOptionsWithId(product.subCategories));
 
       setShapes(convertToOptions(product.shapes));
       setSizes(convertToOptions(product.sizes));
@@ -146,7 +141,7 @@ export default function Page() {
         minPrice: 0,
         status: formValues.status,
       });
-      setSubCategory([]);
+      setSubCategories([]);
       setFlavours([]);
       setShapes([]);
       setSizes([]);
@@ -162,13 +157,13 @@ export default function Page() {
     product,
     setFormValues,
     setImages,
-    setSubCategory,
+    setSubCategories,
     setShapes,
     setSizes,
     setFlavours,
     setAddOn,
     setCategoryData,
-    formValues.status
+    formValues.status,
   ]);
 
   const submitProduct = useMutation({
@@ -176,8 +171,8 @@ export default function Page() {
     mutationFn: async (data: {
       name: string;
       description: string;
-      category: { name: string; id: string };
-      subCategory: { name: string; id: string }[];
+      category: string;
+      subCategories: Option[];
       productType: string;
       images: string[];
       minPrice: number;
@@ -202,7 +197,7 @@ export default function Page() {
         minPrice: 0,
         status: formValues.status,
       });
-      setSubCategory([]);
+      setSubCategories([]);
       setFlavours([]);
       setShapes([]);
       setSizes([]);
@@ -267,11 +262,8 @@ export default function Page() {
     const data = {
       name: formValues.productName,
       description: formValues.productDescription,
-      category: categoryData,
-      subCategory: [...subCategory].map((sub: any) => ({
-        name: sub.label,
-        id: sub.id,
-      })),
+      category: formValues.category,
+      subCategories: [...subCategories].map((sub: any) => sub.id),
       productType: formValues.productType,
       images: finalImages as string[],
       minPrice: Number(formValues.minPrice),
@@ -283,6 +275,7 @@ export default function Page() {
       status: formValues.status,
     };
 
+    // console.log("form data on submit>>>", data);
     submitProduct.mutate(data);
   };
 
@@ -315,10 +308,10 @@ export default function Page() {
                 <CreatePdctCatAndSubCat
                   categoryOptions={categoryOptions}
                   category={category}
-                  subcatOptions={subcatOptions}
+                  subCategoriesOptions={subCategoriesOptions}
                   handleChange={handleChange}
-                  subCategory={subCategory}
-                  setSubCategory={setSubCategory}
+                  subCategories={subCategories}
+                  setSubCategories={setSubCategories}
                 />
 
                 <CreatePdctType

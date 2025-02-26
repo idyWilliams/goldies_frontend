@@ -111,7 +111,7 @@ const Page = () => {
   };
 
   return (
-    <section className="py-10">
+    <section className="pb-10 pt-4">
       <div className="wrapper">
         <div className="flex flex-col items-center sm:mx-auto sm:w-[500px] sm:border sm:bg-white sm:p-6 sm:shadow-lg">
           <span className="flex h-20 w-20 items-center justify-center rounded-full bg-goldie-300 bg-opacity-35">
