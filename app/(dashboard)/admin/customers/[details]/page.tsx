@@ -49,11 +49,7 @@ export default function Page({ params }: { params: { details: string } }) {
             {isLoading ? (
               <Skeleton className="h-6 w-32" />
             ) : (
-              <span className="font-bold uppercase">
-                {customer
-                  ? `${customer.firstName}'s Details`
-                  : "Customer Details"}
-              </span>
+              <span className="font-bold uppercase">Customer Details</span>
             )}
           </span>
           <Link href={`/admin/customers/${params.details}/orders`}>
