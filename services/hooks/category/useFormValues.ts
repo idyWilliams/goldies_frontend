@@ -1,4 +1,4 @@
-import { formValuesType } from "@/types/products";
+import { formValuesType, SubCategoriesOption } from "@/types/products";
 import React, { useEffect, useRef, useState } from "react";
 import useCategories from "./useCategories";
 import useCategoryOptions from "./useCategoryOptions";
@@ -20,7 +20,7 @@ const useFormValues = () => {
     id: string;
   }>({ name: "", id: "" });
 
-  const [subCategory, setSubCategory] = useState<any[]>([]);
+  const [subCategories, setSubCategories] = useState<SubCategoriesOption[]>([]);
 
   const [shapes, setShapes] = useState<Option[]>([]);
   const [flavour, setFlavours] = useState<Option[]>([]);
@@ -39,7 +39,7 @@ const useFormValues = () => {
   const { categories: allCategories } = useCategories();
   const category = formValues.category;
 
-  const { categoryOptions, subcatOptions } = useCategoryOptions({
+  const { categoryOptions, subCategoriesOptions } = useCategoryOptions({
     categories: allCategories,
     category: formValues.category,
   });
@@ -53,8 +53,8 @@ const useFormValues = () => {
       if (activeCategory)
         setCategoryData({ name: activeCategory.label, id: activeCategory.id });
     }
-    if (!category) setSubCategory([]);
-  }, [category, setSubCategory, categoryOptions, setCategoryData]);
+    if (!category) setSubCategories([]);
+  }, [category, setSubCategories, categoryOptions, setCategoryData]);
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -74,12 +74,12 @@ const useFormValues = () => {
     imagesRef,
     category,
     categoryOptions,
-    subcatOptions,
+    subCategoriesOptions,
     multiSelect: {
       categoryData,
       setCategoryData,
-      subCategory,
-      setSubCategory,
+      subCategories,
+      setSubCategories,
       shapes,
       setShapes,
       flavour,

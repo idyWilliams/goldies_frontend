@@ -5,44 +5,34 @@ import BreadCrumbs from "@/components/BreadCrumbs";
 
 import { BsDash, BsPlus } from "react-icons/bs";
 
-import { CgMenuCake } from "react-icons/cg";
-import { useEffect, useMemo, useState } from "react";
-import CustomSelect from "@/components/CustomSelect";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useDispatch } from "react-redux";
+import ProductCard from "@/components/shop-components/ProductCard";
+import ProductReview from "@/components/shop-components/ProductReview";
+import ProductStatusType from "@/components/shop-components/ProductStatusType";
+import StarRating from "@/components/StarRating";
+import { Button } from "@/components/ui/button";
+import { addSlugToCakes, slugify } from "@/helper";
+import EachElement from "@/helper/EachElement";
+import { formatCurrency } from "@/helper/formatCurrency";
+import { ProductParams } from "@/interfaces/product.interface";
+import Placeholder from "@/public/assets/placeholder3.png";
 import {
   addProductToCart,
-  decrementProductQty,
-  incrementProductQty,
-  setBuyNowProduct,
-  // resetToastMessage,
+  setBuyNowProduct
 } from "@/redux/features/product/productSlice";
-import { cakeProducts1, cakeTimes } from "@/utils/cakeData";
-import { addSlugToCakes, slugify } from "@/helper";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import { GiShoppingCart } from "react-icons/gi";
-import StatusBar from "@/components/admin-component/category-comp/StatusBar";
-import StarRating from "@/components/StarRating";
-import EachElement from "@/helper/EachElement";
-import ProductStatusType from "@/components/shop-components/ProductStatusType";
-import ProductReview from "@/components/shop-components/ProductReview";
-import Select from "react-select";
-import ProductCard from "@/components/shop-components/ProductCard";
+import { getActiveProduct, getAllProducts } from "@/services/hooks/products";
+import { cakeTimes } from "@/utils/cakeData";
+import useUserPdctStore from "@/zustand/userProductStore/store";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowRight } from "iconsax-react";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { Toaster } from "sonner";
-import useUserPdctStore from "@/zustand/userProductStore/store";
-import Placeholder from "@/public/assets/placeholder3.png";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { getActiveProduct, getAllProducts } from "@/services/hooks/products";
-import useProducts from "@/services/hooks/products/useProducts";
+import { useDispatch } from "react-redux";
 import { useMediaQuery } from "react-responsive";
-import { ProductParams } from "@/interfaces/product.interface";
-import { Button } from "@/components/ui/button";
+import Select from "react-select";
+import * as yup from "yup";
 // import {
 //   cakeSizes,
 //   toppings,
@@ -348,8 +338,8 @@ function CakeDetailsPage() {
 
             <div className="mb-1 flex flex-col text-lg">
               <span className="text-base font-semibold text-neutral-500">
-                &euro;{activeProduct?.minPrice} - &euro;
-                {activeProduct?.maxPrice}
+                {formatCurrency(parseInt(activeProduct?.minPrice), "en-NG")} -{" "}
+                {formatCurrency(parseInt(activeProduct?.maxPrice), "en-NG")}
               </span>
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-semibold capitalize">
@@ -386,7 +376,7 @@ function CakeDetailsPage() {
                     <span className="font-semibold">Subcategory:</span>
                     <span>
                       &nbsp;
-                      {activeProduct?.subCategory.map((subCat: any) =>
+                      {activeProduct?.subCategories.map((subCat) =>
                         setToUpperCase(subCat.name),
                       )}
                     </span>

@@ -18,8 +18,7 @@ const useCategoryOptions = ({ categories, category }: CatOptionsParamsType) => {
     }));
   }, [categories]);
 
-
-  const subcatOptions = useMemo(() => {
+  const subCategoriesOptions = useMemo(() => {
     const selectedCategory = categoryOptions?.find(
       (option) => option.value === category,
     );
@@ -27,15 +26,14 @@ const useCategoryOptions = ({ categories, category }: CatOptionsParamsType) => {
     return selectedCategory
       ? selectedCategory.subCategories.map((sub) => ({
           label: captalizedName(sub.name),
-          value: sub.name.toLowerCase(),
+          value: sub._id,
           id: sub._id,
           disabled: !sub.status,
         }))
       : [];
   }, [category, categoryOptions]);
 
-
-  return { categoryOptions, subcatOptions };
+  return { categoryOptions, subCategoriesOptions };
 };
 
 export default useCategoryOptions;

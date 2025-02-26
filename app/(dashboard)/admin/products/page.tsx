@@ -192,8 +192,8 @@ export default function ProductsPage() {
               <p className="whitespace-nowrap text-[15px] font-bold">
                 {info.cell.row.original.name}
               </p>
-              <span className="text-[15px] uppercase">
-                ID:&nbsp;{info.cell.row.original._id.slice(0, 6)}
+              <span className="text-sm uppercase">
+                {info.cell.row.original.productCode}
               </span>
             </div>
           </div>
@@ -322,6 +322,7 @@ export default function ProductsPage() {
           <Button
             className="bg-black text-goldie-300 "
             onClick={() => setOpen((prev) => !prev)}
+            disabled={allProducts.length === 0}
           >
             Sort by{" "}
             {!isOpen ? (

@@ -1,15 +1,17 @@
 import { CreatePdctCatAndSubCatPropType } from "@/types/products";
-import { useEffect } from "react";
 import { MultiSelect } from "react-multi-select-component";
 
 const CreatePdctCatAndSubCat = ({
   categoryOptions,
   category,
-  subcatOptions,
+  subCategoriesOptions,
   handleChange,
-  subCategory,
-  setSubCategory,
+  subCategories,
+  setSubCategories,
 }: CreatePdctCatAndSubCatPropType) => {
+
+  console.log("subCategories on multi select>>>>", subCategories)
+  console.log("subCategories options on multi select>>>>", subCategoriesOptions)
 
  
   return (
@@ -47,11 +49,10 @@ const CreatePdctCatAndSubCat = ({
         </h2>
         <div className={`${!category ? "cursor-not-allowed" : ""}`}>
           <MultiSelect
-            disabled={!category}
-            options={subcatOptions}
-            value={subCategory}
+            options={subCategoriesOptions}
+            value={subCategories}
             labelledBy="Select subcategory"
-            onChange={setSubCategory}
+            onChange={setSubCategories}
             className={`${!category ? "pointer-events-none" : ""}`}
           />
         </div>

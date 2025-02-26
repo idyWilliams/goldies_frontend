@@ -110,7 +110,7 @@ const ProductCard = React.memo(function ProductCard({
       <div className="mb-1 flex flex-col text-lg">
         {" "}
         <span className="text-base font-semibold text-neutral-500">
-          {formatCurrency(parseInt(data?.minPrice), "en-NG")}-
+          {formatCurrency(parseInt(data?.minPrice), "en-NG")} -{" "}
           {formatCurrency(parseInt(data?.maxPrice), "en-NG")}
         </span>
         <h3 className="font-semibold capitalize underline underline-offset-1">

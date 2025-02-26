@@ -54,7 +54,7 @@ const ShopPage = () => {
   const [categories, setCategories] = useState<UCategory[]>([]);
   const [openIndexes, setOpenIndexes] = useState<number[]>([]);
   const [minPrice, setMinPrice] = useState<number>(queryMinPrice ?? 0);
-  const [maxPrice, setMaxPrice] = useState<number>(queryMaxPrice ?? 1000);
+  const [maxPrice, setMaxPrice] = useState<number>(queryMaxPrice ?? 20000);
   const [sortBy, setSortBy] = useState<string>(querySortBy);
   const [order, setOrder] = useState<string>(queryOrder);
 
@@ -83,7 +83,7 @@ const ShopPage = () => {
 
   useEffect(() => {
     setMinPrice(queryMinPrice ?? 0);
-    setMaxPrice(queryMaxPrice ?? 1000);
+    setMaxPrice(queryMaxPrice ?? 20000);
   }, [queryMinPrice, queryMaxPrice]);
 
   const [params, setParams] = useState<ProductParams>({
@@ -231,7 +231,7 @@ const ShopPage = () => {
       params.delete("minPrice");
     }
 
-    if (maxPrice < 1000) {
+    if (maxPrice < 20000) {
       params.set("maxPrice", String(maxPrice));
     } else {
       params.delete("maxPrice");
@@ -250,14 +250,15 @@ const ShopPage = () => {
       subCategoryIds:
         selectedIds.size > 0 ? Array.from(selectedIds).join(",") : undefined,
       minPrice: minPrice > 0 ? minPrice : undefined,
-      maxPrice: maxPrice < 1000 ? maxPrice : undefined,
+      maxPrice: maxPrice < 20000 ? maxPrice : undefined,
     }));
   };
 
   const handleReset = () => {
     setMinPrice(0);
-    setMaxPrice(1000);
+    setMaxPrice(20000);
     setSelectedIds(new Set());
+    setSortBy("default");
     router.push(pathname); // Reset URL params
   };
 
@@ -389,13 +390,13 @@ const ShopPage = () => {
                             Oldest
                           </li>
                           <li
-                            className="cursor-pointer px-4 py-2 hover:bg-neutral-100 text-nowrap"
+                            className="cursor-pointer text-nowrap px-4 py-2 hover:bg-neutral-100"
                             onClick={() => handleSortChange("maxPrice", "asc")}
                           >
                             Price: Low to High
                           </li>
                           <li
-                            className="cursor-pointer px-4 py-2 hover:bg-neutral-100 text-nowrap"
+                            className="cursor-pointer text-nowrap px-4 py-2 hover:bg-neutral-100"
                             onClick={() => handleSortChange("maxPrice", "desc")}
                           >
                             Price: High to Low
@@ -460,7 +461,7 @@ const ShopPage = () => {
                   applyFilter={applyFilter}
                   handleReset={handleReset}
                   min={0}
-                  max={1000}
+                  max={20000}
                   minPrice={minPrice}
                   maxPrice={maxPrice}
                 />
@@ -503,7 +504,8 @@ const ShopPage = () => {
                                     ? "Oldest"
                                     : sortBy === "maxPrice" && order === "asc"
                                       ? "Price: Low to High"
-                                      : sortBy === "maxPrice" && order === "desc"
+                                      : sortBy === "maxPrice" &&
+                                          order === "desc"
                                         ? "Price: High to Low"
                                         : "Sort"}
                         </span>
@@ -553,14 +555,18 @@ const ShopPage = () => {
                               Oldest
                             </li>
                             <li
-                              className="cursor-pointer px-4 py-2 hover:bg-neutral-100 text-nowrap"
-                              onClick={() => handleSortChange("maxPrice", "asc")}
+                              className="cursor-pointer text-nowrap px-4 py-2 hover:bg-neutral-100"
+                              onClick={() =>
+                                handleSortChange("maxPrice", "asc")
+                              }
                             >
                               Price: Low to High
                             </li>
                             <li
-                              className="cursor-pointer px-4 py-2 hover:bg-neutral-100 text-nowrap"
-                              onClick={() => handleSortChange("maxPrice", "desc")}
+                              className="cursor-pointer text-nowrap px-4 py-2 hover:bg-neutral-100"
+                              onClick={() =>
+                                handleSortChange("maxPrice", "desc")
+                              }
                             >
                               Price: High to Low
                             </li>
@@ -619,7 +625,7 @@ const ShopPage = () => {
               handleReset={handleReset}
               onClose={() => setShowFilter(false)}
               min={0}
-              max={1000}
+              max={20000}
               minPrice={minPrice}
               maxPrice={maxPrice}
             />

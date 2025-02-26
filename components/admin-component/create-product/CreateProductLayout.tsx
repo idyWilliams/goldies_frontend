@@ -26,7 +26,7 @@ export default function CreateProductLayout({
   // setImages,
   // imagesRef,
   data,
-  editId
+  editId,
 }: CreateProductMobilePropTypes) {
   const {
     formValues,
@@ -37,14 +37,14 @@ export default function CreateProductLayout({
     imagesRef,
     category,
     categoryOptions,
-    subcatOptions,
+    subCategoriesOptions,
     multiSelect,
   } = data;
 
   const {
     categoryData,
-    subCategory,
-    setSubCategory,
+    subCategories,
+    setSubCategories,
     shapes,
     setShapes,
     flavour,
@@ -71,7 +71,7 @@ export default function CreateProductLayout({
         minPrice: 0,
         status: formValues.status,
       });
-      setSubCategory([]);
+      setSubCategories([]);
       setFlavours([]);
       setShapes([]);
       setSizes([]);
@@ -133,7 +133,7 @@ export default function CreateProductLayout({
       name: formValues.productName,
       description: formValues.productDescription,
       category: categoryData,
-      subCategory: [...subCategory].map((sub: any) => ({
+      subCategory: [...subCategories].map((sub: any) => ({
         name: sub.label,
         id: sub.id,
       })),
@@ -162,10 +162,10 @@ export default function CreateProductLayout({
         return (
           <InformationAndPricing
             category={category}
-            subCategory={subCategory}
-            setSubCategory={setSubCategory}
+            subCategories={subCategories}
+            setSubCategories={setSubCategories}
             categoryOptions={categoryOptions}
-            subcategories={subcatOptions}
+            subCategoriesOptions={subCategoriesOptions}
             formValues={formValues}
             handleChange={handleChange}
           />

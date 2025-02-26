@@ -43,7 +43,7 @@ export default function Page({ params }: { params: { details: string } }) {
   };
 
   return (
-    <section className="h-screen bg-gray-100">
+    <section className="">
       <div className="p-5">
         <div className="flex justify-between">
           <div className="flex items-start gap-2">
@@ -56,8 +56,8 @@ export default function Page({ params }: { params: { details: string } }) {
             <div className="">
               <h1 className="font-semibold uppercase">Product Details</h1>
               <p>
-                Product -
-                <span className="text-neutral-500">Product Details</span>
+                Products /
+                <span className="text-neutral-500 capitalize pl-1">{product?.name}</span>
               </p>
             </div>
           </div>
@@ -94,8 +94,8 @@ export default function Page({ params }: { params: { details: string } }) {
                   </p>
                 </div>
                 <div className="mb-5">
-                  <p className="font-semibold">Product ID:</p>
-                  <p className="uppercase">ID:{product?._id?.slice(0, 6)}</p>
+                  <p className="font-semibold">Product Code:</p>
+                  <p className="uppercase">{product?.productCode}</p>
                 </div>
                 <div className="mb-5">
                   <p className="font-semibold">Product Category:</p>
@@ -104,7 +104,7 @@ export default function Page({ params }: { params: { details: string } }) {
                 <div className="mb-5">
                   <p className="font-semibold">Subcategory:</p>
                   <p>
-                    {product?.subCategory?.map((item) => item?.name).join(", ")}
+                    {product?.subCategories?.map((item) => item?.name).join(", ")}
                   </p>
                 </div>
               </div>

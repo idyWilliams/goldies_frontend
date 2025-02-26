@@ -7,10 +7,10 @@ import { InformationAndPricingType } from "@/types/products";
 
 export default function InformationAndPricing({
   category,
-  subCategory,
-  setSubCategory,
+  subCategories,
+  setSubCategories,
   categoryOptions,
-  subcategories,
+  subCategoriesOptions,
   formValues,
   handleChange,
 }: InformationAndPricingType) {
@@ -84,10 +84,10 @@ export default function InformationAndPricing({
               <div className={`${!category ? "cursor-not-allowed" : ""}`}>
                 <MultiSelect
                   disabled={!category}
-                  options={subcategories}
-                  value={subCategory}
+                  options={subCategoriesOptions}
+                  value={subCategories}
                   labelledBy="Select subcategory"
-                  onChange={setSubCategory}
+                  onChange={setSubCategories}
                   className={`${!category ? "pointer-events-none" : ""}`}
                 />
               </div>
