@@ -15,7 +15,7 @@ import { BsList, BsX } from "react-icons/bs";
 import { FaRegUserCircle } from "react-icons/fa";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { IoCartOutline } from "react-icons/io5";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import Logo from "../public/assets/goldis-logo.png";
 import MobileNav from "./MobileNav";
 import { Button } from "./ui/button";
@@ -168,42 +168,26 @@ const Header = () => {
                 </PopoverTrigger>
                 <PopoverContent className="w-[190px] rounded-md border-[#E4D064] bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
                   <div className="">
-                    <span
-                      // href={isLogin ? "/my-account" : "/sign-in"}
-                      onClick={() => {
-                        auth?.user
-                          ? router.push("/my-account")
-                          : navigateToLogin();
-                      }}
-                      className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
-                    >
-                      <FaRegUserCircle size={20} />
-                      My Account
-                    </span>
-                    <span
-                      // href={isLogin ? "/my-orders" : "/sign-in"}
-                      onClick={() => {
-                        auth?.user
-                          ? router.push("/my-orders")
-                          : navigateToLogin();
-                      }}
-                      className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
-                    >
-                      <BiStore size={20} />
-                      Orders
-                    </span>
+                    <Link href="/my-account">
+                      <span className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
+                        <FaRegUserCircle size={20} />
+                        My Account
+                      </span>
+                    </Link>
 
-                    <span
-                      onClick={() => {
-                        auth?.user
-                          ? router.push("/saved-items")
-                          : navigateToLogin();
-                      }}
-                      className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
-                    >
-                      <BiHeart size={20} />
-                      Saved Items
-                    </span>
+                    <Link href="/my-orders">
+                      <span className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
+                        <BiStore size={20} />
+                        Orders
+                      </span>
+                    </Link>
+
+                    <Link href="/saved-items">
+                      <span className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
+                        <BiHeart size={20} />
+                        Saved Items
+                      </span>
+                    </Link>
                   </div>
                   <div className="my-2 border-b border-black border-opacity-50"></div>
                   {auth?.user ? (
@@ -214,12 +198,11 @@ const Header = () => {
                       Logout
                     </Button>
                   ) : (
-                    <Button
-                      className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
-                      onClick={() => router.push("/sign-in")}
-                    >
-                      Sign In
-                    </Button>
+                    <Link href="/sign-in">
+                      <Button className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950">
+                        Sign In
+                      </Button>
+                    </Link>
                   )}
                 </PopoverContent>
               </Popover>
