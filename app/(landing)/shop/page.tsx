@@ -295,7 +295,7 @@ const ShopPage = () => {
           <div className="mx-auto w-full">
             {/* MOBILE PRODUCT DISPLAY */}
             <div className="mb-4 flex flex-col border-b border-neutral-400 pb-2  xl:hidden">
-              <div className="justify-between lg:grid flex items-start lg:grid-cols-[85%_10%] xl:hidden">
+              <div className="flex items-start justify-between lg:grid lg:grid-cols-[85%_10%] xl:hidden">
                 <div className="items-center justify-between lg:flex">
                   <div>
                     <h3 className="text-2xl font-bold text-black">
@@ -515,10 +515,10 @@ const ShopPage = () => {
                                   : sortBy === "createdAt" && order === "asc"
                                     ? "Oldest"
                                     : sortBy === "maxPrice" && order === "asc"
-                                      ? "Price: Low to High"
+                                      ? "Price: High to Low"
                                       : sortBy === "maxPrice" &&
                                           order === "desc"
-                                        ? "Price: High to Low"
+                                        ? " Price: Low to High"
                                         : "Sort"}
                         </span>
                         <span>
@@ -572,7 +572,7 @@ const ShopPage = () => {
                                 handleSortChange("maxPrice", "asc")
                               }
                             >
-                              Price: Low to High
+                              Price: High to Low
                             </li>
                             <li
                               className="cursor-pointer text-nowrap px-4 py-2 hover:bg-neutral-100"
@@ -580,7 +580,7 @@ const ShopPage = () => {
                                 handleSortChange("maxPrice", "desc")
                               }
                             >
-                              Price: High to Low
+                              Price: Low to High
                             </li>
                           </ul>
                         </div>
