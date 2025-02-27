@@ -569,7 +569,7 @@ const ShopPage = () => {
                             <li
                               className="cursor-pointer text-nowrap px-4 py-2 hover:bg-neutral-100"
                               onClick={() =>
-                                handleSortChange("maxPrice", "desc")
+                                handleSortChange("maxPrice", "asc")
                               }
                             >
                               Price: Low to High
@@ -577,7 +577,7 @@ const ShopPage = () => {
                             <li
                               className="cursor-pointer text-nowrap px-4 py-2 hover:bg-neutral-100"
                               onClick={() =>
-                                handleSortChange("maxPrice", "asc")
+                                handleSortChange("maxPrice", "desc")
                               }
                             >
                               Price: High to Low
