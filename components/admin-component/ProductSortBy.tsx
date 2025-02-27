@@ -70,17 +70,17 @@ export default function ProductSortBy({
           className={`cursor-pointer px-4 py-2 text-goldie-300 hover:bg-[#E4D064] hover:bg-opacity-20 ${
             isActive("maxPrice", "asc") ? "bg-[#E4D064] bg-opacity-20" : ""
           }`}
-          onClick={() => handleSortChange("maxPrice", "desc")}
+          onClick={() => handleSortChange("maxPrice", "asc")}
         >
-          Price: Low to High
+          Price: High to Low
         </li>
         <li
           className={`cursor-pointer px-4 py-2 text-goldie-300 hover:bg-[#E4D064] hover:bg-opacity-20 ${
             isActive("maxPrice", "desc") ? "bg-[#E4D064] bg-opacity-20" : ""
           }`}
-          onClick={() => handleSortChange("maxPrice", "asc")}
+          onClick={() => handleSortChange("maxPrice", "desc")}
         >
-          Price: High to Low
+          Price: Low to High
         </li>
       </ul>
     </div>
