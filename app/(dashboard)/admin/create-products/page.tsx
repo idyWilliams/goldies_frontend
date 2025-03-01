@@ -427,6 +427,7 @@ export default function Page() {
             // setImages={setImages}
             // imagesRef={imagesRef}
             data={data}
+            handleRemove={handleRemove}
           />
         </div>
       )}
