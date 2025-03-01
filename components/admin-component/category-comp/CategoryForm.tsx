@@ -1,37 +1,36 @@
 "use client";
 
-import React, {
+import { deleteImageFromFirebase, uploadImageToFirebase } from "@/lib/utils";
+import {
+  createCategory,
+  editCategory,
+  getCategory
+} from "@/services/hooks/category";
+import { Category } from "@/services/types";
+import { CategoryProps } from "@/utils/categoryTypes";
+import { optimisticCategoryUpdate } from "@/utils/optimisticCategoryUpdate";
+import useBoundStore from "@/zustand/store";
+import { yupResolver } from "@hookform/resolvers/yup";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient
+} from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import {
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as yup from "yup";
 import CategoryImage from "./CategoryImage";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
 import CategoryInputs from "./CategoryInputs";
-import { deleteImageFromFirebase, uploadImageToFirebase } from "@/lib/utils";
-import {
-  QueryClient,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-import {
-  createCategory,
-  editCategory,
-  getAllCategories,
-  getCategory,
-} from "@/services/hooks/category";
-import { CategoryProps } from "@/utils/categoryTypes";
-import { toast } from "sonner";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import useBoundStore from "@/zustand/store";
 import CategorySlugSkeleton from "./CategorySlugSkeleton";
-import { Category } from "@/services/types";
-import { optimisticCategoryUpdate } from "@/utils/optimisticCategoryUpdate";
 
 const schema = yup.object().shape({
   categoryName: yup.string().required("Category name is required"),
@@ -42,11 +41,10 @@ const schema = yup.object().shape({
     .test("fileOrUrl", "Image is required", function (value: any) {
       if (!value) return false;
       if (typeof value === "string" && value !== "") return true;
-      if (value && value[0] instanceof File) return true;
+      if (value instanceof File) return true;
       return false;
     })
     .required("Category image is required"),
-
   status: yup.boolean().required("Status is required"),
 });
 
@@ -55,14 +53,9 @@ export type QueryDataType = {
   categories: [];
 };
 
-function getQuery(
-  client: QueryClient,
-  key: string,
-  page?: number,
-  limit?: number,
-) {
-  const previousCategories = client.getQueryData([key, page, limit]);
-  return previousCategories;
+interface ErrorResponse {
+  message: string;
+  [key: string]: any;
 }
 
 export default function CategoryForm() {
@@ -78,6 +71,7 @@ export default function CategoryForm() {
   const limit = useBoundStore((state) => state.limit);
   const category = useBoundStore((state) => state.activeCategory);
   const setCategory = useBoundStore((state) => state.setActiveCategory);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string>(function () {
     return category ? category?.image : "";
   });
@@ -142,12 +136,6 @@ export default function CategoryForm() {
     enabled: isNewCreate ? false : true,
     // staleTime: 60 * 1000,
   });
-  // useQuery({
-  //   queryKey: ["categories"],
-  //   queryFn: getAllCategories,
-  //   enabled: isNewCreate && !category ? true : false,
-  //   // staleTime: 60 * 1000,
-  // });
 
   const categoryData: Category | null = useMemo(() => {
     if (isSuccess) {
@@ -181,57 +169,22 @@ export default function CategoryForm() {
   }, [categoryData, setCategory, reset]);
 
   // MUTATION HOOK TO ADD NEW CATEGORY
-  const newCategory = useMutation({
+  const newCategoryMutation = useMutation({
     mutationFn: createCategory,
-
-    onMutate: async (variable) => {
-      await queryClient.cancelQueries({
-        queryKey: ["categories", page, limit],
-      });
-      const previousCategories = queryClient.getQueryData([
-        "categories",
-        1,
-        50,
-      ]);
-      if (!previousCategories) return;
-      queryClient.setQueryData(
-        ["categories", page, limit],
-        (old: QueryDataType) => {
-          const newData = optimisticCategoryUpdate("create", old, variable);
-
-          return { ...newData };
-        },
-      );
-
-      return { previousCategories };
-    },
-    onSettled: () => {
-      const previousCategories = queryClient.getQueryData([
-        "categories",
-        page,
-        limit,
-      ]);
-      if (previousCategories) {
-        queryClient.invalidateQueries({
-          queryKey: ["categories", page, limit],
-        });
-      }
-    },
-
     onSuccess: () => {
+      toast.success(data.message);
+      setImageUrl("");
+      reset();
+      setCategory(null);
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
       router.push("/admin/manage-categories");
     },
 
-    onError: (error, newCategory, context) => {
-      if (context?.previousCategories) {
-        queryClient.setQueryData(
-          ["categories", page, limit],
-          context?.previousCategories,
-        );
-      }
-
-      console.error(error);
-      toast.error("There was an error creating this category");
+    onError: (error: AxiosError<ErrorResponse>) => {
+      const resError = error.response?.data;
+      console.error(resError);
+      const errorMessage = resError?.message ? resError?.message : resError;
+      toast.error(`Error: ${errorMessage}`);
     },
   });
 
@@ -291,51 +244,29 @@ export default function CategoryForm() {
     },
   });
 
-  function checkChanges() {
+  const checkChanges = useCallback(() => {
     const name = getValues("categoryName");
     const slug = getValues("categorySlug");
     const description = getValues("description");
     const image = getValues("image");
     const status = getValues("status");
 
-    console.log({ name, slug, description, image, status });
-    console.log(category);
-
     if (category) {
-      if (
+      return (
         name !== category.name ||
         slug !== category.categorySlug ||
         description !== category.description ||
         image !== category.image ||
         status !== category.status
-      ) {
-        return true;
-      } else {
-        return false;
-      }
+      );
     } else {
       return true;
     }
-  }
-
-  // SET IMAGE URL FOR NEW CATEGORY OR EXISTING CATEGORY IMAGE CHANGE
-  useEffect(() => {
-    const imageSubscription = watch(({ image }) => {
-      if (image && typeof image === "string") return;
-      if (image && image[0] instanceof File) {
-        const url = URL.createObjectURL(image[0]);
-        setImageUrl(url);
-
-        return () => URL.revokeObjectURL(url);
-      }
-    });
-
-    return () => imageSubscription.unsubscribe();
-  }, [watch]);
+  }, [category, getValues]);
 
   // SET CATEGORY SLUG VALUE ON ENETERING CATEGORY NAME
   useEffect(() => {
-    const nameSubscription = watch((value) => {
+    const subscription = watch((value) => {
       const currentSlug = value.categorySlug || "";
 
       if (value.categoryName) {
@@ -348,55 +279,51 @@ export default function CategoryForm() {
       }
     });
 
-    return () => nameSubscription.unsubscribe();
+    return () => subscription.unsubscribe();
   }, [watch, setValue]);
+
+  // Handle image selection
+  const handleImageChange = (file: File | null) => {
+    if (file) {
+      setImageFile(file);
+      const url = URL.createObjectURL(file); // Create a temporary URL for preview
+      setImageUrl(url);
+      setValue("image", file); // Update the form value
+    }
+  };
 
   // FORM SUBMISSION FOR CREATING NEW OR UPDATING EXISTING CATEGORY
   const onSubmit = async (data: CategoryProps) => {
     if (!isNewCreate && !checkChanges()) {
       toast.error("No changes to save.");
-      // router.push("/admin/manage-categories");
       return;
     }
-    // console.log("this ran");
 
     setSubmitStatus("submitting");
 
-    const payload = {
-      name: data.categoryName,
-      description: data.description,
-      categorySlug: data.categorySlug,
-      status: data.status,
-      image: "",
-    };
-
-    if (typeof data.image === "string") {
-      payload.image = data.image;
-    }
-
     try {
-      if (data.image[0] instanceof File) {
-        const file = data.image[0];
-        const imageURL = await uploadImageToFirebase(file);
-        payload.image = imageURL;
+      let imageURL = "";
+
+      // Upload the image to Firebase if a new file is selected
+      if (imageFile) {
+        imageURL = await uploadImageToFirebase(imageFile);
+      } else if (typeof data.image === "string") {
+        // Use the existing URL if it's already a string
+        imageURL = data.image;
       }
+
+      const payload = {
+        name: data.categoryName,
+        description: data.description,
+        categorySlug: data.categorySlug,
+        status: data.status,
+        image: imageURL,
+      };
 
       if (pathName.endsWith("/create")) {
         // console.log(payload);
 
-        newCategory
-          .mutateAsync(payload)
-          .then((data) => {
-            toast.success(data.message);
-            setImageUrl("");
-            reset();
-            setCategory(null);
-          })
-          .catch((error) => {
-            console.log("this ran second error");
-
-            toast.error("second error");
-          });
+        newCategoryMutation.mutate(payload);
       } else {
         editActiveCategory.mutate({
           ...payload,
@@ -410,12 +337,14 @@ export default function CategoryForm() {
     }
   };
 
-  const handleRemoveImage = async () => {
-    if (imageUrl && imageUrl.startsWith("https://")) {
+  const handleRemoveImage = useCallback(async () => {
+    if (
+      imageUrl &&
+      typeof imageUrl === "string" &&
+      imageUrl.startsWith("https://")
+    ) {
       try {
-        // Delete the image from Firebase Storage
         await deleteImageFromFirebase(imageUrl);
-        // console.log("Image deleted from Firebase successfully");
       } catch (error: any) {
         if (error.code === "storage/object-not-found") {
           console.warn("Image not found in Firebase Storage:", imageUrl);
@@ -425,12 +354,10 @@ export default function CategoryForm() {
       }
     }
 
-    // Clear the image URL from the state
     setImageUrl("");
     setValue("image", ""); // Reset the form value for the image
-
     toast.success("Image removed");
-  };
+  }, [imageUrl, setValue]);
 
   if (isLoading) {
     return <CategorySlugSkeleton />;
@@ -453,6 +380,7 @@ export default function CategoryForm() {
           imageUrl={imageUrl}
           setImageUrl={setImageUrl}
           handleRemoveImage={handleRemoveImage}
+          setImageFile={handleImageChange} 
         />
 
         <div className="mt-4 md:mt-0 md:h-min">
