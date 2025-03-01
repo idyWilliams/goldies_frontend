@@ -9,11 +9,13 @@ export default function CreateSubcategoryImage({
   errors,
   imageUrl,
   setImageUrl,
-}: SubCategoryImageProps) {
-
+  handleRemoveImage,
+  setImageFile,
+}: SubCategoryImageProps & {
+  handleRemoveImage: () => void;
+  setImageFile: (file: File | null) => void;
+}) {
   const [dragging, setDragging] = useState<boolean>(false);
-
-
 
   // ONDRAG EVENT LISTENER FUNCTIONS FOR IMAGE UPLOAD
   const handleDragEnter = (e: any) => {
@@ -41,14 +43,8 @@ export default function CreateSubcategoryImage({
     const files = e.dataTransfer.files;
     if (files && files[0]) {
       const file = files[0];
-      const url = URL.createObjectURL(file);
-      setImageUrl(url);
+      setImageFile(file);
     }
-  };
-
-  const handleRemoveCateImg = () => {
-    setImageUrl("");
-    setDragging(false);
   };
 
   return (
@@ -64,6 +60,12 @@ export default function CreateSubcategoryImage({
         {...register("image")}
         className="hidden"
         accept="image/jpeg, image/png, image/webp"
+        onChange={(e) => {
+          if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setImageFile(file); // Pass the File object to the parent
+          }
+        }}
       />
       {!imageUrl && (
         <div
@@ -106,12 +108,13 @@ export default function CreateSubcategoryImage({
             >
               Replace
             </label>
-            {/* <button
-              onClick={handleRemoveCateImg}
+            <button
+              type="button"
+              onClick={handleRemoveImage}
               className="cursor-pointer rounded-md bg-goldie-300 px-6 py-2"
             >
               Remove
-            </button> */}
+            </button>
           </div>
         </div>
       )}

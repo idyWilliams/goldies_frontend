@@ -1,4 +1,5 @@
 import { cn } from "@/helper/cn";
+import { deleteImageFromFirebase } from "@/lib/utils";
 import Goldie from "@/public/assets/goldis-gold-logo.png";
 import { deleteCategory, deleteSubCategory } from "@/services/hooks/category";
 import { Category } from "@/services/types";
@@ -9,7 +10,7 @@ import { AxiosError } from "axios";
 import { CloseSquare } from "iconsax-react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useCallback } from "react";
 import { toast } from "sonner";
 
 type SubCatQueryDataType = {
@@ -47,8 +48,8 @@ const ConfirmModal: React.FC<ModalProps> = ({ catOrSub }) => {
 
   const deleteActiveCategory = useMutation({
     mutationFn: deleteCategory,
-    onSuccess: () => {
-      toast.success("Category succesfully deleted");
+    onSuccess: (data) => {
+      toast.success(data.message);
       queryClient.invalidateQueries({ queryKey: ["categories"] });
       setShowModal(false);
       setActionType("");
@@ -65,8 +66,8 @@ const ConfirmModal: React.FC<ModalProps> = ({ catOrSub }) => {
   const deleteSubcategory = useMutation({
     mutationFn: deleteSubCategory,
 
-    onSuccess: () => {
-      toast.success("Subcategory succesfully deleted");
+    onSuccess: (data) => {
+      toast.success(data.message);
       queryClient.invalidateQueries({ queryKey: ["categories", categoryId] });
       setShowModal(false);
       setActionType("");
@@ -81,12 +82,56 @@ const ConfirmModal: React.FC<ModalProps> = ({ catOrSub }) => {
     },
   });
 
+  const handleRemoveCategoryImage = useCallback(async () => {
+    if (
+      activeCategory?.image &&
+      typeof activeCategory?.image === "string" &&
+      activeCategory?.image.startsWith("https://")
+    ) {
+      try {
+        await deleteImageFromFirebase(activeCategory?.image);
+      } catch (error: any) {
+        if (error.code === "storage/object-not-found") {
+          console.warn(
+            "Image not found in Firebase Storage:",
+            activeCategory?.image,
+          );
+        } else {
+          console.error("Failed to delete image from Firebase:", error);
+        }
+      }
+    }
+  }, [activeCategory?.image]);
+
+  const handleRemoveSubCategoryImage = useCallback(async () => {
+    if (
+      activeSubcategory?.image &&
+      typeof activeSubcategory?.image === "string" &&
+      activeSubcategory?.image.startsWith("https://")
+    ) {
+      try {
+        await deleteImageFromFirebase(activeSubcategory?.image);
+      } catch (error: any) {
+        if (error.code === "storage/object-not-found") {
+          console.warn(
+            "Image not found in Firebase Storage:",
+            activeSubcategory?.image,
+          );
+        } else {
+          console.error("Failed to delete image from Firebase:", error);
+        }
+      }
+    }
+  }, [activeSubcategory?.image]);
+
   const handleConfirm = () => {
     if (actionType === "delete") {
       try {
         if (catOrSub.isCategory) {
+          handleRemoveCategoryImage();
           deleteActiveCategory.mutate(activeCategory?._id);
         } else {
+          handleRemoveSubCategoryImage();
           deleteSubcategory.mutate(activeSubcategory?._id);
         }
       } catch (error) {

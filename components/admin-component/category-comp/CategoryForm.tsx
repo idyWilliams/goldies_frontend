@@ -4,27 +4,17 @@ import { deleteImageFromFirebase, uploadImageToFirebase } from "@/lib/utils";
 import {
   createCategory,
   editCategory,
-  getCategory
+  getCategory,
 } from "@/services/hooks/category";
 import { Category } from "@/services/types";
 import { CategoryProps } from "@/utils/categoryTypes";
 import { optimisticCategoryUpdate } from "@/utils/optimisticCategoryUpdate";
 import useBoundStore from "@/zustand/store";
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  useMutation,
-  useQuery,
-  useQueryClient
-} from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as yup from "yup";
@@ -171,13 +161,13 @@ export default function CategoryForm() {
   // MUTATION HOOK TO ADD NEW CATEGORY
   const newCategoryMutation = useMutation({
     mutationFn: createCategory,
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast.success(data.message);
+      router.push("/admin/manage-categories");
+      queryClient.invalidateQueries({ queryKey: ["categories"] });
       setImageUrl("");
       reset();
       setCategory(null);
-      queryClient.invalidateQueries({ queryKey: ["categories"] });
-      router.push("/admin/manage-categories");
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -191,56 +181,16 @@ export default function CategoryForm() {
   // MUTATION HOOK TO EDIT EXSITING CATEGORY
   const editActiveCategory = useMutation({
     mutationFn: editCategory,
-
-    onMutate: async (variable) => {
-      // if(!data?.category) return
-      await queryClient.cancelQueries({
-        queryKey: ["categories", page, limit],
-      });
-      const previousCategories = queryClient.getQueryData([
-        "categories",
-        page,
-        limit,
-      ]);
-      if (!previousCategories) return;
-
-      queryClient.setQueryData(
-        ["categories", page, limit],
-        (old: QueryDataType) => {
-          const newData = optimisticCategoryUpdate("edit", old, variable);
-          return { ...newData };
-        },
-      );
-
-      return { previousCategories };
-    },
-    onSettled: () => {
-      const previousCategories = queryClient.getQueryData([
-        "categories",
-        page,
-        limit,
-      ]);
-      if (previousCategories) {
-        queryClient.invalidateQueries({
-          queryKey: ["categories", page, limit],
-        });
-      }
-    },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      toast.success(data.message);
       router.push("/admin/manage-categories");
-      toast.success("Category updated successfully");
     },
 
-    onError: (error, newCategory, context) => {
-      if (context?.previousCategories) {
-        queryClient.setQueryData(
-          ["categories", page, limit],
-          context?.previousCategories,
-        );
-      }
-
-      console.error(error);
-      toast.error("There was an error updating this category");
+    onError: (error: AxiosError<ErrorResponse>) => {
+      const resError = error.response?.data;
+      console.error(resError);
+      const errorMessage = resError?.message ? resError?.message : resError;
+      toast.error(`Error: ${errorMessage}`);
     },
   });
 
@@ -380,7 +330,7 @@ export default function CategoryForm() {
           imageUrl={imageUrl}
           setImageUrl={setImageUrl}
           handleRemoveImage={handleRemoveImage}
-          setImageFile={handleImageChange} 
+          setImageFile={handleImageChange}
         />
 
         <div className="mt-4 md:mt-0 md:h-min">
