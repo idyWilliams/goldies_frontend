@@ -3,29 +3,29 @@ import React, { useEffect, useRef, useState } from "react";
 
 import CreateProductLayout from "@/components/admin-component/create-product/CreateProductLayout";
 
-import { uploadImageToFirebase } from "@/lib/utils";
+import { deleteImageFromFirebase, uploadImageToFirebase } from "@/lib/utils";
 
-import { useMutation, useQuery } from "@tanstack/react-query";
+import CreatePdctCatAndSubCat from "@/components/admin-component/create-product/CreatePdctCatAndSubCat";
+import CreatePdctNameAndDesc from "@/components/admin-component/create-product/CreatePdctNameAndDesc";
+import CreatePdctType from "@/components/admin-component/create-product/CreatePdctType";
+import CreateProductHeader from "@/components/admin-component/create-product/CreateProductHeader";
+import CreateProductImages from "@/components/admin-component/create-product/CreateProductImages";
+import CreateProductPricing from "@/components/admin-component/create-product/CreateProductPricing";
+import CreateProductVariants from "@/components/admin-component/create-product/CreateProductVariants";
+import { IProduct, ISubCategory } from "@/interfaces/product.interface";
+import useFormValues from "@/services/hooks/category/useFormValues";
 import {
   createNewProduct,
   getProduct,
   updateProduct,
 } from "@/services/hooks/products";
-import { toast } from "sonner";
+import { ImagesTypes, SubCategoriesOption } from "@/types/products";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import CreateProductImages from "@/components/admin-component/create-product/CreateProductImages";
-import CreateProductPricing from "@/components/admin-component/create-product/CreateProductPricing";
-import CreateProductVariants from "@/components/admin-component/create-product/CreateProductVariants";
-import CreateProductHeader from "@/components/admin-component/create-product/CreateProductHeader";
-import CreatePdctNameAndDesc from "@/components/admin-component/create-product/CreatePdctNameAndDesc";
-import CreatePdctCatAndSubCat from "@/components/admin-component/create-product/CreatePdctCatAndSubCat";
-import CreatePdctType from "@/components/admin-component/create-product/CreatePdctType";
-import { useMediaQuery } from "react-responsive";
-import useFormValues from "@/services/hooks/category/useFormValues";
 import { useRouter, useSearchParams } from "next/navigation";
-import { IProduct, ISubCategory } from "@/interfaces/product.interface";
 import { Option } from "react-multi-select-component";
-import { SubCategoriesOption } from "@/types/products";
+import { useMediaQuery } from "react-responsive";
+import { toast } from "sonner";
 
 interface ErrorResponse {
   message: string;
@@ -68,10 +68,15 @@ export default function Page() {
   const formRef = useRef<HTMLFormElement>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const isMobile = useMediaQuery({ maxWidth: 768 });
 
-  const { data: productData, isLoading } = useQuery({
+  const {
+    data: productData,
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["product", editId],
     queryFn: async () => getProduct(editId!),
     enabled: !!editId,
@@ -166,7 +171,7 @@ export default function Page() {
     formValues.status,
   ]);
 
-  const submitProduct = useMutation({
+  const submitProductMutation = useMutation({
     // mutationFn: createNewProduct,
     mutationFn: async (data: {
       name: string;
@@ -209,6 +214,7 @@ export default function Page() {
         image4: "",
       });
 
+      queryClient.invalidateQueries({ queryKey: ["allProducts"] });
       router.push("/admin/products");
     },
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -237,6 +243,7 @@ export default function Page() {
       } else if (file instanceof File) {
         try {
           const imageURL = await uploadImageToFirebase(file);
+          // console.log("Uploaded image URL:", imageURL);
           newImageArr.push(imageURL);
         } catch (error) {
           console.error(error);
@@ -276,7 +283,59 @@ export default function Page() {
     };
 
     // console.log("form data on submit>>>", data);
-    submitProduct.mutate(data);
+    submitProductMutation.mutate(data);
+  };
+
+  // remove product images
+  const handleRemove = async (imgNo: number) => {
+    const imageKey = `image${imgNo}` as keyof ImagesTypes;
+    const imageUrl = images[imageKey];
+
+    // If the image is stored in Firebase, delete it
+    if (typeof imageUrl === "string" && imageUrl.startsWith("https://")) {
+      try {
+        await deleteImageFromFirebase(imageUrl);
+        // console.log("Image deleted from Firebase successfully");
+      } catch (error: any) {
+        if (error.code === "storage/object-not-found") {
+          console.warn("Image not found in Firebase Storage:", imageUrl);
+        } else {
+          console.error("Failed to delete image from Firebase:", error);
+        }
+      }
+    }
+    // Remove the image from the state
+    setImages((img: ImagesTypes) => {
+      return { ...img, [imageKey]: "" };
+    });
+
+    // Remove the file from the imagesRef
+    const fileIndex = imgNo - 1;
+    imagesRef.current[fileIndex] = null;
+
+    // If editing a product, update the product's images array
+    if (editId && product) {
+      const updatedProductImages = product.images.filter(
+        (url) => url !== imageUrl,
+      );
+
+      // Update the product in the database
+      try {
+        await updateProduct(
+          {
+            ...product,
+            images: updatedProductImages,
+          },
+          editId,
+        );
+
+        await refetch();
+
+        toast.success("Image removed");
+      } catch (error) {
+        console.error("Failed to update product:", error);
+      }
+    }
   };
 
   if (isLoading)
@@ -329,6 +388,7 @@ export default function Page() {
                   images={images}
                   setImages={setImages}
                   imagesRef={imagesRef}
+                  handleRemove={handleRemove}
                 />
               </div>
             </div>

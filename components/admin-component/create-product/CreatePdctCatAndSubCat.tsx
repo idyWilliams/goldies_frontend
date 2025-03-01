@@ -9,10 +9,6 @@ const CreatePdctCatAndSubCat = ({
   subCategories,
   setSubCategories,
 }: CreatePdctCatAndSubCatPropType) => {
-
-  console.log("subCategories on multi select>>>>", subCategories)
-  console.log("subCategories options on multi select>>>>", subCategoriesOptions)
-
  
   return (
     <div className="grid grid-cols-2 gap-4">

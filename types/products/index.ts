@@ -17,7 +17,7 @@ export type ICake = {
   quantity?: number;
 };
 
-type ImagesTypes = {
+export type ImagesTypes = {
   image1: "";
   image2: "";
   image3: "";
