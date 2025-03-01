@@ -1,5 +1,6 @@
 "use client";
 import { useAuth } from "@/context/AuthProvider";
+import { adminLogOut } from "@/services/hooks/admin-auth";
 import {
   Cake,
   Category2,
@@ -10,12 +11,13 @@ import {
   UserAdd,
 } from "iconsax-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { CiLogout } from "react-icons/ci";
 import { IoPeopleOutline } from "react-icons/io5";
 
 export default function MobileSideBar({ onClose }: { onClose: () => void }) {
   const pathname = usePathname();
+  const router = useRouter();
   const { auth } = useAuth();
 
   return (
@@ -95,10 +97,13 @@ export default function MobileSideBar({ onClose }: { onClose: () => void }) {
             Settings
           </button>
         </Link>
-        
+
         <button
           className={`flex w-full cursor-pointer items-center gap-2 whitespace-nowrap py-2 text-sm text-neutral-500 duration-300 hover:text-goldie-300`}
-          onClick={onClose}
+          onClick={() => {
+            onClose;
+            adminLogOut(router);
+          }}
         >
           <CiLogout size={20} />
           Logout

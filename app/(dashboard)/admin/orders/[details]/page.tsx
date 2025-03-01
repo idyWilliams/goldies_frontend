@@ -7,10 +7,12 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatCurrency } from "@/helper/formatCurrency";
 import { IOrder } from "@/interfaces/order.interface";
+import { IProduct } from "@/interfaces/product.interface";
 import { getOrderByOrderId, updateOrderStatus } from "@/services/hooks/payment";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ArrowLeft } from "iconsax-react";
 import moment from "moment";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CgSpinner } from "react-icons/cg";
@@ -180,7 +182,7 @@ export default function Page({ params }: { params: { details: string } }) {
     <section className=" px-4 py-5">
       <div className="mb-5 flex items-center justify-between border-b border-neutral-500 pb-5">
         <span
-          className="inline-flex items-center gap-2 cursor-pointer"
+          className="inline-flex cursor-pointer items-center gap-2"
           onClick={() => router.push("/admin/orders")}
         >
           <ArrowLeft />
@@ -247,7 +249,7 @@ export default function Page({ params }: { params: { details: string } }) {
                   <div className="grid">
                     <h3 className="text-[15px] font-semibold">Name</h3>
                     <span className="text-sm">
-                      {order?.firstName + "" + order?.lastName}
+                      {order?.firstName + " " + order?.lastName}
                     </span>
                   </div>
                   <div className="grid">
@@ -266,8 +268,10 @@ export default function Page({ params }: { params: { details: string } }) {
                       Billing Address
                     </h3>
                     <p className="text-sm">
-                      {order?.streetAddress}, {order?.cityOrTown},{" "}
-                      {order?.state}, {order?.country}
+                      {order?.streetAddress} <br />
+                      {order?.cityOrTown}, {order?.state}
+                      <br />
+                      {order?.country}
                     </p>
                   </div>
                   <div>
@@ -295,7 +299,9 @@ export default function Page({ params }: { params: { details: string } }) {
                     Shipping Address
                   </h3>
                   <p className="mb-4 text-sm">
-                    {order?.streetAddress}, {order?.cityOrTown}, {order?.state},{" "}
+                    {order?.streetAddress} <br />
+                    {order?.cityOrTown}, {order?.state}
+                    <br />
                     {order?.country}
                   </p>
                 </div>
@@ -322,36 +328,35 @@ export default function Page({ params }: { params: { details: string } }) {
                     </div>
                   </div>
                   <div className="table-row-group">
-                    {/* {order?.products?.map((item: any, index: number) => {
-                    const productPrice = item?.priceTo * item?.quantity;
-                    return (
-                      <>
-                        <div className="table-row">
+                    {order?.orderedItems?.map((item, index) => {
+                      return (
+                        <div key={index} className="table-row">
                           <div className="table-cell py-2">
                             <div className="grid w-full grid-cols-[600px_1fr] text-sm">
                               <div className="mb-3 flex items-center gap-2">
-                                <Image
-                                  src={item?.image?.src}
-                                  alt={item?.productName}
-                                  width={50}
-                                  height={30}
-                                  className="h-[30px] w-[30px] object-cover object-center"
-                                />
-                                <h3>{item?.productName}</h3>
+                                <div className="h-[50px] w-[50px] overflow-hidden">
+                                  <Image
+                                    src={item?.images[0]}
+                                    alt={item?.name}
+                                    width={50}
+                                    height={30}
+                                    className="h-full w-full object-cover"
+                                  />
+                                </div>
+                                <h3>{item?.name}</h3>
                               </div>
                             </div>
                           </div>
-                          <div className="table-cell py-2">{item?.quantity}</div>
-                          <div className="table-cell py-3 pl-5">
-                            {item?.priceTo}
+                          <div className="table-cell py-2 align-top">1</div>
+                          <div className="table-cell py-3 pl-5 align-top">
+                            {formatCurrency(parseInt(item.maxPrice), "en-NG")}
                           </div>
-                          <div className="table-cell py-3 pl-5">
-                            &euro;{productPrice}
+                          <div className="table-cell py-3 pl-5 align-top">
+                            {formatCurrency(parseInt(item.maxPrice), "en-NG")}
                           </div>
                         </div>
-                      </>
-                    );
-                  })} */}
+                      );
+                    })}
                   </div>
                 </div>
               </div>
@@ -390,33 +395,34 @@ export default function Page({ params }: { params: { details: string } }) {
               </h3>
               <div className="table w-full">
                 <div className="table-row-group">
-                  {/* {order?.products?.map((item: any, index: number) => {
-                  const productPrice = item?.priceTo * item?.quantity;
-                  console.log(item, "orderItem");
-                  return (
-                    <div className="table-row" key={index}>
-                      <div className="table-cell border-b border-neutral-300 py-3">
-                        <div className="grid grid-cols-[50px_1fr] items-center gap-1">
-                          <Image
-                            src={item?.image?.src}
-                            alt={item?.productName}
-                            width={50}
-                            height={50}
-                          />
-                          <div>
-                            <h3>{item?.productName}</h3>
-                            <span>
-                              &euro;{item?.priceTo} X {item?.quantity}
-                            </span>
+                  {order?.orderedItems?.map((item, index) => {
+                    return (
+                      <div className="table-row" key={index}>
+                        <div className="table-cell border-b border-neutral-300 py-3">
+                          <div className="grid grid-cols-[50px_1fr] items-center gap-1">
+                            <div className="h-[50px] w-[50px] overflow-hidden">
+                              <Image
+                                src={item?.images[0]}
+                                alt={item?.name}
+                                width={50}
+                                height={30}
+                                className="h-full w-full object-cover"
+                              />
+                            </div>
+                            <div>
+                              <h3>{item?.name}</h3>
+                              <span>
+                                1
+                              </span>
+                            </div>
                           </div>
                         </div>
+                        <div className="table-cell border-b border-neutral-300 py-3 text-right align-top">
+                          {formatCurrency(parseInt(item.maxPrice), "en-NG")}
+                        </div>
                       </div>
-                      <div className="table-cell border-b border-neutral-300 py-3 align-top">
-                        &euro;{productPrice}
-                      </div>
-                    </div>
-                  );
-                })} */}
+                    );
+                  })}
 
                   <div className="table-row">
                     <div className="table-cell border-b border-neutral-300 py-3">
@@ -426,7 +432,7 @@ export default function Page({ params }: { params: { details: string } }) {
                         </div>
                       </div>
                     </div>
-                    <div className="table-cell border-b border-neutral-300 py-3 align-top">
+                    <div className="table-cell border-b border-neutral-300 py-3 text-right">
                       {formatCurrency(order?.fee?.subTotal!, "en-NG")}
                     </div>
                   </div>
@@ -438,7 +444,7 @@ export default function Page({ params }: { params: { details: string } }) {
                         </div>
                       </div>
                     </div>
-                    <div className="table-cell border-b border-neutral-300 py-3 align-top">
+                    <div className="table-cell border-b border-neutral-300 py-3 text-right">
                       {formatCurrency(order?.fee?.deliveryFee!, "en-NG")}
                     </div>
                   </div>
@@ -462,7 +468,7 @@ export default function Page({ params }: { params: { details: string } }) {
                         </div>
                       </div>
                     </div>
-                    <div className="table-cell border-b border-neutral-300 py-3 align-top">
+                    <div className="table-cell border-b border-neutral-300 py-3 text-right">
                       {formatCurrency(order?.fee?.total!, "en-NG")}
                     </div>
                   </div>
@@ -472,14 +478,16 @@ export default function Page({ params }: { params: { details: string } }) {
             <div className="rounded-md bg-white p-3">
               <div className="mb-4 grid gap-2">
                 <div className="flex justify-between">
-                  <span>Order ID: {order?.orderId}</span>
-                  <span>
-                    Status: <span>{statusColor(order?.orderStatus!)}</span>
+                  <span className="font-semibold">
+                    Order ID: {order?.orderId}
                   </span>
+                  <span>{statusColor(order?.orderStatus!)}</span>
                 </div>
                 <h3 className="text-[15px] font-semibold">Shipping Address</h3>
                 <p className="mb-3 text-sm">
-                  {order?.streetAddress}, {order?.cityOrTown}, {order?.state},{" "}
+                  {order?.streetAddress} <br />
+                  {order?.cityOrTown}, {order?.state}
+                  <br />
                   {order?.country}
                 </p>
               </div>
@@ -488,12 +496,14 @@ export default function Page({ params }: { params: { details: string } }) {
               <div>
                 <h3 className="font-semibold">Billing Information</h3>
                 <div className="my-3 border-b border-neutral-400"></div>
-                <h3 className="mb-3">
+                <h3 className="mb-3 font-semibold">
                   {" "}
-                  {order?.firstName + "" + order?.lastName}
+                  {order?.firstName + " " + order?.lastName}
                 </h3>
                 <p className="mb-3 text-sm">
-                  {order?.streetAddress}, {order?.cityOrTown}, {order?.state},{" "}
+                  {order?.streetAddress} <br />
+                  {order?.cityOrTown}, {order?.state}
+                  <br />
                   {order?.country}
                 </p>
                 <div className="mb-3">{`+${order?.phoneNumber}`}</div>

@@ -178,22 +178,24 @@ export default function ProductsPage() {
   const columns = [
     columnHelper.accessor((row) => row, {
       id: "productName",
-      cell: (info) => {
+      cell: ({ row }) => {
         return (
           <div className="grid grid-cols-[50px_1fr] gap-2">
             <Image
               width={300}
               height={300}
               className="h-[50px] w-full object-cover object-center"
-              src={info.cell.row.original?.images[0]}
-              alt={info.cell.row.original.name}
+              src={row.original?.images[0]}
+              alt={row.original.name}
             />
             <div className="flex flex-col">
-              <p className="whitespace-nowrap text-[15px] font-bold">
-                {info.cell.row.original.name}
-              </p>
+              <Link href={`/admin/products/${row.original._id}`}>
+                <p className="whitespace-nowrap text-[15px] font-bold">
+                  {row.original.name}
+                </p>
+              </Link>
               <span className="text-sm uppercase">
-                {info.cell.row.original.productCode}
+                {row.original.productCode}
               </span>
             </div>
           </div>
@@ -278,7 +280,7 @@ export default function ProductsPage() {
       {/* top heading */}
       <div className="flex items-start justify-between gap-6 ">
         <div className="mb-5">
-          <h1 className="text-lg font-extrabold">Products</h1>
+          <h1 className="text-lg font-extrabold uppercase">Products</h1>
           <p className="text-sm">List of all available products created</p>
         </div>
         <Button

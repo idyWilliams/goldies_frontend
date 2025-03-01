@@ -83,7 +83,9 @@ export default function Page() {
             <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-500">
               <span className="text-white">{initials(fullName)}</span>
             </div>
-            <span className="text-[15px]">{fullName}</span>
+            <Link href={`/admin/customers/${row.original?._id}`}>
+              <span className="text-[15px]">{fullName}</span>
+            </Link>
           </div>
         );
       },
@@ -223,9 +225,13 @@ export default function Page() {
                           </div>
                           <div className="flex justify-between">
                             <div className="flex flex-col gap-2">
-                              <h3 className="whitespace-nowrap font-bold">
-                                {`${item.firstName} ${item.lastName}`}
-                              </h3>
+                              <Link
+                                href={`/admin/customers/${item?._id}`}
+                              >
+                                <h3 className="whitespace-nowrap font-bold">
+                                  {`${item.firstName} ${item.lastName}`}
+                                </h3>
+                              </Link>
                               <span className="text-sm">
                                 {item.phoneNumber || "N/A"}
                               </span>

@@ -150,9 +150,11 @@ export default function CustomerOrder({ id }: { id: string }) {
     columnHelper.accessor("firstName", {
       header: () => <span>Billing Name</span>,
       cell: ({ row }) => (
-        <span className="text-[15px] capitalize">
-          {row.original?.firstName + " " + row.original?.lastName}
-        </span>
+        <Link href={`/admin/orders/${row.original._id}`}>
+          <span className="text-[15px] capitalize">
+            {row.original?.firstName + " " + row.original?.lastName}
+          </span>
+        </Link>
       ),
     }),
     columnHelper.accessor("fee.total", {

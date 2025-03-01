@@ -22,20 +22,20 @@ const statusColor = (status: string) => {
   switch (status) {
     case "completed":
       return (
-        <div className="inline-flex items-center gap-2 rounded-[50px] border border-green-700 bg-green-700 bg-opacity-10 px-3 py-[2px] text-sm text-green-700 capitalize">
+        <div className="inline-flex items-center gap-2 rounded-[50px] border border-green-700 bg-green-700 bg-opacity-10 px-3 py-[2px] text-sm capitalize text-green-700">
           <span className="h-2 w-2 rounded-full bg-green-700"></span>
           {status}
         </div>
       );
     case "cancelled":
       return (
-        <div className="inline-flex items-center gap-2 rounded-[50px] border border-red-700 bg-red-700 bg-opacity-10 px-3 py-[2px] text-sm text-red-700 capitalize">
+        <div className="inline-flex items-center gap-2 rounded-[50px] border border-red-700 bg-red-700 bg-opacity-10 px-3 py-[2px] text-sm capitalize text-red-700">
           <span className="h-2 w-2 rounded-full bg-red-700"></span> {status}
         </div>
       );
     case "pending":
       return (
-        <div className="inline-flex items-center gap-2 rounded-[50px] border border-orange-600 bg-orange-600 bg-opacity-10 px-3 py-[2px] text-sm text-orange-600 capitalize">
+        <div className="inline-flex items-center gap-2 rounded-[50px] border border-orange-600 bg-orange-600 bg-opacity-10 px-3 py-[2px] text-sm capitalize text-orange-600">
           <span className="h-2 w-2 rounded-full bg-orange-600"></span> {status}
         </div>
       );
@@ -117,9 +117,11 @@ export default function OrderPage() {
     columnHelper.accessor("firstName", {
       header: () => <span>Billing Name</span>,
       cell: ({ row }) => (
-        <span className="text-[15px] capitalize">
-          {row.original?.firstName + " " + row.original?.lastName}
-        </span>
+        <Link href={`/admin/orders/${row.original._id}`}>
+          <span className="text-[15px] capitalize">
+            {row.original?.firstName + " " + row.original?.lastName}
+          </span>
+        </Link>
       ),
     }),
     columnHelper.accessor("fee.total", {
@@ -165,7 +167,7 @@ export default function OrderPage() {
 
   return (
     <section className="h-full w-full px-4 pt-6">
-      <h1 className="text-lg font-extrabold">Orders</h1>
+      <h1 className="text-lg font-extrabold uppercase">Orders</h1>
       <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
 
       <div className="my-6 flex flex-col-reverse items-center justify-between gap-4 md:flex-row">

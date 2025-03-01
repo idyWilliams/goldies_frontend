@@ -1,8 +1,11 @@
-import { formValuesType, SubCategoriesOption } from "@/types/products";
-import React, { useEffect, useRef, useState } from "react";
+import {
+  formValuesType,
+  SubCategoriesOption
+} from "@/types/products";
+import { useEffect, useRef, useState } from "react";
+import { Option } from "react-multi-select-component";
 import useCategories from "./useCategories";
 import useCategoryOptions from "./useCategoryOptions";
-import { Option } from "react-multi-select-component";
 
 const useFormValues = () => {
   const [formValues, setFormValues] = useState<formValuesType>({
@@ -58,11 +61,16 @@ const useFormValues = () => {
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
-    setFormValues((prev) => ({
-      ...prev,
+    const updatedValues = {
+      ...formValues,
       [name]:
         name === "maxPrice" || name === "minPrice" ? Number(value) : value,
-    }));
+    };
+
+    // Log the updated formValues
+    // console.log("Updated formValues:", updatedValues);
+
+    setFormValues(updatedValues);
   };
 
   const data = {

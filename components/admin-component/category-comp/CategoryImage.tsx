@@ -1,16 +1,20 @@
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
 import { cn } from "@/helper/cn";
-import { GalleryImport } from "iconsax-react";
-import { CategoryImageProps } from "@/utils/categoryTypes";
 import Placeholder from "@/public/assets/placeholder3.png";
+import { CategoryImageProps } from "@/utils/categoryTypes";
+import { GalleryImport } from "iconsax-react";
+import Image from "next/image";
+import { useState } from "react";
 
 export default function CategoryImage({
   register,
   errors,
   imageUrl,
-  setImageUrl,
-}: CategoryImageProps) {
+  handleRemoveImage,
+  setImageFile,
+}: CategoryImageProps & {
+  handleRemoveImage: () => void;
+  setImageFile: (file: File | null) => void;
+}) {
   const [dragging, setDragging] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
@@ -39,14 +43,8 @@ export default function CategoryImage({
     const files = e.dataTransfer.files;
     if (files && files[0]) {
       const file = files[0];
-      const url = URL.createObjectURL(file);
-      setImageUrl(url);
+      setImageFile(file);
     }
-  };
-
-  const handleRemoveCateImg = () => {
-    setImageUrl("");
-    setDragging(false);
   };
 
   return (
@@ -58,6 +56,12 @@ export default function CategoryImage({
         {...register("image")}
         className="hidden"
         accept="image/jpeg, image/png, image/webp"
+        onChange={(e) => {
+          if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            setImageFile(file); // Pass the File object to the parent
+          }
+        }}
       />
       {!imageUrl && (
         <div
@@ -113,12 +117,13 @@ export default function CategoryImage({
             >
               Replace
             </label>
-            {/* <button
-              onClick={handleRemoveCateImg}
+            <button
+              type="button"
+              onClick={handleRemoveImage}
               className="cursor-pointer rounded-md bg-goldie-300 px-6 py-2"
             >
               Remove
-            </button> */}
+            </button>
           </div>
         </div>
       )}
@@ -126,10 +131,10 @@ export default function CategoryImage({
       <p
         className={cn(
           "hidden text-sm text-red-600",
-          ` ${errors['image'] && "block"}`,
+          ` ${errors["image"] && "block"}`,
         )}
       >
-        {errors['image']?.message as string}
+        {errors["image"]?.message as string}
       </p>
     </div>
   );

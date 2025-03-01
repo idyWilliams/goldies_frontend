@@ -27,7 +27,10 @@ export default function CreateProductLayout({
   // imagesRef,
   data,
   editId,
-}: CreateProductMobilePropTypes) {
+  handleRemove,
+}: CreateProductMobilePropTypes & {
+  handleRemove: (imgNo: number) => Promise<void>;
+}) {
   const {
     formValues,
     setFormValues,
@@ -193,6 +196,7 @@ export default function CreateProductLayout({
                   images={images}
                   setImages={setImages}
                   imagesRef={imagesRef}
+                  handleRemove={handleRemove}
                 />
               </div>
             </div>

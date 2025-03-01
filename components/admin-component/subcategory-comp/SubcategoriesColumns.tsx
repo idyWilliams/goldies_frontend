@@ -23,7 +23,7 @@ export const getColumns = (
       id: "SubImage",
       cell: (info) => {
         return (
-          <div className="relative h-[80px] w-[100px]">
+          <div className="relative h-[80px] w-[80px] overflow-hidden">
             {/* {!isLoaded[info.cell.row.original?._id] && (
               <Image
                 src={Placeholder}
@@ -43,7 +43,7 @@ export const getColumns = (
               priority
               width={150}
               height={150}
-              className=" animate-pulse object-cover object-center"
+              className=" animate-pulse object-cover object-center w-full h-full"
             />
 
             <Image

@@ -129,25 +129,29 @@ const SubCategories = () => {
               >
                 <div className="grid grid-cols-[60px_1fr] items-center gap-2">
                   {!isLoaded[sub?._id] && (
-                    <Image
-                      src={Placeholder}
-                      alt="placeholder"
-                      placeholder="blur"
-                      priority
-                      width={60}
-                      height={50}
-                      className="aspect-square h-[50px] w-full object-cover object-center"
-                    />
+                    <div className="h-[60px] w-[60px] overflow-hidden">
+                      <Image
+                        src={Placeholder}
+                        alt="placeholder"
+                        placeholder="blur"
+                        priority
+                        width={60}
+                        height={50}
+                        className="h-full w-full object-cover object-center"
+                      />
+                    </div>
                   )}
 
-                  <Image
-                    src={sub?.image}
-                    alt={sub?.name}
-                    width={60}
-                    height={50}
-                    className={`aspect-square h-[50px] w-full object-cover object-center  ${isLoaded[sub?._id] ? "opacity-100" : "opacity-0"} `}
-                    onLoad={() => handleImageLoad(sub?._id, setIsLoaded)}
-                  />
+                  <div className="h-[60px] w-[60px] overflow-hidden">
+                    <Image
+                      src={sub?.image}
+                      alt={sub?.name}
+                      width={60}
+                      height={50}
+                      className={`h-full w-full object-cover object-center  ${isLoaded[sub?._id] ? "opacity-100" : "opacity-0"} `}
+                      onLoad={() => handleImageLoad(sub?._id, setIsLoaded)}
+                    />
+                  </div>
 
                   <div>
                     <h3 className="text-sm font-bold md:text-base">

@@ -159,13 +159,13 @@ export default function AdminNav() {
                   </span>
                 </div>
                 <div className="my-2 border-b border-black border-opacity-50"></div>
-                <span
+                <button
                   className="flex w-full cursor-pointer items-center justify-center rounded-sm bg-black  px-7 py-2.5 text-center text-sm  text-[#E4D064] duration-300 hover:bg-neutral-950"
                   role="button"
                   onClick={() => adminLogOut(router)}
                 >
                   Logout
-                </span>
+                </button>
               </PopoverContent>
             </Popover>
           </div>
