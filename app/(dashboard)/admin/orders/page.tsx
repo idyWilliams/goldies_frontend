@@ -165,7 +165,7 @@ export default function OrderPage() {
 
   return (
     <section className="h-full w-full px-4 pt-6">
-      <h1 className="text-lg font-extrabold">Orders</h1>
+      <h1 className="text-lg font-extrabold uppercase">Orders</h1>
       <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
 
       <div className="my-6 flex flex-col-reverse items-center justify-between gap-4 md:flex-row">

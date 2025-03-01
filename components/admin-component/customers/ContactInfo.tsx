@@ -53,7 +53,7 @@ export default function ContactInfo({
 
   return (
     <div className="rounded-md bg-white py-5">
-      <p className="px-4 text-[18px] font-semibold">Customer Information</p>
+      <p className="px-4 text-lg font-semibold">Customer Information</p>
       <div className="my-6 ml-8 inline-flex h-24 w-24 items-center justify-center rounded-full bg-[#494848]">
         <span className="items-center justify-center text-[24px] text-white">
           {customer?.firstName?.charAt(0) ?? "J"}
@@ -66,9 +66,9 @@ export default function ContactInfo({
           : "N/A"}
       </div>
       <div className="my-8 border-b-2 border-gray-300"></div>
-      <div className="px-8 text-[24px] font-bold capitalize">Contact Info</div>
+      <div className="px-8 text-lg font-bold capitalize">Contact Info</div>
       <div className="my-6 border-b-2 border-gray-300"></div>
-      <div className="flex gap-2 px-8 text-[18px] text-gray-700">
+      <div className="flex gap-2 px-8 text-gray-700">
         <Call />
         <div className="flex flex-grow items-center justify-between">
           <span>{customer?.phoneNumber ?? "N/A"}</span>
@@ -76,12 +76,12 @@ export default function ContactInfo({
             className="cursor-pointer"
             onClick={() => handleCopy(`+${customer?.phoneNumber}`, "phone")}
           >
-            <MdContentCopy />
+            <MdContentCopy size={18} />
           </span>
         </div>
       </div>
       <div className="my-6 border-b-2 border-gray-300"></div>
-      <div className="flex gap-2 px-8 text-[18px]  text-gray-700">
+      <div className="flex gap-2 px-8  text-gray-700">
         <Sms className="items-center justify-center" />
         <div className="flex flex-grow items-center justify-between">
           <span>{customer?.email ?? "N/A"}</span>
@@ -89,14 +89,14 @@ export default function ContactInfo({
             className="cursor-pointer"
             onClick={() => handleCopy(customer?.email, "email")}
           >
-            <MdContentCopy />
+            <MdContentCopy size={18} />
           </span>
         </div>
       </div>
       <div className="my-6 border-b-2 border-gray-300"></div>
       <div className="flex items-center gap-2 px-8 text-gray-700">
         <Location size={25} />
-        <span className="text-balance text-[18px]">
+        <span className="text-balance ">
           {customer?.billingInfo[0]?.streetAddress &&
           customer?.billingInfo[0]?.cityOrTown &&
           customer?.billingInfo[0]?.state &&
