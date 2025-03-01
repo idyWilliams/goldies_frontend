@@ -1,3 +1,5 @@
+import { IProduct } from "./product.interface";
+
 export interface IFee {
   subTotal: number;
   total: number;
@@ -15,7 +17,7 @@ export interface IOrder {
   state: string;
   streetAddress: string;
   phoneNumber: string;
-  orderedItems: string[]; 
+  orderedItems: IProduct[]; 
   fee: IFee;
   user: string; 
   orderStatus: "pending" | "completed" | "cancelled"; 
