@@ -15,7 +15,7 @@ const CreateProductHeader = ({
   const router = useRouter();
 
   const handleBackClick = () => {
-    router.push("/admin/products");
+    router.back();
   };
   return (
     <div className="flex items-center justify-between">
