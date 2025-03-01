@@ -12,7 +12,7 @@ import CategoryImage from "./CategoryImage";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import CategoryInputs from "./CategoryInputs";
-import { uploadImageToFirebase } from "@/lib/utils";
+import { deleteImageFromFirebase, uploadImageToFirebase } from "@/lib/utils";
 import {
   QueryClient,
   useMutation,
@@ -94,8 +94,6 @@ export default function CategoryForm() {
 
   // ADD FORM REF FOR USE IN THE CATEGORY HEADER BUTTON TO TRIGGER SUBMISSION
   useEffect(() => {
-    console.log(typeof window);
-
     if (typeof window !== "undefined") {
       if (formRef.current) {
         setFormRef(formRef);
@@ -360,7 +358,7 @@ export default function CategoryForm() {
       // router.push("/admin/manage-categories");
       return;
     }
-    console.log("this ran");
+    // console.log("this ran");
 
     setSubmitStatus("submitting");
 
@@ -384,7 +382,7 @@ export default function CategoryForm() {
       }
 
       if (pathName.endsWith("/create")) {
-        console.log(payload);
+        // console.log(payload);
 
         newCategory
           .mutateAsync(payload)
@@ -412,44 +410,63 @@ export default function CategoryForm() {
     }
   };
 
-  return (
-    <>
-      {isLoading && <CategorySlugSkeleton />}
-      {/* {isLoading && !category && <CategorySlugSkeleton />} */}
-      {isError && !category && (
-        <p className="flex h-[75dvh] w-full items-center justify-center">
-          There was an error fetching data: {error.message}
-        </p>
-      )}
+  const handleRemoveImage = async () => {
+    if (imageUrl && imageUrl.startsWith("https://")) {
+      try {
+        // Delete the image from Firebase Storage
+        await deleteImageFromFirebase(imageUrl);
+        // console.log("Image deleted from Firebase successfully");
+      } catch (error: any) {
+        if (error.code === "storage/object-not-found") {
+          console.warn("Image not found in Firebase Storage:", imageUrl);
+        } else {
+          console.error("Failed to delete image from Firebase:", error);
+        }
+      }
+    }
 
-      {(isNewCreate || category) && (
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          id="create-category"
-          ref={formRef}
-        >
-          <div className=" md:grid md:grid-cols-[45%_1fr] md:items-center md:gap-5 xl:grid-cols-[450px_1fr]">
-            <CategoryImage
+    // Clear the image URL from the state
+    setImageUrl("");
+    setValue("image", ""); // Reset the form value for the image
+
+    toast.success("Image removed");
+  };
+
+  if (isLoading) {
+    return <CategorySlugSkeleton />;
+  }
+
+  if (isError) {
+    return (
+      <p className="flex h-[75dvh] w-full items-center justify-center">
+        There was an error fetching data: {error.message}
+      </p>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} id="create-category" ref={formRef}>
+      <div className=" md:grid md:grid-cols-[45%_1fr] md:items-center md:gap-5 xl:grid-cols-[450px_1fr]">
+        <CategoryImage
+          register={register}
+          errors={errors}
+          imageUrl={imageUrl}
+          setImageUrl={setImageUrl}
+          handleRemoveImage={handleRemoveImage}
+        />
+
+        <div className="mt-4 md:mt-0 md:h-min">
+          <div className="md:grid md:gap-3 xl:grid-cols-2">
+            <CategoryInputs
+              control={control}
               register={register}
               errors={errors}
-              imageUrl={imageUrl}
-              setImageUrl={setImageUrl}
+              getValues={getValues}
+              setValue={setValue}
             />
-
-            <div className="mt-4 md:mt-0 md:h-min">
-              <div className="md:grid md:gap-3 xl:grid-cols-2">
-                <CategoryInputs
-                  control={control}
-                  register={register}
-                  errors={errors}
-                  getValues={getValues}
-                  setValue={setValue}
-                />
-              </div>
-            </div>
           </div>
-        </form>
-      )}
-    </>
+        </div>
+      </div>
+    </form>
   );
 }

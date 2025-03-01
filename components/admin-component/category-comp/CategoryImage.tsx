@@ -4,13 +4,15 @@ import { cn } from "@/helper/cn";
 import { GalleryImport } from "iconsax-react";
 import { CategoryImageProps } from "@/utils/categoryTypes";
 import Placeholder from "@/public/assets/placeholder3.png";
+import { deleteImageFromFirebase } from "@/lib/utils";
 
 export default function CategoryImage({
   register,
   errors,
   imageUrl,
   setImageUrl,
-}: CategoryImageProps) {
+  handleRemoveImage,
+}: CategoryImageProps & { handleRemoveImage: () => void }) {
   const [dragging, setDragging] = useState<boolean>(false);
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
@@ -42,11 +44,6 @@ export default function CategoryImage({
       const url = URL.createObjectURL(file);
       setImageUrl(url);
     }
-  };
-
-  const handleRemoveCateImg = () => {
-    setImageUrl("");
-    setDragging(false);
   };
 
   return (
@@ -113,12 +110,13 @@ export default function CategoryImage({
             >
               Replace
             </label>
-            {/* <button
-              onClick={handleRemoveCateImg}
+            <button
+              type="button"
+              onClick={handleRemoveImage}
               className="cursor-pointer rounded-md bg-goldie-300 px-6 py-2"
             >
               Remove
-            </button> */}
+            </button>
           </div>
         </div>
       )}
@@ -126,10 +124,10 @@ export default function CategoryImage({
       <p
         className={cn(
           "hidden text-sm text-red-600",
-          ` ${errors['image'] && "block"}`,
+          ` ${errors["image"] && "block"}`,
         )}
       >
-        {errors['image']?.message as string}
+        {errors["image"]?.message as string}
       </p>
     </div>
   );
