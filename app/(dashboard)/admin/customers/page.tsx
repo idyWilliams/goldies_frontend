@@ -97,7 +97,7 @@ export default function Page() {
       cell: ({ row }) => (
         <span className="text-[15px]">{row.original?.email}</span>
       ),
-      header: () => <span>Contact Number</span>,
+      header: () => <span>Email Address</span>,
       footer: (info) => info.column.id,
     }),
     columnHelper.accessor((row) => row.phoneNumber, {
