@@ -54,13 +54,9 @@ const CreateSubategory = () => {
   const [imageUrl, setImageUrl] = useState<string>("");
   const [imageFile, setImageFile] = useState<File | null>(null);
 
-  const activeSubcategory = useBoundStore((state) => state.activeSubcategory);
-  const setActiveSubcategory = useBoundStore(
-    (state) => state.setActiveSubcategory,
-  );
-  const setShowSub = useBoundStore((state) => state.setShowSub);
-  const showSub = useBoundStore((state) => state.showSub);
-  const refetchCategory = useBoundStore((state) => state.refetchCategory);
+  const { activeSubcategory, setActiveSubcategory, setShowSub, showSub } =
+    useBoundStore();
+  // const refetchCategory = useBoundStore((state) => state.refetchCategory);
   // const isFetchingCategory = useBoundStore((state) => state.isFetchingCategory);
 
   const {
@@ -123,7 +119,7 @@ const CreateSubategory = () => {
   // MUTATION HOOK TO EDIT EXSITING SUBCATEGORY
   const editActiveSubcategory = useMutation({
     mutationFn: editSubCategory,
-  
+
     onSuccess: (data) => {
       toast.success(data.message);
       queryClient.invalidateQueries({ queryKey: ["categories", categoryId] });
@@ -149,7 +145,7 @@ const CreateSubategory = () => {
       });
       if (!watch("image")?.[0]) {
         setImageUrl(activeSubcategory?.image || "");
-        setValue("image", activeSubcategory?.image);
+        setValue("image", activeSubcategory?.image, { shouldValidate: true });
       }
     }
   }, [activeSubcategory, reset, watch, setValue]);
@@ -180,7 +176,7 @@ const CreateSubategory = () => {
       setImageFile(file);
       const url = URL.createObjectURL(file); // Create a temporary URL for preview
       setImageUrl(url);
-      setValue("image", file); // Update the form value
+      setValue("image", file, { shouldValidate: true }); // Update the form value
     }
   };
 
@@ -247,6 +243,7 @@ const CreateSubategory = () => {
   const handleClose = () => {
     setShowSub(false);
     setActiveSubcategory(null);
+    reset()
   };
 
   return (

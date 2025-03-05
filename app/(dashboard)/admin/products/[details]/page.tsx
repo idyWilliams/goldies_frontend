@@ -114,13 +114,14 @@ export default function Page({ params }: { params: { details: string } }) {
             </div>
           </div>
           <Button
-            className="mb-2 gap-2 rounded-md text-goldie-300"
+            className="mb-2 rounded-md text-goldie-300"
             onClick={() =>
               router.push(`/admin/create-products?edit=${product?._id}`)
             }
           >
-            <Edit size={20} />
+            <Edit size={20} className="mr-2" />
             <span>Edit</span>
+            <span className="ml-1 hidden md:block">Product</span>
           </Button>
         </div>
         <hr className="my-5" />
@@ -162,6 +163,12 @@ export default function Page({ params }: { params: { details: string } }) {
                       .join(", ")}
                   </p>
                 </div>
+              </div>
+              <div className="mb-5">
+                <p className="font-semibold capitalize">Product Type</p>
+                <p className="capitalize">
+                  {product?.productType}
+                </p>
               </div>
               <div className="mb-5">
                 <p className="font-semibold capitalize">Product Sizes:</p>
