@@ -243,7 +243,10 @@ export default function Page({ params }: { params: { details: string } }) {
                   <span className="font-semibold">
                     Order ID: {order?.orderId}
                   </span>
-                  <span>{statusColor(order?.orderStatus!)}</span>
+                  <span>
+                    <span className="text-[15px] font-semibold mr-1">Status</span>{" "}
+                    {statusColor(order?.orderStatus!)}
+                  </span>
                 </div>
                 <div className="my-4 flex items-center justify-between">
                   <div className="grid">
@@ -411,9 +414,7 @@ export default function Page({ params }: { params: { details: string } }) {
                             </div>
                             <div>
                               <h3>{item?.name}</h3>
-                              <span>
-                                1
-                              </span>
+                              <span>1</span>
                             </div>
                           </div>
                         </div>

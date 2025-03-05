@@ -32,9 +32,9 @@ const CategoryHeader = () => {
         setIsFormValid(false);
       }
 
-      console.log(submitStatus);
-      console.log(isValid);
-      console.log(isSubmitting);
+      // console.log(submitStatus);
+      // console.log(isValid);
+      // console.log(isSubmitting);
     }
   }, [isValid, submitStatus, pathname, isSubmitting]);
 

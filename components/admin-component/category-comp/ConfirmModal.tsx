@@ -71,7 +71,7 @@ const ConfirmModal: React.FC<ModalProps> = ({ catOrSub }) => {
       queryClient.invalidateQueries({ queryKey: ["categories", categoryId] });
       setShowModal(false);
       setActionType("");
-      setActiveCategory(null);
+      setActiveSubcategory(null);
     },
 
     onError: (error: AxiosError<ErrorResponse>) => {
