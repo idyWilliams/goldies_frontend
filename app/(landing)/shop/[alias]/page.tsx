@@ -17,13 +17,13 @@ import { ProductParams } from "@/interfaces/product.interface";
 import Placeholder from "@/public/assets/placeholder3.png";
 import {
   addProductToCart,
-  setBuyNowProduct
+  setBuyNowProduct,
 } from "@/redux/features/product/productSlice";
 import { getActiveProduct, getAllProducts } from "@/services/hooks/products";
 import { cakeTimes } from "@/utils/cakeData";
 import useUserPdctStore from "@/zustand/userProductStore/store";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowRight } from "iconsax-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -33,6 +33,13 @@ import { useDispatch } from "react-redux";
 import { useMediaQuery } from "react-responsive";
 import Select from "react-select";
 import * as yup from "yup";
+import useIsLoggedIn from "@/services/hooks/users/useIsLoggedIn";
+import { addToCart } from "@/services/hooks/cart";
+import { toast } from "sonner";
+import { AxiosError } from "axios";
+import { DialogCloseButton } from "@/components/DialogModal";
+import { Loader2 } from "lucide-react";
+import { ErrorResponse } from "@/types/products";
 // import {
 //   cakeSizes,
 //   toppings,
@@ -121,6 +128,7 @@ function CakeDetailsPage() {
   const isDesktop = useMediaQuery({ minWidth: 1280 });
   const isLaptop = useMediaQuery({ minWidth: 1024 });
   const isTablet = useMediaQuery({ minWidth: 640 });
+  const isLogin = useIsLoggedIn();
 
   const featuredPdctLength = () => {
     if (isDesktop) {
@@ -140,6 +148,9 @@ function CakeDetailsPage() {
   const [quantity, setQuantity] = useState<number>(1);
   const router = useRouter();
   const dispatch = useDispatch();
+  const [previewFav, setPreviewFav] = useState(false);
+  const queryClient = useQueryClient();
+
 
   const {
     register,
@@ -215,28 +226,66 @@ function CakeDetailsPage() {
     }
   }
 
-  const handleAddToCart = handleSubmit((data) => {
-    if (data.sizes && data.toppings && data.cakeTimes) {
-      dispatch(
-        addProductToCart({
-          id: activeProduct?._id as string,
-          quantity: quantity,
-          cakeDetails: {
-            size: data.sizes,
-            topping: data.toppings,
-            flavour: data.flavours,
-            cakeTime: data.cakeTimes,
-            message: data.message,
-          },
-        }),
-      );
+  const cartMutation = useMutation({
+    mutationFn: addToCart,
+    onSuccess: (data) => {
+      console.log(data);
+      toast.success(data.message);
+      setPreviewFav(false);
+      queryClient.invalidateQueries({ queryKey: ["cartList"] });
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      setPreviewFav(false);
+      const resError = error.response?.data;
+      console.error(resError);
+      const errorMessage = resError?.message ? resError?.message : resError;
+      toast.error(`Error: ${errorMessage}`);
+    },
+  });
 
-      console.log("added product>>", data);
-    } else {
-      console.error(
-        "Please fill in all required fields before adding to cart.",
-      );
+  // const handleAddToCart = handleSubmit((data) => {
+  //   if (data.sizes && data.toppings && data.cakeTimes) {
+  //     dispatch(
+  //       addProductToCart({
+  //         id: activeProduct?._id as string,
+  //         quantity: quantity,
+  //         cakeDetails: {
+  //           size: data.sizes,
+  //           topping: data.toppings,
+  //           flavour: data.flavours,
+  //           cakeTime: data.cakeTimes,
+  //           message: data.message,
+  //         },
+  //       }),
+  //     );
+
+  //     console.log("added product>>", data);
+  //   } else {
+  //     console.error(
+  //       "Please fill in all required fields before adding to cart.",
+  //     );
+  //   }
+  // });
+
+  const handleAddToCart = handleSubmit((data) => {
+    if (!data.sizes && !data.cakeTimes && !data.flavours && !data.toppings) {
+      return;
     }
+    console.log("cake data is ", data);
+    if (!isLogin) {
+      setPreviewFav(false);
+      return;
+    }
+
+    cartMutation.mutate({
+      product: activeProduct?._id as string,
+      quantity: quantity,
+      size: data.sizes,
+      toppings: data.toppings,
+      flavour: data.flavours,
+      dateNeeded: data.cakeTimes || "",
+      details: data.message || "",
+    });
   });
 
   const handleBuyNow = handleSubmit((data) => {
@@ -281,10 +330,6 @@ function CakeDetailsPage() {
       primary: "black",
     },
   });
-
-  const onSubmit = (data: any) => {
-    console.log("cake data is ", data);
-  };
 
   return (
     <div>
@@ -391,7 +436,7 @@ function CakeDetailsPage() {
                 <form
                   id="detail"
                   className="lg:w-[75%]"
-                  onSubmit={handleSubmit(onSubmit)}
+                  onSubmit={handleAddToCart}
                 >
                   <div className="mt-4 space-y-3">
                     <label htmlFor="size" className="block w-full">
@@ -555,14 +600,30 @@ function CakeDetailsPage() {
                     >
                       Buy now
                     </Button>
-                    <Button
-                      type="submit"
-                      size={"lg"}
-                      className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
-                      onClick={handleAddToCart}
-                    >
-                      Add to cart
-                    </Button>
+
+                    {isLogin ? (
+                      <Button
+                        type="submit"
+                        size={"lg"}
+                        className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
+                        disabled={cartMutation.isPending}
+                      >
+                        {cartMutation.isPending && (
+                          <Loader2 className="animate-spin mr-1" />
+                        )}
+                        Add to cart
+                      </Button>
+                    ) : (
+                      <DialogCloseButton setPreviewFav={setPreviewFav}>
+                        <Button
+                          type="submit"
+                          size={"lg"}
+                          className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
+                        >
+                          Add to cart
+                        </Button>
+                      </DialogCloseButton>
+                    )}
                   </div>
                 </form>
               )}

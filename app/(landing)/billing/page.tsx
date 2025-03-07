@@ -22,6 +22,7 @@ import {
   clearCart,
 } from "@/redux/features/product/productSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import useCart from "@/services/hooks/cart/useCart";
 import {
   getAllBllingInfo,
   initPayment,
@@ -80,7 +81,8 @@ const form2Schema = yup.object().shape({
 const Page = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { cart, buyNowProduct } = useAppSelector((state) => state.product);
+  const { buyNowProduct } = useAppSelector((state) => state.cart);
+  const { cart } = useCart();
 
   // Get URL parameters
   const isBuyNow = searchParams.get("buyNow") === "true";
@@ -281,7 +283,10 @@ const Page = () => {
 
   const deliveryFee = 50.5;
   const orderTotal = products.reduce((acc, current) => {
-    return acc + parseFloat(current.maxPrice) * (current.quantity as number);
+    return (
+      acc +
+      parseFloat(current?.product?.maxPrice) * (current.quantity as number)
+    );
   }, 0);
 
   const totalWithDelivery = orderTotal + deliveryFee;
@@ -344,7 +349,7 @@ const Page = () => {
       }
 
       // Step 3: Create Order
-      const ItemID = products.map((item) => item._id);
+      const ItemID = products.map((item) => item?.product?._id);
       const orderInfo = {
         orderedItems: ItemID,
         fee: {
@@ -489,8 +494,8 @@ const Page = () => {
 
             {isLoading ? (
               <div className="mb-6 grid gap-2 md:grid-cols-2">
-                <Skeleton className="w-full h-24 rounded-2xl" />
-                <Skeleton className="w-full h-24 rounded-2xl" />
+                <Skeleton className="h-24 w-full rounded-2xl" />
+                <Skeleton className="h-24 w-full rounded-2xl" />
               </div>
             ) : billingInfos?.length > 0 ? (
               <div className="mb-6 grid gap-2 md:grid-cols-2">
@@ -1043,8 +1048,8 @@ const Page = () => {
                       <div className="grid grid-cols-[50px_1fr] gap-2 rounded-md bg-white p-4 md:bg-transparent md:p-0">
                         <div className="h-[50px] w-[50px] shrink-0">
                           <Image
-                            src={item.images[0]}
-                            alt={item.name}
+                            src={item?.product.images[0]}
+                            alt={item?.product?.name}
                             width={50}
                             height={50}
                             className="h-full w-full object-cover"
@@ -1052,12 +1057,15 @@ const Page = () => {
                         </div>
                         <div className="flex justify-between ">
                           <div className="pr-4">
-                            <h3>{item.name}</h3>
+                            <h3>{item?.product.name}</h3>
                             <span className="">({item.quantity} Quantity)</span>
                           </div>
                           <div className="text-right ">
                             <span className="text-right ">
-                              {formatCurrency(parseInt(item.maxPrice), "en-NG")}
+                              {formatCurrency(
+                                parseInt(item?.product?.maxPrice),
+                                "en-NG",
+                              )}
                             </span>
                           </div>
                         </div>

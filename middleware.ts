@@ -47,7 +47,7 @@ export default async function middleware(request: NextRequest) {
     if (!adminToken) {
       const url = request.nextUrl.clone();
       url.pathname = "/admin-signin";
-      url.searchParams.set('callbackUrl', pathname);
+      url.searchParams.set('redirect_url', pathname);
       return NextResponse.redirect(url);
     }
   } else if (isAdminAuthRoute) {
@@ -63,7 +63,7 @@ export default async function middleware(request: NextRequest) {
     if (!userToken) {
       const url = request.nextUrl.clone();
       url.pathname = "/sign-in";
-      url.searchParams.set('callbackUrl', pathname)
+      url.searchParams.set('redirect_url', pathname)
       return NextResponse.redirect(url);
     }
   } else if (isUserAuthRoute) {

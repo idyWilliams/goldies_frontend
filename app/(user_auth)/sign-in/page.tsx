@@ -18,6 +18,8 @@ import { USER_DETAILS, USER_TOKEN_NAME } from "@/utils/constants";
 import Cookies from "js-cookie";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import { AxiosError } from "axios";
+import { ErrorResponse } from "@/types/products";
 
 const validationSchema = yup.object().shape({
   email: yup.string().required("Email is required"),
@@ -32,10 +34,37 @@ const Page = () => {
   const [visible, setVisible] = useState(false);
   const [password, setPassword] = useState("");
 
-  const callbackUrl = queryParams.get("callbackUrl") || "/";
+  const callbackUrl = queryParams.get("redirect_url") || "/";
 
   const userLogin = useMutation({
     mutationFn: loginUser,
+    onSuccess: (res) => {
+      setIsLogin(true);
+      setAuth({ user: res?.user });
+
+      localStorage.setItem("isLogin", JSON.stringify(true));
+      // // localStorage.removeItem("userToken");
+      // // localStorage.removeItem("user");
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ token: res?.token, user: res?.user }),
+      );
+      localStorage.setItem("userToken", res?.token);
+
+      const userToken = JSON.stringify(res?.user);
+      Cookies.set(USER_DETAILS, userToken);
+      Cookies.set(USER_TOKEN_NAME, res?.token);
+
+      router.push(callbackUrl);
+      toast.success(res?.message);
+      reset();
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      console.error(error);
+      const resError = error.response?.data;
+      console.error(resError);
+      toast.error(`${resError?.message ? resError?.message : resError}`);
+    },
   });
 
   const {
@@ -53,40 +82,13 @@ const Page = () => {
   };
 
   const onSubmit = (data: any) => {
-    userLogin
-      .mutateAsync(data)
-      .then((res: any) => {
-        setIsLogin(true);
-        setAuth({ user: res?.user });
-
-        localStorage.setItem("isLogin", JSON.stringify(true));
-        localStorage.removeItem("userToken");
-        localStorage.removeItem("user");
-        localStorage.setItem(
-          "user",
-          JSON.stringify({ token: res?.token, user: res?.user }),
-        );
-        localStorage.setItem("userToken", res?.token);
-
-        const userToken = JSON.stringify(res?.user);
-        Cookies.set(USER_DETAILS, userToken);
-        Cookies.set(USER_TOKEN_NAME, res?.token);
-
-        router.push(callbackUrl);
-        reset();
-      })
-      .catch((err: any) => {
-        console.log(err);
-        console.log(err.message);
-        console.log(err.response.data.message);
-        toast.error(err.response.data.message);
-      });
+    userLogin.mutate(data);
   };
 
   return (
     <section className="pb-10 pt-4">
       <div className="wrapper">
-        <div className="flex flex-col items-center mx-auto w-full lg:w-[500px] sm:border sm:bg-white p-4 md:p-6 sm:shadow-lg">
+        <div className="mx-auto flex w-full flex-col items-center p-4 sm:border sm:bg-white sm:shadow-lg md:p-6 lg:w-[500px]">
           <span className="flex h-20 w-20 items-center justify-center rounded-full bg-goldie-300 bg-opacity-35">
             <span className="flex h-16 w-16 items-center justify-center rounded-full bg-goldie-300 bg-opacity-35">
               <RiUserSharedLine size={30} />

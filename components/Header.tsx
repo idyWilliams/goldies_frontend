@@ -27,16 +27,23 @@ import {
   DialogTitle,
 } from "./ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import useCart from "@/services/hooks/cart/useCart";
+import { useAppDispatch } from "@/redux/hook";
+import { setCart } from "@/redux/features/product/cartSlice";
 
 const Header = () => {
   const [show, setShow] = useState(false);
   const [sticky, setSticky] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const cart = useSelector((state: RootState) => state.product.cart);
   const [isOpen, setIsOpen] = useState(false);
   const { auth, setIsLogin } = useAuth();
   const [showModal, setShowModal] = useState<boolean>(false);
+  const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
+
+  const { cart } = useCart();
 
   const handleClick = () => {
     setShow((show: boolean) => !show);
@@ -52,6 +59,8 @@ const Header = () => {
     Cookies.remove(USER_TOKEN_NAME);
     Cookies.remove(USER_DETAILS);
     router.replace("/sign-in");
+    queryClient.invalidateQueries({ queryKey: ["cartList"] });
+    dispatch(setCart([]));
 
     if (
       pathname.includes("/my-account") ||
