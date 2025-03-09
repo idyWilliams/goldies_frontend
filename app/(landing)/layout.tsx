@@ -8,6 +8,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
 import { userLogOut } from "@/services/hooks/user-auth";
 import NextTopLoader from "nextjs-toploader";
+import Cookies from "js-cookie";
+import { USER_DETAILS, USER_TOKEN_NAME } from "@/utils/constants";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { setAuth } = useAuth();
@@ -30,6 +32,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         localStorage.setItem("isLogin", JSON.stringify(false));
         localStorage.removeItem("accessToken");
         localStorage.removeItem("user");
+        Cookies.remove(USER_TOKEN_NAME);
+        Cookies.remove(USER_DETAILS);
       }
     };
 

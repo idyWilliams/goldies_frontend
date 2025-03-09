@@ -78,11 +78,13 @@ const form2Schema = yup.object().shape({
   save: yup.boolean().default(false),
 });
 
-const Page = () => {
+const BillingCheckoutPage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { buyNowProduct } = useAppSelector((state) => state.cart);
-  const { cart } = useCart();
+  const { cart, isLoading: cartLoading } = useCart();
+
+  console.log(">>>>fetched cart>>>", cart);
 
   // Get URL parameters
   const isBuyNow = searchParams.get("buyNow") === "true";
@@ -111,12 +113,12 @@ const Page = () => {
   const dispatch = useAppDispatch();
 
   // Redirect if no valid products
-  useEffect(() => {
-    if ((isBuyNow && !buyNowProduct) || (!isBuyNow && cart.length === 0)) {
-      toast.error("No products to checkout");
-      router.push("/shop");
-    }
-  }, [isBuyNow, buyNowProduct, cart, router]);
+  // useEffect(() => {
+  //   if ((isBuyNow && !buyNowProduct) || (!isBuyNow && cart.length === 0)) {
+  //     toast.error("No products to checkout");
+  //     router.push("/shop");
+  //   }
+  // }, [isBuyNow, buyNowProduct, cart, router]);
 
   const { data, isLoading, refetch, isError } = useQuery({
     queryKey: ["allBllingInfo"],
@@ -349,9 +351,18 @@ const Page = () => {
       }
 
       // Step 3: Create Order
-      const ItemID = products.map((item) => item?.product?._id);
-      const orderInfo = {
-        orderedItems: ItemID,
+      const productsInCart = products?.map((item) => ({
+        product: item.product._id,
+        size: item.size,
+        toppings: item.toppings,
+        flavour: item.flavour,
+        dateNeeded: item.dateNeeded,
+        details: item.details,
+        quantity: item.quantity,
+        price: item.product.maxPrice,
+      }));
+
+      const orderData = {
         fee: {
           subTotal: orderTotal,
           total: totalWithDelivery,
@@ -365,9 +376,10 @@ const Page = () => {
         streetAddress: data.address,
         phoneNumber: data.phoneNumber,
         state: data.state,
+        orderedItems: productsInCart,
       };
 
-      const orderRes = await createOrder.mutateAsync(orderInfo);
+      const orderRes = await createOrder.mutateAsync(orderData);
 
       if (!orderRes.error) {
         // Step 4: Save Billing Info (If Checked)
@@ -451,9 +463,9 @@ const Page = () => {
   };
 
   // If no products, render nothing while redirecting
-  if ((isBuyNow && !buyNowProduct) || (!isBuyNow && cart.length === 0)) {
-    return null;
-  }
+  // if ((isBuyNow && !buyNowProduct) || (!isBuyNow && cart.length === 0)) {
+  //   return null;
+  // }
 
   return (
     <div className="flex h-full w-full flex-col bg-red-400">
@@ -1058,7 +1070,7 @@ const Page = () => {
                         <div className="flex justify-between ">
                           <div className="pr-4">
                             <h3>{item?.product.name}</h3>
-                            <span className="">({item.quantity} Quantity)</span>
+                            <span className="">x{item.quantity}</span>
                           </div>
                           <div className="text-right ">
                             <span className="text-right ">
@@ -1178,4 +1190,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default BillingCheckoutPage;

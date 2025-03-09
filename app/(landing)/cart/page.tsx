@@ -50,24 +50,6 @@ const CartPage = () => {
     router.push("/billing");
   };
 
-  const removeMutation = useMutation({
-    mutationFn: removeFromCart,
-    onSuccess: (data) => {
-      toast.success(data.message);
-      queryClient.invalidateQueries({ queryKey: ["cartList"] });
-    },
-    onError: (error: AxiosError<ErrorResponse>) => {
-      const resError = error.response?.data;
-      console.error(resError);
-      const errorMessage = resError?.message ? resError?.message : resError;
-      toast.error(`Error: ${errorMessage}`);
-    },
-  });
-
-  const handleRemove = (id: string) => {
-    removeMutation.mutate(id);
-  };
-
   return (
     <section className="relative bg-gradient-to-br from-black to-neutral-700 py-16 pt-1">
       <div className="wrapper">
@@ -110,9 +92,7 @@ const CartPage = () => {
           {!isLoadingCart && (
             <div className="hidden divide-y divide-gray-400 sm:block">
               {cartItems.map((item, i) => {
-                return (
-                  <CartItem key={i} item={item} removeItem={handleRemove} />
-                );
+                return <CartItem key={i} item={item} />;
               })}
             </div>
           )}
@@ -121,13 +101,7 @@ const CartPage = () => {
           {!isLoadingCart && (
             <div className="divide-y divide-gray-400">
               {cartItems.map((item, i) => {
-                return (
-                  <MobileCartItem
-                    key={i}
-                    item={item}
-                    removeItem={handleRemove}
-                  />
-                );
+                return <MobileCartItem key={i} item={item} />;
               })}
             </div>
           )}
