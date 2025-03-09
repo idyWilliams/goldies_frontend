@@ -201,7 +201,17 @@ const Page = () => {
 
               <p className="text-center">
                 Don’t have an account? &nbsp;
-                <Link href="/sign-up" className="text-goldie-300">
+                <Link
+                  href={
+                    callbackUrl !== "/"
+                      ? {
+                          pathname: "/sign-up",
+                          query: { redirect_url: callbackUrl },
+                        }
+                      : "/sign-up"
+                  }
+                  className="text-goldie-300"
+                >
                   Sign Up
                 </Link>
               </p>

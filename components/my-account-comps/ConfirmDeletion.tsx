@@ -1,7 +1,7 @@
 "use client";
 import { useAuth } from "@/context/AuthProvider";
 import { deleteUserAccount } from "@/services/hooks/users";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { toast } from "sonner";
@@ -14,6 +14,10 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog";
+import Cookies from "js-cookie";
+import { USER_DETAILS, USER_TOKEN_NAME } from "@/utils/constants";
+import { setCart } from "@/redux/features/product/cartSlice";
+import { useAppDispatch } from "@/redux/hook";
 
 const ConfirmDeletion = () => {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -22,6 +26,8 @@ const ConfirmDeletion = () => {
   const [error, setError] = useState("");
   const router = useRouter();
   const { setIsLogin } = useAuth();
+  const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
 
   const deleteAccount = useMutation({
     mutationKey: ["deleteAccount"],
@@ -29,6 +35,9 @@ const ConfirmDeletion = () => {
     onSuccess: () => {
       toast.success("Your account has been deleted.");
       setDeleteModalOpen(false);
+      setConfirmationText("");
+      setError("");
+      logOut();
     },
     onError: () => {
       toast.error("Failed to delete your account.");
@@ -40,8 +49,11 @@ const ConfirmDeletion = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("userToken");
     localStorage.setItem("isLogin", JSON.stringify(false));
-
+    Cookies.remove(USER_TOKEN_NAME);
+    Cookies.remove(USER_DETAILS);
     router.replace("/sign-in");
+    queryClient.invalidateQueries({ queryKey: ["cartList"] });
+    dispatch(setCart([]));
   };
 
   const handleDelete = async (e: React.FormEvent) => {
@@ -55,9 +67,6 @@ const ConfirmDeletion = () => {
     try {
       setIsDeleting(true);
       await deleteAccount.mutateAsync();
-      setConfirmationText("");
-      setError("");
-      logOut();
     } catch (error) {
       toast.error(
         "An error occurred while deleting your account. Please try again.",
