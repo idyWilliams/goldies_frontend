@@ -8,6 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import React from "react";
 import { IUser } from "@/interfaces/user.interface";
 import { Button } from "./ui/button";
+import { PopoverClose } from "@radix-ui/react-popover";
 
 interface MobileNavProps {
   pathname: string;
@@ -58,42 +59,49 @@ const MobileNav: React.FC<MobileNavProps> = ({
             </PopoverTrigger>
             <PopoverContent className="w-[190px] rounded-md border-[#E4D064] bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
               <div className="">
-                <span
-                  // href={isLogin ? "/my-account" : "/sign-in"}
-                  onClick={() => {
-                    setIsOpen(false);
-                    setShow(false);
-                    user ? router.push("/my-account") : navigateToLogin();
-                  }}
-                  className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
-                >
-                  <FaRegUserCircle size={20} />
-                  My Account
-                </span>
-                <span
-                  // href={isLogin ? "/my-orders" : "/sign-in"}
-                  onClick={() => {
-                    setIsOpen(false);
-                    setShow(false);
-                    user ? router.push("/my-orders") : navigateToLogin();
-                  }}
-                  className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
-                >
-                  <BiStore size={20} />
-                  Orders
-                </span>
+                <PopoverClose asChild>
+                  <span
+                    // href={isLogin ? "/my-account" : "/sign-in"}
+                    onClick={() => {
+                      setIsOpen(false);
+                      setShow(false);
+                      user ? router.push("/my-account") : navigateToLogin();
+                    }}
+                    className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
+                  >
+                    <FaRegUserCircle size={20} />
+                    My Account
+                  </span>
+                </PopoverClose>
 
-                <span
-                  onClick={() => {
-                    setIsOpen(false);
-                    setShow(false);
-                    user ? router.push("/saved-items") : navigateToLogin();
-                  }}
-                  className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
-                >
-                  <BiHeart size={20} />
-                  Saved Items
-                </span>
+                <PopoverClose asChild>
+                  <span
+                    // href={isLogin ? "/my-orders" : "/sign-in"}
+                    onClick={() => {
+                      setIsOpen(false);
+                      setShow(false);
+                      user ? router.push("/my-orders") : navigateToLogin();
+                    }}
+                    className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
+                  >
+                    <BiStore size={20} />
+                    Orders
+                  </span>
+                </PopoverClose>
+
+                <PopoverClose asChild>
+                  <span
+                    onClick={() => {
+                      setIsOpen(false);
+                      setShow(false);
+                      user ? router.push("/saved-items") : navigateToLogin();
+                    }}
+                    className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
+                  >
+                    <BiHeart size={20} />
+                    Saved Items
+                  </span>
+                </PopoverClose>
               </div>
               <div className="my-2 border-b border-black border-opacity-50"></div>
               {user ? (

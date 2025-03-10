@@ -27,7 +27,7 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
   const queryParams = useSearchParams();
   const router = useRouter();
 
-  const callbackUrl = queryParams.get("callbackUrl") || "/admin";
+  const callbackUrl = queryParams.get("redirect_url") || "/admin";
 
   const otpVerify = useMutation({
     mutationFn: verifyOTP,

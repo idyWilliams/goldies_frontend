@@ -132,7 +132,7 @@ const AccountInfo = ({
           lastName: data.data.lastName,
         },
       };
-      console.log(newUser);
+      // console.log(newUser);
 
       localStorage.setItem("user", JSON.stringify(newUser));
 

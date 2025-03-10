@@ -25,7 +25,7 @@ const Favorite = ({
   const [previewFav, setPreviewFav] = useState(false);
   const favProducts = useUserPdctStore((state) => state.favProducts);
   const setFavProducts = useUserPdctStore((state) => state.setFavProducts);
-  const addFavProduct = useUserPdctStore((state) => state.addFavProduct);
+  // const addFavProduct = useUserPdctStore((state) => state.addFavProduct);
   const removeFavProducts = useUserPdctStore((state) => state.removeFavProduct);
   const isLogin = useIsLoggedIn();
   const queryClient = useQueryClient();

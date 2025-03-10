@@ -1,6 +1,11 @@
 import { Category } from "@/services/types";
 import { Option } from "react-multi-select-component";
 
+export interface ErrorResponse {
+  message: string;
+  [key: string]: any;
+}
+
 export type ICake = {
   id: number;
   name: string;

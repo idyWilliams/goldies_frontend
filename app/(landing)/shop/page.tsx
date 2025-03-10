@@ -339,10 +339,10 @@ const ShopPage = () => {
                                   : sortBy === "createdAt" && order === "asc"
                                     ? "Oldest"
                                     : sortBy === "maxPrice" && order === "asc"
-                                      ? "Price: Low to High"
+                                      ? "Price: High to Low"
                                       : sortBy === "maxPrice" &&
                                           order === "desc"
-                                        ? "Price: High to Low"
+                                        ? "Price: Low to High"
                                         : "Sort"}
                         </span>
                         <span>
@@ -396,7 +396,7 @@ const ShopPage = () => {
                                 handleSortChange("maxPrice", "asc")
                               }
                             >
-                              Price: Low to High
+                              Price: High to Low
                             </li>
                             <li
                               className="cursor-pointer text-nowrap px-4 py-2 hover:bg-neutral-100"
@@ -404,7 +404,7 @@ const ShopPage = () => {
                                 handleSortChange("maxPrice", "desc")
                               }
                             >
-                              Price: High to Low
+                              Price: Low to High
                             </li>
                           </ul>
                         </div>

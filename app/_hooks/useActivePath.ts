@@ -9,10 +9,10 @@ const useActivePath = () => {
   const pathname = usePathname();
 
   const navigateToLogin = () => {
-    console.log(pathname);
+    const redirectUrl = encodeURIComponent(pathname);
 
     activePathRef.current = pathname;
-    router.push("/sign-in");
+    router.push(`/sign-in?redirect_url=${redirectUrl}`);
   };
 
   return navigateToLogin;

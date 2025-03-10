@@ -28,7 +28,6 @@ declare global {
   }
 }
 
-
 const queryClient = new QueryClient();
 
 export default function RootLayout({
@@ -75,7 +74,12 @@ export default function RootLayout({
                 <ProductProvider>
                   <Suspense fallback={<Loading />}>
                     <main>{children}</main>
-                    <Toaster position="top-right" richColors expand={true} />
+                    <Toaster
+                      position="top-right"
+                      richColors
+                      expand={true}
+                      closeButton
+                    />
                   </Suspense>
                 </ProductProvider>
               </StoreProvider>

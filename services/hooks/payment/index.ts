@@ -79,6 +79,7 @@ export const getOrdersByUser = async () => {
 export const getOrderByOrderId = async (orderId: string) => {
   try {
     const response = await instance.get(`/order/get_order/${orderId}`);
+
     return response.data;
   } catch (error) {
     console.log("error getting user specific order by Id", error);

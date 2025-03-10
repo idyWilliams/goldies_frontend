@@ -8,7 +8,7 @@ import { USER_DETAILS, USER_TOKEN_NAME } from "@/utils/constants";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useContext, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { AiOutlineEye, AiOutlineUserAdd } from "react-icons/ai";
@@ -29,15 +29,19 @@ const validationSchema = yup.object().shape({
 
 const Page = () => {
   const router = useRouter();
+  const queryParams = useSearchParams();
   // @ts-ignore
   const { setAuth, setIsLogin } = useContext(AuthContext);
   const [visible, setVisible] = useState(false);
   const [isChecked, setIsChecked] = useState(true);
   const [noSubmit, setNoSubmit] = useState(false);
   const [loading, setLoading] = useState(false);
+  const callbackUrl = queryParams.get("redirect_url") || "/";
+
   const newUser = useMutation({
     mutationFn: createUser,
   });
+
   const userLogin = useMutation({
     mutationFn: loginUser,
   });
@@ -74,7 +78,9 @@ const Page = () => {
         const userToken = JSON.stringify(res?.user);
         Cookies.set(USER_DETAILS, userToken);
         Cookies.set(USER_TOKEN_NAME, res?.token);
-        router.push("/");
+
+        router.push(callbackUrl);
+        toast.success(res?.message);
         reset();
       })
       .catch((err: any) => {

@@ -130,10 +130,10 @@ const CakeCategoryData = () => {
 
                 <div className="flex min-h-[180px] w-full flex-col items-start justify-between bg-black bg-opacity-10 p-4 backdrop-blur-[6.353761196136475px]">
                   <div className="flex w-full grow flex-col gap-2">
-                    <h3 className="text-[32px] font-bold text-white">
+                    <h3 className="text-xl lg:text-2xl drop-shadow-lg font-bold text-white">
                       {category?.name || ""}
                     </h3>
-                    <p className="line-clamp-3 break-all text-lg text-white">
+                    <p className="line-clamp-3 break-all drop-shadow-md text-white">
                       {category?.description || ""}
                     </p>
                   </div>
