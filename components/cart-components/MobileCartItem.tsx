@@ -103,8 +103,8 @@ const MobileCartItem = ({ item }: CartItemProps) => {
             </div>
           </div>
         </div>
-        <div className="flex flex-col items-start ">
-          <span className="inline-block  text-goldie-300">
+        <div className="flex flex-col ">
+          <span className="text-goldie-300 text-right">
             {formatCurrency(parseInt(item?.product.maxPrice), "en-NG")}
           </span>
         </div>

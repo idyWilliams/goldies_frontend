@@ -30,6 +30,7 @@ import {
 } from "./ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import CartMiniList from "./cart-components/CartMiniList";
+import { PopoverClose } from "@radix-ui/react-popover";
 
 const Header = () => {
   const [show, setShow] = useState(false);
@@ -94,7 +95,7 @@ const Header = () => {
             >
               {show ? <BsX size={32} /> : <BsList size={30} />}
             </span>
-            <Link href="/" className="relative">
+            <Link href="/" className="relative"  onClick={() => setShow(false)}>
               <Image
                 src={Logo}
                 priority
@@ -182,26 +183,32 @@ const Header = () => {
                 </PopoverTrigger>
                 <PopoverContent className="w-[190px] rounded-md border-[#E4D064] bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
                   <div className="">
-                    <Link href="/my-account">
-                      <span className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
-                        <FaRegUserCircle size={20} />
-                        My Account
-                      </span>
-                    </Link>
+                    <PopoverClose asChild>
+                      <Link href="/my-account">
+                        <span className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
+                          <FaRegUserCircle size={20} />
+                          My Account
+                        </span>
+                      </Link>
+                    </PopoverClose>
 
-                    <Link href="/my-orders">
-                      <span className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
-                        <BiStore size={20} />
-                        Orders
-                      </span>
-                    </Link>
+                    <PopoverClose asChild>
+                      <Link href="/my-orders">
+                        <span className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
+                          <BiStore size={20} />
+                          Orders
+                        </span>
+                      </Link>
+                    </PopoverClose>
 
-                    <Link href="/saved-items">
-                      <span className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
-                        <BiHeart size={20} />
-                        Saved Items
-                      </span>
-                    </Link>
+                    <PopoverClose asChild>
+                      <Link href="/saved-items">
+                        <span className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
+                          <BiHeart size={20} />
+                          Saved Items
+                        </span>
+                      </Link>
+                    </PopoverClose>
                   </div>
                   <div className="my-2 border-b border-black border-opacity-50"></div>
                   {auth?.user ? (

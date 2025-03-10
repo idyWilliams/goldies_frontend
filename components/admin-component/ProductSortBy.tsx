@@ -72,7 +72,7 @@ export default function ProductSortBy({
           }`}
           onClick={() => handleSortChange("maxPrice", "asc")}
         >
-          Price: Low to High
+          Price: High to Low
         </li>
         <li
           className={`cursor-pointer px-4 py-2 text-goldie-300 hover:bg-[#E4D064] hover:bg-opacity-20 ${
@@ -80,7 +80,7 @@ export default function ProductSortBy({
           }`}
           onClick={() => handleSortChange("maxPrice", "desc")}
         >
-          Price: High to Low
+          Price: Low to High
         </li>
       </ul>
     </div>
