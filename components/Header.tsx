@@ -2,8 +2,11 @@
 import useActivePath from "@/app/_hooks/useActivePath";
 import { useAuth } from "@/context/AuthProvider";
 import { cn } from "@/helper/cn";
-import { RootState } from "@/redux/store";
+import { setCart } from "@/redux/features/product/cartSlice";
+import { useAppDispatch } from "@/redux/hook";
+import useCart from "@/services/hooks/cart/useCart";
 import { USER_DETAILS, USER_TOKEN_NAME } from "@/utils/constants";
+import { useQueryClient } from "@tanstack/react-query";
 import { Ghost } from "iconsax-react";
 import Cookies from "js-cookie";
 import Image from "next/image";
@@ -15,7 +18,6 @@ import { BsList, BsX } from "react-icons/bs";
 import { FaRegUserCircle } from "react-icons/fa";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { IoCartOutline } from "react-icons/io5";
-import { useSelector } from "react-redux";
 import Logo from "../public/assets/goldis-logo.png";
 import MobileNav from "./MobileNav";
 import { Button } from "./ui/button";
@@ -27,10 +29,7 @@ import {
   DialogTitle,
 } from "./ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import useCart from "@/services/hooks/cart/useCart";
-import { useAppDispatch } from "@/redux/hook";
-import { setCart } from "@/redux/features/product/cartSlice";
+import CartMiniList from "./cart-components/CartMiniList";
 
 const Header = () => {
   const [show, setShow] = useState(false);
@@ -144,18 +143,24 @@ const Header = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <Link href={"/cart"}>
-              <button className="relative flex h-[30px] w-[30px] cursor-pointer items-center justify-center">
-                <span>
-                  <IoCartOutline size={24} className="mb-0" />
-                </span>
-                {Object.values(cart) && Object.values(cart).length >= 0 && (
-                  <span className="absolute -right-1 top-0 inline-flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs font-medium text-[#fcf7e8]">
-                    {Object.values(cart).length}
+            <Popover>
+              <PopoverTrigger>
+                <button className="relative flex h-[30px] w-[30px] cursor-pointer items-center justify-center">
+                  <span>
+                    <IoCartOutline size={24} className="mb-0" />
                   </span>
-                )}
-              </button>
-            </Link>
+                  {Object.values(cart) && Object.values(cart).length >= 0 && (
+                    <span className="absolute -right-1 top-0 inline-flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs font-medium text-[#fcf7e8]">
+                      {Object.values(cart).length}
+                    </span>
+                  )}
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[320px] border-[#E4D064] bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
+                <CartMiniList />
+              </PopoverContent>
+            </Popover>
+
             <div className="hidden lg:block">
               <Popover>
                 <PopoverTrigger asChild>
