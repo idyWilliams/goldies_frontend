@@ -15,10 +15,6 @@ import EachElement from "@/helper/EachElement";
 import { formatCurrency } from "@/helper/formatCurrency";
 import { ProductParams } from "@/interfaces/product.interface";
 import Placeholder from "@/public/assets/placeholder3.png";
-import {
-  addProductToCart,
-  setBuyNowProduct,
-} from "@/redux/features/product/productSlice";
 import { getActiveProduct, getAllProducts } from "@/services/hooks/products";
 import { cakeTimes } from "@/utils/cakeData";
 import useUserPdctStore from "@/zustand/userProductStore/store";
@@ -40,44 +36,8 @@ import { AxiosError } from "axios";
 import { DialogCloseButton } from "@/components/DialogModal";
 import { Loader2 } from "lucide-react";
 import { ErrorResponse } from "@/types/products";
-// import {
-//   cakeSizes,
-//   toppings,
-//   cakeShapes,
-//   fillingsList,
-// } from "@/utils/productDetails";
-
-const cakeSizes = [
-  { value: "6-round", label: "6″ round serves 10 - 12" },
-  { value: "6-square", label: "6″ square serves 16 – 18" },
-  { value: "8-round", label: "8″ round serves 18 – 20" },
-  { value: "8-square", label: "8″ square serves 30 – 32" },
-  { value: "10-round", label: "10″ round serves 26 – 28" },
-  { value: "10-square", label: "10″ square serves 48 – 50" },
-];
-
-const flavours = [
-  { value: "vanilla", label: "Vanilla" },
-  { value: "red-velvet", label: "Red Velvet" },
-  { value: "lemon", label: "Lemon" },
-  { value: "chocolate-chilli", label: "Chocolate Chilli" },
-  { value: "strawberry", label: "Strawberry" },
-];
-
-const toppings = [
-  { value: "decorative", label: "Decorative" },
-  { value: "candy-and-sweet", label: "Candy and Sweet" },
-  { value: "chocolate", label: "Chocolate" },
-  { value: "unique-and-themed", label: "Unique and Themed" },
-];
-
-function generateSizeArray(minSize: any, maxSize: any) {
-  const sizes = [];
-  for (let i = minSize; i <= maxSize; i++) {
-    sizes.push(i);
-  }
-  return sizes;
-}
+import { setBuyNowProduct } from "@/redux/features/product/cartSlice";
+import { MultiSelect, Option } from "react-multi-select-component";
 
 export type SelectOptionType = {
   label: string | number;
@@ -93,8 +53,14 @@ export type SelectOptionUserType =
 
 const schema = yup.object().shape({
   sizes: yup.string().required("Size is required"),
-  toppings: yup.string().required("Topping is required"),
+  toppings: yup
+    .array()
+    .of(yup.string())
+    .min(1, "At least one topping is required"),
   flavours: yup.string().required("Flavour is required"),
+  // flavours: yup.array()
+  // .of(yup.string())
+  // .min(1, "At least one flavour is required"),
   cakeTimes: yup.string().required("When do you need your cake?"),
   message: yup.string(),
 });
@@ -150,7 +116,6 @@ function CakeDetailsPage() {
   const dispatch = useDispatch();
   const [previewFav, setPreviewFav] = useState(false);
   const queryClient = useQueryClient();
-
 
   const {
     register,
@@ -243,35 +208,11 @@ function CakeDetailsPage() {
     },
   });
 
-  // const handleAddToCart = handleSubmit((data) => {
-  //   if (data.sizes && data.toppings && data.cakeTimes) {
-  //     dispatch(
-  //       addProductToCart({
-  //         id: activeProduct?._id as string,
-  //         quantity: quantity,
-  //         cakeDetails: {
-  //           size: data.sizes,
-  //           topping: data.toppings,
-  //           flavour: data.flavours,
-  //           cakeTime: data.cakeTimes,
-  //           message: data.message,
-  //         },
-  //       }),
-  //     );
-
-  //     console.log("added product>>", data);
-  //   } else {
-  //     console.error(
-  //       "Please fill in all required fields before adding to cart.",
-  //     );
-  //   }
-  // });
-
   const handleAddToCart = handleSubmit((data) => {
     if (!data.sizes && !data.cakeTimes && !data.flavours && !data.toppings) {
       return;
     }
-    console.log("cake data is ", data);
+    // console.log("cake data is ", data);
     if (!isLogin) {
       setPreviewFav(false);
       return;
@@ -281,7 +222,8 @@ function CakeDetailsPage() {
       product: activeProduct?._id as string,
       quantity: quantity,
       size: data.sizes,
-      toppings: data.toppings,
+      toppings: data.toppings as string[],
+      // flavour: data.flavours as string[],
       flavour: data.flavours,
       dateNeeded: data.cakeTimes || "",
       details: data.message || "",
@@ -289,29 +231,30 @@ function CakeDetailsPage() {
   });
 
   const handleBuyNow = handleSubmit((data) => {
-    if (data.sizes && data.toppings && data.cakeTimes) {
-      // Dispatch action to store product details in Redux state
-      dispatch(
-        setBuyNowProduct({
-          id: activeProduct?._id as string,
-          quantity: quantity,
-          cakeDetails: {
-            size: data.sizes,
-            topping: data.toppings,
-            flavour: data.flavours,
-            cakeTime: data.cakeTimes,
-            message: data.message,
-          },
-        }),
-      );
-
-      // Navigate to billing page
-      router.push(`/billing?buyNow=true`);
-    } else {
-      console.error(
-        "Please fill in all required fields before proceeding to checkout.",
-      );
+    if (!data.sizes && !data.toppings && !data.cakeTimes) {
+      return;
     }
+
+    if (!isLogin) {
+      setPreviewFav(false);
+      return;
+    }
+
+    dispatch(
+      setBuyNowProduct({
+        product: activeProduct,
+        quantity: quantity,
+        size: data.sizes,
+        toppings: data.toppings as string[],
+        // flavour: data.flavours as string[],
+        flavour: data.flavours,
+        dateNeeded: data.cakeTimes,
+        details: data.message,
+      }),
+    );
+
+    // Navigate to billing page
+    router.push(`/billing?buyNow=true`);
   });
 
   const navigateToCart = () => {
@@ -330,6 +273,19 @@ function CakeDetailsPage() {
       primary: "black",
     },
   });
+
+  const formatText = (text: string) => {
+    return text
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+  };
+
+  const transformToOptions = (values: string[]) => {
+    return values.map((value) => ({
+      label: formatText(value),
+      value: value,
+    }));
+  };
 
   return (
     <div>
@@ -447,10 +403,14 @@ function CakeDetailsPage() {
                         control={control}
                         name="sizes"
                         render={({ field: { value, onChange, ref } }) => {
+                          const sizeOptions = transformToOptions(
+                            activeProduct?.sizes || [],
+                          );
+
                           return (
                             <Select
-                              options={cakeSizes}
-                              value={cakeSizes.find(
+                              options={sizeOptions}
+                              value={sizeOptions.find(
                                 (option) => option.value === value,
                               )}
                               onChange={(selected) => onChange(selected?.value)}
@@ -474,16 +434,32 @@ function CakeDetailsPage() {
                       <Controller
                         control={control}
                         name="toppings"
-                        render={({ field: { value, onChange, ref } }) => {
+                        render={({ field: { value, onChange } }) => {
+                          // Ensure value is always an array of strings
+                          const safeValue = Array.isArray(value) ? value : [];
+
+                          // Transform the toppings array into Option objects
+                          const toppingOptions = transformToOptions(
+                            activeProduct?.toppings || [],
+                          );
+
+                          // Transform the current value (array of strings) into Option objects
+                          const selectedOptions = transformToOptions(
+                            safeValue as string[],
+                          );
+
                           return (
-                            <Select
-                              options={toppings}
-                              value={toppings.find(
-                                (option) => option.value === value,
-                              )}
-                              onChange={(selected) => onChange(selected?.value)}
-                              ref={ref}
-                              theme={selectTheme}
+                            <MultiSelect
+                              options={toppingOptions}
+                              value={selectedOptions}
+                              onChange={(selected: Option[]) => {
+                                // Convert selected options to an array of strings
+                                const selectedValues = selected.map(
+                                  (item) => item.value,
+                                );
+                                onChange(selectedValues); // Update the form state
+                              }}
+                              labelledBy="Select toppings"
                             />
                           );
                         }}
@@ -503,10 +479,31 @@ function CakeDetailsPage() {
                         control={control}
                         name="flavours"
                         render={({ field: { value, onChange, ref } }) => {
+                          const flavourOptions = transformToOptions(
+                            activeProduct?.flavour || [],
+                          );
+
+                          const safeValue = Array.isArray(value) ? value : [];
+                          const selectedOptions = transformToOptions(
+                            safeValue as string[],
+                          );
+
                           return (
+                            // <MultiSelect
+                            //   options={flavourOptions}
+                            //   value={selectedOptions}
+                            //   onChange={(selected: Option[]) => {
+                            //     // Convert selected options to an array of strings
+                            //     const selectedValues = selected.map(
+                            //       (item) => item.value,
+                            //     );
+                            //     onChange(selectedValues); // Update the form state
+                            //   }}
+                            //   labelledBy="Select flavours"
+                            // />
                             <Select
-                              options={flavours}
-                              value={flavours.find(
+                              options={flavourOptions}
+                              value={flavourOptions.find(
                                 (option) => option.value === value,
                               )}
                               onChange={(selected) => onChange(selected?.value)}
@@ -545,7 +542,8 @@ function CakeDetailsPage() {
                         }}
                       />
                       <p className="mt-1 text-sm">
-                        48hours is the minimum time required for all cake orders
+                        48 hours is the minimum time required for all cake
+                        orders
                       </p>
                       {errors.cakeTimes && (
                         <p className="text-sm text-red-500">
@@ -591,15 +589,29 @@ function CakeDetailsPage() {
                     </div>
                   </div>
                   <div className="mt-4 grid grid-cols-2 gap-3 after:grid">
-                    <Button
-                      type="button"
-                      size={"lg"}
-                      variant={"secondary"}
-                      className="cursor-pointer bg-neutral-300 px-4 py-2 text-neutral-900"
-                      onClick={handleBuyNow}
-                    >
-                      Buy now
-                    </Button>
+                    {isLogin ? (
+                      <Button
+                        type="button"
+                        size={"lg"}
+                        variant={"secondary"}
+                        className="cursor-pointer bg-neutral-300 px-4 py-2 text-neutral-900"
+                        onClick={handleBuyNow}
+                      >
+                        Buy now
+                      </Button>
+                    ) : (
+                      <DialogCloseButton setPreviewFav={setPreviewFav}>
+                        <Button
+                          type="button"
+                          size={"lg"}
+                          variant={"secondary"}
+                          className="cursor-pointer bg-neutral-300 px-4 py-2 text-neutral-900"
+                         
+                        >
+                          Buy now
+                        </Button>
+                      </DialogCloseButton>
+                    )}
 
                     {isLogin ? (
                       <Button
@@ -609,7 +621,7 @@ function CakeDetailsPage() {
                         disabled={cartMutation.isPending}
                       >
                         {cartMutation.isPending && (
-                          <Loader2 className="animate-spin mr-1" />
+                          <Loader2 className="mr-1 animate-spin" />
                         )}
                         Add to cart
                       </Button>

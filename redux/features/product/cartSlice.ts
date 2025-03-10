@@ -1,4 +1,5 @@
 import { ICart } from "@/interfaces/cart.interface";
+import { IProduct } from "@/interfaces/product.interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "sonner";
 
@@ -33,18 +34,41 @@ export const cartSlice = createSlice({
     setBuyNowProduct: (
       state,
       action: PayloadAction<{
-        id: string;
+        product: IProduct | null;
         quantity: number;
-        cakeDetails: {
-          size: string;
-          topping: string;
-          flavour: string;
-          cakeTime: string;
-          message?: string;
-        };
+        size: string;
+        toppings: string[];
+        // flavour: string[];
+        flavour: string;
+        dateNeeded: string;
+        details?: string;
       }>,
     ) => {
-      const { id, quantity, cakeDetails } = action.payload;
+      const {
+        product,
+        quantity,
+        size,
+        toppings,
+        flavour,
+        dateNeeded,
+        details = "",
+      } = action.payload;
+
+      // Ensure product is not null
+      if (!product) {
+        toast.error("Product is required for Buy Now.");
+        return;
+      }
+
+      state.buyNowProduct = {
+        product,
+        quantity,
+        size,
+        toppings,
+        flavour,
+        dateNeeded,
+        details,
+      };
 
       localStorage.setItem(
         "goldies_buyNow",

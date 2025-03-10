@@ -3,7 +3,8 @@ import { IProduct } from "./product.interface";
 export interface ICart {
   product: IProduct;
   size: string;
-  toppings: string;
+  toppings: string[];
+  // flavour: string[];
   flavour: string;
   dateNeeded: string;
   details: string;
@@ -13,8 +14,9 @@ export interface ICart {
 export interface addToCartDTO {
   product: string;
   size: string;
-  toppings: string;
+  toppings: string[];
   flavour: string;
+  // flavour: string[];
   dateNeeded: string;
   details: string;
   quantity: number;

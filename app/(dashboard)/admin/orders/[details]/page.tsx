@@ -244,7 +244,9 @@ export default function Page({ params }: { params: { details: string } }) {
                     Order ID: {order?.orderId}
                   </span>
                   <span>
-                    <span className="text-[15px] font-semibold mr-1">Status</span>{" "}
+                    <span className="mr-1 text-[15px] font-semibold">
+                      Status
+                    </span>{" "}
                     {statusColor(order?.orderStatus!)}
                   </span>
                 </div>
@@ -288,13 +290,13 @@ export default function Page({ params }: { params: { details: string } }) {
               <div className="rounded-md bg-white p-4">
                 <div className="">
                   <h3 className="mb-3 text-[15px] font-semibold">Order Note</h3>
-                  <p className="text-sm">
-                    I&apos;d love to order some of your delicious cakes for an
-                    upcoming celebration! Here&apos;s what I&apos;d like:
-                    Chocolate Fudge Cake - 8&quot;, Red Velvet Cupcakes - Dozen.
-                    Could you please let me know the total cost and earliest
-                    delivery date?
-                  </p>
+                  <ul className="list-disc pl-4">
+                    {order?.orderedItems.map((item, i) => (
+                      <li key={i}>
+                        <span className="italic">{item?.product?.name}</span>- {item?.details}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
 
                 <div>
@@ -316,46 +318,55 @@ export default function Page({ params }: { params: { details: string } }) {
                 <div className="table w-full table-auto border-collapse">
                   <div className="table-header-group">
                     <div className="table-row">
-                      <div className="table-cell border-b border-neutral-300 pb-3">
+                      <div className="table-cell border-b border-neutral-300 font-bold pb-3">
                         Product
                       </div>
-                      <div className="table-cell border-b border-neutral-300 pb-3">
-                        Qnty
+                      <div className="table-cell border-b border-neutral-300 font-bold pb-3">
+                        Qty
                       </div>
-                      <div className="table-cell border-b border-neutral-300 pb-3 pl-5">
+                      <div className="table-cell border-b border-neutral-300 font-bold pb-3 pl-5">
                         Price
                       </div>
-                      <div className="table-cell border-b border-neutral-300 pb-3 pl-5">
+                      <div className="table-cell border-b border-neutral-300 font-bold pb-3 pl-5">
                         Total
                       </div>
                     </div>
                   </div>
-                  <div className="table-row-group">
+                  <div className="table-row-group divide-y divide-gray-200">
                     {order?.orderedItems?.map((item, index) => {
                       return (
                         <div key={index} className="table-row">
                           <div className="table-cell py-2">
                             <div className="grid w-full grid-cols-[600px_1fr] text-sm">
-                              <div className="mb-3 flex items-center gap-2">
+                              <div className=" flex items-center gap-2">
                                 <div className="h-[50px] w-[50px] overflow-hidden">
                                   <Image
-                                    src={item?.images[0]}
-                                    alt={item?.name}
+                                    src={item?.product?.images[0]}
+                                    alt={item?.product?.name}
                                     width={50}
                                     height={30}
                                     className="h-full w-full object-cover"
                                   />
                                 </div>
-                                <h3>{item?.name}</h3>
+                                <h3>{item?.product?.name}</h3>
                               </div>
                             </div>
                           </div>
-                          <div className="table-cell py-2 align-top">1</div>
-                          <div className="table-cell py-3 pl-5 align-top">
-                            {formatCurrency(parseInt(item.maxPrice), "en-NG")}
+                          <div className="table-cell py-2 align-top">
+                            {item?.quantity}
                           </div>
-                          <div className="table-cell py-3 pl-5 align-top">
-                            {formatCurrency(parseInt(item.maxPrice), "en-NG")}
+                          <div className="table-cell py-3 pl-5 text-right align-top">
+                            {formatCurrency(
+                              parseInt(item?.product?.maxPrice),
+                              "en-NG",
+                            )}
+                          </div>
+                          <div className="table-cell py-3 pl-5 text-right align-top">
+                            {formatCurrency(
+                              parseInt(item?.product?.maxPrice) *
+                                item?.quantity,
+                              "en-NG",
+                            )}
                           </div>
                         </div>
                       );
@@ -381,9 +392,9 @@ export default function Page({ params }: { params: { details: string } }) {
                   <span className="font-semibold"> Tax:</span>
                   <span>{formatCurrency(order?.fee?.subTotal!, "en-NG")}</span>
                 </div> */}
-                  <div className="mb-3 flex items-center justify-between">
-                    <span className="font-semibold">Total:</span>
-                    <span>{formatCurrency(order?.fee?.total!, "en-NG")}</span>
+                  <div className="mb-3 flex items-center justify-between ">
+                    <span className="font-bold">Total:</span>
+                    <span className="font-bold">{formatCurrency(order?.fee?.total!, "en-NG")}</span>
                   </div>
                 </div>
               </div>
@@ -405,21 +416,24 @@ export default function Page({ params }: { params: { details: string } }) {
                           <div className="grid grid-cols-[50px_1fr] items-center gap-1">
                             <div className="h-[50px] w-[50px] overflow-hidden">
                               <Image
-                                src={item?.images[0]}
-                                alt={item?.name}
+                                src={item?.product?.images[0]}
+                                alt={item?.product?.name}
                                 width={50}
                                 height={30}
                                 className="h-full w-full object-cover"
                               />
                             </div>
                             <div>
-                              <h3>{item?.name}</h3>
-                              <span>1</span>
+                              <h3>{item?.product?.name}</h3>
+                              <span>x{item?.quantity}</span>
                             </div>
                           </div>
                         </div>
                         <div className="table-cell border-b border-neutral-300 py-3 text-right align-top">
-                          {formatCurrency(parseInt(item.maxPrice), "en-NG")}
+                          {formatCurrency(
+                            parseInt(item?.product?.maxPrice),
+                            "en-NG",
+                          )}
                         </div>
                       </div>
                     );

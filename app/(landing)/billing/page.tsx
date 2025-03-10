@@ -16,12 +16,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import EachElement from "@/helper/EachElement";
 import { cn } from "@/helper/cn";
 import { formatCurrency } from "@/helper/formatCurrency";
+import { CreateOrderDTO } from "@/interfaces/order.interface";
 import { IBillingInfo } from "@/interfaces/user.interface";
-import {
-  clearBuyNowProduct,
-  clearCart,
-} from "@/redux/features/product/productSlice";
+import { clearBuyNowProduct } from "@/redux/features/product/cartSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { clearCart } from "@/services/hooks/cart";
 import useCart from "@/services/hooks/cart/useCart";
 import {
   getAllBllingInfo,
@@ -34,8 +33,8 @@ import {
 import { billingFormData } from "@/utils/formData";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { CheckCircledIcon } from "@radix-ui/react-icons";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { CheckCircle, Edit2Icon } from "lucide-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { CheckCircle, Edit2Icon, XCircleIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -84,7 +83,7 @@ const BillingCheckoutPage = () => {
   const { buyNowProduct } = useAppSelector((state) => state.cart);
   const { cart, isLoading: cartLoading } = useCart();
 
-  console.log(">>>>fetched cart>>>", cart);
+  // console.log(">>>>fetched cart>>>", cart);
 
   // Get URL parameters
   const isBuyNow = searchParams.get("buyNow") === "true";
@@ -109,16 +108,11 @@ const BillingCheckoutPage = () => {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isPaymentProcessingModalOpen, setIsPaymentProcessingModalOpen] =
     useState(false);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isFailureModalOpen, setIsFailureModalOpen] = useState(false);
   const hasVerified = useRef(false);
   const dispatch = useAppDispatch();
-
-  // Redirect if no valid products
-  // useEffect(() => {
-  //   if ((isBuyNow && !buyNowProduct) || (!isBuyNow && cart.length === 0)) {
-  //     toast.error("No products to checkout");
-  //     router.push("/shop");
-  //   }
-  // }, [isBuyNow, buyNowProduct, cart, router]);
+  const queryClient = useQueryClient();
 
   const { data, isLoading, refetch, isError } = useQuery({
     queryKey: ["allBllingInfo"],
@@ -143,13 +137,6 @@ const BillingCheckoutPage = () => {
   });
   const form2 = useForm({ resolver: yupResolver(form2Schema) });
 
-  useEffect(() => {
-    if (isBuyNow && !buyNowProduct) {
-      toast.error("Invalid product selection");
-      router.push("/shop");
-    }
-  }, [isBuyNow, buyNowProduct, router]);
-
   const paymentInit = useMutation({
     mutationFn: initPayment,
   });
@@ -158,13 +145,50 @@ const BillingCheckoutPage = () => {
   const updateBillingDetails = useMutation({
     mutationFn: updateDetailsBillings,
   });
-  const createOrder = useMutation({ mutationFn: orderCreate });
+  const clearCartMutation = useMutation({
+    mutationFn: clearCart,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cartList"] });
+    },
+  });
+  const createOrder = useMutation({
+    mutationFn: orderCreate,
+    onSuccess: () => {
+      // Clear cart
+      clearCartMutation.mutate();
+    },
+  });
+
+  // // Redirect if no valid products (only after cart has finished loading)
+  // useEffect(() => {
+  //   const searchParams = new URLSearchParams(window.location.search);
+  //   const buyNowParam = searchParams.get("buyNow") === "true";
+
+  //   // Only run the check if the cart has finished loading
+  //   if (!cartLoading) {
+  //     if (
+  //       (buyNowParam && !buyNowProduct) || // Buy Now flow
+  //       (!buyNowParam && cart.length === 0) // Cart flow
+  //     ) {
+  //       toast.error("No products to checkout");
+  //       router.push("/shop");
+  //     }
+  //   }
+  // }, [isBuyNow, buyNowProduct, cart, router, cartLoading]);
 
   useEffect(() => {
     const reference = searchParams.get("reference");
 
-    if (reference && !hasVerified.current) {
+    // Ensure cart is fetched and products are available
+    if (
+      reference &&
+      !hasVerified.current &&
+      !cartLoading && // Cart is fetched
+      products && // Products array exists
+      products.length > 0
+    ) {
       hasVerified.current = true; // Prevent duplicate execution
+
       verifyAndCreateOrder(reference).then(() => {
         // Remove 'reference' from URL without reloading
         const newParams = new URLSearchParams(searchParams);
@@ -177,7 +201,15 @@ const BillingCheckoutPage = () => {
         );
       });
     }
-  }, [searchParams]);
+  }, [
+    searchParams,
+    cart,
+    cartLoading,
+    isLoading,
+    products,
+    isBuyNow,
+    buyNowProduct,
+  ]);
 
   // Add this effect to reset form with billing info when data loads
   useEffect(() => {
@@ -298,10 +330,19 @@ const BillingCheckoutPage = () => {
     setIsProcessingPayment(true);
 
     try {
-      const callbackUrl =
+      // Get the current search params
+      const searchParams = new URLSearchParams(window.location.search);
+      const buyNowParam = searchParams.get("buyNow");
+
+      let callbackUrl =
         process.env.NODE_ENV === "development"
           ? "http://localhost:7009/billing"
           : "https://goldies-frontend-v3.vercel.app/billing";
+
+      // Add buyNow to the callback URL only if it exists in the current URL
+      if (buyNowParam) {
+        callbackUrl += `?buyNow=${buyNowParam}`;
+      }
 
       const paymentData = {
         first_name: data.firstName,
@@ -334,6 +375,21 @@ const BillingCheckoutPage = () => {
 
   // This function should run after successful payment callback
   const verifyAndCreateOrder = async (reference: string) => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const buyNowParam = searchParams.get("buyNow") === "true";
+
+    // Ensure products are available
+    if (!products || products.length === 0) {
+      toast.error("No products found to create an order.");
+      return;
+    }
+
+    // Check if it's a buyNow order and if the buyNow product is available
+    if (buyNowParam && !buyNowProduct) {
+      toast.error("No buy now product found to create an order.");
+      return;
+    }
+
     setIsPaymentModalOpen(true); // Open the modal
     setIsSubmitting(true);
 
@@ -350,6 +406,8 @@ const BillingCheckoutPage = () => {
         throw new Error("Payment verification failed.");
       }
 
+      // console.log(">>>>create order product>>>>", products);
+
       // Step 3: Create Order
       const productsInCart = products?.map((item) => ({
         product: item.product._id,
@@ -362,7 +420,7 @@ const BillingCheckoutPage = () => {
         price: item.product.maxPrice,
       }));
 
-      const orderData = {
+      const orderData: CreateOrderDTO = {
         fee: {
           subTotal: orderTotal,
           total: totalWithDelivery,
@@ -402,15 +460,11 @@ const BillingCheckoutPage = () => {
           toast.success("Billing info saved successfully!");
         }
 
-        dispatch(() => {
-          clearCart();
-          clearBuyNowProduct();
-        });
-
-        window.location.href = "/my-orders";
+        setIsSuccessModalOpen(true);
       }
     } catch (error: any) {
-      toast.error(error.message || "An error occurred.");
+      setIsFailureModalOpen(true);
+      toast.error(error.message || "Payment verification failed.");
       console.error("Error:", error);
     } finally {
       setIsSubmitting(false);
@@ -424,10 +478,19 @@ const BillingCheckoutPage = () => {
     setIsProcessingPayment(true);
 
     try {
-      const callbackUrl =
+      // Get the current search params
+      const searchParams = new URLSearchParams(window.location.search);
+      const buyNowParam = searchParams.get("buyNow");
+
+      let callbackUrl =
         process.env.NODE_ENV === "development"
           ? "http://localhost:7009/billing"
           : "https://goldies-frontend-v3.vercel.app/billing";
+
+      // Add buyNow to the callback URL only if it exists in the current URL
+      if (buyNowParam) {
+        callbackUrl += `?buyNow=${buyNowParam}`;
+      }
 
       const paymentData = {
         first_name: data.firstName,
@@ -462,10 +525,27 @@ const BillingCheckoutPage = () => {
     setSelectedMethod(event.target.value);
   };
 
-  // If no products, render nothing while redirecting
-  // if ((isBuyNow && !buyNowProduct) || (!isBuyNow && cart.length === 0)) {
-  //   return null;
-  // }
+  // Show a loading spinner while the cart is being fetched
+  if (cartLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-neutral-100">
+        <div className="loader"></div>
+      </div>
+    );
+  }
+
+  // Render fallback UI if no valid products (only after cart has finished loading)
+  if ((isBuyNow && !buyNowProduct) || (!isBuyNow && cart.length === 0)) {
+    return (
+      <div className="flex h-screen flex-col items-center justify-center bg-neutral-100">
+        <h2 className="mb-4 text-xl font-semibold">No Products to Checkout</h2>
+        <p className="mb-6 text-neutral-600">
+          Your cart is empty. Please add products to proceed.
+        </p>
+        <Button onClick={() => router.push("/shop")}>Go to Shop</Button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-full w-full flex-col bg-red-400">
@@ -1053,38 +1133,65 @@ const BillingCheckoutPage = () => {
               Order Summary
             </h3>
             <div className="divide-y">
-              {products.length >= 1 &&
-                products.map((item, i) => {
-                  return (
-                    <div key={i} className=" space-y-3 p-2 md:bg-white">
-                      <div className="grid grid-cols-[50px_1fr] gap-2 rounded-md bg-white p-4 md:bg-transparent md:p-0">
-                        <div className="h-[50px] w-[50px] shrink-0">
-                          <Image
-                            src={item?.product.images[0]}
-                            alt={item?.product?.name}
-                            width={50}
-                            height={50}
-                            className="h-full w-full object-cover"
-                          />
+              {cartLoading ? (
+                // Skeleton loading for cart items
+                <div className="space-y-3 p-2 md:bg-white">
+                  {[1, 2].map((_, i) => (
+                    <div
+                      key={i}
+                      className="grid grid-cols-[50px_1fr] gap-2 rounded-md bg-white p-4 md:bg-transparent md:p-0"
+                    >
+                      <Skeleton className="h-[50px] w-[50px] shrink-0 rounded-md" />
+                      <div className="flex justify-between">
+                        <div className="pr-4">
+                          <Skeleton className="h-4 w-24" />
+                          <Skeleton className="mt-2 h-4 w-12" />
                         </div>
-                        <div className="flex justify-between ">
-                          <div className="pr-4">
-                            <h3>{item?.product.name}</h3>
-                            <span className="">x{item.quantity}</span>
-                          </div>
-                          <div className="text-right ">
-                            <span className="text-right ">
-                              {formatCurrency(
-                                parseInt(item?.product?.maxPrice),
-                                "en-NG",
-                              )}
-                            </span>
-                          </div>
+                        <div className="text-right">
+                          <Skeleton className="h-4 w-16" />
                         </div>
                       </div>
                     </div>
-                  );
-                })}
+                  ))}
+                </div>
+              ) : products.length >= 1 ? (
+                // Render actual cart items
+                products.map((item, i) => (
+                  <div key={i} className="space-y-3 p-2 md:bg-white">
+                    <div className="grid grid-cols-[50px_1fr] gap-2 rounded-md bg-white p-4 md:bg-transparent md:p-0">
+                      <div className="h-[50px] w-[50px] shrink-0">
+                        <Image
+                          src={item?.product.images[0]}
+                          alt={item?.product?.name}
+                          width={50}
+                          height={50}
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                      <div className="flex justify-between">
+                        <div className="pr-4">
+                          <h3>{item?.product.name}</h3>
+                          <span className="">x{item.quantity}</span>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-right">
+                            {formatCurrency(
+                              parseInt(item?.product?.maxPrice),
+                              "en-NG",
+                            )}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="bg-white p-4">
+                  <p className="p-2 text-center text-neutral-600">
+                    No products in cart.
+                  </p>
+                </div>
+              )}
             </div>
             <div className="bordert-t border">
               <div className="space-y-3 p-2 md:bg-white">
@@ -1180,6 +1287,106 @@ const BillingCheckoutPage = () => {
                       </p>
                     </>
                   )}
+                </div>
+              </DialogContent>
+            </Dialog>
+
+            {/* create order success modal */}
+            <Dialog
+              open={isSuccessModalOpen}
+              onOpenChange={(open) => setIsSuccessModalOpen(open)}
+            >
+              <DialogContent
+                className="sm:max-w-[425px]"
+                onInteractOutside={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                <DialogHeader>
+                  <DialogTitle className="text-center text-xl">
+                    Success!
+                  </DialogTitle>
+                  <DialogDescription className="text-center">
+                    Your order has been successfully placed. Thank you for
+                    shopping with us!
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="flex flex-col items-center justify-center gap-4 py-4">
+                  <div>
+                    <CheckCircle size={32} className="text-green-500" />
+                  </div>
+                  <div className="flex w-full gap-4">
+                    <Button
+                      onClick={() => {
+                        // setIsSuccessModalOpen(false);
+                        router.push("/my-orders"); // Redirect to the orders page
+                        setTimeout(() => {
+                          dispatch(clearBuyNowProduct());
+                        }, 300);
+                      }}
+                      className="w-full"
+                    >
+                      View Orders
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        // setIsSuccessModalOpen(false);
+                        router.push("/"); // Redirect to the home page
+                        setTimeout(() => {
+                          dispatch(clearBuyNowProduct());
+                        }, 300);
+                      }}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      Go Home
+                    </Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+
+            {/* failure modal */}
+            <Dialog
+              open={isFailureModalOpen}
+              onOpenChange={(open) => setIsFailureModalOpen(open)}
+            >
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle className="text-center text-xl">
+                    Payment Failed!
+                  </DialogTitle>
+                  <DialogDescription className="text-center">
+                    Your payment could not be processed. Please try again or
+                    contact support.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="flex flex-col items-center justify-center gap-4 py-4">
+                  <div>
+                    <XCircleIcon size={32} className="text-red-500" />{" "}
+                    {/* Error icon */}
+                  </div>
+                  <div className="flex w-full gap-4">
+                    <Button
+                      onClick={() => {
+                        setIsFailureModalOpen(false);
+                        router.push("/billing"); // Redirect to the billing/payment page to retry
+                      }}
+                      className="w-full"
+                    >
+                      Retry Payment
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        setIsFailureModalOpen(false);
+                        router.push("/"); // Redirect to the home page
+                      }}
+                      variant="outline"
+                      className="w-full"
+                    >
+                      Go Home
+                    </Button>
+                  </div>
                 </div>
               </DialogContent>
             </Dialog>

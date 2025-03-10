@@ -6,16 +6,12 @@ import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/helper/formatCurrency";
 import { IBillingInfo } from "@/interfaces/user.interface";
 import illustration from "@/public/assets/illistration-removebg-preview.png";
-import { removeFromCart } from "@/services/hooks/cart";
 import useCart from "@/services/hooks/cart/useCart";
 import { getAllBllingInfo } from "@/services/hooks/payment";
-import { ErrorResponse } from "@/types/products";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
-import { toast } from "sonner";
 
 const CartPage = () => {
   const router = useRouter();
