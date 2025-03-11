@@ -12,6 +12,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useAuth } from "@/context/AuthProvider";
 
 import EachElement from "@/helper/EachElement";
 import { cn } from "@/helper/cn";
@@ -82,6 +83,9 @@ const BillingCheckoutPage = () => {
   const router = useRouter();
   const { buyNowProduct } = useAppSelector((state) => state.cart);
   const { cart, isLoading: cartLoading } = useCart();
+  const { auth } = useAuth();
+
+  const { user } = auth;
 
   // console.log(">>>>fetched cart>>>", cart);
 
@@ -155,7 +159,7 @@ const BillingCheckoutPage = () => {
     mutationFn: orderCreate,
     onSuccess: () => {
       // Clear cart
-      clearCartMutation.mutate();
+      
     },
   });
 
@@ -345,9 +349,9 @@ const BillingCheckoutPage = () => {
       }
 
       const paymentData = {
-        first_name: data.firstName,
-        last_name: data.lastName,
-        email: data.email,
+        first_name: user?.firstName,
+        last_name: user?.lastName,
+        email: user?.email,
         amount: totalWithDelivery,
         callbackUrl: callbackUrl,
       };
@@ -1321,6 +1325,7 @@ const BillingCheckoutPage = () => {
                         // setIsSuccessModalOpen(false);
                         router.push("/my-orders"); // Redirect to the orders page
                         setTimeout(() => {
+                          clearCartMutation.mutate();
                           dispatch(clearBuyNowProduct());
                         }, 300);
                       }}
@@ -1333,6 +1338,7 @@ const BillingCheckoutPage = () => {
                         // setIsSuccessModalOpen(false);
                         router.push("/"); // Redirect to the home page
                         setTimeout(() => {
+                          clearCartMutation.mutate();
                           dispatch(clearBuyNowProduct());
                         }, 300);
                       }}
