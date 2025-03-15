@@ -5,6 +5,7 @@ import { CategoryInputsProps } from "@/utils/categoryTypes";
 import Toggle from "react-toggle";
 import EachElement from "@/helper/EachElement";
 import { newCategory } from "@/utils/formData";
+import { Switch } from "@/components/ui/switch";
 
 export default function CategoryInputs({
   control,
@@ -29,13 +30,25 @@ export default function CategoryInputs({
                   control={control}
                   name={data.name}
                   render={({ field: { value, ...field } }) => (
-                    // @ts-ignore
-                    <Toggle
-                      {...field}
-                      checked={value === true}
-                      className="custom"
-                      icons={{ checked: null, unchecked: null }}
-                    />
+                    <>
+                      {/* <Toggle
+                        {...field}
+                        checked={value === true}
+                        className="custom"
+                        icons={{ checked: null, unchecked: null }}
+                      /> */}
+
+                      <Switch
+                        {...field}
+                        defaultChecked={value}
+                        className="custom data-[state=checked]:bg-green-700"
+                        // icons={{ checked: null, unchecked: null }}
+                        onCheckedChange={() => {
+                          console.log(value);
+                          field.onChange(!value);
+                        }}
+                      />
+                    </>
                   )}
                 />
               </label>

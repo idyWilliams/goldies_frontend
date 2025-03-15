@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 
+import Logo from "@/public/assets/new-logo/logo-colored.svg";
+
 const Layout = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
   // const [isLoading, setIsLoading] = useState(true);
@@ -27,37 +29,36 @@ const Layout = ({ children }: { children: ReactNode }) => {
   //     }
   //   }
 
-  //   setIsLoading(false); 
+  //   setIsLoading(false);
   // }, [router]);
 
   // if (isLoading) return null;
 
   return (
-    
-      <div
-        style={{
-          background:
-            "linear-gradient(rgba(255,255,255,1), rgba(255,255,255,0.9)), url(/assets/vectorBG.jpg)",
-        }}
-        className="flex min-h-dvh flex-col items-center justify-center px-4 py-4"
-      >
-        <div className="">
-          <div className="mb-5 flex justify-center">
-            <Link href="#" className="relative">
-              <Image
-                src="/assets/goldis-gold-logo.png"
-                className="w-[200px] lg:w-[230px]"
-                width={175}
-                height={92}
-                alt="Goldis Logo"
-                priority
-              />
-            </Link>
-          </div>
-
-          <>{children}</>
+    <div
+      style={{
+        background:
+          "linear-gradient(rgba(255,255,255,1), rgba(255,255,255,0.9)), url(/assets/vectorBG.jpg)",
+      }}
+      className="flex min-h-dvh flex-col items-center justify-center px-4 py-4"
+    >
+      <div className="">
+        <div className="mb-5 flex justify-center">
+          <Link href="#" className="relative">
+            <Image
+              src={Logo}
+              className="w-[200px] lg:w-[230px]"
+              width={175}
+              height={92}
+              alt="Goldis Logo"
+              priority
+            />
+          </Link>
         </div>
+
+        <>{children}</>
       </div>
+    </div>
   );
 };
 

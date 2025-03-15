@@ -32,6 +32,7 @@ import { useAuth } from "@/context/AuthProvider";
 import { cn } from "@/lib/utils";
 import { adminLogOut } from "@/services/hooks/admin-auth";
 import CurrentTime from "./CurrentTime";
+import Logo from "@/public/assets/new-logo/logo-white.svg";
 
 export default function AdminNav() {
   const router = useRouter();
@@ -55,7 +56,7 @@ export default function AdminNav() {
             </span>
             <Link href="/admin" className="relative">
               <Image
-                src="/assets/goldis-gold-logo.png"
+                src={Logo}
                 className="w-[100px] lg:w-[130px]"
                 width={175}
                 height={92}
