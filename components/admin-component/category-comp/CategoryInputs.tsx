@@ -29,6 +29,7 @@ export default function CategoryInputs({
                   control={control}
                   name={data.name}
                   render={({ field: { value, ...field } }) => (
+                    // @ts-ignore
                     <Toggle
                       {...field}
                       checked={value === true}
