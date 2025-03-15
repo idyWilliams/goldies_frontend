@@ -12,7 +12,7 @@ import {
   BsLinkedin,
   BsTwitterX,
 } from "react-icons/bs";
-import goldis from "../public/assets/goldis-gold-logo.png";
+import goldis from "@/public/assets/new-logo/logo-white.svg";
 import { Button } from "./ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 
@@ -121,7 +121,7 @@ const Footer = () => {
                 </DialogTitle>
               </DialogHeader>
               <div className="py-4">
-                <h2 className="text-3xl mb-4 font-bold text-goldie-300">
+                <h2 className="mb-4 text-3xl font-bold text-goldie-300">
                   Success!
                 </h2>
                 <p className="text-white">
@@ -138,7 +138,7 @@ const Footer = () => {
           </Dialog>
         </div>
 
-        <div className="mt-20 grid justify-between gap-y-8 lg:grid-cols-5">
+        <div className="mt-20 grid justify-between gap-y-8 lg:grid-cols-[1.5fr_1fr_1fr_1fr_1fr] lg:gap-x-10">
           <div className="space-y-4">
             <div>
               <Image
@@ -146,10 +146,9 @@ const Footer = () => {
                 alt="logo"
                 width={100}
                 height={100}
-                className="mb-6 w-[200px]"
+                className="mb-4 w-[150px]"
               />
-              <p className="text-goldie-300 ">Goldies Confectionary</p>
-              <p className="mb-2 text-white">
+              <p className="mb-2 text-balance text-white">
                 Your perfect stop to shop yummy and fluffy cakes
               </p>
             </div>

@@ -69,7 +69,7 @@ const CakeCategoryData = () => {
   };
 
   return (
-    <div className="wrapper w-full gap-3 space-y-5 sm:flex sm:w-min sm:grid-cols-2 sm:space-x-5 sm:space-y-0 lg:grid lg:w-full lg:grid-cols-3 lg:space-x-0 xl:gap-7">
+    <div className="wrapper w-full gap-3 space-y-5 sm:flex sm:w-min sm:grid-cols-2 sm:space-x-5 sm:space-y-0 lg:grid lg:w-full lg:grid-cols-3 lg:space-x-0 xl:grid-cols-4 xl:gap-7">
       {(isPending ||
         (isError && !categories) ||
         (isSuccess && categories && categories?.length < 1)) && (
@@ -80,7 +80,7 @@ const CakeCategoryData = () => {
               return (
                 <div
                   key={index}
-                  className="relative flex h-[300px] items-end bg-goldie-50  sm:w-[300px] lg:w-full"
+                  className="bg-goldie-50 relative flex h-[300px] items-end  sm:w-[300px] lg:w-full"
                 >
                   <Image
                     src={Placeholder}
@@ -105,7 +105,7 @@ const CakeCategoryData = () => {
             return (
               <div
                 key={category._id}
-                className="relative flex h-[300px] items-end sm:w-[300px] lg:w-full"
+                className="relative flex h-[300px] items-end rounded-xl sm:w-[300px] lg:w-full"
               >
                 {!isLoaded[category._id] && (
                   <Image

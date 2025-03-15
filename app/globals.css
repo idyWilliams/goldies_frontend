@@ -73,7 +73,7 @@
   }
 
   body {
-    @apply text-base;
+    @apply bg-brand-background text-base;
   }
 
   .wrapper {

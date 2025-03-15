@@ -18,7 +18,7 @@ import { BsList, BsX } from "react-icons/bs";
 import { FaRegUserCircle } from "react-icons/fa";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { IoCartOutline } from "react-icons/io5";
-import Logo from "../public/assets/goldis-logo.png";
+import Logo from "@/public/assets/new-logo/logo-colored.svg";
 import MobileNav from "./MobileNav";
 import { Button } from "./ui/button";
 import {
@@ -85,7 +85,7 @@ const Header = () => {
   return (
     <>
       <header
-        className={`${sticky ? "sticky shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "relative border-b border-neutral-900"} left-0 top-0 z-50 flex  w-full items-center bg-goldie-300 py-3 lg:h-20`}
+        className={`bg-brand-background ${sticky ? "sticky shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "relative border-b border-neutral-900"} left-0 top-0 z-50 flex  w-full items-center py-3 lg:h-20`}
       >
         <div className="wrapper flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -95,11 +95,11 @@ const Header = () => {
             >
               {show ? <BsX size={32} /> : <BsList size={30} />}
             </span>
-            <Link href="/" className="relative"  onClick={() => setShow(false)}>
+            <Link href="/" className="relative" onClick={() => setShow(false)}>
               <Image
                 src={Logo}
                 priority
-                className="w-[130px]"
+                className="w-[150px]"
                 width={175}
                 height={92}
                 alt="Goldis Logo"
