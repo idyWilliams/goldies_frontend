@@ -234,12 +234,12 @@ const Hero = () => {
       </Swiper>
       {/* STATS */}
       <div className="bottom-0 left-0 z-10 w-full bg-brand-200 py-3 lg:absolute">
-        <div className="wrapper flex w-full flex-col items-center justify-between divide-y divide-gray-800 sm:justify-evenly sm:gap-8 md:flex-row md:divide-y-0">
+        <div className="wrapper flex w-full flex-col items-center justify-between sm:justify-evenly sm:gap-8 md:flex-row md:divide-y-0">
           <EachElement
             of={stats}
             render={(item: any, index: number) => (
               <div key={index} className="w-full py-2 text-center">
-                <h3 className="text-3xl font-semibold text-brand-100">
+                <h3 className="text-2xl font-semibold text-brand-100 md:text-3xl">
                   {item?.value}
                 </h3>
                 <p className="text-sm font-normal text-brand-100">

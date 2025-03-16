@@ -70,14 +70,14 @@ const Footer = () => {
   ];
 
   return (
-    <section className="relative mt-auto grid min-h-[500px] w-full bg-neutral-900">
+    <section className="relative mt-auto grid min-h-[500px] w-full bg-brand-200">
       <div className="wrapper relative py-10 pt-12">
-        <div className="mx-auto grid gap-6 rounded-2xl bg-[#494848] px-4 py-4 md:grid-cols-2 md:items-center md:py-6 xl:w-10/12">
+        <div className="mx-auto grid gap-6  rounded-2xl bg-[#231614] p-8 md:grid-cols-2 md:items-center md:py-6 xl:w-10/12">
           <div>
-            <h1 className="text-2xl font-bold text-goldie-300 lg:text-[32px]">
-              Subscribe to our NewsLetter
+            <h1 className="text-3xl font-semibold text-brand-100 lg:text-[32px]">
+              Subscribe to our Newsletter
             </h1>
-            <p className="text-[16px] text-goldie-300">
+            <p className="mt-1 text-[16px] text-brand-100">
               Be the first to know about updates on new recipes.
             </p>
           </div>
@@ -98,7 +98,7 @@ const Footer = () => {
               <Button
                 size={"lg"}
                 type="submit"
-                className=" w-full text-goldie-300 md:mt-0 md:w-auto"
+                className=" h-auto w-full bg-brand-200 py-3 text-brand-100 md:mt-0 md:w-auto"
                 aria-label="Subscribe to Newsletter"
               >
                 Subscribe
@@ -110,7 +110,7 @@ const Footer = () => {
           <Dialog open={openDialog} onOpenChange={setOpenDialog}>
             <DialogContent className=" border-black bg-black text-center">
               <DialogHeader>
-                <DialogTitle className="text-center text-goldie-300">
+                <DialogTitle className="text-center text-brand-100">
                   <div className="flex justify-between ">
                     <Image
                       src={goldis}
@@ -121,7 +121,7 @@ const Footer = () => {
                 </DialogTitle>
               </DialogHeader>
               <div className="py-4">
-                <h2 className="mb-4 text-3xl font-bold text-goldie-300">
+                <h2 className="mb-4 text-3xl font-bold text-brand-100">
                   Success!
                 </h2>
                 <p className="text-white">
@@ -129,7 +129,7 @@ const Footer = () => {
                 </p>
                 <Button
                   onClick={() => setOpenDialog(false)}
-                  className="mx-auto mt-8 w-fit bg-goldie-300 text-[#0F0904;] hover:bg-goldie-400"
+                  className="bg-brand-text-brand-100 mx-auto mt-8 w-fit text-[#0F0904] hover:bg-goldie-400"
                 >
                   Close
                 </Button>
@@ -154,7 +154,7 @@ const Footer = () => {
             </div>
             <div>
               <h3 className="text-white">Social Media</h3>
-              <hr className="w-[35px] border border-goldie-300" />
+              <hr className="border-brand-text-brand-200 bor1er w-[35px]" />
             </div>
             <div className="flex gap-2 text-white">
               {SOCIAL_LINKS.map(({ icon: Icon, href }, index) => (
@@ -167,7 +167,7 @@ const Footer = () => {
           <div className="inline-flex flex-col space-y-3 text-white">
             <div>
               <h3 className="font-bold text-white">Company</h3>
-              <hr className="mb-2 w-[35px] border border-goldie-300" />
+              <hr className="border-brand-text-brand-200 bor1er mb-2 w-[35px]" />
             </div>
             <Link href={"/shop"} className="w-fit hover:underline">
               Products
@@ -185,7 +185,7 @@ const Footer = () => {
           <div className="inline-flex flex-col space-y-3 text-white">
             <div>
               <h3 className="text-white">Products</h3>
-              <hr className="mb-2 w-[35px] border border-goldie-300" />
+              <hr className="border-brand-text-brand-200 bor1er mb-2 w-[35px]" />
             </div>
             <div className="flex flex-col gap-3">
               {isPending ? (
@@ -193,7 +193,7 @@ const Footer = () => {
                   {Array.from({ length: 4 }).map((_, index) => (
                     <div
                       key={index}
-                      className="h-5 w-4/5 animate-pulse rounded bg-neutral-700"
+                      className="h-5 w-4/5 animate-pulse rounded bg-neutral-700 "
                     ></div>
                   ))}
                 </div>
@@ -208,7 +208,7 @@ const Footer = () => {
                       <Link
                         key={index}
                         href={`/shop?cat=${encodeURIComponent(category?.name?.toLowerCase())}`}
-                        className="w-fit hover:underline "
+                        className="w-fit capitalize hover:underline"
                       >
                         {category?.name}
                       </Link>
@@ -220,7 +220,7 @@ const Footer = () => {
           <div className="inline-flex flex-col space-y-3 text-white">
             <div>
               <h3 className="font-bold text-white">Working Hours</h3>
-              <hr className="mb-2 w-[35px] border border-goldie-300" />
+              <hr className="border-brand-text-brand-200 bor1er mb-2 w-[35px]" />
             </div>
             <span>Monday - Friday: 9am-6pm</span>
             <span>Saturdays 9am-4pm</span>
@@ -229,7 +229,7 @@ const Footer = () => {
           <div className="inline-flex flex-col space-y-3 text-white">
             <div>
               <h3 className="font-bold text-white">Contact Us</h3>
-              <hr className="mb-2 w-[35px] border border-goldie-300" />
+              <hr className="border-brand-text-brand-200 bor1er mb-2 w-[35px]" />
             </div>
             <div className="flex items-center justify-center gap-7 self-end text-white">
               <div className="flex flex-col items-start space-y-3">

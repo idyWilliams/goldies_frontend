@@ -66,10 +66,10 @@ const ProductCard = React.memo(function ProductCard({
             onLoad={() => setIsLoaded(true)}
           />
         </Link>
-        <div className="absolute -left-2 top-0 flex w-full items-center justify-between px-2">
+        <div className="absolute left-2 top-2 flex w-full items-center justify-between px-2">
           <span
             className={cn(
-              "ml-[2px] rounded-md bg-white px-2 py-1 text-sm capitalize",
+              "rounded-md bg-white px-2 py-1 text-sm capitalize",
             )}
           >
             <span
@@ -128,17 +128,17 @@ const ProductCard = React.memo(function ProductCard({
         <StarRating iconSize={20} canRate={false} />{" "}
         <span className="text-sm">(32)</span>
       </div>
-      <Link href={`/shop/${data?.slug}?productId=${data?._id}`}>
-        <Button
-          size={"lg"}
-          onClick={() => {
-            handleProduct(data);
-          }}
-          className="w-full text-goldie-300"
-        >
-          Shop now
-        </Button>
-      </Link>
+
+      <Button
+        size={"lg"}
+        onClick={() => {
+          router.push(`/shop/${data?.slug}?productId=${data?._id}`);
+          handleProduct(data);
+        }}
+        className="w-full bg-brand-200 text-brand-100"
+      >
+        Shop now
+      </Button>
     </div>
   );
 });

@@ -69,7 +69,7 @@ const CakeCategoryData = () => {
   };
 
   return (
-    <div className="wrapper w-full gap-3 space-y-5 sm:flex sm:w-min sm:grid-cols-2 sm:space-x-5 sm:space-y-0 lg:grid lg:w-full lg:grid-cols-3 lg:space-x-0 xl:grid-cols-4 xl:gap-7">
+    <div className="w-full gap-3 space-y-5 sm:flex sm:w-min sm:grid-cols-2 sm:space-x-5 sm:space-y-0 lg:grid lg:w-full lg:grid-cols-3 lg:space-x-0 xl:grid-cols-4 xl:gap-7">
       {(isPending ||
         (isError && !categories) ||
         (isSuccess && categories && categories?.length < 1)) && (
@@ -80,7 +80,7 @@ const CakeCategoryData = () => {
               return (
                 <div
                   key={index}
-                  className="bg-goldie-50 relative flex h-[300px] items-end  sm:w-[300px] lg:w-full"
+                  className="relative flex h-[300px] items-end bg-goldie-50  sm:w-[300px] lg:w-full"
                 >
                   <Image
                     src={Placeholder}
@@ -105,7 +105,7 @@ const CakeCategoryData = () => {
             return (
               <div
                 key={category._id}
-                className="relative flex h-[300px] items-end rounded-xl sm:w-[300px] lg:w-full"
+                className="relative flex h-[300px] items-end overflow-hidden rounded-xl sm:w-[300px] lg:w-full"
               >
                 {!isLoaded[category._id] && (
                   <Image
@@ -129,18 +129,21 @@ const CakeCategoryData = () => {
                 />
 
                 <div className="flex min-h-[180px] w-full flex-col items-start justify-between bg-black bg-opacity-10 p-4 backdrop-blur-[6.353761196136475px]">
-                  <div className="flex w-full grow flex-col gap-2">
-                    <h3 className="text-xl lg:text-2xl drop-shadow-lg font-bold text-white">
+                  <div className="w-full">
+                    <h3 className="text-xl font-semibold capitalize text-white lg:text-2xl">
                       {category?.name || ""}
                     </h3>
-                    <p className="line-clamp-3 break-all drop-shadow-md text-white">
+                    <p className="line-clamp-3 break-all text-white drop-shadow-md">
                       {category?.description || ""}
                     </p>
                   </div>
 
-                  <Link href={`/shop/categories/${slugify(category.name)}?id=${category?._id}`} className="w-full">
+                  <Link
+                    href={`/shop/categories/${slugify(category.name)}?id=${category?._id}`}
+                    className="w-full"
+                  >
                     <Button
-                      className="mt-4 h-auto w-full bg-goldie-300 text-black hover:bg-goldie-200"
+                      className="mt-4 h-auto w-full bg-brand-200 py-3 text-base font-medium text-brand-100 hover:bg-brand-200"
                       onClick={() => getCategory(category)}
                     >
                       Buy Now

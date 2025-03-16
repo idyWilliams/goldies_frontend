@@ -58,7 +58,7 @@ const MobileNav: React.FC<MobileNavProps> = ({
                 {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-[190px] rounded-md border-[#E4D064] bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
+            <PopoverContent className="w-[190px] rounded-md  bg-brand-200 p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
               <div className="">
                 <PopoverClose asChild>
                   <span
@@ -68,7 +68,7 @@ const MobileNav: React.FC<MobileNavProps> = ({
                       setShow(false);
                       user ? router.push("/my-account") : navigateToLogin();
                     }}
-                    className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
+                    className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm text-brand-100 duration-300 hover:bg-black hover:bg-opacity-20"
                   >
                     <FaRegUserCircle size={20} />
                     My Account
@@ -83,7 +83,7 @@ const MobileNav: React.FC<MobileNavProps> = ({
                       setShow(false);
                       user ? router.push("/my-orders") : navigateToLogin();
                     }}
-                    className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
+                    className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm text-brand-100 duration-300 hover:bg-black hover:bg-opacity-20"
                   >
                     <BiStore size={20} />
                     Orders
@@ -97,7 +97,7 @@ const MobileNav: React.FC<MobileNavProps> = ({
                       setShow(false);
                       user ? router.push("/saved-items") : navigateToLogin();
                     }}
-                    className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
+                    className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm text-brand-100 duration-300 hover:bg-black hover:bg-opacity-20"
                   >
                     <BiHeart size={20} />
                     Saved Items
@@ -107,7 +107,7 @@ const MobileNav: React.FC<MobileNavProps> = ({
               <div className="my-2 border-b border-black border-opacity-50"></div>
               {user ? (
                 <Button
-                  className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
+                  className="inline-block w-full cursor-pointer rounded-sm bg-brand-100 px-7 py-2.5 text-center text-sm text-brand-200 duration-300 hover:bg-brand-100"
                   onClick={() => {
                     setIsOpen(false);
                     setShow(false);
@@ -118,8 +118,9 @@ const MobileNav: React.FC<MobileNavProps> = ({
                 </Button>
               ) : (
                 <Button
-                  className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
+                  className="inline-block w-full cursor-pointer rounded-sm bg-brand-100 px-7 py-2.5 text-center text-sm text-brand-200 duration-300 hover:bg-brand-100"
                   onClick={() => {
+                    200;
                     setIsOpen(false);
                     setShow(false);
                     router.push("/sign-in");
