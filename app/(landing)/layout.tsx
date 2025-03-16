@@ -10,6 +10,7 @@ import { userLogOut } from "@/services/hooks/user-auth";
 import NextTopLoader from "nextjs-toploader";
 import Cookies from "js-cookie";
 import { USER_DETAILS, USER_TOKEN_NAME } from "@/utils/constants";
+import ThemeChanger from "@/components/admin-component/ThemeChanger";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { setAuth } = useAuth();
@@ -71,10 +72,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [pathname, router, setAuth]);
 
   return (
-    <div className="relative min-h-dvh flex flex-col">
+    <div className="relative flex min-h-dvh flex-col">
       <NextTopLoader color="#262626" showSpinner={false} height={4} />
       <Header />
-      <main className="">{children}</main>
+      <main className="">
+        {children}
+        <ThemeChanger />
+      </main>
       <Footer />
     </div>
   );
