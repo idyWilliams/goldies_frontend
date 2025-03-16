@@ -93,7 +93,7 @@ const Header = () => {
   return (
     <>
       <header
-        className={`left-0 top-0 bg-brand-100 duration-300 ${sticky ? "fixed bg-brand-100 shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "absolute border-b border-neutral-900"} z-50 flex  w-full items-center py-3 lg:h-20`}
+        className={`left-0 top-0 bg-brand-100 duration-300 ${sticky ? "fixed bg-brand-100 shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "absolute border-b border-[]"} z-50 flex  w-full items-center py-3 lg:h-20`}
       >
         <div className="wrapper flex items-center justify-between">
           <div className="hidden items-center gap-8 xl:flex">
@@ -195,7 +195,7 @@ const Header = () => {
                 Contact
               </Link>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-8">
               <Popover>
                 <PopoverTrigger>
                   <button className="relative flex h-[30px] w-[30px] cursor-pointer items-center justify-center">

@@ -177,26 +177,26 @@
   .hero-bg {
     background-image:
       linear-gradient(rgba(0, 0, 0, 0.676), rgba(0, 0, 0, 0.485)),
-      url("/assets/cake.gif");
+      url("/assets/slides/slide-1.webp");
     background-size: cover;
-    background-position: center;
+    background-position: bottom center;
   }
   .slide2 {
     background-image:
       linear-gradient(rgba(0, 0, 0, 0.676), rgba(0, 0, 0, 0.485)),
-      url("/assets/slide-2.png");
+      url("/assets/slides/slide-2.webp");
     background-size: cover;
-    background-position: center;
+    background-position: bottom center;
   }
   .slide3 {
     background-image:
       linear-gradient(rgba(0, 0, 0, 0.676), rgba(0, 0, 0, 0.485)),
-      url("/assets/slide-3.png");
+      url("/assets/slides/slide-3.webp");
 
     background-size: cover;
-    background-position: center;
+    background-position: bottom center;
   }
-  .slide4 {
+  /* .slide4 {
     background-image:
       linear-gradient(rgba(0, 0, 0, 0.676), rgba(0, 0, 0, 0.485)),
       url("/assets/slide-4.jpeg");
@@ -211,7 +211,7 @@
 
     background-size: cover;
     background-position: center;
-  }
+  } */
 
   .vector-bg {
     background-image:
