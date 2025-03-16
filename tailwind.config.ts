@@ -18,6 +18,9 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        outfit: "var(--font-outfit)",
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         categories:
@@ -58,6 +61,8 @@ const config = {
           "950": "#470a13",
         },
         brand: {
+          "100": "var(--brand-light)",
+          "200": "var(--brand)",
           primary: "#FF8195", // Soft Pink
           accent: "#F9476C", // Vibrant Pink-Red
           background: "#FAF2E8", // Warm Cream

@@ -75,9 +75,11 @@ interface FormValues {
 
 const setToUpperCase = (sentence: string) => {
   const uppercaseWord = sentence
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(" ");
+    ?.split(" ")
+    ?.map(
+      (word) => word?.charAt(0)?.toUpperCase() + word?.slice(1)?.toLowerCase(),
+    )
+    ?.join(" ");
 
   return uppercaseWord;
 };
@@ -606,7 +608,6 @@ function CakeDetailsPage() {
                           size={"lg"}
                           variant={"secondary"}
                           className="cursor-pointer bg-neutral-300 px-4 py-2 text-neutral-900"
-                         
                         >
                           Buy now
                         </Button>

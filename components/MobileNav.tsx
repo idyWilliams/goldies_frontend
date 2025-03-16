@@ -9,6 +9,7 @@ import React from "react";
 import { IUser } from "@/interfaces/user.interface";
 import { Button } from "./ui/button";
 import { PopoverClose } from "@radix-ui/react-popover";
+import { cn } from "@/helper/cn";
 
 interface MobileNavProps {
   pathname: string;
@@ -36,13 +37,13 @@ const MobileNav: React.FC<MobileNavProps> = ({
     <>
       <div
         onClick={() => setShow(false)}
-        className={`fixed top-0 z-40 flex h-screen w-full justify-start bg-black bg-opacity-30 backdrop-blur-md transition duration-300 lg:hidden ${show ? "left-0" : "-left-full"}`}
+        className={`fixed top-0 z-40 flex h-screen w-full justify-start bg-black bg-opacity-30 backdrop-blur-md transition duration-300 xl:hidden ${show ? "left-0" : "-left-full"}`}
       ></div>
       <div
         onClick={(e) => e.stopPropagation()}
-        className={`fixed top-0 z-40 flex h-screen w-8/12 flex-col gap-8 bg-goldie-300 p-9 pl-4 pt-24 duration-300 sm:w-6/12 lg:hidden ${show ? "left-0" : "-left-full"}`}
+        className={`fixed top-0 z-40 flex h-screen w-full flex-col gap-8 bg-brand-100 p-9 pl-4 pt-24 duration-300 sm:w-6/12 xl:hidden ${show ? "left-0" : "-left-full"}`}
       >
-        <div className="relative">
+        <div className="relative lg:hidden">
           <Popover>
             <PopoverTrigger asChild>
               <button
@@ -130,48 +131,68 @@ const MobileNav: React.FC<MobileNavProps> = ({
             </PopoverContent>
           </Popover>
         </div>
-        <Link
-          href="/"
-          className={`${pathname === "/" ? "font-bold" : ""} duration-300 hover:translate-x-2`}
-          onClick={() => setShow(false)}
-        >
-          Home
-        </Link>
-        <Link
-          href="/about-us"
-          onClick={() => setShow(false)}
-          className="duration-300 hover:translate-x-2"
-        >
-          About
-        </Link>
-        <Link
-          href="/shop"
-          className={`${pathname === "/shop" ? "font-bold" : ""} duration-300 hover:translate-x-2`}
-          onClick={() => setShow(false)}
-        >
-          Shop Cake
-        </Link>
-        <Link
-          href="/bespoke"
-          className={`${pathname === "/bespoke" ? "font-bold" : ""} duration-300 hover:translate-x-2`}
-          onClick={() => setShow(false)}
-        >
-          Bespoke Cake Order
-        </Link>
-        <Link
-          href="/testimonials"
-          onClick={() => setShow(false)}
-          className="duration-300 hover:translate-x-2"
-        >
-          Testimonials
-        </Link>
-        <Link
-          href="/contact"
-          onClick={() => setShow(false)}
-          className="duration-300 hover:translate-x-2"
-        >
-          Contact
-        </Link>
+        <div className="mt-3 inline-grid gap-6">
+          <Link
+            href="/"
+            className={cn(
+              `text-xl uppercase text-brand-200 duration-300 hover:translate-x-2`,
+              pathname === "/" ? "font-medium" : "",
+            )}
+            onClick={() => setShow(false)}
+          >
+            Home
+          </Link>
+          <Link
+            href="/about-us"
+            onClick={() => setShow(false)}
+            className={cn(
+              `text-xl uppercase text-brand-200 duration-300 hover:translate-x-2`,
+              pathname === "/about-us" ? "font-medium" : "",
+            )}
+          >
+            About
+          </Link>
+          <Link
+            href="/shop"
+            className={cn(
+              `text-xl uppercase text-brand-200 duration-300 hover:translate-x-2`,
+              pathname === "/shop" ? "font-medium" : "",
+            )}
+            onClick={() => setShow(false)}
+          >
+            Shop Cake
+          </Link>
+          <Link
+            href="/bespoke"
+            className={cn(
+              `text-xl uppercase text-brand-200 duration-300 hover:translate-x-2`,
+              pathname === "/bespoke" ? "font-medium" : "",
+            )}
+            onClick={() => setShow(false)}
+          >
+            Bespoke Cake Order
+          </Link>
+          <Link
+            href="/testimonials"
+            onClick={() => setShow(false)}
+            className={cn(
+              `text-xl uppercase text-brand-200 duration-300 hover:translate-x-2`,
+              pathname === "/testimonials" ? "font-medium" : "",
+            )}
+          >
+            Testimonials
+          </Link>
+          <Link
+            href="/contact"
+            onClick={() => setShow(false)}
+            className={cn(
+              `text-xl uppercase text-brand-200 duration-300 hover:translate-x-2`,
+              pathname === "/contact" ? "font-medium" : "",
+            )}
+          >
+            Contact
+          </Link>
+        </div>
       </div>
     </>
   );

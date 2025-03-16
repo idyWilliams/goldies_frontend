@@ -73,29 +73,80 @@ const Header = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setSticky(window.scrollY >= 300);
+      if (!show) setSticky(window.scrollY >= 300);
     };
     window.addEventListener("scroll", handleScroll);
 
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [show]);
 
   const navigateToLogin = useActivePath();
+
+  useEffect(() => {
+    if (show) {
+      document.body.style.overflowY = "hidden";
+    } else {
+      document.body.style.overflowY = "auto";
+    }
+  }, [show]);
 
   return (
     <>
       <header
-        className={`bg-brand-background ${sticky ? "sticky shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "relative border-b border-neutral-900"} left-0 top-0 z-50 flex  w-full items-center py-3 lg:h-20`}
+        className={`left-0 top-0 bg-brand-100 duration-300 ${sticky ? "fixed bg-brand-100 shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "absolute border-b border-neutral-900"} z-50 flex  w-full items-center py-3 lg:h-20`}
       >
         <div className="wrapper flex items-center justify-between">
+          <div className="hidden items-center gap-8 xl:flex">
+            <Link
+              href="/"
+              className={cn(
+                "uppercase text-brand-200",
+                pathname === "/" && "font-bold ",
+              )}
+            >
+              Home
+            </Link>
+            <Link
+              href="/about-us"
+              className={cn(
+                "uppercase text-brand-200",
+                pathname === "/about-us" && "font-bold ",
+              )}
+            >
+              About
+            </Link>
+            <Link
+              href="/shop"
+              className={cn(
+                "uppercase text-brand-200",
+                pathname === "/shop" && "font-bold ",
+              )}
+            >
+              Shop Cake
+            </Link>
+            <Link
+              href="/bespoke"
+              className={cn(
+                "uppercase text-brand-200",
+                pathname === "/bespoke" && "font-bold ",
+              )}
+            >
+              Bespoke Cake Order
+            </Link>
+          </div>
+
           <div className="flex items-center gap-3">
             <span
-              className={` z-30 inline-block cursor-pointer lg:hidden`}
+              className={` z-30 inline-block cursor-pointer xl:hidden`}
               onClick={handleClick}
             >
               {show ? <BsX size={32} /> : <BsList size={30} />}
             </span>
-            <Link href="/" className="relative" onClick={() => setShow(false)}>
+            <Link
+              href="/"
+              className="relative hidden xl:inline-block"
+              onClick={() => setShow(false)}
+            >
               <Image
                 src={Logo}
                 priority
@@ -107,126 +158,143 @@ const Header = () => {
             </Link>
           </div>
 
-          <div className="hidden items-center gap-8 lg:flex">
-            <Link href="/" className={`${pathname === "/" ? "font-bold" : ""}`}>
-              Home
-            </Link>
-            <Link
-              href="/about-us"
-              className={`${pathname === "/about-us" ? "font-bold" : ""}`}
-            >
-              About
-            </Link>
-            <Link
-              href="/shop"
-              className={`${pathname === "/shop" ? "font-bold" : ""}`}
-            >
-              Shop Cake
-            </Link>
-            <Link
-              href="/bespoke"
-              className={`${pathname === "/bespoke" ? "font-bold" : ""}`}
-            >
-              Bespoke Cake Order
-            </Link>
-            <Link
-              href="/testimonials"
-              className={`${pathname === "/testimonials" ? "font-bold" : ""}`}
-            >
-              Testimonials
-            </Link>
-            <Link
-              href="/contact"
-              className={`${pathname === "/contact" ? "font-bold" : ""}`}
-            >
-              Contact
-            </Link>
-          </div>
+          {/* MOBILE LOGO */}
+          <Link
+            href="/"
+            className="relative xl:hidden"
+            onClick={() => setShow(false)}
+          >
+            <Image
+              src={Logo}
+              priority
+              className="w-[150px]"
+              width={175}
+              height={92}
+              alt="Goldis Logo"
+            />
+          </Link>
 
-          <div className="flex items-center gap-3">
-            <Popover>
-              <PopoverTrigger>
-                <button className="relative flex h-[30px] w-[30px] cursor-pointer items-center justify-center">
-                  <span>
-                    <IoCartOutline size={24} className="mb-0" />
-                  </span>
-                  {Object.values(cart) && Object.values(cart).length >= 0 && (
-                    <span className="absolute -right-1 top-0 inline-flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-xs font-medium text-[#fcf7e8]">
-                      {Object.values(cart).length}
-                    </span>
-                  )}
-                </button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[320px] border-[#E4D064] bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
-                <CartMiniList />
-              </PopoverContent>
-            </Popover>
-
-            <div className="hidden lg:block">
+          <div className="items-center gap-8 lg:flex">
+            <div className="hidden items-center gap-8 xl:flex">
+              <Link
+                href="/testimonials"
+                className={cn(
+                  "uppercase text-brand-200",
+                  pathname === "/testimonials" && "font-bold",
+                )}
+              >
+                Testimonials
+              </Link>
+              <Link
+                href="/contact"
+                className={cn(
+                  "uppercase text-brand-200",
+                  pathname === "/contact" && "font-bold",
+                )}
+              >
+                Contact
+              </Link>
+            </div>
+            <div className="flex items-center gap-3">
               <Popover>
-                <PopoverTrigger asChild>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setIsOpen((prev) => !prev);
-                    }}
-                    className="flex items-center gap-2"
-                  >
-                    <FaRegUserCircle size={20} />
-                    {!auth?.user ? (
-                      <span>Account</span>
-                    ) : (
-                      <span>{auth?.user?.firstName}</span>
+                <PopoverTrigger>
+                  <button className="relative flex h-[30px] w-[30px] cursor-pointer items-center justify-center">
+                    <span>
+                      <IoCartOutline
+                        size={24}
+                        className={cn("mb-0 text-brand-200")}
+                      />
+                    </span>
+                    {Object.values(cart) && Object.values(cart).length >= 0 && (
+                      <span
+                        className={cn(
+                          "absolute -right-1 top-0 inline-flex h-4 w-4 items-center justify-center rounded-full bg-brand-200 text-xs font-medium text-[#fcf7e8]",
+                        )}
+                      >
+                        {Object.values(cart).length}
+                      </span>
                     )}
-                    {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
                   </button>
                 </PopoverTrigger>
-                <PopoverContent className="w-[190px] rounded-md border-[#E4D064] bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
-                  <div className="">
-                    <PopoverClose asChild>
-                      <Link href="/my-account">
-                        <span className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
-                          <FaRegUserCircle size={20} />
-                          My Account
-                        </span>
-                      </Link>
-                    </PopoverClose>
-
-                    <PopoverClose asChild>
-                      <Link href="/my-orders">
-                        <span className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
-                          <BiStore size={20} />
-                          Orders
-                        </span>
-                      </Link>
-                    </PopoverClose>
-
-                    <PopoverClose asChild>
-                      <Link href="/saved-items">
-                        <span className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20">
-                          <BiHeart size={20} />
-                          Saved Items
-                        </span>
-                      </Link>
-                    </PopoverClose>
-                  </div>
-                  <div className="my-2 border-b border-black border-opacity-50"></div>
-                  {auth?.user ? (
-                    <Button
-                      className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950"
-                      onClick={() => logOut()}
-                    >
-                      Logout
-                    </Button>
-                  ) : (
-                    <Link href="/sign-in">
-                      <Button className="inline-block w-full cursor-pointer rounded-sm bg-black px-7 py-2.5 text-center text-sm text-[#E4D064] duration-300 hover:bg-neutral-950">
-                        Sign In
-                      </Button>
-                    </Link>
-                  )}
+                <PopoverContent className="w-[320px] bg-brand-100 p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
+                  <CartMiniList />
                 </PopoverContent>
               </Popover>
+
+              <div className="hidden lg:block">
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setIsOpen((prev) => !prev);
+                      }}
+                      className="flex items-center gap-2"
+                    >
+                      <FaRegUserCircle className="text-brand-200" size={20} />
+                      {!auth?.user ? (
+                        <span className="uppercase text-brand-200">
+                          Account
+                        </span>
+                      ) : (
+                        <span className="text-brand-200">
+                          {auth?.user?.firstName}
+                        </span>
+                      )}
+                      {!isOpen ? (
+                        <IoIosArrowDown className="text-brand-200" />
+                      ) : (
+                        <IoIosArrowUp className="text-brand-200" />
+                      )}
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[190px] rounded-md bg-brand-200 p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
+                    <div className="">
+                      <PopoverClose asChild>
+                        <Link href="/my-account">
+                          <span className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm text-brand-100 duration-300 hover:bg-black hover:bg-opacity-20">
+                            <FaRegUserCircle size={20} />
+                            My Account
+                          </span>
+                        </Link>
+                      </PopoverClose>
+
+                      <PopoverClose asChild>
+                        <Link href="/my-orders">
+                          <span className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm text-brand-100 duration-300 hover:bg-black hover:bg-opacity-20">
+                            <BiStore size={20} />
+                            Orders
+                          </span>
+                        </Link>
+                      </PopoverClose>
+
+                      <PopoverClose asChild>
+                        <Link href="/saved-items">
+                          <span className="flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-[3px] p-2 text-sm text-brand-100 duration-300 hover:bg-black hover:bg-opacity-20">
+                            <BiHeart size={20} />
+                            Saved Items
+                          </span>
+                        </Link>
+                      </PopoverClose>
+                    </div>
+                    <div className="my-2 border-b border-black border-opacity-50"></div>
+                    {auth?.user ? (
+                      <Button
+                        className="inline-block w-full cursor-pointer rounded-sm bg-brand-100 px-7 py-2.5 text-center text-sm text-brand-200 duration-300 hover:bg-brand-100"
+                        onClick={() => logOut()}
+                      >
+                        Logout
+                      </Button>
+                    ) : (
+                      <Link href="/sign-in">
+                        <Button className="inline-block w-full cursor-pointer rounded-sm bg-brand-100 px-7 py-2.5 text-center text-sm text-brand-200 duration-300 hover:bg-brand-100">
+                          Sign In
+                        </Button>
+                      </Link>
+                    )}
+                  </PopoverContent>
+                </Popover>
+              </div>
             </div>
           </div>
         </div>
