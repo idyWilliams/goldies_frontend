@@ -1,4 +1,8 @@
 import { ProductParams } from "@/interfaces/product.interface";
+import {
+  CreateReviewDTO,
+  UpdateReviewDTO,
+} from "@/interfaces/review.interface";
 import instance from "@/services/api";
 
 let accessToken = "";
@@ -103,6 +107,55 @@ export const removeFavorites = async (productId: string) => {
 
 export const getSavedItems = async () => {
   const response = await instance.get("/favorites/", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  return response.data;
+};
+
+// for product reviews
+
+// create product review
+
+export const createProductReview = async (data: CreateReviewDTO) => {
+  const response = await instance.post("/reviews", data, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  return response.data;
+};
+
+// get all product reviews
+export const getAllProductReviews = async (productId: string) => {
+  const response = await instance.get(`/reviews/product/${productId}`);
+  return response.data;
+};
+
+// get reviews by user
+
+export const getUserProductReviews = async () => {
+  const response = await instance.get(`/reviews/user/`);
+  return response.data;
+};
+
+// update review
+export const updateProductReview = async (
+  data: UpdateReviewDTO,
+  reviewId: string,
+) => {
+  const response = await instance.patch(`/reviews/${reviewId}`, data, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  return response.data;
+};
+
+// delete review
+export const deleteProductReview = async (reviewId: string) => {
+  const response = await instance.delete(`/reviews/${reviewId}`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },

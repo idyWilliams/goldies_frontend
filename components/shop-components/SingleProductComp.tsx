@@ -261,7 +261,6 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
     router.push(`/billing?buyNow=true`);
   });
 
-
   const selectTheme = (theme: any) => ({
     ...theme,
     colors: {
@@ -378,7 +377,7 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
 
                 {/* CUSTOM PICK */}
                 {showReviews ? (
-                  <ProductReview setShowReviews={setShowReviews} />
+                  <ProductReview product={activeProduct} />
                 ) : activeProduct?.productType === "preorder" ? (
                   <form
                     id="detail"
