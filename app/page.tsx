@@ -27,6 +27,8 @@ const Home = () => {
           <FeaturedProducts />
           <Testimonials />
           <Cta />
+
+          
         </main>
       </Layout>
     </>

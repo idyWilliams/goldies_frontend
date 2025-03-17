@@ -45,8 +45,8 @@ const CartMiniList = () => {
 
   return (
     <Card className={cn("w-full border-0 bg-transparent p-0 shadow-none")}>
-      <CardHeader className="border-b border-gray-700/50 px-0 py-2">
-        <CardTitle>Cart</CardTitle>
+      <CardHeader className="border-b border-gray-700/30 px-0 py-2">
+        <CardTitle className="font-medium text-brand-200">Cart</CardTitle>
       </CardHeader>
       <CardContent className="my-1 p-0">
         <div className="max-h-40 divide-y divide-gray-700/50 overflow-y-auto px-2">
@@ -56,7 +56,7 @@ const CartMiniList = () => {
             </div>
           ) : cartItems.length === 0 ? (
             <div className="flex h-full items-center justify-center py-4">
-              <p className="text-sm text-neutral-600">Your cart is empty.</p>
+              <p className="text-sm text-brand-200">Your cart is empty.</p>
             </div>
           ) : (
             cartItems.map((item, i) => (

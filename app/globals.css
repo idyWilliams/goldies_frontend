@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -29,6 +31,8 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+    --brand: rgb(62, 39, 35);
+    --brand-light: #f9f2e7;
   }
 
   .dark {
@@ -73,7 +77,7 @@
   }
 
   body {
-    @apply text-base;
+    @apply bg-brand-100 font-["Outfit",_sans-serif] text-base;
   }
 
   .wrapper {
@@ -171,67 +175,53 @@
   }
 
   .hero-bg {
-    background-image: linear-gradient(
-        rgba(0, 0, 0, 0.676),
-        rgba(0, 0, 0, 0.485)
-      ),
-      url("/assets/cake.gif");
+    background-image:
+      linear-gradient(rgba(0, 0, 0, 0.676), rgba(0, 0, 0, 0.485)),
+      url("/assets/slides/slide-1.webp");
     background-size: cover;
-    background-position: center;
+    background-position: bottom center;
   }
   .slide2 {
-    background-image: linear-gradient(
-        rgba(0, 0, 0, 0.676),
-        rgba(0, 0, 0, 0.485)
-      ),
-      url("/assets/slide-2.png");
+    background-image:
+      linear-gradient(rgba(0, 0, 0, 0.676), rgba(0, 0, 0, 0.485)),
+      url("/assets/slides/slide-2.webp");
     background-size: cover;
-    background-position: center;
+    background-position: bottom center;
   }
   .slide3 {
-    background-image: linear-gradient(
-        rgba(0, 0, 0, 0.676),
-        rgba(0, 0, 0, 0.485)
-      ),
-      url("/assets/slide-3.png");
+    background-image:
+      linear-gradient(rgba(0, 0, 0, 0.676), rgba(0, 0, 0, 0.485)),
+      url("/assets/slides/slide-3.webp");
 
     background-size: cover;
-    background-position: center;
+    background-position: bottom center;
   }
-  .slide4 {
-    background-image: linear-gradient(
-        rgba(0, 0, 0, 0.676),
-        rgba(0, 0, 0, 0.485)
-      ),
+  /* .slide4 {
+    background-image:
+      linear-gradient(rgba(0, 0, 0, 0.676), rgba(0, 0, 0, 0.485)),
       url("/assets/slide-4.jpeg");
 
     background-size: cover;
     background-position: center;
   }
   .slide5 {
-    background-image: linear-gradient(
-        rgba(0, 0, 0, 0.676),
-        rgba(0, 0, 0, 0.485)
-      ),
+    background-image:
+      linear-gradient(rgba(0, 0, 0, 0.676), rgba(0, 0, 0, 0.485)),
       url("/assets/slide-5.jpeg");
 
     background-size: cover;
     background-position: center;
-  }
+  } */
 
   .vector-bg {
-    background-image: linear-gradient(
-        rgba(255, 255, 255, 0.95),
-        rgba(255, 255, 255, 0.9)
-      ),
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9)),
       url("/assets/vectorBG.jpg");
   }
 
   .cta-bg {
-    background-image: linear-gradient(
-        rgba(255, 255, 255, 0.8),
-        rgba(255, 255, 255, 0.8)
-      ),
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)),
       url("/assets/cta.png");
   }
 
@@ -240,10 +230,8 @@
   }
 
   .cta2 {
-    background-image: linear-gradient(
-        rgba(255, 255, 255, 0.8),
-        rgba(255, 255, 255, 0.8)
-      ),
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)),
       url("/assets/slide-5.jpeg");
   }
 

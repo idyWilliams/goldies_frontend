@@ -273,7 +273,7 @@ const ShopPage = () => {
   return (
     <div className="">
       {/* BREADCRUMBS */}
-      <div className="bg-black py-4">
+      <div className="bg-brand-200 py-4">
         <div className="wrapper">
           <BreadCrumbs
             items={[

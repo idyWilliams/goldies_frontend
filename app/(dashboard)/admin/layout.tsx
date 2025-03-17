@@ -21,12 +21,12 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-[calc(100dvh-64px)]">
-      <NextTopLoader color="#e4d064" showSpinner={false} height={4} />
+      <NextTopLoader color="#f9476c" showSpinner={false} height={4} />
       <AdminNav />
       <div className="flex w-full">
         <AdminSideBar />
 
-        <div className="mt-[64px] min-h-[calc(100dvh-64px)] w-full overflow-auto bg-[#EFEFEF] pb-6 lg:ml-[220px] ">
+        <div className="mt-[64px]  min-h-[calc(100dvh-64px)] w-full overflow-auto bg-[#EFEFEF] pb-6 lg:ml-[220px] ">
           {children}
         </div>
       </div>

@@ -2,6 +2,7 @@
 import type { Metadata } from "next";
 import { ReactNode, Suspense, useEffect } from "react";
 import "./globals.css";
+import { Outfit } from "next/font/google";
 
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/context/AuthProvider";
@@ -14,6 +15,15 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { usePathname } from "next/navigation";
 import Loading from "./(landing)/loading";
 import StoreProvider from "./StoreProvider";
+
+const outfit = Outfit({
+  weight: ["300", "400", "500", "600", "700", "800"],
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-outfit",
+  fallback: ["system-ui", "arial"],
+  preload: true,
+});
 
 const metadata: Metadata = {
   title: "Goldies Confectioneries | Buy Delicious Cakes Online",
@@ -66,14 +76,17 @@ export default function RootLayout({
           content="delicious cakes, buy cakes online, cake delivery, Goldies Confectioneries"
         />
       </head>
-      <body className={cn("overflow-x-hidden", tomatoGrotesk.className)}>
+      <body className={cn("overflow-x-hidden", outfit.className)}>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <ShoppingCartProvider>
               <StoreProvider>
                 <ProductProvider>
                   <Suspense fallback={<Loading />}>
-                    <main>{children}</main>
+                    <main>{children}
+
+                      
+                    </main>
                     <Toaster
                       position="top-right"
                       richColors

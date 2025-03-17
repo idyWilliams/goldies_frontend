@@ -66,10 +66,10 @@ const ProductCard = React.memo(function ProductCard({
             onLoad={() => setIsLoaded(true)}
           />
         </Link>
-        <div className="absolute -left-2 top-0 flex w-full items-center justify-between px-2">
+        <div className="absolute left-2 top-2 flex w-full items-center justify-between px-2">
           <span
             className={cn(
-              "ml-[2px] rounded-md bg-white px-2 py-1 text-sm capitalize",
+              "rounded-md bg-white px-2 py-1 text-sm capitalize",
             )}
           >
             <span

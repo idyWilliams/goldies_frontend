@@ -16,23 +16,23 @@ const Cta = () => {
           backgroundPosition: "center",
         }}
       >
-        <div className="absolute inset-0 bg-white bg-opacity-50"></div>
+        <div className="absolute inset-0 bg-[white] bg-opacity-50"></div>
 
         <div className="wrapper z-[1] flex flex-col items-center justify-center gap-4 ">
-          <h2 className="text-balance text-center text-3xl font-bold">
+          <h2 className="text-balance text-center text-3xl font-bold text-brand-200">
             Experience the Joy in Every Bite
           </h2>
           <Button
             size={"lg"}
             onClick={() => router.push("/shop")}
-            className="text-goldie-300"
+            className="h-auto bg-brand-200 py-3 text-brand-100"
           >
             Order Cake now
           </Button>
         </div>
       </section>
 
-      <section className="mb-10 hidden md:flex">
+      <section className="hidden py-10 md:flex">
         <div className="wrapper">
           <div className="grid h-[300px] grid-cols-2 overflow-hidden rounded-2xl lg:h-[400px]">
             <div className="relative h-full w-full">
@@ -47,13 +47,13 @@ const Cta = () => {
               />
             </div>
             <div className="cta2 flex h-full w-full flex-col items-center justify-center bg-cover bg-center">
-              <h2 className="text-balance text-center text-3xl font-bold xl:w-[68%]">
+              <h2 className="text-balance text-center text-3xl font-bold text-brand-200 xl:w-[68%]">
                 Experience the Joy in Every Bite
               </h2>
               <Button
                 size={"lg"}
                 onClick={() => router.push("/shop")}
-                className="mt-4 text-goldie-300"
+                className="mt-4 h-auto bg-brand-200 py-3 text-brand-100"
               >
                 Order Cake now
               </Button>

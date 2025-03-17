@@ -103,7 +103,7 @@ const Favorite = ({
   };
   return (
     <span
-      className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-[5px] bg-black bg-opacity-50 text-goldie-300"
+      className="mr-2 inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-[5px] bg-black bg-opacity-50 text-brand-100"
       onClick={() => handleSavedItem(data)}
       onMouseEnter={() => setPreviewFav(true)}
       onMouseLeave={() => {

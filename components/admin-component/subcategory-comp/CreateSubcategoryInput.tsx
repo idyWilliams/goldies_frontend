@@ -5,6 +5,7 @@ import { newSubcategory } from "@/utils/formData";
 import { SubcategoryInputsProps } from "@/utils/categoryTypes";
 import { Controller } from "react-hook-form";
 import Toggle from "react-toggle";
+import { Switch } from "@/components/ui/switch";
 
 const CreateSubcategoryInput = ({
   control,
@@ -30,11 +31,21 @@ const CreateSubcategoryInput = ({
                   control={control}
                   name={data.name}
                   render={({ field: { value, ...field } }) => (
-                    <Toggle
+                    // <Toggle
+                    //   {...field}
+                    //   checked={value === true}
+                    //   className="custom"
+                    //   icons={{ checked: null, unchecked: null }}
+                    // />
+                    <Switch
                       {...field}
-                      checked={value === true}
-                      className="custom"
-                      icons={{ checked: null, unchecked: null }}
+                      defaultChecked={value}
+                      className="custom data-[state=checked]:bg-green-700"
+                      // icons={{ checked: null, unchecked: null }}
+                      onCheckedChange={() => {
+                        console.log(value);
+                        field.onChange(!value);
+                      }}
                     />
                   )}
                 />
