@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import NextTopLoader from "nextjs-toploader";
 import { ReactNode } from "react";
+import Logo from "@/public/assets/new-logo/logo-colored.svg";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
@@ -22,12 +23,12 @@ const Layout = ({ children }: { children: ReactNode }) => {
         <div className="mb-2 hidden justify-center md:flex">
           <Link href="/" className="relative">
             <Image
-              src="/assets/goldis-gold-logo.png"
-              className="w-[150px] lg:w-[180px]"
+              src={Logo}
+              priority
+              className="w-[150px]"
               width={175}
               height={92}
               alt="Goldis Logo"
-              priority
             />
           </Link>
         </div>

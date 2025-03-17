@@ -28,12 +28,12 @@ export interface IOrder {
 
 export interface IOrderProduct {
   product: IProduct;
-  size: string;
-  toppings: string[];
+  size: string | undefined;
+  toppings: string[] | undefined;
   // flavour: string[];
-  flavour: string;
-  dateNeeded: string;
-  details: string;
+  flavour: string | undefined;
+  dateNeeded: string | undefined;
+  details: string | undefined;
   quantity: number;
 }
 
@@ -52,11 +52,11 @@ export interface CreateOrderDTO {
 
 export interface IOrderedItems {
   product: string;
-  size: string;
-  toppings: string[];
-  flavour: string;
+  size: string | undefined;
+  toppings: string[] | undefined;
+  flavour: string | undefined;
   // flavour: string[];
-  dateNeeded: string;
-  details: string;
+  dateNeeded: string | undefined;
+  details: string | undefined;
   quantity: number;
 }

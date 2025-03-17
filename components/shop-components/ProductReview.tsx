@@ -269,6 +269,7 @@ const ProductReview = ({ product }: { product: IProduct }) => {
             </div>
             <Button
               type="submit"
+              className="text-goldie-300"
               disabled={
                 createReviewMutation.isPending || updateReviewMutation.isPending
               }

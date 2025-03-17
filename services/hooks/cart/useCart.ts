@@ -68,6 +68,7 @@ const useCart = () => {
     handleAddToCart,
     // syncLocalCart,
     clearCart: () => dispatch(clearCart()),
+    isLoading: false
   };
 };
 
