@@ -62,7 +62,7 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
         localStorage.setItem("adminToken", res?.token);
 
         Cookies.set(ADMIN_TOKEN_NAME, res?.token);
-        router.push(callbackUrl);
+        router.replace(callbackUrl);
       })
       .catch((error: any) => {
         console.log(error);

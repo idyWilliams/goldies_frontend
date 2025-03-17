@@ -20,6 +20,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { ErrorResponse } from "@/types/products";
+import useCart from "@/services/hooks/cart/useCart";
 
 const validationSchema = yup.object().shape({
   email: yup.string().required("Email is required"),
@@ -33,6 +34,7 @@ const Page = () => {
   const queryParams = useSearchParams();
   const [visible, setVisible] = useState(false);
   const [password, setPassword] = useState("");
+  // const { syncLocalCart } = useCart();
 
   const callbackUrl = queryParams.get("redirect_url") || "/";
 
@@ -55,9 +57,10 @@ const Page = () => {
       Cookies.set(USER_DETAILS, userToken);
       Cookies.set(USER_TOKEN_NAME, res?.token);
 
-      router.push(callbackUrl);
+      router.replace(callbackUrl);
       toast.success(res?.message);
       reset();
+      // syncLocalCart(); 
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       console.error(error);
