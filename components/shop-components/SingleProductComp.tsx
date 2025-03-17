@@ -40,6 +40,7 @@ import * as yup from "yup";
 import ProductImages from "./ProductImages";
 import ProductDetailsSkeleton from "./ProductDetailsSkeleton ";
 import ProductError from "./ProductError";
+import ProductCardSkeleton from "./ProductCardSkeleton";
 
 export type SelectOptionType = {
   label: string | number;
@@ -671,16 +672,23 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
               </Link>
             </div>
 
-            {featuredPdcts && featuredPdcts?.length > 0 && (
+            {allProductsLoading ? (
               <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                <EachElement
-                  of={featuredPdcts}
-                  render={(item: any, index: number) => {
-                    if (index >= featuredPdctLength()) return;
-                    return <ProductCard data={item} key={item._id} />;
-                  }}
-                />
+                <ProductCardSkeleton />
               </div>
+            ) : (
+              featuredPdcts &&
+              featuredPdcts?.length > 0 && (
+                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  <EachElement
+                    of={featuredPdcts}
+                    render={(item: any, index: number) => {
+                      if (index >= featuredPdctLength()) return;
+                      return <ProductCard data={item} key={item._id} />;
+                    }}
+                  />
+                </div>
+              )
             )}
           </div>
         </section>
