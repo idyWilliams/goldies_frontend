@@ -37,7 +37,7 @@ const ProductCard = React.memo(function ProductCard({
     <div className="w-full rounded-[10px] border border-neutral-100 bg-white p-2 shadow-[0_0_30px_-10px_rgba(0,0,0,0.1)]">
       <figure className="relative mb-3 h-[230px] w-full overflow-hidden rounded-[5px]">
         <Link
-          href={`/shop/${data?.slug}?productId=${data?._id}`}
+          href={`/shop/${data?.slug}`}
           className="relative inline-block h-full w-full overflow-hidden"
           onClick={() => handleProduct(data)}
         >
@@ -114,7 +114,7 @@ const ProductCard = React.memo(function ProductCard({
           {formatCurrency(parseInt(data?.maxPrice), "en-NG")}
         </span>
         <h3 className="font-semibold capitalize underline underline-offset-1">
-          <Link href={`/shop/${data?.slug}?productId=${data?._id}`}>
+          <Link href={`/shop/${data?.slug}`}>
             <span className="w-full" onClick={() => handleProduct(data)}>
               {data?.name}
             </span>
@@ -128,7 +128,7 @@ const ProductCard = React.memo(function ProductCard({
         <StarRating iconSize={20} canRate={false} />{" "}
         <span className="text-sm">(32)</span>
       </div>
-      <Link href={`/shop/${data?.slug}?productId=${data?._id}`}>
+      <Link href={`/shop/${data?.slug}`}>
         <Button
           size={"lg"}
           onClick={() => {

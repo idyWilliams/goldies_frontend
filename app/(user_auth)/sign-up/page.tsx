@@ -79,7 +79,7 @@ const Page = () => {
         Cookies.set(USER_DETAILS, userToken);
         Cookies.set(USER_TOKEN_NAME, res?.token);
 
-        router.push(callbackUrl);
+        router.replace(callbackUrl);
         toast.success(res?.message);
         reset();
       })

@@ -17,7 +17,6 @@ if (typeof window !== "undefined") {
 
 // CREATE PRODUCT
 export const createNewProduct = async (data: any) => {
-
   const response = await instance.post("/product/create_product", data, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -50,6 +49,12 @@ export const getProduct = async (productId: string) => {
   return response.data;
 };
 
+// GET A PRODUCT by the slug
+export const getProductBySlug = async (slug: string) => {
+  const response = await instance.get(`/product/slug/${slug}`);
+  return response.data;
+};
+
 export const getActiveProduct = async (productId: string) => {
   const response = await instance.get(`/product/get_product/${productId}`);
   return response.data;
@@ -66,7 +71,9 @@ export const updateProduct = async (data: any, productId: string) => {
 
 // DELETE PRODUCT
 export const deleteProduct = async (productId: string) => {
-  const response = await instance.delete(`/product/delete_product/${productId}`);
+  const response = await instance.delete(
+    `/product/delete_product/${productId}`,
+  );
   return response.data;
 };
 
