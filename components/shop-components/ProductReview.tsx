@@ -130,12 +130,12 @@ const ProductReview = ({ product }: { product: IProduct }) => {
       <div className="mt-5">
         <h3 className="mb-2 font-semibold">Ratings and Reviews</h3>
         <div className="grid grid-cols-2 items-center gap-3">
-          <div className="flex flex-col gap-1 rounded-md bg-neutral-800 p-4 text-goldie-300">
+          <div className="flex flex-col gap-1 rounded-md bg-neutral-800 p-4 text-brand-200">
             <span>4.5/5.0</span>
             <StarRating
               canRate={false}
               iconSize={24}
-              iconColor={"text-goldie-300"}
+              iconColor={"text-brand-200"}
             />
             <span className="text-sm">32 verified ratings</span>
           </div>
@@ -166,12 +166,12 @@ const ProductReview = ({ product }: { product: IProduct }) => {
     <div className="mt-5">
       <h3 className="mb-2 font-semibold">Ratings and Reviews</h3>
       <div className="grid grid-cols-2 items-center gap-3">
-        <div className="flex flex-col gap-1 rounded-md bg-neutral-800 p-4 text-goldie-300">
+        <div className="flex flex-col gap-1 rounded-md bg-neutral-800 p-4 text-brand-200">
           <span>4.5/5.0</span>
           <StarRating
             canRate={false}
             iconSize={24}
-            iconColor={"text-goldie-300"}
+            iconColor={"text-brand-200"}
           />
           <span className="text-sm">32 verified ratings</span>
         </div>
@@ -198,7 +198,7 @@ const ProductReview = ({ product }: { product: IProduct }) => {
                 <StarRating
                   canRate={false}
                   iconSize={20}
-                  iconColor={"text-goldie-300"}
+                  iconColor={"text-brand-200"}
                   defaultRating={review.rating}
                 />
                 <span className="text-sm">
@@ -215,10 +215,7 @@ const ProductReview = ({ product }: { product: IProduct }) => {
               {/* Conditionally render Edit and Delete buttons */}
               {auth?.user && auth?.user._id === review.user?._id && (
                 <div className="mt-2 flex gap-2">
-                  <Button
-                    size={"sm"}
-                    onClick={() => handleEditReview(review)}
-                  >
+                  <Button size={"sm"} onClick={() => handleEditReview(review)}>
                     Edit
                   </Button>
                   <Button
@@ -249,7 +246,7 @@ const ProductReview = ({ product }: { product: IProduct }) => {
                 {...register("rating")}
                 canRate={true}
                 iconSize={24}
-                iconColor={"text-goldie-300"}
+                iconColor={"text-brand-200"}
                 onSetRating={(rate) => setValue("rating", rate)}
                 defaultRating={reviewId ? getValues("rating") : 0}
               />
@@ -269,7 +266,7 @@ const ProductReview = ({ product }: { product: IProduct }) => {
             </div>
             <Button
               type="submit"
-              className="text-goldie-300"
+              className="text-brand-200"
               disabled={
                 createReviewMutation.isPending || updateReviewMutation.isPending
               }
@@ -291,7 +288,7 @@ const ProductReview = ({ product }: { product: IProduct }) => {
             Please{" "}
             <a
               href={`/sign-in?redirect_url=${redirectUrl}`}
-              className="text-goldie-300 hover:underline"
+              className="text-brand-200 hover:underline"
             >
               log in
             </a>{" "}

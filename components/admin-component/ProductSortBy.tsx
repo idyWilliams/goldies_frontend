@@ -27,7 +27,7 @@ export default function ProductSortBy({
     <div className="absolute right-0 top-full z-40 w-[180px] rounded-md bg-black p-2 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
       <ul className="space-y-1 py-2">
         <li
-          className={`cursor-pointer px-4 py-2 text-goldie-300 hover:bg-[#E4D064] hover:bg-opacity-20 ${
+          className={`cursor-pointer px-4 py-2 text-brand-200 hover:bg-[#E4D064] hover:bg-opacity-20 ${
             isActive("default", "asc") ? "bg-[#E4D064] bg-opacity-20" : ""
           }`}
           onClick={() => handleSortChange("default", "asc")}
@@ -35,7 +35,7 @@ export default function ProductSortBy({
           Default
         </li>
         <li
-          className={`cursor-pointer px-4 py-2 text-goldie-300 hover:bg-[#E4D064] hover:bg-opacity-20 ${
+          className={`cursor-pointer px-4 py-2 text-brand-200 hover:bg-[#E4D064] hover:bg-opacity-20 ${
             isActive("name", "asc") ? "bg-[#E4D064] bg-opacity-20" : ""
           }`}
           onClick={() => handleSortChange("name", "asc")}
@@ -43,7 +43,7 @@ export default function ProductSortBy({
           A-Z
         </li>
         <li
-          className={`cursor-pointer px-4 py-2 text-goldie-300 hover:bg-[#E4D064] hover:bg-opacity-20 ${
+          className={`cursor-pointer px-4 py-2 text-brand-200 hover:bg-[#E4D064] hover:bg-opacity-20 ${
             isActive("name", "desc") ? "bg-[#E4D064] bg-opacity-20" : ""
           }`}
           onClick={() => handleSortChange("name", "desc")}
@@ -51,7 +51,7 @@ export default function ProductSortBy({
           Z-A
         </li>
         <li
-          className={`cursor-pointer px-4 py-2 text-goldie-300 hover:bg-[#E4D064] hover:bg-opacity-20 ${
+          className={`cursor-pointer px-4 py-2 text-brand-200 hover:bg-[#E4D064] hover:bg-opacity-20 ${
             isActive("createdAt", "desc") ? "bg-[#E4D064] bg-opacity-20" : ""
           }`}
           onClick={() => handleSortChange("createdAt", "desc")}
@@ -59,7 +59,7 @@ export default function ProductSortBy({
           Newest
         </li>
         <li
-          className={`cursor-pointer px-4 py-2 text-goldie-300 hover:bg-[#E4D064] hover:bg-opacity-20 ${
+          className={`cursor-pointer px-4 py-2 text-brand-200 hover:bg-[#E4D064] hover:bg-opacity-20 ${
             isActive("createdAt", "asc") ? "bg-[#E4D064] bg-opacity-20" : ""
           }`}
           onClick={() => handleSortChange("createdAt", "asc")}
@@ -67,7 +67,7 @@ export default function ProductSortBy({
           Oldest
         </li>
         <li
-          className={`cursor-pointer px-4 py-2 text-goldie-300 hover:bg-[#E4D064] hover:bg-opacity-20 ${
+          className={`cursor-pointer px-4 py-2 text-brand-200 hover:bg-[#E4D064] hover:bg-opacity-20 ${
             isActive("maxPrice", "asc") ? "bg-[#E4D064] bg-opacity-20" : ""
           }`}
           onClick={() => handleSortChange("maxPrice", "asc")}
@@ -75,7 +75,7 @@ export default function ProductSortBy({
           Price: High to Low
         </li>
         <li
-          className={`cursor-pointer px-4 py-2 text-goldie-300 hover:bg-[#E4D064] hover:bg-opacity-20 ${
+          className={`cursor-pointer px-4 py-2 text-brand-200 hover:bg-[#E4D064] hover:bg-opacity-20 ${
             isActive("maxPrice", "desc") ? "bg-[#E4D064] bg-opacity-20" : ""
           }`}
           onClick={() => handleSortChange("maxPrice", "desc")}

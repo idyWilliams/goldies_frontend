@@ -62,25 +62,25 @@ const CartPage = () => {
               },
             ]}
           />
-          <h2 className="mb-8 mt-4 text-2xl font-bold capitalize text-goldie-300 md:text-3xl">
+          <h2 className="mb-8 mt-4 text-2xl font-bold capitalize text-brand-200 md:text-3xl">
             Cart({cartItems.length})
           </h2>
 
           {/* Loading State */}
           {isLoadingCart && (
             <div className="flex justify-center py-10">
-              <p className="text-goldie-300">Retrieving your cart items...</p>
+              <p className="text-brand-200">Retrieving your cart items...</p>
             </div>
           )}
 
           {/* Cart Items */}
           {!isLoadingCart && cartItems.length > 0 && (
             <div className="mb-5 grid grid-cols-[2fr_1fr] border-b border-goldie-300 pb-2 sm:grid-cols-[2fr_1fr_1fr]">
-              <p className="text-lg font-semibold text-goldie-300">Product</p>
-              <p className="hidden text-lg font-semibold text-goldie-300 md:block">
+              <p className="text-lg font-semibold text-brand-200">Product</p>
+              <p className="hidden text-lg font-semibold text-brand-200 md:block">
                 Quantity
               </p>
-              <p className="text-lg font-semibold text-goldie-300">Sub Total</p>
+              <p className="text-lg font-semibold text-brand-200">Sub Total</p>
             </div>
           )}
 
@@ -105,19 +105,19 @@ const CartPage = () => {
           {/* PAYMENT DETAILS */}
           {!isLoadingCart && cartItems.length > 0 ? (
             <div className="my-8 w-full border-t border-goldie-300">
-              <h2 className="mb-8 mt-4 text-xl font-bold capitalize text-goldie-300">
+              <h2 className="mb-8 mt-4 text-xl font-bold capitalize text-brand-200">
                 Payment Details
               </h2>
 
               <div className="grid sm:grid-cols-2 sm:gap-5">
                 <div>
-                  <h3 className="mb-1 font-bold text-goldie-300">
+                  <h3 className="mb-1 font-bold text-brand-200">
                     Shipping Address
                   </h3>
                   {!defaultBillingInfo ? (
                     <p className="text-gray-400">No shipping address</p>
                   ) : (
-                    <p className="text-goldie-300">
+                    <p className="text-brand-200">
                       {defaultBillingInfo?.streetAddress}
                       <br />
                       {defaultBillingInfo?.cityOrTown},
@@ -129,12 +129,12 @@ const CartPage = () => {
                 </div>
                 <div className="flex flex-wrap justify-end">
                   <div className="mt-6 flex w-full flex-wrap items-start justify-between sm:mt-0">
-                    <ul className="flex flex-col gap-3 text-goldie-300">
+                    <ul className="flex flex-col gap-3 text-brand-200">
                       <li>Product Total</li>
                       {/* <li>Options Total</li> */}
                       <li>Grand Total</li>
                     </ul>
-                    <ul className="flex flex-col gap-3 text-goldie-300 ">
+                    <ul className="flex flex-col gap-3 text-brand-200 ">
                       <li className="text-right">
                         {formatCurrency(cartTotal, "en-NG")}
                       </li>
@@ -158,7 +158,7 @@ const CartPage = () => {
             </div>
           ) : (
             !isLoadingCart && (
-              <div className="h-full space-y-4 py-10 text-center text-goldie-300">
+              <div className="h-full space-y-4 py-10 text-center text-brand-200">
                 <figure className="mx-auto h-28 w-24">
                   <Image
                     src={illustration}
@@ -173,7 +173,7 @@ const CartPage = () => {
 
                 <Button
                   variant={"outline"}
-                  className=" rounded-full border-goldie-300 bg-transparent text-goldie-300 hover:border-goldie-400 hover:bg-transparent hover:text-goldie-400"
+                  className=" rounded-full border-goldie-300 bg-transparent text-brand-200 hover:border-goldie-400 hover:bg-transparent hover:text-goldie-400"
                   onClick={() => router.push("/shop")}
                 >
                   Start Shopping

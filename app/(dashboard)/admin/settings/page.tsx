@@ -42,15 +42,15 @@ export default function Page() {
   ];
 
   useEffect(() => {
-      if (tabQuery) {
-        const activeTabIndex = tabs.findIndex(
-          (tabObj) =>
-            tabObj.label.toLowerCase().replace(/ /g, "-") ===
-            tabQuery.toLowerCase(),
-        );
-        setSelectedTab(activeTabIndex >= 0 ? activeTabIndex : 0);
-      }
-    }, [tabQuery]);
+    if (tabQuery) {
+      const activeTabIndex = tabs.findIndex(
+        (tabObj) =>
+          tabObj.label.toLowerCase().replace(/ /g, "-") ===
+          tabQuery.toLowerCase(),
+      );
+      setSelectedTab(activeTabIndex >= 0 ? activeTabIndex : 0);
+    }
+  }, [tabQuery]);
 
   const handleTab = (index: number, value: string) => {
     setSelectedTab(index);
@@ -85,7 +85,7 @@ export default function Page() {
                     key={index}
                     className={twMerge(
                       "mb-3 inline-flex cursor-pointer items-center gap-2 bg-neutral-100 px-3 py-2 text-black duration-300",
-                      selectedTab === index && "bg-black text-goldie-300",
+                      selectedTab === index && "bg-black text-brand-200",
                     )}
                     onClick={() => handleTab(index, tab?.value)}
                   >

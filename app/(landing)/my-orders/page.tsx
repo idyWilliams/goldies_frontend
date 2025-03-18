@@ -157,7 +157,7 @@ const MyOrders = () => {
                   key={index}
                   className={`w-fit rounded-sm border px-2 ${
                     selectedStatus === tab
-                      ? "bg-black text-goldie-300"
+                      ? "bg-black text-brand-200"
                       : "border-neutral-200 bg-white"
                   }`}
                   onClick={() => setSelectedStatus(tab)}
@@ -284,7 +284,7 @@ const MyOrders = () => {
                                 onClick={() =>
                                   router.push(`/my-orders/${order?._id}`)
                                 }
-                                className="inline-flex items-center gap-2 bg-neutral-900 px-2 py-1 text-sm text-goldie-300"
+                                className="inline-flex items-center gap-2 bg-neutral-900 px-2 py-1 text-sm text-brand-200"
                               >
                                 <span>View</span> <Eye size={20} />
                               </button>

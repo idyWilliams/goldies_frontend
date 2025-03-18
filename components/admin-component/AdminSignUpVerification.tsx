@@ -120,7 +120,7 @@ const AdminSignUpVerification = ({ email }: { email: string }) => {
           )}
           <Button
             disabled={sendOtp.isPending}
-            className="col-span-2 mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300"
+            className="col-span-2 mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-brand-200"
           >
             {sendOtp.isPending ? (
               <div className="flex items-center justify-center gap-3">
@@ -131,7 +131,7 @@ const AdminSignUpVerification = ({ email }: { email: string }) => {
               "Submit"
             )}
           </Button>
-          <p className="text-center text-base text-goldie-300">Resend code</p>
+          <p className="text-center text-base text-brand-200">Resend code</p>
         </form>
       </div>
     </div>

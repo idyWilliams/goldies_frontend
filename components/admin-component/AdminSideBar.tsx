@@ -26,41 +26,41 @@ export default function AdminSideBar() {
       <div className="6 flex flex-col items-start gap-2 px-4">
         <Link
           href={"/admin"}
-          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname === "/admin" ? "text-goldie-300" : "text-neutral-500"}`}
+          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname === "/admin" ? "text-brand-200" : "text-neutral-500"}`}
         >
           <Home2 size="20" /> Overview
         </Link>
         <Link
           href={"/admin/products"}
-          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/products") ? "text-goldie-300" : "text-neutral-500"}`}
+          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname.includes("/admin/products") ? "text-brand-200" : "text-neutral-500"}`}
         >
           <Cake size="20" />
           Products
         </Link>
         <Link
           href={"/admin/customers"}
-          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/customers") ? "text-goldie-300" : "text-neutral-500"}`}
+          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname.includes("/admin/customers") ? "text-brand-200" : "text-neutral-500"}`}
         >
           <IoPeopleOutline size={20} />
           Customers
         </Link>
         <Link
           href={"/admin/orders"}
-          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/orders") ? "text-goldie-300" : "text-neutral-500"}`}
+          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname.includes("/admin/orders") ? "text-brand-200" : "text-neutral-500"}`}
         >
           <ShoppingBag size="20" />
           Orders
         </Link>
         <Link
           href={"/admin/create-products"}
-          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/create-products") ? "text-goldie-300" : "text-neutral-500"}`}
+          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname.includes("/admin/create-products") ? "text-brand-200" : "text-neutral-500"}`}
         >
           <FolderAdd size="20" />
           Create Products
         </Link>
         <Link
           href={"/admin/manage-categories"}
-          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/manage-categories") ? "text-goldie-300" : "text-neutral-500"}`}
+          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname.includes("/admin/manage-categories") ? "text-brand-200" : "text-neutral-500"}`}
         >
           <Category2 size="20" />
           Manage Categories
@@ -68,7 +68,7 @@ export default function AdminSideBar() {
         {auth?.admin?.role === "super_admin" && (
           <Link
             href={"/admin/invite"}
-            className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/invite") ? "text-goldie-300" : "text-neutral-500"}`}
+            className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname.includes("/admin/invite") ? "text-brand-200" : "text-neutral-500"}`}
           >
             <UserAdd size="20" />
             Invite Admin
@@ -76,14 +76,14 @@ export default function AdminSideBar() {
         )}
         <Link
           href={"/admin/settings"}
-          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/settings") ? "text-goldie-300" : "text-neutral-500"}`}
+          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname.includes("/admin/settings") ? "text-brand-200" : "text-neutral-500"}`}
         >
           <Setting2 size="20" />
           Settings
         </Link>
 
         <button
-          className={`flex w-full cursor-pointer items-center gap-2 whitespace-nowrap py-2 text-sm text-neutral-500 duration-300 hover:text-goldie-300`}
+          className={`flex w-full cursor-pointer items-center gap-2 whitespace-nowrap py-2 text-sm text-neutral-500 duration-300 hover:text-brand-200`}
           onClick={() => adminLogOut(router)}
         >
           <CiLogout size={20} />

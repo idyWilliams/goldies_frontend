@@ -6,7 +6,7 @@ import Image from "next/image";
 export default function NotFound() {
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center bg-gray-100 p-5">
-      <div className="absolute top-4 left-4">
+      <div className="absolute left-4 top-4">
         <Image
           src={Logo}
           priority
@@ -22,7 +22,9 @@ export default function NotFound() {
       </p>
       <div className="mt-6 flex gap-4">
         <Link href="/">
-          <Button className="text-goldie-300 font-semibold" size='lg'>Go Home</Button>
+          <Button className="font-semibold text-brand-200" size="lg">
+            Go Home
+          </Button>
         </Link>
       </div>
     </div>

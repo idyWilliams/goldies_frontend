@@ -263,18 +263,18 @@ const AdminSignUp = () => {
                   />
                   <span className="text-sm">
                     I agree with the{" "}
-                    <span className="cursor-pointer text-goldie-300">
+                    <span className="cursor-pointer text-brand-200">
                       terms of service
                     </span>{" "}
                     and{" "}
-                    <span className="cursor-pointer text-goldie-300">
+                    <span className="cursor-pointer text-brand-200">
                       privacy policy
                     </span>
                   </span>
                 </label>
                 <Button
                   disabled={newAdmin.isPending}
-                  className="col-span-2 mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300"
+                  className="col-span-2 mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-brand-200"
                 >
                   {newAdmin.isPending ? (
                     <div className="flex items-center justify-center gap-3">
@@ -287,7 +287,7 @@ const AdminSignUp = () => {
                 </Button>
                 <p className="col-span-2 text-center">
                   Already have an account?{" "}
-                  <Link href="/admin-signin" className="text-goldie-300">
+                  <Link href="/admin-signin" className="text-brand-200">
                     Sign In
                   </Link>
                 </p>

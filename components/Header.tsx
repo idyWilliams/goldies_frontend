@@ -355,7 +355,7 @@ const SessionModal: React.FC<ComponentProp> = ({
           </DialogHeader>
           <DialogContent>
             <div className="flex flex-col items-center">
-              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-neutral-800 text-goldie-300">
+              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-neutral-800 text-brand-200">
                 <Ghost size={24} />
               </span>
 
@@ -365,7 +365,7 @@ const SessionModal: React.FC<ComponentProp> = ({
               <p className="text-neutral-500">{content}</p>
               <Button
                 onClick={action}
-                className="mt-6 h-auto w-full rounded-full bg-neutral-900 py-3 text-goldie-300"
+                className="mt-6 h-auto w-full rounded-full bg-neutral-900 py-3 text-brand-200"
               >
                 Continue
               </Button>

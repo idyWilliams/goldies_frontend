@@ -584,7 +584,7 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                         <Button
                           type="submit"
                           size={"lg"}
-                          className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
+                          className="cursor-pointer bg-neutral-900 px-4 py-2 text-brand-200"
                           disabled={cartMutation.isPending}
                         >
                           {cartMutation.isPending && (
@@ -597,7 +597,7 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                           <Button
                             type="submit"
                             size={"lg"}
-                            className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
+                            className="cursor-pointer bg-neutral-900 px-4 py-2 text-brand-200"
                           >
                             Add to cart
                           </Button>
@@ -634,7 +634,7 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                       <Button
                         type="button"
                         size={"lg"}
-                        className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
+                        className="cursor-pointer bg-neutral-900 px-4 py-2 text-brand-200"
                         onClick={handleAddToCart}
                         disabled={cartMutation.isPending}
                       >
@@ -648,7 +648,7 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                         <Button
                           type="button"
                           size={"lg"}
-                          className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
+                          className="cursor-pointer bg-neutral-900 px-4 py-2 text-brand-200"
                         >
                           Add to cart
                         </Button>

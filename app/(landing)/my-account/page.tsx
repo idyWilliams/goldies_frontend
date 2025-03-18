@@ -185,7 +185,7 @@ const Page = () => {
                         "mb-8 mt-4 flex cursor-pointer items-center justify-between rounded-md border border-neutral-500  py-4 text-red-900 md:w-full md:rounded-none md:border-0",
                         // icons + labels up
                         activeTab === index &&
-                          "w-min justify-center bg-neutral-900 text-goldie-300 md:justify-start",
+                          "w-min justify-center bg-neutral-900 text-brand-200 md:justify-start",
                       )}
                     >
                       {/* each icon and label */}
@@ -193,7 +193,7 @@ const Page = () => {
                         <div
                           className={cn(
                             "flex w-20 items-center justify-center gap-2 text-lg text-neutral-500",
-                            activeTab === index && "text-goldie-300",
+                            activeTab === index && "text-brand-200",
                           )}
                         >
                           {tab.icon}
@@ -201,7 +201,7 @@ const Page = () => {
                         <h3
                           className={cn(
                             "w-auto whitespace-nowrap text-center text-lg text-neutral-500 opacity-100 duration-300 md:text-sm",
-                            activeTab === index && "text-goldie-300",
+                            activeTab === index && "text-brand-200",
                           )}
                         >
                           {tab.label}
@@ -211,7 +211,7 @@ const Page = () => {
                       <div
                         className={cn(
                           "mr-4 flex w-5 items-center justify-center gap-2 text-lg text-neutral-500 ",
-                          activeTab === index && "text-goldie-300",
+                          activeTab === index && "text-brand-200",
                         )}
                       >
                         <Image src={frontarrow} alt="front arrow" />
@@ -250,13 +250,13 @@ const Page = () => {
                     className={cn(
                       "flex cursor-pointer items-center justify-start gap-1 rounded-md border border-neutral-500 px-3 py-2 md:w-full md:rounded-none md:border-0",
                       activeTab === index &&
-                        "w-min justify-center bg-neutral-900 text-goldie-300 md:justify-start",
+                        "w-min justify-center bg-neutral-900 text-brand-200 md:justify-start",
                     )}
                   >
                     <div
                       className={cn(
                         "flex w-5 items-center justify-center gap-2 text-neutral-500",
-                        activeTab === index && "text-goldie-300",
+                        activeTab === index && "text-brand-200",
                       )}
                     >
                       {tab.icon}
@@ -264,7 +264,7 @@ const Page = () => {
                     <h3
                       className={cn(
                         "w-auto whitespace-nowrap text-center text-xs text-neutral-500 opacity-100 duration-300 md:text-sm",
-                        activeTab === index && "text-goldie-300",
+                        activeTab === index && "text-brand-200",
                       )}
                     >
                       {tab.label}

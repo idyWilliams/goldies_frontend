@@ -66,11 +66,9 @@ const ProductCard = React.memo(function ProductCard({
             onLoad={() => setIsLoaded(true)}
           />
         </Link>
-        <div className="absolute left-2 top-2 flex w-full items-center justify-between px-2">
+        <div className="absolute left-1 top-2 flex w-full items-start justify-between px-1">
           <span
-            className={cn(
-              "rounded-md bg-white px-2 py-1 text-sm capitalize",
-            )}
+            className={cn("rounded-md bg-white px-2 py-1 text-sm capitalize")}
           >
             <span
               className=" cursor-pointer"
@@ -113,7 +111,7 @@ const ProductCard = React.memo(function ProductCard({
           {formatCurrency(parseInt(data?.minPrice), "en-NG")} -{" "}
           {formatCurrency(parseInt(data?.maxPrice), "en-NG")}
         </span>
-        <h3 className="font-semibold capitalize underline underline-offset-1">
+        <h3 className="font-semibold capitalize text-brand-200 underline underline-offset-1">
           <Link href={`/shop/${data?.slug}`}>
             <span className="w-full" onClick={() => handleProduct(data)}>
               {data?.name}
@@ -121,7 +119,7 @@ const ProductCard = React.memo(function ProductCard({
           </Link>
         </h3>
       </div>
-      <p className=" mb-1 line-clamp-2 min-h-12 text-neutral-500">
+      <p className=" mb-1 line-clamp-2 min-h-12 text-brand-200">
         {data?.description}
       </p>
       <div className="inline-flex gap-2">
@@ -134,7 +132,7 @@ const ProductCard = React.memo(function ProductCard({
           onClick={() => {
             handleProduct(data);
           }}
-          className="w-full text-goldie-300"
+          className="mt-2 w-full bg-brand-200 text-brand-100 hover:border-2 hover:border-brand-200 hover:bg-transparent hover:text-brand-200"
         >
           Shop now
         </Button>

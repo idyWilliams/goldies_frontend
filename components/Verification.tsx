@@ -27,12 +27,12 @@ export default function Verification({
           </p>
         </div>
 
-        <Button className="my-3 h-auto w-full rounded bg-neutral-900 py-2.5 text-sm text-goldie-300">
+        <Button className="my-3 h-auto w-full rounded bg-neutral-900 py-2.5 text-sm text-brand-200">
           Open email app
         </Button>
         <div className="mb-7 flex cursor-pointer items-center justify-center gap-1 text-sm text-neutral-500">
           <span>Didn&apos;t get an email?</span>
-          <span className="text-goldie-300" onClick={() => resubmit()}>
+          <span className="text-brand-200" onClick={() => resubmit()}>
             Click to resend
           </span>
         </div>

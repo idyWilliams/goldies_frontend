@@ -71,15 +71,15 @@ const TeamSlider = () => {
               alt={item?.name}
               className="rounded-full"
             />
-            <h3 className="text-center font-semibold text-goldie-300">
+            <h3 className="text-center font-semibold text-brand-200">
               {item?.name}
             </h3>
             <p className="text-center text-sm text-neutral-700">{item?.role}</p>
           </div>
         </SwiperSlide>
       ))}
-      <div className="absolute right-0 top-0 z-10 h-full w-[120px] bg-gradient-to-l from-white via-white to-transparent" />
-      <div className="absolute left-0 top-0 z-10 h-full w-[120px] bg-gradient-to-r from-white via-white to-transparent" />
+      <div className="absolute right-0 top-0 z-10 h-full w-[120px] bg-gradient-to-l from-brand-100 via-brand-100 to-transparent" />
+      <div className="absolute left-0 top-0 z-10 h-full w-[120px] bg-gradient-to-r from-brand-100 via-brand-100 to-transparent" />
     </Swiper>
   );
 };

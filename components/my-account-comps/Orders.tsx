@@ -11,10 +11,7 @@ import { useMemo } from "react";
 import { BsThreeDots } from "react-icons/bs";
 
 const Orders = () => {
-  const {
-    data: ordersResponse,
-    isPending,
-  } = useQuery({
+  const { data: ordersResponse, isPending } = useQuery({
     queryKey: ["ordersByUser"],
     queryFn: getOrdersByUser,
   });
@@ -29,7 +26,7 @@ const Orders = () => {
       <div className="mb-4 flex items-center justify-between border-0 border-neutral-200 pb-4">
         <h2 className="text-xl font-semibold">Orders</h2>
         <Link href={"/my-orders"}>
-          <button className="rounded-md bg-black px-5 py-2 text-sm text-goldie-300">
+          <button className="rounded-md bg-black px-5 py-2 text-sm text-brand-200">
             See all
           </button>
         </Link>
@@ -78,7 +75,7 @@ const Orders = () => {
                 <div
                   className={cn(
                     "table-row",
-                    (index + 1) % 2 === 0 && "bg-goldie-300 bg-opacity-20"
+                    (index + 1) % 2 === 0 && "bg-goldie-300 bg-opacity-20",
                   )}
                 >
                   <div className="table-cell py-2 pl-2 align-middle">
@@ -97,7 +94,12 @@ const Orders = () => {
                     </span>
                   </div>
                   <div className="table-cell py-2 align-middle">
-                    <span className={cn("text-sm", getOrderColor(order?.orderStatus))}>
+                    <span
+                      className={cn(
+                        "text-sm",
+                        getOrderColor(order?.orderStatus),
+                      )}
+                    >
                       {order?.orderStatus}
                     </span>
                   </div>

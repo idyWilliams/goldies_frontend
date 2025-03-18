@@ -273,7 +273,7 @@ const ShopPage = () => {
   return (
     <div className="">
       {/* BREADCRUMBS */}
-      <div className="bg-brand-200 py-4">
+      <div className="mt-20 bg-brand-200 py-4">
         <div className="wrapper">
           <BreadCrumbs
             items={[
@@ -290,7 +290,7 @@ const ShopPage = () => {
         </div>
       </div>
 
-      <section className="relative py-6 pb-10 xl:bg-neutral-100">
+      <section className="relative py-6 pb-10 xl:bg-brand-100">
         <div className="wrapper">
           <div className="mx-auto w-full">
             {/* MOBILE PRODUCT DISPLAY */}

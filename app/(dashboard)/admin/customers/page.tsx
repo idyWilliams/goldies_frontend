@@ -220,14 +220,12 @@ export default function Page() {
                     <div className="mt-3">
                       <div className="flex flex-col gap-3">
                         <div className="flex items-center">
-                          <div className="mr-4 flex h-14 w-14 items-center justify-center rounded-full bg-black text-goldie-300">
+                          <div className="mr-4 flex h-14 w-14 items-center justify-center rounded-full bg-black text-brand-200">
                             {initials(`${item.firstName} ${item.lastName}`)}
                           </div>
                           <div className="flex justify-between">
                             <div className="flex flex-col gap-2">
-                              <Link
-                                href={`/admin/customers/${item?._id}`}
-                              >
+                              <Link href={`/admin/customers/${item?._id}`}>
                                 <h3 className="whitespace-nowrap font-bold">
                                   {`${item.firstName} ${item.lastName}`}
                                 </h3>
@@ -245,7 +243,7 @@ export default function Page() {
                             {moment(item.createdAt).format("MMM DD, YYYY")}
                           </span>
                           <button
-                            className="bg-black px-5 py-2 text-sm text-goldie-300"
+                            className="bg-black px-5 py-2 text-sm text-brand-200"
                             onClick={() =>
                               router.push(`/admin/customers/${item._id}`)
                             }

@@ -35,7 +35,7 @@ export default function CartConfirmModal({
           <Image src={Goldie} alt="Goldie" className="w-[120px]" />
 
           <span
-            className="cursor-pointer text-goldie-300"
+            className="cursor-pointer text-brand-200"
             onClick={() => setShowModal(false)}
           >
             <CloseSquare size={24} />

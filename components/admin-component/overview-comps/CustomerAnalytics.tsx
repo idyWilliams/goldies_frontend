@@ -50,7 +50,7 @@ export function CustomersAnalytics() {
   return (
     <Card className="border-0 bg-neutral-900">
       <CardHeader>
-        <CardTitle className="text-goldie-300 lg:mb-8">
+        <CardTitle className="text-brand-200 lg:mb-8">
           Customers Analytics
         </CardTitle>
       </CardHeader>

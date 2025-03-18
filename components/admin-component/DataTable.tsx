@@ -44,7 +44,7 @@ export default function DataTable<T>({
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
-                      className="p-4 text-left capitalize text-goldie-300"
+                      className="p-4 text-left capitalize text-brand-200"
                     >
                       {header.isPlaceholder
                         ? null

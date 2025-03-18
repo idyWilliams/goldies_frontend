@@ -114,7 +114,7 @@ export default function Page({ params }: { params: { details: string } }) {
             </div>
           </div>
           <Button
-            className="mb-2 rounded-md text-goldie-300"
+            className="mb-2 rounded-md text-brand-200"
             onClick={() =>
               router.push(`/admin/create-products?edit=${product?._id}`)
             }
@@ -127,7 +127,7 @@ export default function Page({ params }: { params: { details: string } }) {
         <hr className="my-5" />
         <div className="grid grid-cols-1 gap-4 md:grid-cols-[55%_1fr]">
           <div className="rounded-md bg-black">
-            <h1 className="px-6 pb-4 pt-6 font-semibold text-goldie-300">
+            <h1 className="px-6 pb-4 pt-6 font-semibold text-brand-200">
               Product Information
             </h1>
             <div className="bg-white px-6 py-3">
@@ -166,9 +166,7 @@ export default function Page({ params }: { params: { details: string } }) {
               </div>
               <div className="mb-5">
                 <p className="font-semibold capitalize">Product Type</p>
-                <p className="capitalize">
-                  {product?.productType}
-                </p>
+                <p className="capitalize">{product?.productType}</p>
               </div>
               <div className="mb-5">
                 <p className="font-semibold capitalize">Product Sizes:</p>
@@ -203,7 +201,7 @@ export default function Page({ params }: { params: { details: string } }) {
             </div>
           </div>
           <div className="h-fit rounded-md bg-black">
-            <h1 className="px-6 pb-4 pt-6 font-semibold text-goldie-300">
+            <h1 className="px-6 pb-4 pt-6 font-semibold text-brand-200">
               Product Images
             </h1>
             <div className="bg-white px-6 py-6">

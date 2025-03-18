@@ -285,7 +285,7 @@
 //             <p className="text-sm">List of all available products created</p>
 //           </div>
 //           <button
-//             className="flex cursor-pointer items-center gap-2 rounded-md bg-black px-5 py-2.5 text-sm text-goldie-300"
+//             className="flex cursor-pointer items-center gap-2 rounded-md bg-black px-5 py-2.5 text-sm text-brand-200"
 //             onClick={handleAddNew}
 //           >
 //             <Add size={15} /> ADD NEW
@@ -309,7 +309,7 @@
 //           </label>
 
 //           <button
-//             className="relative flex min-w-[83px] cursor-pointer items-center justify-between rounded-md bg-black px-3 py-2 text-[10px] text-goldie-300 md:hidden"
+//             className="relative flex min-w-[83px] cursor-pointer items-center justify-between rounded-md bg-black px-3 py-2 text-[10px] text-brand-200 md:hidden"
 //             onClick={() => setOpen((prev) => !prev)}
 //           >
 //             Sort by {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}

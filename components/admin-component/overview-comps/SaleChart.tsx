@@ -46,7 +46,7 @@ const chartConfig = {
 export function SaleChart() {
   return (
     <section className="rounded-xl border-0 bg-neutral-900 p-4">
-      <h3 className="mb-6 text-goldie-300">Sales Revenue Report</h3>
+      <h3 className="mb-6 text-brand-200">Sales Revenue Report</h3>
       <div className="lg:hidden">
         <ChartContainer
           config={chartConfig}

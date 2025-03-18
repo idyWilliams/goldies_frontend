@@ -21,7 +21,7 @@ export default function SubCategoryBtn({
       <button
         disabled={!isValid || isLoading}
         type="submit"
-        className="rounded-md bg-neutral-900 px-6 py-2 text-sm font-semibold text-goldie-300 disabled:opacity-75 disabled:hover:cursor-not-allowed"
+        className="rounded-md bg-neutral-900 px-6 py-2 text-sm font-semibold text-brand-200 disabled:opacity-75 disabled:hover:cursor-not-allowed"
       >
         {isLoading
           ? "Loading..."

@@ -112,7 +112,7 @@ const Page = () => {
             </label>
             <Button
               disabled={inviteAnAdmin.isPending}
-              className="col-span-2 mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300"
+              className="col-span-2 mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-brand-200"
             >
               {inviteAnAdmin.isPending ? (
                 <div className="flex items-center justify-center gap-3">

@@ -109,12 +109,12 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
             </div>
             <Button
               disabled={otpVerify?.isPending}
-              className="mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300"
+              className="mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-brand-200"
               type="submit"
             >
               {otpVerify?.isPending ? "Loading...." : "Submit"}
             </Button>
-            {/* <Button className="mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300">
+            {/* <Button className="mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-brand-200">
                                         Submit
                                     </Button> */}
 

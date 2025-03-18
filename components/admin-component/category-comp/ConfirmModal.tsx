@@ -166,10 +166,7 @@ const ConfirmModal: React.FC<ModalProps> = ({ catOrSub }) => {
         <div className="flex items-center justify-between border-b border-goldie-300 border-opacity-40 px-4 py-4">
           <Image src={Goldie} alt="Goldie" className="w-[120px]" />
 
-          <span
-            className="cursor-pointer text-goldie-300"
-            onClick={handleClose}
-          >
+          <span className="cursor-pointer text-brand-200" onClick={handleClose}>
             <CloseSquare size={24} />
           </span>
         </div>

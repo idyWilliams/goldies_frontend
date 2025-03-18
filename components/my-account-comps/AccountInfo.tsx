@@ -171,7 +171,7 @@ const AccountInfo = ({
         </div>
 
         <div className="mt-4">
-          <Skeleton className="h-10 w-32 ml-auto" />
+          <Skeleton className="ml-auto h-10 w-32" />
         </div>
       </div>
     );
@@ -349,7 +349,7 @@ const AccountInfo = ({
         <div className="mt-7 flex items-center justify-start gap-3">
           <button
             type="submit"
-            className="rounded border border-neutral-900 bg-neutral-900 px-5 py-2.5 text-goldie-300"
+            className="rounded border border-neutral-900 bg-neutral-900 px-5 py-2.5 text-brand-200"
           >
             Save changes
           </button>

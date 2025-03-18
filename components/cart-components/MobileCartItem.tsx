@@ -84,7 +84,7 @@ const MobileCartItem = ({ item }: CartItemProps) => {
           </figure>
 
           <div className="flex flex-col">
-            <h3 className=" text-goldie-300">{item?.product.name}</h3>
+            <h3 className=" text-brand-200">{item?.product.name}</h3>
             <div className="mt-3 inline-flex w-fit items-center gap-3 rounded-[50px] bg-white px-1.5 py-1">
               <button
                 onClick={handleDecreaseQuantity}
@@ -104,7 +104,7 @@ const MobileCartItem = ({ item }: CartItemProps) => {
           </div>
         </div>
         <div className="flex flex-col ">
-          <span className="text-goldie-300 text-right">
+          <span className="text-right text-brand-200">
             {formatCurrency(parseInt(item?.product.maxPrice), "en-NG")}
           </span>
         </div>
@@ -114,7 +114,7 @@ const MobileCartItem = ({ item }: CartItemProps) => {
             onClick={() => {
               setShowModal(true);
             }}
-            className=" inline-flex cursor-pointer items-center gap-3 text-goldie-300"
+            className=" inline-flex cursor-pointer items-center gap-3 text-brand-200"
           >
             <BsTrash size={16} />
             Delete

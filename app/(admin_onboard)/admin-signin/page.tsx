@@ -164,7 +164,7 @@ const Page = () => {
 
                 <Button
                   disabled={adminLogin?.isPending}
-                  className="mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300"
+                  className="mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-brand-200"
                   type="submit"
                 >
                   {adminLogin?.isPending ? "Loading...." : "Sign In"}

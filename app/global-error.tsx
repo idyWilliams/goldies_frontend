@@ -30,7 +30,7 @@ export default function GlobalError({
 
           <div className="mt-6 flex gap-4">
             <Button
-              className="font-semibold text-goldie-300"
+              className="font-semibold text-brand-200"
               size="lg"
               onClick={() => reset()}
             >

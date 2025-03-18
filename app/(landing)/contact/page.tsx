@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { cn } from "@/helper/cn";
 import { SendContactUsMail } from "@/interfaces/mail.interface";
-import Logo from "@/public/assets/goldis-gold-logo.png";
+import Logo from "@/public/assets/new-logo/logo-white.svg";
 import Img from "@/public/assets/reviews.png";
 import { sendContactMail } from "@/services/hooks/mail";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -71,11 +71,11 @@ export default function ContactPage() {
   };
 
   return (
-    <section>
+    <section className="pt-16">
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="border-black bg-black text-center">
+        <DialogContent className="border-black bg-brand-200 text-center">
           <DialogHeader>
-            <DialogTitle className="text-center text-goldie-300">
+            <DialogTitle className="text-center text-brand-200">
               <div className="flex justify-between ">
                 <Image
                   src={Logo}
@@ -94,7 +94,7 @@ export default function ContactPage() {
             </p>
             <Button
               onClick={() => setIsDialogOpen(false)}
-              className="bg-goldie-300 text-[#0F0904;] hover:bg-goldie-400"
+              className="bg-brand-200 text-brand-100"
             >
               OK
             </Button>
@@ -115,7 +115,7 @@ export default function ContactPage() {
               Home
             </Link>{" "}
             <span className="text-white">-</span>{" "}
-            <Link href={"/contact"} className="text-goldie-300">
+            <Link href={"/contact"} className="text-brand-200">
               Contact Us
             </Link>
           </div>
@@ -131,12 +131,14 @@ export default function ContactPage() {
       </div>
       <div className=" bg-neutral-300">
         <div className="mx-auto grid gap-5 px-4 py-16 md:grid-cols-[300px_1fr] lg:w-[800px]  xl:w-[1000px]">
-          <div className="flex flex-col justify-center bg-black px-10 pb-14 pt-10 md:rounded-md">
-            <h3 className="text-[24px] font-bold text-white">Opening Hours</h3>
-            <p className="text-[16px] text-goldie-300">
+          <div className="flex flex-col justify-center bg-brand-200 px-10 pb-14 pt-10 md:rounded-md">
+            <h3 className="mb-2 text-[24px] font-semibold text-brand-100">
+              Opening Hours
+            </h3>
+            <p className="text-[16px] text-brand-100">
               Mondays - Fridays 8am-6pm
             </p>
-            <div className="mt-5 flex items-center justify-center gap-7 text-white">
+            <div className="mt-5 flex items-center justify-center gap-7 text-brand-100">
               <div className="flex flex-col items-start space-y-7">
                 <div className="inline-flex items-center gap-5">
                   <span>
@@ -181,16 +183,18 @@ export default function ContactPage() {
               alt="logo"
               width={100}
               height={100}
-              className="mx-auto mt-20 hidden h-auto w-[80%] opacity-40 md:block"
+              className="mx-auto mt-20 hidden h-auto w-[80%] opacity-80 md:block"
             />
           </div>
           <div className=" bg-white px-4 py-8 md:rounded-md xl:px-10">
-            <h3 className="mb-5 text-center text-[24px] font-bold text-black">
+            <h3 className="mb-5 text-center text-[24px] font-bold text-brand-200">
               Contact Us
             </h3>
             <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
               <label htmlFor="name" className="block">
-                <span className="mb-1 inline-block font-medium">Your name</span>
+                <span className="mb-1 inline-block font-medium text-brand-200">
+                  Your name
+                </span>
                 <input
                   {...register("fullName")}
                   type="text"
@@ -198,7 +202,7 @@ export default function ContactPage() {
                   id="name"
                   placeholder="Enter your name"
                   className={cn(
-                    "form-input w-full rounded-md border-gray-300 placeholder:text-sm focus:border focus:border-black focus:ring-black",
+                    "form-input w-full rounded-md border-gray-300 placeholder:text-sm focus:border focus:border-brand-200 focus:ring-brand-200",
                     errors.fullName && "border-red-600",
                   )}
                 />
@@ -207,7 +211,7 @@ export default function ContactPage() {
                 )}
               </label>
               <label htmlFor="email" className="block">
-                <span className="mb-1 inline-block font-medium">
+                <span className="mb-1 inline-block font-medium text-brand-200">
                   Your email address
                 </span>
                 <input
@@ -217,7 +221,7 @@ export default function ContactPage() {
                   id="email"
                   placeholder="Enter your email address"
                   className={cn(
-                    "form-input w-full rounded-md border-gray-300 placeholder:text-sm focus:border focus:border-black focus:ring-black",
+                    "form-input w-full rounded-md border-gray-300 placeholder:text-sm focus:border focus:border-brand-200 focus:ring-brand-200",
                     errors.email && "border-red-600",
                   )}
                 />
@@ -226,7 +230,7 @@ export default function ContactPage() {
                 )}
               </label>
               <label htmlFor="phoneNumber" className="block">
-                <span className="mb-1 inline-block font-medium">
+                <span className="mb-1 inline-block font-medium text-brand-200">
                   Your phone Number
                 </span>
                 <Controller
@@ -239,7 +243,7 @@ export default function ContactPage() {
                       {...field}
                       inputProps={{
                         id: "phone",
-                        className: `form-input pl-12 w-full rounded-md placeholder:text-sm focus:border focus:border-black focus:ring-black ${errors.phoneNumber ? "border-red-600" : "border-gray-300"}`,
+                        className: `form-input pl-12 w-full rounded-md placeholder:text-sm focus:border focus:border-brand-200 focus:ring-brand-200 ${errors.phoneNumber ? "border-red-600" : "border-gray-300"}`,
                       }}
                     />
                   )}
@@ -249,7 +253,7 @@ export default function ContactPage() {
                 )}
               </label>
               <label htmlFor="message" className="block">
-                <span className="mb-1 inline-block font-medium">
+                <span className="mb-1 inline-block font-medium text-brand-200">
                   Your message
                 </span>
                 <textarea
@@ -258,7 +262,7 @@ export default function ContactPage() {
                   id="message"
                   placeholder="Enter your message"
                   className={cn(
-                    "form-textarea h-[100px] w-full resize-none rounded-md border-gray-300 placeholder:text-sm focus:border focus:border-black focus:ring-black",
+                    "form-textarea h-[100px] w-full rounded-md border-gray-300 placeholder:text-sm focus:border focus:border-brand-200 focus:ring-brand-200",
                     errors.message && "border-red-600",
                   )}
                 />
@@ -269,7 +273,7 @@ export default function ContactPage() {
               <Button
                 type="submit"
                 disabled={isPending}
-                className="ml-auto block w-full text-goldie-300 md:w-[75%]"
+                className="ml-auto block w-full bg-brand-200 text-brand-100 hover:border hover:border-brand-200 hover:bg-transparent hover:text-brand-200 md:w-[75%]"
               >
                 {isPending ? "Sending..." : "Send Message"}
               </Button>

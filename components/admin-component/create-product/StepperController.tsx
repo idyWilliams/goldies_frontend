@@ -54,7 +54,7 @@ export default function StepperController({
 
         {/* <button
         onClick={submitDetails}
-        className="h-[24px] w-[57px] rounded-[2.42px] bg-black text-[10px] text-goldie-300"
+        className="h-[24px] w-[57px] rounded-[2.42px] bg-black text-[10px] text-brand-200"
       >
         {currentStep === checkoutStep?.length ? (
           <span className="inline-flex items-center gap-2">
@@ -69,7 +69,7 @@ export default function StepperController({
           <Button
             type="submit"
             disabled={isSubmitting}
-            className=" bg-black text-goldie-300"
+            className=" bg-black text-brand-200"
           >
             <span className="inline-flex items-center gap-2">
               {isSubmitting && <CgSpinner size={20} className="animate-spin" />}{" "}
@@ -81,7 +81,7 @@ export default function StepperController({
           <Button
             type="button"
             onClick={submitDetails}
-            className="bg-black text-goldie-300"
+            className="bg-black text-brand-200"
           >
             <span className="inline-flex items-center gap-2">Next</span>
           </Button>

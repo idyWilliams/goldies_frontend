@@ -15,7 +15,7 @@ const inviteAdminModal = () => {
             </p>
           </div>
           <div className="mx-8 w-full">
-            <Button className="col-span-2 mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300">
+            <Button className="col-span-2 mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-brand-200">
               Close
             </Button>
           </div>
