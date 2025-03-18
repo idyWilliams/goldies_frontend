@@ -349,7 +349,7 @@ const AccountInfo = ({
         <div className="mt-7 flex items-center justify-start gap-3">
           <button
             type="submit"
-            className="rounded border border-neutral-900 bg-neutral-900 px-5 py-2.5 text-brand-200"
+            className="rounded border border-neutral-900 bg-brand-200 px-5 py-2.5 text-brand-100"
           >
             Save changes
           </button>

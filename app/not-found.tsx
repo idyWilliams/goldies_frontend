@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import Logo from "../public/assets/goldis-logo.png";
+import Logo from "../public/assets/new-logo/logo-colored.svg";
 import Image from "next/image";
 
 export default function NotFound() {
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center bg-gray-100 p-5">
+    <div className="relative flex min-h-screen flex-col items-center justify-center bg-brand-100 p-5">
       <div className="absolute left-4 top-4">
         <Image
           src={Logo}
@@ -13,7 +13,7 @@ export default function NotFound() {
           className="w-[130px]"
           width={175}
           height={92}
-          alt="Goldis Logo"
+          alt="The cake app Logo"
         />
       </div>
       <h1 className="text-5xl font-bold">Not Found</h1>
@@ -22,7 +22,10 @@ export default function NotFound() {
       </p>
       <div className="mt-6 flex gap-4">
         <Link href="/">
-          <Button className="font-semibold text-brand-200" size="lg">
+          <Button
+            className="bg-brand-200 font-semibold text-brand-100"
+            size="lg"
+          >
             Go Home
           </Button>
         </Link>

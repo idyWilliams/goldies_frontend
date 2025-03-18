@@ -26,7 +26,7 @@ const Orders = () => {
       <div className="mb-4 flex items-center justify-between border-0 border-neutral-200 pb-4">
         <h2 className="text-xl font-semibold">Orders</h2>
         <Link href={"/my-orders"}>
-          <button className="rounded-md bg-black px-5 py-2 text-sm text-brand-200">
+          <button className="rounded-md bg-brand-200 px-5 py-2 text-sm text-brand-100">
             See all
           </button>
         </Link>

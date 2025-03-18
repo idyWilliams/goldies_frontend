@@ -140,7 +140,7 @@ const MyOrders = () => {
   const filteredTabs = ["All", "Pending", "Completed", "Cancelled"];
 
   return (
-    <section className="bg-neutral-100 py-6">
+    <section className="bg-brand-100 py-6">
       <div className="wrapper">
         <h1 className="mb-8 border-b pb-3 text-2xl font-semibold">
           All Orders
@@ -157,8 +157,8 @@ const MyOrders = () => {
                   key={index}
                   className={`w-fit rounded-sm border px-2 ${
                     selectedStatus === tab
-                      ? "bg-black text-brand-200"
-                      : "border-neutral-200 bg-white"
+                      ? "bg-brand-200 text-brand-100"
+                      : "border-brand-200 bg-brand-100"
                   }`}
                   onClick={() => setSelectedStatus(tab)}
                 >

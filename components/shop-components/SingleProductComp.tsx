@@ -298,7 +298,7 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
 
   return (
     <div className="min-h-dvh">
-      <div className="bg-black py-4">
+      <div className="bg-brand-200 py-4 pt-16 sm:pt-24">
         <div className="wrapper">
           <BreadCrumbs
             items={[
@@ -584,7 +584,7 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                         <Button
                           type="submit"
                           size={"lg"}
-                          className="cursor-pointer bg-neutral-900 px-4 py-2 text-brand-200"
+                          className="cursor-pointer bg-brand-200 px-4 py-2 text-brand-100"
                           disabled={cartMutation.isPending}
                         >
                           {cartMutation.isPending && (
@@ -597,7 +597,7 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                           <Button
                             type="submit"
                             size={"lg"}
-                            className="cursor-pointer bg-neutral-900 px-4 py-2 text-brand-200"
+                            className="cursor-pointer bg-brand-200 px-4 py-2 text-brand-100"
                           >
                             Add to cart
                           </Button>
@@ -634,7 +634,7 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                       <Button
                         type="button"
                         size={"lg"}
-                        className="cursor-pointer bg-neutral-900 px-4 py-2 text-brand-200"
+                        className="cursor-pointer bg-brand-200 px-4 py-2 text-brand-100"
                         onClick={handleAddToCart}
                         disabled={cartMutation.isPending}
                       >
@@ -648,7 +648,7 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                         <Button
                           type="button"
                           size={"lg"}
-                          className="cursor-pointer bg-neutral-900 px-4 py-2 text-brand-200"
+                          className="cursor-pointer bg-brand-200 px-4 py-2 text-brand-100"
                         >
                           Add to cart
                         </Button>
