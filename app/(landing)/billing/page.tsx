@@ -19,7 +19,10 @@ import { cn } from "@/helper/cn";
 import { formatCurrency } from "@/helper/formatCurrency";
 import { CreateOrderDTO } from "@/interfaces/order.interface";
 import { IBillingInfo } from "@/interfaces/user.interface";
-import { clearBuyNowProduct } from "@/redux/features/product/cartSlice";
+import {
+  clearBuyNowProduct,
+  clearCartFromStore,
+} from "@/redux/features/product/cartSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { clearCart } from "@/services/hooks/cart";
 import useCart from "@/services/hooks/cart/useCart";
@@ -86,8 +89,6 @@ const BillingCheckoutPage = () => {
   const { auth } = useAuth();
 
   const { user } = auth;
-
-  // console.log(">>>>fetched cart>>>", cart);
 
   // Get URL parameters
   const isBuyNow = searchParams.get("buyNow") === "true";
@@ -159,7 +160,6 @@ const BillingCheckoutPage = () => {
     mutationFn: orderCreate,
     onSuccess: () => {
       // Clear cart
-      
     },
   });
 
@@ -184,13 +184,7 @@ const BillingCheckoutPage = () => {
     const reference = searchParams.get("reference");
 
     // Ensure cart is fetched and products are available
-    if (
-      reference &&
-      !hasVerified.current &&
-      !cartLoading && // Cart is fetched
-      products && // Products array exists
-      products.length > 0
-    ) {
+    if (reference && !hasVerified.current && cart) {
       hasVerified.current = true; // Prevent duplicate execution
 
       verifyAndCreateOrder(reference).then(() => {
@@ -205,15 +199,7 @@ const BillingCheckoutPage = () => {
         );
       });
     }
-  }, [
-    searchParams,
-    cart,
-    cartLoading,
-    isLoading,
-    products,
-    isBuyNow,
-    buyNowProduct,
-  ]);
+  }, [searchParams, cart]);
 
   // Add this effect to reset form with billing info when data loads
   useEffect(() => {
@@ -529,17 +515,8 @@ const BillingCheckoutPage = () => {
     setSelectedMethod(event.target.value);
   };
 
-  // Show a loading spinner while the cart is being fetched
-  if (cartLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-neutral-100">
-        <div className="loader"></div>
-      </div>
-    );
-  }
-
-  // Render fallback UI if no valid products (only after cart has finished loading)
-  if ((isBuyNow && !buyNowProduct) || (!isBuyNow && cart.length === 0)) {
+  // Render fallback UI if no valid products 
+  if (!products) {
     return (
       <div className="flex h-screen flex-col items-center justify-center bg-neutral-100">
         <h2 className="mb-4 text-xl font-semibold">No Products to Checkout</h2>
@@ -1326,6 +1303,7 @@ const BillingCheckoutPage = () => {
                         router.push("/my-orders"); // Redirect to the orders page
                         setTimeout(() => {
                           clearCartMutation.mutate();
+                          dispatch(clearCartFromStore());
                           dispatch(clearBuyNowProduct());
                         }, 300);
                       }}
@@ -1339,6 +1317,7 @@ const BillingCheckoutPage = () => {
                         router.push("/"); // Redirect to the home page
                         setTimeout(() => {
                           clearCartMutation.mutate();
+                          dispatch(clearCartFromStore());
                           dispatch(clearBuyNowProduct());
                         }, 300);
                       }}
