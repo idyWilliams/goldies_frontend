@@ -1,4 +1,4 @@
-import { ICart } from "@/interfaces/cart.interface";
+import { addToCartStoreDTO, ICart } from "@/interfaces/cart.interface";
 import { IProduct } from "@/interfaces/product.interface";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "sonner";
@@ -42,8 +42,41 @@ export const cartSlice = createSlice({
     setCart: (state, action: PayloadAction<ICart[]>) => {
       state.cart = action.payload;
     },
-    addToCart: (state, action: PayloadAction<ICart>) => {
-      state.cart.push(action.payload);
+    addToCart: (state, action: PayloadAction<addToCartStoreDTO>) => {
+      const {
+        product,
+        shape,
+        size,
+        toppings,
+        flavour,
+        dateNeeded,
+        details,
+        quantity,
+      } = action.payload;
+
+      // Check if the product already exists in the cart
+      const existingItem = state.cart.find(
+        (item) => item.product._id === product._id,
+      );
+
+      if (existingItem) {
+        // Update the quantity if the product already exists
+        existingItem.quantity += quantity;
+      } else {
+        // Add the product to the cart if it doesn't exist
+        const newItem: ICart = {
+          product,
+          size,
+          shape,
+          toppings,
+          flavour,
+          dateNeeded,
+          details,
+          quantity,
+        };
+        state.cart.push(newItem);
+      }
+
       localStorage.setItem("goldies_cart", JSON.stringify(state.cart));
     },
     removeFromCart: (state, action: PayloadAction<string>) => {
@@ -52,23 +85,12 @@ export const cartSlice = createSlice({
       );
       localStorage.setItem("goldies_cart", JSON.stringify(state.cart));
     },
-    setBuyNowProduct: (
-      state,
-      action: PayloadAction<{
-        product: IProduct | null;
-        quantity: number;
-        size: string | undefined;
-        toppings: string[] | undefined;
-        // flavour: string[]| undefined ;
-        flavour: string | undefined;
-        dateNeeded: string | undefined;
-        details?: string | undefined;
-      }>,
-    ) => {
+    setBuyNowProduct: (state, action: PayloadAction<addToCartStoreDTO>) => {
       const {
         product,
         quantity,
         size,
+        shape,
         toppings,
         flavour,
         dateNeeded,
@@ -85,6 +107,7 @@ export const cartSlice = createSlice({
         product,
         quantity,
         size,
+        shape,
         toppings,
         flavour,
         dateNeeded,
@@ -95,15 +118,42 @@ export const cartSlice = createSlice({
         "goldies_buyNow",
         JSON.stringify(state.buyNowProduct),
       );
+
+      toast.success("Product set for immediate purchase!");
     },
 
     clearBuyNowProduct: (state) => {
       state.buyNowProduct = null;
       localStorage.removeItem("goldies_buyNow");
+      console.log("Buy now product cleared!");
     },
-    clearCart: (state) => {
+    clearCartFromStore: (state) => {
       state.cart = [];
       localStorage.removeItem("goldies_cart");
+      console.log("Cart cleared!");
+    },
+    // Reducer to increment product qty in cart
+    incrementProductQty: (state, action: PayloadAction<{ id: string }>) => {
+      const productIndex = state.cart.findIndex(
+        (item) => item.product._id === action.payload.id,
+      );
+      if (productIndex !== -1) {
+        state.cart[productIndex].quantity! += 1;
+        localStorage.setItem("goldies_cart", JSON.stringify(state.cart));
+      }
+    },
+    // Reducer to decrement product qty in cart
+    decrementProductQty: (state, action: PayloadAction<{ id: string }>) => {
+      const productIndex = state.cart.findIndex(
+        (item) => item.product._id === action.payload.id,
+      );
+      if (productIndex !== -1) {
+        const product = state.cart[productIndex];
+        if ((product.quantity as number) > 1) {
+          (product.quantity as number) -= 1;
+          localStorage.setItem("goldies_cart", JSON.stringify(state.cart));
+        }
+      }
     },
   },
 });
@@ -113,8 +163,10 @@ export const {
   setBuyNowProduct,
   clearBuyNowProduct,
   addToCart,
-  clearCart,
+  clearCartFromStore,
   removeFromCart,
+  incrementProductQty,
+  decrementProductQty,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

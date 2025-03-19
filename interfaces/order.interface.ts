@@ -54,8 +54,7 @@ export interface IOrderedItems {
   product: string;
   size: string | undefined;
   toppings: string[] | undefined;
-  flavour: string | undefined;
-  // flavour: string[];
+  flavour: string[] | undefined;
   dateNeeded: string | undefined;
   details: string | undefined;
   quantity: number;
