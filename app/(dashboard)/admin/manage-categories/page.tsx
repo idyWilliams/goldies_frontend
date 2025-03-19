@@ -10,7 +10,7 @@ import {
 const Page = async () => {
   return (
     <section>
-      <section className="min-h-screen w-full bg-neutral-100 px-4 py-4">
+      <section className="min-h-screen w-full bg-brand-100 px-4 py-4">
         <CategoryHeader />
         <AllCategories />
       </section>

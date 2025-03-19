@@ -70,8 +70,8 @@ const Page = () => {
       className="flex h-dvh flex-col items-center justify-center px-4"
     >
       <div className="flex  flex-col items-center border bg-white p-6 py-12 shadow-lg  sm:mx-auto sm:w-[440px]">
-        <span className="flex h-20 w-20 items-center justify-center rounded-full bg-goldie-300 bg-opacity-35">
-          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-goldie-300 bg-opacity-35">
+        <span className="flex h-20 w-20 items-center justify-center rounded-full bg-brand-200 bg-opacity-35">
+          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-200 bg-opacity-35 text-brand-100">
             <AiOutlineUserAdd size={30} />
           </span>
         </span>
@@ -112,7 +112,7 @@ const Page = () => {
             </label>
             <Button
               disabled={inviteAnAdmin.isPending}
-              className="col-span-2 mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-brand-200"
+              className="col-span-2 mt-3 h-auto w-full rounded-none bg-brand-200 py-3 text-base text-brand-100"
             >
               {inviteAnAdmin.isPending ? (
                 <div className="flex items-center justify-center gap-3">

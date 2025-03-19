@@ -86,7 +86,7 @@ export default function ProfileInfo() {
   return (
     <section className="w-full px-2 lg:w-[48%]">
       <>
-        <div className="mt-5 inline-flex h-10 w-10 items-center justify-center rounded-full bg-black text-main">
+        <div className="mt-5 inline-flex h-10 w-10 items-center justify-center rounded-full bg-brand-200 text-brand-100">
           <span className="items-center justify-center">
             {initials(admin?.userName as string)}
           </span>
@@ -128,7 +128,7 @@ export default function ProfileInfo() {
           <div className="mb-6 mt-10 grid grid-cols-2 gap-8 lg:mb-0">
             <button
               type="submit"
-              className="relative items-center justify-center rounded-sm bg-black px-5 py-2 text-sm text-main lg:text-base"
+              className="relative items-center justify-center rounded-sm bg-brand-200 px-5 py-2 text-sm text-brand-100 lg:text-base"
               disabled={isSubmitting}
             >
               <CgSpinner

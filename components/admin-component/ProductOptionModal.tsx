@@ -1,6 +1,6 @@
 import { cn } from "@/helper/cn";
 import { IProduct } from "@/interfaces/product.interface";
-import Goldie from "@/public/assets/goldis-gold-logo.png";
+import Logo from "@/public/assets/new-logo/logo-white.svg";
 import { deleteProduct } from "@/services/hooks/products";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
@@ -54,12 +54,12 @@ export default function ProductOptionModal({
         "fixed left-0 top-0 z-10 flex h-full w-full items-center justify-center bg-black bg-opacity-45 p-4",
       )}
     >
-      <div className="w-full rounded-lg bg-neutral-900 sm:w-[400px] md:w-[500px]">
-        <div className="flex items-center justify-between border-b border-goldie-300 border-opacity-40 px-4 py-4">
-          <Image src={Goldie} alt="Goldie" className="w-[120px]" />
+      <div className="w-full rounded-lg bg-brand-200 sm:w-[400px] md:w-[500px]">
+        <div className="flex items-center justify-between border-b border-brand-100 border-opacity-40 px-4 py-4">
+          <Image src={Logo} alt="The cake app" className="w-[120px]" />
 
           <span
-            className="cursor-pointer text-brand-200"
+            className="cursor-pointer text-brand-100"
             onClick={() => setShowModal(false)}
           >
             <CloseSquare size={24} />
@@ -72,7 +72,7 @@ export default function ProductOptionModal({
           </h3>
           <div className="mt-5 space-x-3">
             <button
-              className="cursor-pointer rounded-md bg-goldie-300 px-4 py-1.5 text-sm text-neutral-900"
+              className="cursor-pointer rounded-md bg-brand-100 px-4 py-1.5 text-sm text-neutral-900"
               onClick={handleConfirm}
             >
               Yes

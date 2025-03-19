@@ -1,6 +1,6 @@
 import { cn } from "@/helper/cn";
 import { deleteImageFromFirebase } from "@/lib/utils";
-import Goldie from "@/public/assets/goldis-gold-logo.png";
+import Goldie from "@/public/assets/new-logo/logo-white.svg";
 import { deleteCategory, deleteSubCategory } from "@/services/hooks/category";
 import { Category } from "@/services/types";
 import { ModalProps } from "@/utils/categoryTypes";
@@ -162,11 +162,11 @@ const ConfirmModal: React.FC<ModalProps> = ({ catOrSub }) => {
         "fixed left-0 top-0 flex h-full w-full items-center justify-center bg-black bg-opacity-45 p-4",
       )}
     >
-      <div className="w-full rounded-lg bg-neutral-900 sm:w-[400px] md:w-[500px]">
-        <div className="flex items-center justify-between border-b border-goldie-300 border-opacity-40 px-4 py-4">
+      <div className="w-full rounded-lg bg-brand-200 sm:w-[400px] md:w-[500px]">
+        <div className="flex items-center justify-between border-b border-neutral-100/15 border-opacity-40 px-4 py-4">
           <Image src={Goldie} alt="Goldie" className="w-[120px]" />
 
-          <span className="cursor-pointer text-brand-200" onClick={handleClose}>
+          <span className="cursor-pointer text-brand-100" onClick={handleClose}>
             <CloseSquare size={24} />
           </span>
         </div>
@@ -182,7 +182,7 @@ const ConfirmModal: React.FC<ModalProps> = ({ catOrSub }) => {
           <div className="mt-5 space-x-3">
             <button
               onClick={handleConfirm}
-              className="cursor-pointer rounded-md bg-goldie-300 px-4 py-1.5 text-sm text-neutral-900"
+              className="cursor-pointer rounded-md bg-brand-100 px-4 py-1.5 text-sm text-brand-200"
               disabled={
                 deleteActiveCategory.isPending || deleteSubcategory.isPending
               }

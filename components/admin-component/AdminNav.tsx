@@ -101,7 +101,7 @@ export default function AdminNav() {
                   <span className="absolute right-0.5 top-1 inline-block h-1.5 w-1.5 rounded-full bg-red-600 text-sm outline outline-2 outline-black"></span>
                 </span>
               </PopoverTrigger>
-              <PopoverContent className="w-[320px] border-0 bg-brand-200 p-0 shadow-sm">
+              <PopoverContent className="w-[320px] border border-white/20 bg-brand-200 p-0 shadow-2xl">
                 <NotificationBar />
               </PopoverContent>
             </Popover>

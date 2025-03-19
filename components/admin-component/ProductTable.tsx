@@ -118,11 +118,11 @@ export default function ProductTable({
       <table className="w-full bg-[#fff]">
         <thead>
           {table?.getHeaderGroups()?.map((headerGroup) => (
-            <tr key={headerGroup.id} className="bg-black">
+            <tr key={headerGroup.id} className="bg-brand-200">
               {headerGroup?.headers?.map((header) => (
                 <th
                   key={header.id}
-                  className="p-4 text-left capitalize text-brand-200"
+                  className="p-4 text-left capitalize text-brand-100"
                 >
                   {header.isPlaceholder
                     ? null
@@ -138,7 +138,7 @@ export default function ProductTable({
         <tbody>
           {table.getRowModel().rows?.map((row) => {
             return (
-              <tr key={row.id} className="odd:bg-goldie-300 odd:bg-opacity-20">
+              <tr key={row.id} className="odd:bg-brand-100 odd:bg-opacity-20">
                 {row.getVisibleCells().map((cell) => (
                   <td key={cell.id} className="px-4 py-4">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

@@ -47,7 +47,7 @@ const CartPage = () => {
   };
 
   return (
-    <section className="relative bg-gradient-to-br from-black to-neutral-700 py-16 pt-1">
+    <section className="relative bg-brand-100 py-16 pt-24">
       <div className="wrapper">
         <div className="">
           <BreadCrumbs
@@ -75,7 +75,7 @@ const CartPage = () => {
 
           {/* Cart Items */}
           {!isLoadingCart && cartItems.length > 0 && (
-            <div className="mb-5 grid grid-cols-[2fr_1fr] border-b border-goldie-300 pb-2 sm:grid-cols-[2fr_1fr_1fr]">
+            <div className="mb-5 grid grid-cols-[2fr_1fr] border-b border-brand-200 pb-2 sm:grid-cols-[2fr_1fr_1fr]">
               <p className="text-lg font-semibold text-brand-200">Product</p>
               <p className="hidden text-lg font-semibold text-brand-200 md:block">
                 Quantity
@@ -104,7 +104,7 @@ const CartPage = () => {
 
           {/* PAYMENT DETAILS */}
           {!isLoadingCart && cartItems.length > 0 ? (
-            <div className="my-8 w-full border-t border-goldie-300">
+            <div className="my-8 w-full border-t border-brand-200">
               <h2 className="mb-8 mt-4 text-xl font-bold capitalize text-brand-200">
                 Payment Details
               </h2>
@@ -149,7 +149,7 @@ const CartPage = () => {
                   <Button
                     size={"lg"}
                     onClick={handleCheckout}
-                    className="mt-7 self-end rounded-full bg-goldie-300 text-black hover:bg-goldie-400"
+                    className="mt-7 self-end rounded-full bg-brand-200 text-brand-100 hover:bg-brand-200"
                   >
                     Checkout
                   </Button>
@@ -173,7 +173,7 @@ const CartPage = () => {
 
                 <Button
                   variant={"outline"}
-                  className=" rounded-full border-goldie-300 bg-transparent text-brand-200 hover:border-goldie-400 hover:bg-transparent hover:text-goldie-400"
+                  className=" rounded-full border-brand-200 bg-transparent text-brand-200 hover:border-brand-200 hover:bg-transparent hover:text-brand-200"
                   onClick={() => router.push("/shop")}
                 >
                   Start Shopping

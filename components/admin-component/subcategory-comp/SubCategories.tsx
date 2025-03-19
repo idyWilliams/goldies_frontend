@@ -90,7 +90,7 @@ const SubCategories = () => {
           <button
             onClick={() => setShowSub(true)}
             className={cn(
-              "mt-3 inline-block cursor-pointer rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-brand-200 disabled:cursor-auto disabled:bg-neutral-200 disabled:text-neutral-400",
+              "mt-3 inline-block cursor-pointer rounded-md bg-brand-200 px-4 py-2 text-sm font-medium text-brand-100 disabled:cursor-auto disabled:bg-neutral-200 disabled:text-neutral-400",
             )}
           >
             Add Subcategory
@@ -111,7 +111,7 @@ const SubCategories = () => {
           <button
             onClick={handleAddSubcategory}
             className={cn(
-              "inline-block cursor-pointer rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-brand-200 disabled:bg-neutral-200 disabled:text-neutral-400 md:mt-3",
+              "inline-block cursor-pointer rounded-md bg-brand-200 px-4 py-2 text-sm font-medium text-brand-100 disabled:bg-neutral-200 disabled:text-neutral-400 md:mt-3",
             )}
           >
             Add Subcategory

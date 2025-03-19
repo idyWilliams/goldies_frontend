@@ -26,41 +26,41 @@ export default function AdminSideBar() {
       <div className="6 flex flex-col items-start gap-2 px-4">
         <Link
           href={"/admin"}
-          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname === "/admin" ? "rounded-[8px] bg-brand-200 px-2 text-brand-100 hover:text-brand-100" : "text-brand-200"}`}
+          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 ${pathname === "/admin" ? "rounded-[8px] bg-brand-200 px-2 text-brand-100 hover:text-brand-100" : "text-brand-200"}`}
         >
           <Home2 size="20" /> Overview
         </Link>
         <Link
           href={"/admin/products"}
-          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname.includes("/admin/products") ? "rounded-[8px] bg-brand-200 px-2 text-brand-100 hover:text-brand-100" : "text-brand-200"}`}
+          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 ${pathname.includes("/admin/products") ? "rounded-[8px] bg-brand-200 px-2 text-brand-100 hover:text-brand-100" : "text-brand-200"}`}
         >
           <Cake size="20" />
           Products
         </Link>
         <Link
           href={"/admin/customers"}
-          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname.includes("/admin/customers") ? "rounded-[8px] bg-brand-200 px-2 text-brand-100 hover:text-brand-100" : "text-brand-200"}`}
+          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 ${pathname.includes("/admin/customers") ? "rounded-[8px] bg-brand-200 px-2 text-brand-100 hover:text-brand-100" : "text-brand-200"}`}
         >
           <IoPeopleOutline size={20} />
           Customers
         </Link>
         <Link
           href={"/admin/orders"}
-          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname.includes("/admin/orders") ? "rounded-[8px] bg-brand-200 px-2 text-brand-100 hover:text-brand-100" : "text-brand-200"}`}
+          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 ${pathname.includes("/admin/orders") ? "rounded-[8px] bg-brand-200 px-2 text-brand-100 hover:text-brand-100" : "text-brand-200"}`}
         >
           <ShoppingBag size="20" />
           Orders
         </Link>
         <Link
           href={"/admin/create-products"}
-          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname.includes("/admin/create-products") ? "rounded-[8px] bg-brand-200 px-2 text-brand-100 hover:text-brand-100" : "text-brand-200"}`}
+          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 ${pathname.includes("/admin/create-products") ? "rounded-[8px] bg-brand-200 px-2 text-brand-100 hover:text-brand-100" : "text-brand-200"}`}
         >
           <FolderAdd size="20" />
           Create Products
         </Link>
         <Link
           href={"/admin/manage-categories"}
-          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname.includes("/admin/manage-categories") ? "rounded-[8px] bg-brand-200 px-2 text-brand-100 hover:text-brand-100" : "text-brand-200"}`}
+          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 ${pathname.includes("/admin/manage-categories") ? "rounded-[8px] bg-brand-200 px-2 text-brand-100 hover:text-brand-100" : "text-brand-200"}`}
         >
           <Category2 size="20" />
           Manage Categories
@@ -68,7 +68,7 @@ export default function AdminSideBar() {
         {auth?.admin?.role === "super_admin" && (
           <Link
             href={"/admin/invite"}
-            className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname.includes("/admin/invite") ? "rounded-[8px] bg-brand-200 px-2 text-brand-100 hover:text-brand-100" : "text-brand-200"}`}
+            className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 ${pathname.includes("/admin/invite") ? "rounded-[8px] bg-brand-200 px-2 text-brand-100 hover:text-brand-100" : "text-brand-200"}`}
           >
             <UserAdd size="20" />
             Invite Admin
@@ -76,14 +76,14 @@ export default function AdminSideBar() {
         )}
         <Link
           href={"/admin/settings"}
-          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname.includes("/admin/settings") ? "rounded-[8px] bg-brand-200 px-2 text-brand-100 hover:text-brand-100" : "text-brand-200"}`}
+          className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 ${pathname.includes("/admin/settings") ? "rounded-[8px] bg-brand-200 px-2 text-brand-100 hover:text-brand-100" : "text-brand-200"}`}
         >
           <Setting2 size="20" />
           Settings
         </Link>
 
         <button
-          className={`flex w-full cursor-pointer items-center gap-2 whitespace-nowrap py-2 text-sm text-neutral-500 duration-300 hover:text-brand-200`}
+          className={`flex w-full cursor-pointer items-center gap-2 whitespace-nowrap py-2 text-sm text-neutral-500 duration-300`}
           onClick={() => adminLogOut(router)}
         >
           <CiLogout size={20} />

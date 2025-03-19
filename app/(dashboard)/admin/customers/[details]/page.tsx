@@ -53,7 +53,7 @@ export default function Page({ params }: { params: { details: string } }) {
             )}
           </span>
           <Link href={`/admin/customers/${params.details}/orders`}>
-            <button className="rounded-sm bg-black px-6 py-2 text-sm text-brand-200">
+            <button className="rounded-sm bg-brand-200 px-6 py-2 text-sm text-brand-100 hover:bg-brand-200">
               View Orders
             </button>
           </Link>
