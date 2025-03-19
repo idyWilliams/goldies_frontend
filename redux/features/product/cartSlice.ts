@@ -85,10 +85,7 @@ export const cartSlice = createSlice({
       );
       localStorage.setItem("goldies_cart", JSON.stringify(state.cart));
     },
-    setBuyNowProduct: (
-      state,
-      action: PayloadAction<addToCartStoreDTO>,
-    ) => {
+    setBuyNowProduct: (state, action: PayloadAction<addToCartStoreDTO>) => {
       const {
         product,
         quantity,
@@ -130,10 +127,33 @@ export const cartSlice = createSlice({
       localStorage.removeItem("goldies_buyNow");
       console.log("Buy now product cleared!");
     },
-    clearCart: (state) => {
+    clearCartFromStore: (state) => {
       state.cart = [];
       localStorage.removeItem("goldies_cart");
-      toast.success("Cart cleared!");
+      console.log("Cart cleared!");
+    },
+    // Reducer to increment product qty in cart
+    incrementProductQty: (state, action: PayloadAction<{ id: string }>) => {
+      const productIndex = state.cart.findIndex(
+        (item) => item.product._id === action.payload.id,
+      );
+      if (productIndex !== -1) {
+        state.cart[productIndex].quantity! += 1;
+        localStorage.setItem("goldies_cart", JSON.stringify(state.cart));
+      }
+    },
+    // Reducer to decrement product qty in cart
+    decrementProductQty: (state, action: PayloadAction<{ id: string }>) => {
+      const productIndex = state.cart.findIndex(
+        (item) => item.product._id === action.payload.id,
+      );
+      if (productIndex !== -1) {
+        const product = state.cart[productIndex];
+        if ((product.quantity as number) > 1) {
+          (product.quantity as number) -= 1;
+          localStorage.setItem("goldies_cart", JSON.stringify(state.cart));
+        }
+      }
     },
   },
 });
@@ -143,8 +163,10 @@ export const {
   setBuyNowProduct,
   clearBuyNowProduct,
   addToCart,
-  clearCart,
+  clearCartFromStore,
   removeFromCart,
+  incrementProductQty,
+  decrementProductQty,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;
