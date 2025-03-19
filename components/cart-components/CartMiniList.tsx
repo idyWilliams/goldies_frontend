@@ -17,11 +17,16 @@ import { PopoverClose } from "@radix-ui/react-popover";
 import { AxiosError } from "axios";
 import { ErrorResponse } from "@/types/products";
 import { toast } from "sonner";
+import { useAuth } from "@/context/AuthProvider";
+import { useAppDispatch } from "@/redux/hook";
+import { removeFromCart as removeFromCartSlice } from "@/redux/features/product/cartSlice";
 import { removeFromCart } from "@/services/hooks/cart";
 
 const CartMiniList = () => {
+  const { auth } = useAuth();
   const { cart, isLoading } = useCart();
   const queryClient = useQueryClient();
+  const dispatch = useAppDispatch();
 
   const cartItems = Object.values(cart);
 
@@ -40,7 +45,14 @@ const CartMiniList = () => {
   });
 
   const handleRemove = (id: string) => {
-    removeMutation.mutate(id);
+    if (auth?.user) {
+      removeMutation.mutateAsync(id).then(() => {
+        dispatch(removeFromCartSlice(id));
+      });
+    } else {
+      dispatch(removeFromCartSlice(id));
+      toast.success("Product removed from cart");
+    }
   };
 
   return (

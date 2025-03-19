@@ -1,5 +1,4 @@
 "use client";
-import Image from "next/image";
 
 import BreadCrumbs from "@/components/BreadCrumbs";
 
@@ -11,12 +10,12 @@ import ProductReview from "@/components/shop-components/ProductReview";
 import ProductStatusType from "@/components/shop-components/ProductStatusType";
 import StarRating from "@/components/StarRating";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthProvider";
 import EachElement from "@/helper/EachElement";
 import { formatCurrency } from "@/helper/formatCurrency";
-import { ProductParams } from "@/interfaces/product.interface";
-import Placeholder from "@/public/assets/placeholder3.png";
-import { setBuyNowProduct } from "@/redux/features/product/cartSlice";
+import { IProduct, ProductParams } from "@/interfaces/product.interface";
 import { addToCart } from "@/services/hooks/cart";
+import useCart from "@/services/hooks/cart/useCart";
 import { getAllProducts, getProductBySlug } from "@/services/hooks/products";
 import useIsLoggedIn from "@/services/hooks/users/useIsLoggedIn";
 import { ErrorResponse } from "@/types/products";
@@ -26,21 +25,19 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { ArrowRight } from "iconsax-react";
-import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { MultiSelect, Option } from "react-multi-select-component";
-import { useDispatch } from "react-redux";
 import { useMediaQuery } from "react-responsive";
 import Select from "react-select";
 import { toast } from "sonner";
 import * as yup from "yup";
-import ProductImages from "./ProductImages";
+import ProductCardSkeleton from "./ProductCardSkeleton";
 import ProductDetailsSkeleton from "./ProductDetailsSkeleton ";
 import ProductError from "./ProductError";
-import ProductCardSkeleton from "./ProductCardSkeleton";
+import ProductImages from "./ProductImages";
 
 export type SelectOptionType = {
   label: string | number;
@@ -56,25 +53,18 @@ export type SelectOptionUserType =
 
 const schema = yup.object().shape({
   sizes: yup.string().required("Size is required"),
+  shape: yup.string().required("Shape is required"),
   toppings: yup
     .array()
     .of(yup.string())
     .min(1, "At least one topping is required"),
-  flavours: yup.string().required("Flavour is required"),
-  // flavours: yup.array()
-  // .of(yup.string())
-  // .min(1, "At least one flavour is required"),
+  flavours: yup
+    .array()
+    .of(yup.string())
+    .min(1, "At least one flavour is required"),
   cakeTimes: yup.string().required("When do you need your cake?"),
   message: yup.string(),
 });
-
-interface FormValues {
-  sizes: string;
-  toppings: string;
-  flavours: string;
-  cakeTimes: string;
-  // message: string;
-}
 
 const setToUpperCase = (sentence: string) => {
   const uppercaseWord = sentence
@@ -86,8 +76,7 @@ const setToUpperCase = (sentence: string) => {
 };
 
 const SingleProductComp = ({ slug }: { slug: string }) => {
-  const { activeProduct, setActiveProduct, allProducts, setAllProducts } =
-    useUserPdctStore();
+  const { allProducts, setAllProducts } = useUserPdctStore();
   const isDesktop = useMediaQuery({ minWidth: 1280 });
   const isLaptop = useMediaQuery({ minWidth: 1024 });
   const isTablet = useMediaQuery({ minWidth: 640 });
@@ -110,9 +99,10 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
   const [showReviews, setShowReviews] = useState(false);
   const [quantity, setQuantity] = useState<number>(1);
   const router = useRouter();
-  const dispatch = useDispatch();
   const [previewFav, setPreviewFav] = useState(false);
   const queryClient = useQueryClient();
+  const { handleAddToCart } = useCart();
+  const { auth } = useAuth();
 
   const {
     register,
@@ -123,16 +113,17 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
     resolver: yupResolver(schema),
   });
 
-  const { data, isError, isLoading, isPending, refetch } = useQuery({
+  const {
+    data: activeProduct,
+    isError,
+    isLoading,
+    isPending,
+    refetch,
+  } = useQuery({
     queryKey: ["getProductBySlug", slug],
     queryFn: async () => getProductBySlug(slug),
+    select: (data) => data.product as IProduct,
   });
-
-  useEffect(() => {
-    if (data) {
-      setActiveProduct(data.product);
-    }
-  }, [data, setActiveProduct]);
 
   const params: ProductParams = {
     page: 1,
@@ -170,13 +161,6 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
     }
   }, [allProducts, activeProduct?.slug]);
 
-  function create(value: any) {
-    if (value !== null) {
-      const { label, description } = value;
-      return { label, description };
-    }
-  }
-
   const cartMutation = useMutation({
     mutationFn: addToCart,
     onSuccess: (data) => {
@@ -194,69 +178,142 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
     },
   });
 
-  const handleAddToCart = handleSubmit((data) => {
+  const handleAddItemToCart = handleSubmit((data) => {
     if (activeProduct?.productType === "preorder") {
       // For preorder products, validate and submit form data
-      if (!data.sizes && !data.cakeTimes && !data.flavours && !data.toppings) {
+      if (
+        !data.sizes &&
+        !data.cakeTimes &&
+        !data.flavours &&
+        !data.toppings &&
+        !data.shape
+      ) {
         return;
       }
     }
 
-    if (!isLogin) {
-      setPreviewFav(false);
-      return;
-    }
-
-    cartMutation.mutate({
-      product: activeProduct?._id as string,
-      quantity: quantity,
-      size: activeProduct?.productType === "preorder" ? data.sizes : undefined,
-      toppings:
-        activeProduct?.productType === "preorder"
-          ? (data.toppings as string[])
-          : undefined,
-      flavour:
-        activeProduct?.productType === "preorder" ? data.flavours : undefined,
-      dateNeeded:
-        activeProduct?.productType === "preorder" ? data.cakeTimes : undefined,
-      details:
-        activeProduct?.productType === "preorder" ? data.message : undefined,
-    });
-  });
-
-  const handleBuyNow = handleSubmit((data) => {
-    if (activeProduct?.productType === "preorder") {
-      // For preorder products, validate form data
-      if (!data.sizes && !data.toppings && !data.cakeTimes) {
-        return;
-      }
-    }
-
-    if (!isLogin) {
-      setPreviewFav(false);
-      return;
-    }
-
-    dispatch(
-      setBuyNowProduct({
-        product: activeProduct,
+    if (auth?.user) {
+      cartMutation
+        .mutateAsync({
+          product: activeProduct?._id as string,
+          quantity: quantity,
+          size:
+            activeProduct?.productType === "preorder" ? data.sizes : undefined,
+          shape:
+            activeProduct?.productType === "preorder" ? data.shape : undefined,
+          toppings:
+            activeProduct?.productType === "preorder"
+              ? (data.toppings as string[])
+              : undefined,
+          flavour:
+            activeProduct?.productType === "preorder"
+              ? (data.flavours as string[])
+              : undefined,
+          dateNeeded:
+            activeProduct?.productType === "preorder"
+              ? data.cakeTimes
+              : undefined,
+          details:
+            activeProduct?.productType === "preorder"
+              ? data.message
+              : undefined,
+        })
+        .then(() => {
+          handleAddToCart({
+            product: activeProduct as IProduct,
+            quantity: quantity,
+            size:
+              activeProduct?.productType === "preorder"
+                ? data.sizes
+                : undefined,
+            shape:
+              activeProduct?.productType === "preorder"
+                ? data.shape
+                : undefined,
+            toppings:
+              activeProduct?.productType === "preorder"
+                ? (data.toppings as string[])
+                : undefined,
+            flavour:
+              activeProduct?.productType === "preorder"
+                ? (data.flavours as string[])
+                : undefined,
+            dateNeeded:
+              activeProduct?.productType === "preorder"
+                ? data.cakeTimes
+                : undefined,
+            details:
+              activeProduct?.productType === "preorder"
+                ? data.message
+                : undefined,
+          });
+        });
+    } else {
+      handleAddToCart({
+        product: activeProduct as IProduct,
         quantity: quantity,
         size:
           activeProduct?.productType === "preorder" ? data.sizes : undefined,
+        shape:
+          activeProduct?.productType === "preorder" ? data.shape : undefined,
         toppings:
           activeProduct?.productType === "preorder"
             ? (data.toppings as string[])
             : undefined,
         flavour:
-          activeProduct?.productType === "preorder" ? data.flavours : undefined,
+          activeProduct?.productType === "preorder"
+            ? (data.flavours as string[])
+            : undefined,
         dateNeeded:
           activeProduct?.productType === "preorder"
             ? data.cakeTimes
             : undefined,
         details:
           activeProduct?.productType === "preorder" ? data.message : undefined,
-      }),
-    );
+      });
+      toast.success("Product added to cart successfully");
+    }
+  });
+
+  const handleBuyNow = handleSubmit((data) => {
+    if (activeProduct?.productType === "preorder") {
+      // For preorder products, validate form data
+      if (
+        !data.sizes &&
+        !data.cakeTimes &&
+        !data.flavours &&
+        !data.toppings &&
+        !data.shape
+      ) {
+        return;
+      }
+    }
+
+    if (!isLogin) {
+      setPreviewFav(false);
+      return;
+    }
+
+    // dispatch(
+    //   setBuyNowProduct({
+    //     product: activeProduct?._id || "",
+    //     quantity: quantity,
+    //     size:
+    //       activeProduct?.productType === "preorder" ? data.sizes : undefined,
+    //     toppings:
+    //       activeProduct?.productType === "preorder"
+    //         ? (data.toppings as string[])
+    //         : undefined,
+    //     flavour:
+    //       activeProduct?.productType === "preorder" ? data.flavours : undefined,
+    //     dateNeeded:
+    //       activeProduct?.productType === "preorder"
+    //         ? data.cakeTimes
+    //         : undefined,
+    //     details:
+    //       activeProduct?.productType === "preorder" ? data.message : undefined,
+    //   }),
+    // );
 
     // Navigate to billing page
     router.push(`/billing?buyNow=true`);
@@ -383,7 +440,7 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                   <form
                     id="detail"
                     className="lg:w-[75%]"
-                    onSubmit={handleAddToCart}
+                    onSubmit={handleAddItemToCart}
                   >
                     <div className="mt-4 space-y-3">
                       <label htmlFor="size" className="block w-full">
@@ -402,6 +459,39 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                               <Select
                                 options={sizeOptions}
                                 value={sizeOptions.find(
+                                  (option) => option.value === value,
+                                )}
+                                onChange={(selected) =>
+                                  onChange(selected?.value)
+                                }
+                                ref={ref}
+                                theme={selectTheme}
+                              />
+                            );
+                          }}
+                        />
+                        {errors.sizes && (
+                          <p className="text-sm text-red-500">
+                            {errors.sizes.message}
+                          </p>
+                        )}
+                      </label>
+                      <label htmlFor="shape" className="block w-full">
+                        <span className="mb-1.5 inline-block after:inline-block after:text-red-600 after:content-['*'] ">
+                          Shape
+                        </span>
+                        <Controller
+                          control={control}
+                          name="shape"
+                          render={({ field: { value, onChange, ref } }) => {
+                            const shapeOptions = transformToOptions(
+                              activeProduct?.shapes || [],
+                            );
+
+                            return (
+                              <Select
+                                options={shapeOptions}
+                                value={shapeOptions.find(
                                   (option) => option.value === value,
                                 )}
                                 onChange={(selected) =>
@@ -464,21 +554,26 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                           control={control}
                           name="flavours"
                           render={({ field: { value, onChange, ref } }) => {
+                            const safeValue = Array.isArray(value) ? value : [];
                             const flavourOptions = transformToOptions(
                               activeProduct?.flavour || [],
                             );
 
+                            const selectedOptions = transformToOptions(
+                              safeValue as string[],
+                            );
+
                             return (
-                              <Select
+                              <MultiSelect
                                 options={flavourOptions}
-                                value={flavourOptions.find(
-                                  (option) => option.value === value,
-                                )}
-                                onChange={(selected) =>
-                                  onChange(selected?.value)
-                                }
-                                ref={ref}
-                                theme={selectTheme}
+                                value={selectedOptions}
+                                onChange={(selected: Option[]) => {
+                                  const selectedValues = selected.map(
+                                    (item) => item.value,
+                                  );
+                                  onChange(selectedValues);
+                                }}
+                                labelledBy="Select flavour"
                               />
                             );
                           }}
@@ -580,29 +675,17 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                         </DialogCloseButton>
                       )}
 
-                      {isLogin ? (
-                        <Button
-                          type="submit"
-                          size={"lg"}
-                          className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
-                          disabled={cartMutation.isPending}
-                        >
-                          {cartMutation.isPending && (
-                            <Loader2 className="mr-1 animate-spin" />
-                          )}
-                          Add to cart
-                        </Button>
-                      ) : (
-                        <DialogCloseButton setPreviewFav={setPreviewFav}>
-                          <Button
-                            type="submit"
-                            size={"lg"}
-                            className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
-                          >
-                            Add to cart
-                          </Button>
-                        </DialogCloseButton>
-                      )}
+                      <Button
+                        type="submit"
+                        size={"lg"}
+                        className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
+                        // disabled={isAddLoading}
+                      >
+                        {/* {isAddLoading && (
+                          <Loader2 className="mr-1 animate-spin" />
+                        )} */}
+                        Add to cart
+                      </Button>
                     </div>
                   </form>
                 ) : (
@@ -630,30 +713,18 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                       </DialogCloseButton>
                     )}
 
-                    {isLogin ? (
-                      <Button
-                        type="button"
-                        size={"lg"}
-                        className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
-                        onClick={handleAddToCart}
-                        disabled={cartMutation.isPending}
-                      >
-                        {cartMutation.isPending && (
-                          <Loader2 className="mr-1 animate-spin" />
-                        )}
-                        Add to cart
-                      </Button>
-                    ) : (
-                      <DialogCloseButton setPreviewFav={setPreviewFav}>
-                        <Button
-                          type="button"
-                          size={"lg"}
-                          className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
-                        >
-                          Add to cart
-                        </Button>
-                      </DialogCloseButton>
-                    )}
+                    <Button
+                      type="button"
+                      size={"lg"}
+                      className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
+                      onClick={handleAddItemToCart}
+                      // disabled={isAddLoading}
+                    >
+                      {/* {isAddLoading && (
+                        <Loader2 className="mr-1 animate-spin" />
+                      )} */}
+                      Add to cart
+                    </Button>
                   </div>
                 )}
               </div>
