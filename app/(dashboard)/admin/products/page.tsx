@@ -284,7 +284,7 @@ export default function ProductsPage() {
           <p className="text-sm">List of all available products created</p>
         </div>
         <Button
-          className="flex cursor-pointer items-center gap-1 rounded-md bg-black text-brand-200"
+          className="flex cursor-pointer items-center gap-1 rounded-md bg-brand-200 text-brand-100 hover:bg-brand-200"
           onClick={handleAddNew}
         >
           <Add size={15} />
@@ -322,7 +322,7 @@ export default function ProductsPage() {
 
         <div ref={sortDropdownRef} className="relative">
           <Button
-            className="bg-black text-brand-200 "
+            className="bg-transparent text-brand-200 ring-1 ring-brand-200 hover:bg-transparent "
             onClick={() => setOpen((prev) => !prev)}
             disabled={allProducts.length === 0}
           >

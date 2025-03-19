@@ -35,7 +35,7 @@ const chartData = [
 const chartConfig = {
   month: {
     label: "Month",
-    color: "#e4d064",
+    color: "var(--brand-200)",
   },
   price: {
     label: "Sales",
@@ -45,7 +45,7 @@ const chartConfig = {
 
 export function SaleChart() {
   return (
-    <section className="rounded-xl border-0 bg-neutral-900 p-4">
+    <section className="rounded-xl border-0 bg-brand-100 p-4">
       <h3 className="mb-6 text-brand-200">Sales Revenue Report</h3>
       <div className="lg:hidden">
         <ChartContainer

@@ -157,8 +157,10 @@ export default function Page() {
   ];
   return (
     <>
-      <section className="min-h-screen w-full bg-[#EFEFEF] px-4 py-6">
-        <h1 className="text-lg font-extrabold uppercase">Customers</h1>
+      <section className="min-h-screen w-full px-4 py-6">
+        <h1 className="text-lg font-extrabold uppercase text-brand-200">
+          Customers
+        </h1>
         <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
 
         <div className="my-6 flex flex-col-reverse items-center justify-between gap-4 md:flex-row">

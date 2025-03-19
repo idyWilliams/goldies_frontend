@@ -32,7 +32,7 @@ import { useAuth } from "@/context/AuthProvider";
 import { cn } from "@/lib/utils";
 import { adminLogOut } from "@/services/hooks/admin-auth";
 import CurrentTime from "./CurrentTime";
-import Logo from "@/public/assets/new-logo/logo-white.svg";
+import Logo from "@/public/assets/new-logo/logo-colored.svg";
 
 export default function AdminNav() {
   const router = useRouter();
@@ -45,7 +45,9 @@ export default function AdminNav() {
 
   return (
     <>
-      <nav className={` fixed left-0 top-0 z-50 w-full bg-black py-3`}>
+      <nav
+        className={` fixed left-0 top-0 z-50 w-full border-b border-neutral-300 bg-white py-3`}
+      >
         <div className="flex items-center justify-between px-4">
           <div className="flex items-center gap-3">
             <span
@@ -99,7 +101,7 @@ export default function AdminNav() {
                   <span className="absolute right-0.5 top-1 inline-block h-1.5 w-1.5 rounded-full bg-red-600 text-sm outline outline-2 outline-black"></span>
                 </span>
               </PopoverTrigger>
-              <PopoverContent className="w-[320px] border-0 bg-neutral-950 p-0 shadow-[0_0_30px_rgb(228,208,100,0.3)]">
+              <PopoverContent className="w-[320px] border-0 bg-brand-200 p-0 shadow-sm">
                 <NotificationBar />
               </PopoverContent>
             </Popover>
@@ -130,13 +132,13 @@ export default function AdminNav() {
                   </div>
                 </button>
               </PopoverTrigger>
-              <PopoverContent className="w-[190px] rounded-md border-[#E4D064] bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
+              <PopoverContent className="w-[190px] rounded-md border-brand-200 bg-brand-200 p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
                 <div className="mb-2 flex items-center justify-start gap-3 border-b border-black border-opacity-20 p-2 pb-3 sm:hidden">
                   {auth?.admin ? auth?.admin?.userName : "No username"}
                 </div>
                 <div className="">
                   <span
-                    className="flex cursor-pointer items-center gap-2  whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
+                    className="flex cursor-pointer items-center gap-2  whitespace-nowrap rounded-[3px] p-2 text-sm text-brand-100 duration-300 hover:bg-black hover:bg-opacity-20"
                     onClick={() => {
                       setOpen(false);
                       router.push(`/admin/settings?tab=profile`);
@@ -146,7 +148,7 @@ export default function AdminNav() {
                     My Account
                   </span>
                   <span
-                    className="flex cursor-pointer items-center gap-2  whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
+                    className="flex cursor-pointer items-center gap-2  whitespace-nowrap rounded-[3px] p-2 text-sm text-brand-100 duration-300 hover:bg-black hover:bg-opacity-20"
                     onClick={() => {
                       setOpen(false);
                       router.push(`/admin/settings?tab=change-password`);
@@ -158,7 +160,7 @@ export default function AdminNav() {
                 </div>
                 <div className="my-2 border-b border-black border-opacity-50"></div>
                 <button
-                  className="flex w-full cursor-pointer items-center justify-center rounded-sm bg-black  px-7 py-2.5 text-center text-sm  text-[#E4D064] duration-300 hover:bg-neutral-950"
+                  className="flex w-full cursor-pointer items-center justify-center rounded-sm bg-brand-100  px-7 py-2.5 text-center text-sm  text-brand-200 duration-300 hover:bg-brand-100"
                   role="button"
                   onClick={() => adminLogOut(router)}
                 >
@@ -233,7 +235,7 @@ const NotificationBar = () => {
               key={index}
               className="grid h-full grid-cols-[40px_1fr] items-center gap-3"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-goldie-400 bg-opacity-20 text-brand-200">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-100 bg-opacity-20 text-brand-200">
                 {notifyType(notification?.type)}
               </div>
               <div className="space-y-1">
@@ -242,7 +244,7 @@ const NotificationBar = () => {
                 >
                   {notification.title}
                 </p>
-                <p className="text-sm text-neutral-400">
+                <p className="text-sm text-neutral-200">
                   {notification.description}
                 </p>
               </div>
@@ -251,7 +253,7 @@ const NotificationBar = () => {
         </div>
       </CardContent>
       <CardFooter className="px-4">
-        <Button className="w-full bg-goldie-400 text-goldie-950 hover:bg-goldie-300">
+        <Button className="w-full bg-transparent text-brand-100 ring-1 ring-brand-100 hover:bg-transparent">
           <CheckIcon className="mr-2 h-4 w-4" /> Mark all as read
         </Button>
       </CardFooter>

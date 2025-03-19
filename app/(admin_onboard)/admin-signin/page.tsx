@@ -20,7 +20,7 @@ const validationSchema = yup.object().shape({
   password: yup.string().required("Password is required"),
 });
 
-const Page = () => {
+const AdminLogin = () => {
   const router = useRouter();
   const [visible, setVisible] = useState(false);
   const [email, setEmail] = useState<string>("");
@@ -149,14 +149,14 @@ const Page = () => {
                       id="agree"
                       defaultChecked
                       // checked
-                      className="form-checkbox h-4 w-4 checked:bg-goldie-300 checked:hover:bg-neutral-800 focus:ring-neutral-800 checked:focus:ring-neutral-800"
+                      className="form-checkbox h-4 w-4 checked:bg-brand-200 checked:hover:bg-neutral-800 focus:ring-neutral-800 checked:focus:ring-neutral-800"
                     />
                     <span className="text-sm">Keep me signed in</span>
                   </label>
 
                   <Link
                     href="/admin-forget-password"
-                    className="text-sm hover:text-goldie-400"
+                    className="text-sm hover:text-brand-200"
                   >
                     Forgot password?
                   </Link>
@@ -164,7 +164,7 @@ const Page = () => {
 
                 <Button
                   disabled={adminLogin?.isPending}
-                  className="mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-brand-200"
+                  className="mt-3 h-auto w-full rounded-none bg-brand-200 py-3 text-base text-brand-100 hover:border hover:border-brand-200 hover:bg-transparent hover:text-brand-200"
                   type="submit"
                 >
                   {adminLogin?.isPending ? "Loading...." : "Sign In"}
@@ -178,4 +178,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default AdminLogin;
