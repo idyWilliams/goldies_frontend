@@ -10,6 +10,13 @@ import { toast } from "sonner";
 import CartConfirmModal from "./CartConfirmModal";
 import { AxiosError } from "axios";
 import { ErrorResponse } from "@/types/products";
+import { useAppDispatch } from "@/redux/hook";
+import {
+  decrementProductQty,
+  incrementProductQty,
+} from "@/redux/features/product/cartSlice";
+import { useAuth } from "@/context/AuthProvider";
+import { removeFromCart as removeFromCartSlice } from "@/redux/features/product/cartSlice";
 
 interface CartItemProps {
   item: ICart;
@@ -17,7 +24,9 @@ interface CartItemProps {
 
 const CartItem = ({ item }: CartItemProps) => {
   const queryClient = useQueryClient();
+  const dispatch = useAppDispatch();
   const [showModal, setShowModal] = useState(false);
+  const { auth } = useAuth();
 
   const removeMutation = useMutation({
     mutationFn: removeFromCart,
@@ -35,7 +44,14 @@ const CartItem = ({ item }: CartItemProps) => {
   });
 
   const handleRemove = (id: string) => {
-    removeMutation.mutate(id);
+    if (auth?.user) {
+      removeMutation.mutateAsync(id).then(() => {
+        dispatch(removeFromCartSlice(id));
+      });
+    } else {
+      dispatch(removeFromCartSlice(id));
+      toast.success("Product removed from cart");
+    }
   };
 
   // Mutation to update the quantity
@@ -55,19 +71,35 @@ const CartItem = ({ item }: CartItemProps) => {
 
   // Handle increasing the quantity
   const handleIncreaseQuantity = () => {
-    updateQuantityMutation.mutate({
-      product: item.product._id,
-      quantity: item.quantity + 1,
-    });
+    if (auth?.user) {
+      updateQuantityMutation
+        .mutateAsync({
+          product: item.product._id,
+          quantity: item.quantity + 1,
+        })
+        .then(() => {
+          dispatch(incrementProductQty({ id: item?.product?._id }));
+        });
+    } else {
+      dispatch(incrementProductQty({ id: item?.product?._id }));
+    }
   };
 
   // Handle decreasing the quantity
   const handleDecreaseQuantity = () => {
     if (item.quantity > 1) {
-      updateQuantityMutation.mutate({
-        product: item.product._id,
-        quantity: item.quantity - 1,
-      });
+      if (auth?.user) {
+        updateQuantityMutation
+          .mutateAsync({
+            product: item.product._id,
+            quantity: item.quantity - 1,
+          })
+          .then(() => {
+            dispatch(decrementProductQty({ id: item?.product?._id }));
+          });
+      } else {
+        dispatch(decrementProductQty({ id: item?.product?._id }));
+      }
     }
   };
 

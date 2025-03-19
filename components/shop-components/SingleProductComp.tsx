@@ -40,6 +40,7 @@ import ProductError from "./ProductError";
 import ProductImages from "./ProductImages";
 import { useAppDispatch } from "@/redux/hook";
 import { setBuyNowProduct } from "@/redux/features/product/cartSlice";
+import { Loader2 } from "lucide-react";
 
 export type SelectOptionType = {
   label: string | number;
@@ -111,6 +112,7 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -250,6 +252,15 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                 ? data.message
                 : undefined,
           });
+          reset({
+            sizes: "",
+            shape: "",
+            toppings: [],
+            flavours: [],
+            cakeTimes: "",
+            message: "",
+          });
+          setQuantity(1);
         });
     } else {
       handleAddToCart({
@@ -274,6 +285,15 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
         details:
           activeProduct?.productType === "preorder" ? data.message : undefined,
       });
+      reset({
+        sizes: "",
+        shape: "",
+        toppings: [],
+        flavours: [],
+        cakeTimes: "",
+        message: "",
+      });
+      setQuantity(1);
       toast.success("Product added to cart successfully");
     }
   });
@@ -450,7 +470,7 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                     onSubmit={handleAddItemToCart}
                   >
                     <div className="mt-4 space-y-3">
-                      <label htmlFor="size" className="block w-full">
+                      <label htmlFor="sizes" className="block w-full">
                         <span className="mb-1.5 inline-block after:inline-block after:text-red-600 after:content-['*'] ">
                           Size
                         </span>
@@ -465,9 +485,11 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                             return (
                               <Select
                                 options={sizeOptions}
-                                value={sizeOptions.find(
-                                  (option) => option.value === value,
-                                )}
+                                value={
+                                  sizeOptions.find(
+                                    (option) => option.value === value,
+                                  ) || null
+                                }
                                 onChange={(selected) =>
                                   onChange(selected?.value)
                                 }
@@ -498,9 +520,11 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                             return (
                               <Select
                                 options={shapeOptions}
-                                value={shapeOptions.find(
-                                  (option) => option.value === value,
-                                )}
+                                value={
+                                  shapeOptions.find(
+                                    (option) => option.value === value,
+                                  ) || null
+                                }
                                 onChange={(selected) =>
                                   onChange(selected?.value)
                                 }
@@ -602,9 +626,11 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                             return (
                               <Select
                                 options={cakeTimes}
-                                value={cakeTimes.find(
-                                  (option) => option.value === value,
-                                )}
+                                value={
+                                  cakeTimes.find(
+                                    (option) => option.value === value,
+                                  ) || null
+                                }
                                 onChange={(selected) =>
                                   onChange(selected?.value)
                                 }
@@ -686,11 +712,11 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                         type="submit"
                         size={"lg"}
                         className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
-                        // disabled={isAddLoading}
+                        disabled={cartMutation.isPending}
                       >
-                        {/* {isAddLoading && (
+                        {cartMutation.isPending && (
                           <Loader2 className="mr-1 animate-spin" />
-                        )} */}
+                        )}
                         Add to cart
                       </Button>
                     </div>
@@ -725,11 +751,11 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                       size={"lg"}
                       className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
                       onClick={handleAddItemToCart}
-                      // disabled={isAddLoading}
+                      disabled={cartMutation.isPending}
                     >
-                      {/* {isAddLoading && (
+                      {cartMutation.isPending && (
                         <Loader2 className="mr-1 animate-spin" />
-                      )} */}
+                      )}
                       Add to cart
                     </Button>
                   </div>
