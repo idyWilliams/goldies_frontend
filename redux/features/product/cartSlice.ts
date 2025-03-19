@@ -87,16 +87,7 @@ export const cartSlice = createSlice({
     },
     setBuyNowProduct: (
       state,
-      action: PayloadAction<{
-        product: IProduct | null;
-        quantity: number;
-        size: string | undefined;
-        shape: string | undefined;
-        toppings: string[] | undefined;
-        flavour: string[] | undefined;
-        dateNeeded: string | undefined;
-        details?: string | undefined;
-      }>,
+      action: PayloadAction<addToCartStoreDTO>,
     ) => {
       const {
         product,

@@ -38,6 +38,8 @@ import ProductCardSkeleton from "./ProductCardSkeleton";
 import ProductDetailsSkeleton from "./ProductDetailsSkeleton ";
 import ProductError from "./ProductError";
 import ProductImages from "./ProductImages";
+import { useAppDispatch } from "@/redux/hook";
+import { setBuyNowProduct } from "@/redux/features/product/cartSlice";
 
 export type SelectOptionType = {
   label: string | number;
@@ -81,6 +83,7 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
   const isLaptop = useMediaQuery({ minWidth: 1024 });
   const isTablet = useMediaQuery({ minWidth: 640 });
   const isLogin = useIsLoggedIn();
+  const dispatch = useAppDispatch();
 
   const featuredPdctLength = () => {
     if (isDesktop) {
@@ -294,26 +297,30 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
       return;
     }
 
-    // dispatch(
-    //   setBuyNowProduct({
-    //     product: activeProduct?._id || "",
-    //     quantity: quantity,
-    //     size:
-    //       activeProduct?.productType === "preorder" ? data.sizes : undefined,
-    //     toppings:
-    //       activeProduct?.productType === "preorder"
-    //         ? (data.toppings as string[])
-    //         : undefined,
-    //     flavour:
-    //       activeProduct?.productType === "preorder" ? data.flavours : undefined,
-    //     dateNeeded:
-    //       activeProduct?.productType === "preorder"
-    //         ? data.cakeTimes
-    //         : undefined,
-    //     details:
-    //       activeProduct?.productType === "preorder" ? data.message : undefined,
-    //   }),
-    // );
+    dispatch(
+      setBuyNowProduct({
+        product: activeProduct as IProduct,
+        quantity: quantity,
+        size:
+          activeProduct?.productType === "preorder" ? data.sizes : undefined,
+        shape:
+          activeProduct?.productType === "preorder" ? data.shape : undefined,
+        toppings:
+          activeProduct?.productType === "preorder"
+            ? (data.toppings as string[])
+            : undefined,
+        flavour:
+          activeProduct?.productType === "preorder"
+            ? (data.flavours as string[])
+            : undefined,
+        dateNeeded:
+          activeProduct?.productType === "preorder"
+            ? data.cakeTimes
+            : undefined,
+        details:
+          activeProduct?.productType === "preorder" ? data.message : undefined,
+      }),
+    );
 
     // Navigate to billing page
     router.push(`/billing?buyNow=true`);
