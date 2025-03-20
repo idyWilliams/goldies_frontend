@@ -20,10 +20,10 @@ import {
 import EachElement from "@/helper/EachElement";
 import { cn } from "@/helper/cn";
 const chartData = [
-  { category: "milestones", sales: 200, fill: "#13B136" },
-  { category: "themed", sales: 100, fill: "#FFCC00" },
-  { category: "kids", sales: 187, fill: "#E4D064" },
-  { category: "cupcakes", sales: 173, fill: "#E03131" },
+  { category: "milestones", sales: 200, fill: "#4A90E2" },
+  { category: "themed", sales: 100, fill: "#2ECC71" },
+  { category: "kids", sales: 187, fill: "#F5A623" },
+  { category: "cupcakes", sales: 173, fill: "#9B51E0" },
 ];
 
 const chartConfig = {
@@ -48,9 +48,11 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
+const colors = ["#4A90E2", "#2ECC71", "#F5A623", "#9B51E0", "#95A5A6"];
+
 export function CategoryChart() {
   return (
-    <div className="flex flex-col rounded-2xl border-0 bg-neutral-900 p-4">
+    <div className="flex flex-col rounded-xl border bg-white p-4">
       <h2 className="font-bold text-brand-200">Cakes Category Chart</h2>
       <div className="items-center justify-center xl:flex xl:flex-col">
         <div className="pb-0">
@@ -78,10 +80,10 @@ export function CategoryChart() {
             render={(item: any, index: number) => (
               <div className="flex items-center gap-2" key={index}>
                 <span
-                  style={{ backgroundColor: `${item?.fill}` }}
+                  style={{ backgroundColor: `${colors[index]}` }}
                   className={cn(
                     "inline-block h-3 w-3 rounded-full",
-                    `bg-[${item?.fill}]`,
+                    `bg-[${colors[index]}]`,
                   )}
                 ></span>
 

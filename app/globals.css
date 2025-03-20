@@ -31,6 +31,7 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
+
     --brand: rgb(62, 39, 35);
     --brand-light: #f9f2e7;
   }
@@ -166,13 +167,13 @@
     fill: #272727 !important;
   }
 
-  .sales .recharts-cartesian-grid line {
+  /* .sales .recharts-cartesian-grid line {
     stroke: #e4d16495 !important;
   }
 
   .sales .recharts-cartesian-axis-tick text {
     fill: #e4d064 !important;
-  }
+  } */
 
   .hero-bg {
     background-image:
