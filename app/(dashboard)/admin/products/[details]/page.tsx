@@ -114,7 +114,7 @@ export default function Page({ params }: { params: { details: string } }) {
             </div>
           </div>
           <Button
-            className="mb-2 rounded-md text-goldie-300"
+            className="mb-2 rounded-md bg-brand-200 text-brand-100 hover:bg-brand-200"
             onClick={() =>
               router.push(`/admin/create-products?edit=${product?._id}`)
             }
@@ -126,11 +126,11 @@ export default function Page({ params }: { params: { details: string } }) {
         </div>
         <hr className="my-5" />
         <div className="grid grid-cols-1 gap-4 md:grid-cols-[55%_1fr]">
-          <div className="rounded-md bg-black">
-            <h1 className="px-6 pb-4 pt-6 font-semibold text-goldie-300">
+          <div className="rounded-md bg-brand-200">
+            <h1 className="px-6 pb-4 pt-6 font-semibold text-brand-100">
               Product Information
             </h1>
-            <div className="bg-white px-6 py-3">
+            <div className="bg-brand-100 px-6 py-3">
               <div className="mb-5">
                 <p className="font-semibold capitalize">product name:</p>
                 <p className="capitalize">{product?.name}</p>
@@ -166,9 +166,7 @@ export default function Page({ params }: { params: { details: string } }) {
               </div>
               <div className="mb-5">
                 <p className="font-semibold capitalize">Product Type</p>
-                <p className="capitalize">
-                  {product?.productType}
-                </p>
+                <p className="capitalize">{product?.productType}</p>
               </div>
               <div className="mb-5">
                 <p className="font-semibold capitalize">Product Sizes:</p>
@@ -202,11 +200,11 @@ export default function Page({ params }: { params: { details: string } }) {
               </div>
             </div>
           </div>
-          <div className="h-fit rounded-md bg-black">
-            <h1 className="px-6 pb-4 pt-6 font-semibold text-goldie-300">
+          <div className="h-fit rounded-md bg-brand-200">
+            <h1 className="px-6 pb-4 pt-6 font-semibold text-brand-100">
               Product Images
             </h1>
-            <div className="bg-white px-6 py-6">
+            <div className="bg-brand-100 px-6 py-6">
               <div className="">
                 <div className="mb-6 h-[300px] w-full">
                   <Image
@@ -223,7 +221,7 @@ export default function Page({ params }: { params: { details: string } }) {
                       key={index}
                       className={cn(
                         "h-[80px] w-[80px] shrink-0 cursor-pointer overflow-hidden border-4 border-transparent",
-                        selectedImage === index && "border-goldie-300",
+                        selectedImage === index && "border-brand-200",
                       )}
                       onClick={() => setSelectedImage(index)}
                     >

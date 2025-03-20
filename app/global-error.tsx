@@ -1,7 +1,7 @@
 "use client"; // Error boundaries must be Client Components
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import Logo from "../public/assets/goldis-logo.png";
+import Logo from "../public/assets/new-logo/logo-colored.svg";
 import Image from "next/image";
 
 export default function GlobalError({
@@ -23,14 +23,14 @@ export default function GlobalError({
               className="w-[130px]"
               width={175}
               height={92}
-              alt="Goldis Logo"
+              alt="The cake app Logo"
             />
           </div>
           <h1 className="text-5xl font-bold">Something went wrong!</h1>
 
           <div className="mt-6 flex gap-4">
             <Button
-              className="font-semibold text-goldie-300"
+              className="font-semibold text-brand-200"
               size="lg"
               onClick={() => reset()}
             >

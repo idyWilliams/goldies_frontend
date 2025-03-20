@@ -179,8 +179,8 @@ export default function OrderPage() {
                 key={index}
                 className={`w-fit rounded-sm border px-2 ${
                   selectedStatus === tab
-                    ? "bg-black text-goldie-300"
-                    : "border-neutral-200 bg-white"
+                    ? "bg-brand-200 text-brand-100"
+                    : "border-brand-200 bg-white"
                 }`}
                 onClick={() => setSelectedStatus(tab)}
               >

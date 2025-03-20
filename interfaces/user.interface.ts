@@ -36,3 +36,11 @@ export interface IAdmin {
   role: string;
   createdAt: string;
 }
+
+export interface UserParams {
+  search?: string;
+  page?: number;
+  limit?: number;
+  sortBy?: string; // "createdAt"
+  sortOrder?: string; //"asc" or "desc"
+}

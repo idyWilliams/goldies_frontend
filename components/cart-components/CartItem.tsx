@@ -120,7 +120,7 @@ const CartItem = ({ item }: CartItemProps) => {
               />
             </figure>
           </Link>
-          <h3 className="text-goldie-300">{item.product.name}</h3>
+          <h3 className="text-brand-200">{item.product.name}</h3>
         </div>
         <div className="inline-flex w-[100px] items-center justify-start gap-3 rounded-[50px] bg-white px-1.5 py-1">
           <button
@@ -139,14 +139,14 @@ const CartItem = ({ item }: CartItemProps) => {
           </button>
         </div>
         <div className="flex items-center justify-between">
-          <span className=" text-goldie-300">
+          <span className=" text-brand-200">
             {formatCurrency(parseInt(item?.product.maxPrice), "en-NG")}
           </span>
           <span
             onClick={() => {
               setShowModal(true);
             }}
-            className="cursor-pointer text-goldie-300"
+            className="cursor-pointer text-brand-200"
           >
             <BsTrash size={20} />
           </span>

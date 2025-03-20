@@ -72,14 +72,14 @@ const ForgetAdminPassword = () => {
 
           <Button
             onClick={handleOpenEmailApp}
-            className="my-3 h-auto w-full rounded bg-neutral-900 py-2.5 text-sm text-goldie-300"
+            className="my-3 h-auto w-full rounded bg-neutral-900 py-2.5 text-sm text-brand-200"
           >
             Open email app
           </Button>
           <div className="mb-7 flex cursor-pointer items-center justify-center gap-1 text-sm text-neutral-500">
             <span>Didn&apos;t get an email?</span>
             <span
-              className="text-goldie-300"
+              className="text-brand-200"
               onClick={() => onSubmit({ email })}
             >
               Click to resend
@@ -134,7 +134,7 @@ const ForgetAdminPassword = () => {
 
               <Button
                 disabled={forgetPassword?.isPending}
-                className="mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300"
+                className="mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-brand-200"
                 type="submit"
               >
                 {forgetPassword?.isPending ? "Loading...." : "Forget Passw"}

@@ -10,13 +10,19 @@ interface RangeInputProps {
   onChange: (minVal: number, maxVal: number) => void;
 }
 
-const RangeInput = ({ min, max, minValue, maxValue, onChange }: RangeInputProps) => {
+const RangeInput = ({
+  min,
+  max,
+  minValue,
+  maxValue,
+  onChange,
+}: RangeInputProps) => {
   const range = useRef<HTMLDivElement>(null);
 
   // Convert to percentage
   const getPercent = useCallback(
     (value: number) => Math.round(((value - min) / (max - min)) * 100),
-    [min, max]
+    [min, max],
   );
 
   // Update range slider track width
@@ -61,9 +67,12 @@ const RangeInput = ({ min, max, minValue, maxValue, onChange }: RangeInputProps)
       <div className="relative w-[260px]">
         {/* Track Background */}
         <div className="absolute z-[1] h-[5px] w-full rounded bg-neutral-300" />
-        
+
         {/* Selected Range */}
-        <div ref={range} className="absolute z-[2] h-[5px] rounded bg-neutral-900" />
+        <div
+          ref={range}
+          className="absolute z-[2] h-[5px] rounded bg-neutral-900"
+        />
 
         {/* Min Value Display */}
         <div className="absolute left-[3px] mt-5 text-xs text-neutral-300">

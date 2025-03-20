@@ -103,7 +103,7 @@ const Testimonials = () => {
     }
   };
   return (
-    <section className="bg-neutral-200 ">
+    <section className="bg-brand-100 pt-16">
       <div className="relative h-[200px] w-full md:h-[300px]">
         <div className="relative z-20 flex h-full w-full flex-col items-center justify-center px-4">
           <h1 className="text-2xl font-bold text-white md:text-3xl lg:mb-2 lg:text-5xl">
@@ -115,7 +115,10 @@ const Testimonials = () => {
               Home
             </Link>{" "}
             <span className="text-white">-</span>{" "}
-            <Link href={"/testimonials"} className="text-goldie-300">
+            <Link
+              href={"/testimonials"}
+              className="font-semibold text-brand-100"
+            >
               Testimonial
             </Link>
           </div>
@@ -143,7 +146,7 @@ const Testimonials = () => {
                 >
                   <div className="flex flex-col items-center gap-3">
                     <div className="relative">
-                      <span className="relative inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-tr from-[#b6a650] to-goldie-300 text-xl font-bold">
+                      <span className="relative inline-flex h-16 w-16 items-center justify-center rounded-full bg-brand-200 text-xl font-bold text-brand-100">
                         {initials(review.client)}
                       </span>
                       <span
@@ -162,7 +165,7 @@ const Testimonials = () => {
                       </span>
                     </div>
                     <div>
-                      <h3 className="text-lg font-bold leading-[1.5]">
+                      <h3 className="text-lg font-semibold leading-[1.5] text-brand-200">
                         {review.client}
                       </h3>
                       <div className="flex items-center justify-center gap-1">
@@ -174,7 +177,9 @@ const Testimonials = () => {
                       </div>
                     </div>
                   </div>
-                  <p className="mt-4 leading-[150%]">{review.comment}</p>
+                  <p className="mt-4 leading-[150%] text-brand-200">
+                    {review.comment}
+                  </p>
                 </blockquote>
               );
             },

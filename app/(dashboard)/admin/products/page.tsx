@@ -90,6 +90,9 @@ export default function ProductsPage() {
     const newParams: ProductParams = {
       page: currentPageIndex,
       limit: itemsPerPage,
+      sortBy: querySortBy,
+      order: queryOrder,
+  
     };
 
     if (searchValue) {
@@ -222,6 +225,15 @@ export default function ProductsPage() {
       ),
       header: () => <span>Price</span>,
     }),
+    columnHelper.accessor((row) => row, {
+      id: "productType",
+      cell: ({ row }) => (
+        <span className="whitespace-nowrap text-[15px] capitalize">
+          {row.original.productType}
+        </span>
+      ),
+      header: () => <span>Product Type</span>,
+    }),
     columnHelper.accessor("createdAt", {
       header: () => <span>Added Date</span>,
       cell: ({ row }) => (
@@ -284,7 +296,7 @@ export default function ProductsPage() {
           <p className="text-sm">List of all available products created</p>
         </div>
         <Button
-          className="flex cursor-pointer items-center gap-1 rounded-md bg-black text-goldie-300"
+          className="flex cursor-pointer items-center gap-1 rounded-md bg-brand-200 text-brand-100 hover:bg-brand-200"
           onClick={handleAddNew}
         >
           <Add size={15} />
@@ -322,7 +334,7 @@ export default function ProductsPage() {
 
         <div ref={sortDropdownRef} className="relative">
           <Button
-            className="bg-black text-goldie-300 "
+            className="bg-transparent text-brand-200 ring-1 ring-brand-200 hover:bg-transparent "
             onClick={() => setOpen((prev) => !prev)}
             disabled={allProducts.length === 0}
           >

@@ -95,7 +95,7 @@ const AllCategories = () => {
           className="h-[60vh] bg-transparent"
           titleClassName="font-semibold text-center text-xl"
           buttonText={"Add Category"}
-          buttonClassName="bg-neutral-900 text-goldie-300"
+          buttonClassName="bg-neutral-900 text-brand-200"
           title={"No categories added yet"}
         />
       )}

@@ -126,7 +126,7 @@ const FilterComp = ({
           ) : (
             <>
               <Button
-                className="rounded-md bg-neutral-900 p-3 text-white"
+                className="rounded-md bg-brand-200 p-3 text-white hover:bg-brand-200"
                 onClick={handleApplyFilter}
               >
                 Filter

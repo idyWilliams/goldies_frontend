@@ -66,7 +66,7 @@ const AdminPagination = ({
                 size={"icon"}
                 className={cn(
                   "inline-flex h-8 w-8 items-center justify-center rounded-full bg-neutral-100 text-neutral-800 hover:bg-goldie-100",
-                  page === 1 && "bg-goldie-300 text-black",
+                  page === 1 && "bg-brand-200 text-brand-100",
                 )}
                 onClick={() => setPage(1)}
               >
@@ -90,8 +90,8 @@ const AdminPagination = ({
                 <Button
                   size={"icon"}
                   className={cn(
-                    "inline-flex h-8 w-8 text-sm items-center justify-center rounded-full bg-neutral-100 text-neutral-800 hover:bg-goldie-100",
-                    page === item && "bg-goldie-300 text-black",
+                    "inline-flex h-8 w-8 items-center justify-center rounded-full bg-neutral-100 text-sm text-neutral-800 hover:bg-goldie-100",
+                    page === item && "bg-brand-200 text-brand-100",
                   )}
                   onClick={() => handlePaginateClick(item - 1, page, setPage)}
                 >
@@ -115,7 +115,7 @@ const AdminPagination = ({
                 size={"icon"}
                 className={cn(
                   "inline-flex h-8 w-8 items-center justify-center rounded-full bg-neutral-100 text-neutral-800 hover:bg-goldie-100",
-                  page === totalPage && "bg-goldie-300 text-black",
+                  page === totalPage && "bg-brand-200 text-brand-100",
                 )}
                 onClick={() => setPage(totalPage)}
               >

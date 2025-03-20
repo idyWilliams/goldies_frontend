@@ -108,7 +108,7 @@ export default function Page() {
             className={`${submitEmail.isPending ? "cursor-not-allowed" : ""}`}
           >
             <Button
-              className="my-5 w-full rounded bg-neutral-900 py-2 text-sm text-goldie-300 disabled:hover:cursor-not-allowed"
+              className="my-5 w-full rounded bg-neutral-900 py-2 text-sm text-brand-200 disabled:hover:cursor-not-allowed"
               disabled={submitEmail.isPending}
             >
               {submitEmail.isPending ? "Submitting" : "Reset Password"}

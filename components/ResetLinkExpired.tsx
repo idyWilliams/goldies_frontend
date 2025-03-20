@@ -21,7 +21,7 @@ export default function ResetLinkExpired() {
           </p>
         </div>
 
-        <Button className="my-3 h-auto w-full rounded bg-neutral-900 py-2.5 text-sm text-goldie-300">
+        <Button className="my-3 h-auto w-full rounded bg-neutral-900 py-2.5 text-sm text-brand-200">
           <Link href={"/forgot-password"}>Request New Link</Link>
         </Button>
 

@@ -21,7 +21,7 @@ export default function SubCategoryBtn({
       <button
         disabled={!isValid || isLoading}
         type="submit"
-        className="rounded-md bg-neutral-900 px-6 py-2 text-sm font-semibold text-goldie-300 disabled:opacity-75 disabled:hover:cursor-not-allowed"
+        className="rounded-md bg-brand-200 px-6 py-2 text-sm font-semibold text-brand-100 disabled:opacity-75 disabled:hover:cursor-not-allowed"
       >
         {isLoading
           ? "Loading..."
@@ -32,7 +32,7 @@ export default function SubCategoryBtn({
       <button
         type="button"
         onClick={handleClose}
-        className="rounded-md bg-goldie-300 px-6 py-2 text-sm font-semibold text-neutral-900"
+        className="rounded-md bg-transparent px-6 py-2 text-sm font-semibold text-brand-200 ring-1 ring-brand-200"
       >
         Cancel
       </button>

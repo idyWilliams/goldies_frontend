@@ -157,7 +157,7 @@ const ResetAdminPassword = () => {
             className={`${submitPassword.isPending ? "cursor-not-allowed" : ""}`}
           >
             <Button
-              className="my-5 h-auto w-full rounded bg-neutral-900 py-3 text-sm text-goldie-300 disabled:hover:cursor-not-allowed"
+              className="my-5 h-auto w-full rounded bg-neutral-900 py-3 text-sm text-brand-200 disabled:hover:cursor-not-allowed"
               disabled={submitPassword.isPending}
             >
               {submitPassword.isPending ? "Resetting" : "Reset Password"}

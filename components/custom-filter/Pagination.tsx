@@ -34,8 +34,8 @@ const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={onPrev}
         className={twMerge(
-          "inline-flex h-7 w-7 items-center justify-center rounded-full bg-neutral-100 text-neutral-800",
-          currentPageIndex === 1 ? "text-neutral-400" : "",
+          "inline-flex h-7 w-7 items-center justify-center rounded-full border border-brand-200 text-brand-200",
+          currentPageIndex === 1 ? "text-brand-200" : "",
         )}
       >
         <RxCaretLeft size={32} />
@@ -47,8 +47,8 @@ const Pagination: React.FC<PaginationProps> = ({
               key={index}
               onClick={() => onPaginateClick(index)}
               className={twMerge(
-                "inline-flex h-7 w-7 items-center justify-center rounded-full bg-neutral-100 text-neutral-800",
-                currentPageIndex === index + 1 && "bg-goldie-300 text-black",
+                "inline-flex h-7 w-7 items-center justify-center rounded-full border border-brand-200 bg-brand-100 text-brand-200",
+                currentPageIndex === index + 1 && "bg-brand-200 text-brand-100",
               )}
             >
               <span className="px-1.5 text-sm">{index + 1}</span>
@@ -60,9 +60,9 @@ const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={onNext}
         className={twMerge(
-          "inline-flex h-7 w-7 items-center justify-center rounded-full bg-neutral-100 text-neutral-800",
+          "inline-flex h-7 w-7 items-center justify-center rounded-full border border-brand-200 text-brand-200",
           currentPageIndex === chunkArray(arr, itemsPerPage).length &&
-            "text-neutral-400",
+            "text-brand-200",
         )}
       >
         <span className="">

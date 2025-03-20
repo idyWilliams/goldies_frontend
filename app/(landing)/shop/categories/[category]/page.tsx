@@ -128,10 +128,10 @@ const Page = () => {
         <>
           <div className="wrapper relative mx-auto h-[200px] w-full py-6 md:my-[16px] md:w-[calc(100%_-_30px)]">
             <div className="absolute left-0 top-0 z-20 flex h-full w-full flex-col justify-center gap-2 bg-categories px-4 pr-20">
-              <h1 className="text-lg font-semibold text-goldie-300 sm:text-2xl lg:text-4xl">
+              <h1 className="text-lg font-semibold text-brand-200 sm:text-2xl lg:text-4xl">
                 {category?.name}
               </h1>
-              <p className="max-w-[650px] text-xs text-goldie-75 sm:text-base">
+              <p className="text-goldie-75 max-w-[650px] text-xs sm:text-base">
                 {category?.description}
               </p>
             </div>

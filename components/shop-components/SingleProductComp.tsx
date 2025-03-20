@@ -382,7 +382,7 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
 
   return (
     <div className="min-h-dvh">
-      <div className="bg-black py-4">
+      <div className="bg-brand-200 py-4 pt-16 sm:pt-24">
         <div className="wrapper">
           <BreadCrumbs
             items={[

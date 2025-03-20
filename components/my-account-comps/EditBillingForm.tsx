@@ -266,7 +266,7 @@ const EditBillingForm = ({
         <Button type="button" variant={"secondary"} onClick={onClose}>
           Discard Changes
         </Button>
-        <Button type="submit" className=" bg-neutral-900  text-goldie-300 ">
+        <Button type="submit" className=" bg-neutral-900  text-brand-200 ">
           Save changes
         </Button>
       </div>

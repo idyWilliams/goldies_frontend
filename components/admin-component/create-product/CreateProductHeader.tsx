@@ -33,7 +33,7 @@ const CreateProductHeader = ({
           Cancel
         </Button>
         <Button
-          className="relative rounded-md bg-black px-10 py-2 text-sm text-goldie-300 disabled:pointer-events-none disabled:opacity-75"
+          className="relative rounded-md bg-brand-200 px-10 py-2 text-sm text-brand-100 hover:bg-brand-200 disabled:pointer-events-none disabled:opacity-75"
           type="submit"
           disabled={isSubmitting}
         >

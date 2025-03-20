@@ -194,7 +194,7 @@ export default function Page({ params }: { params: { details: string } }) {
             <Popover open={openStatus} onOpenChange={setOpenStatus}>
               <PopoverTrigger asChild>
                 <button
-                  className="relative rounded-sm bg-black px-6 py-2 text-sm text-goldie-300 disabled:pointer-events-none disabled:opacity-75"
+                  className="relative rounded-sm bg-brand-200 px-6 py-2 text-sm text-brand-100 hover:bg-brand-200 disabled:pointer-events-none disabled:opacity-75"
                   disabled={isUpdating}
                 >
                   <span
@@ -238,7 +238,7 @@ export default function Page({ params }: { params: { details: string } }) {
         <>
           <div className="hidden md:block">
             <div className="grid grid-cols-[55%_1fr] gap-5">
-              <div className="rounded-md bg-white p-3">
+              <div className="rounded-md bg-brand-100 p-3">
                 <div className="flex items-center justify-between">
                   <span className="font-semibold">
                     Order ID: {order?.orderId}
@@ -287,13 +287,14 @@ export default function Page({ params }: { params: { details: string } }) {
                   </div>
                 </div>
               </div>
-              <div className="rounded-md bg-white p-4">
+              <div className="rounded-md bg-brand-100 p-4">
                 <div className="">
                   <h3 className="mb-3 text-[15px] font-semibold">Order Note</h3>
                   <ul className="list-disc pl-4">
                     {order?.orderedItems.map((item, i) => (
                       <li key={i}>
-                        <span className="italic">{item?.product?.name}</span>- {item?.details}
+                        <span className="italic">{item?.product?.name}</span>-{" "}
+                        {item?.details}
                       </li>
                     ))}
                   </ul>
@@ -314,20 +315,20 @@ export default function Page({ params }: { params: { details: string } }) {
             </div>
             <h3 className="my-4 text-[15px] font-semibold">Ordered Items</h3>
             <div className="grid grid-cols-[70%_1fr] gap-5">
-              <div className="rounded-md bg-white p-6">
+              <div className="rounded-md bg-brand-100 p-6">
                 <div className="table w-full table-auto border-collapse">
                   <div className="table-header-group">
                     <div className="table-row">
-                      <div className="table-cell border-b border-neutral-300 font-bold pb-3">
+                      <div className="table-cell border-b border-neutral-300 pb-3 font-bold">
                         Product
                       </div>
-                      <div className="table-cell border-b border-neutral-300 font-bold pb-3">
+                      <div className="table-cell border-b border-neutral-300 pb-3 font-bold">
                         Qty
                       </div>
-                      <div className="table-cell border-b border-neutral-300 font-bold pb-3 pl-5">
+                      <div className="table-cell border-b border-neutral-300 pb-3 pl-5 font-bold">
                         Price
                       </div>
-                      <div className="table-cell border-b border-neutral-300 font-bold pb-3 pl-5">
+                      <div className="table-cell border-b border-neutral-300 pb-3 pl-5 font-bold">
                         Total
                       </div>
                     </div>
@@ -374,7 +375,7 @@ export default function Page({ params }: { params: { details: string } }) {
                   </div>
                 </div>
               </div>
-              <div className="rounded-md bg-white p-4">
+              <div className="rounded-md bg-brand-100 p-4">
                 <div>
                   <div className="mb-3 flex items-center justify-between">
                     <span className="font-semibold"> Sub Total:</span>
@@ -394,7 +395,9 @@ export default function Page({ params }: { params: { details: string } }) {
                 </div> */}
                   <div className="mb-3 flex items-center justify-between ">
                     <span className="font-bold">Total:</span>
-                    <span className="font-bold">{formatCurrency(order?.fee?.total!, "en-NG")}</span>
+                    <span className="font-bold">
+                      {formatCurrency(order?.fee?.total!, "en-NG")}
+                    </span>
                   </div>
                 </div>
               </div>

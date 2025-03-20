@@ -120,14 +120,16 @@ const Page = () => {
     <section className="pb-10 pt-4">
       <div className="wrapper">
         <div className="flex flex-col items-center sm:mx-auto sm:w-[500px] sm:border sm:bg-white sm:p-6 sm:shadow-lg">
-          <span className="flex h-20 w-20 items-center justify-center rounded-full bg-goldie-300 bg-opacity-35">
-            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-goldie-300 bg-opacity-35">
+          <span className="bg-brand-200/50 flex h-20 w-20 items-center justify-center rounded-full">
+            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-200 text-brand-100">
               <AiOutlineUserAdd size={30} />
             </span>
           </span>
           <div className="mb-4 mt-6 text-center">
-            <h1 className="mb-1 text-2xl font-bold capitalize">Sign up</h1>
-            <p className="text-balance text-neutral-600">
+            <h1 className="mb-1 text-2xl font-bold capitalize text-brand-200">
+              Sign up
+            </h1>
+            <p className="text-balance text-brand-200">
               Create your account by filling the form below
             </p>
           </div>
@@ -138,7 +140,7 @@ const Page = () => {
               onSubmit={handleSubmit(onSubmit)}
             >
               <label htmlFor="firstName" className="col-span-2 md:col-span-1">
-                <span className="mb-1 inline-block font-medium capitalize">
+                <span className="mb-1 inline-block font-medium capitalize text-brand-200">
                   First name
                 </span>
                 <input
@@ -161,7 +163,7 @@ const Page = () => {
                 )}
               </label>
               <label htmlFor="lastName" className="col-span-2 md:col-span-1">
-                <span className="mb-1 inline-block font-medium capitalize">
+                <span className="mb-1 inline-block font-medium capitalize text-brand-200">
                   Last name
                 </span>
                 <input
@@ -184,7 +186,7 @@ const Page = () => {
                 )}
               </label>
               <label htmlFor="email" className="col-span-2">
-                <span className="mb-1 inline-block font-medium capitalize">
+                <span className="mb-1 inline-block font-medium capitalize text-brand-200">
                   Email Address
                 </span>
                 <input
@@ -207,7 +209,7 @@ const Page = () => {
                 )}
               </label>
               <label htmlFor="phoneNumber" className="col-span-2">
-                <span className="mb-1 inline-block font-medium capitalize">
+                <span className="mb-1 inline-block font-medium capitalize text-brand-200">
                   Phone Number
                 </span>
                 <Controller
@@ -236,7 +238,7 @@ const Page = () => {
                 )}
               </label>
               <label htmlFor="password" className="relative col-span-2">
-                <span className="mb-1 inline-block font-medium capitalize">
+                <span className="mb-1 inline-block font-medium capitalize text-brand-200">
                   Password
                 </span>
                 <div className="relative">
@@ -288,18 +290,18 @@ const Page = () => {
                 />
                 <span className="text-sm">
                   I agree with the{" "}
-                  <span className="cursor-pointer text-goldie-300">
+                  <span className="cursor-pointer text-brand-200">
                     terms of service
                   </span>{" "}
                   and{" "}
-                  <span className="cursor-pointer text-goldie-300">
+                  <span className="cursor-pointer text-brand-200">
                     privacy policy
                   </span>
                 </span>
               </label>
               <Button
                 disabled={newUser.isPending}
-                className="col-span-2 mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300"
+                className="col-span-2 mt-3 h-auto w-full rounded-none bg-brand-200 py-3 text-base text-brand-100 hover:border hover:border-brand-200 hover:bg-transparent hover:text-brand-200"
               >
                 {newUser.isPending ? (
                   <div className="loader bg-[#fff]"></div>
@@ -310,7 +312,7 @@ const Page = () => {
 
               <p className="col-span-2 text-center">
                 Already have an account?{" "}
-                <Link href="/sign-in" className="text-goldie-300">
+                <Link href="/sign-in" className="text-brand-200">
                   Sign In
                 </Link>
               </p>

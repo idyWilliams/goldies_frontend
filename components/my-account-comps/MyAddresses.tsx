@@ -157,7 +157,7 @@ const MyAddresses = () => {
                 <div className="mt-4 flex items-center justify-between border-t py-3">
                   <Button
                     className={cn(
-                      "bg-neutral-900 text-goldie-300",
+                      "bg-neutral-900 text-brand-200",
                       item?.defaultBillingInfo &&
                         "cursor-not-allowed bg-opacity-5 text-neutral-300",
                     )}

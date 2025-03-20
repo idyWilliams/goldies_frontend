@@ -54,7 +54,7 @@ export function DialogCloseButton({
               <Image src={Goldie} alt="Goldie" className="w-[120px]" />
               <DialogClose asChild>
                 <span
-                  className="cursor-pointer text-goldie-300"
+                  className="cursor-pointer text-brand-200"
                   onClick={() => setPreviewFav(false)}
                 >
                   <CloseSquare size={24} />

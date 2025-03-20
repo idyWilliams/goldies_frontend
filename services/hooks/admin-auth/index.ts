@@ -9,6 +9,7 @@ import {
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import Cookies from "js-cookie";
 import { ADMIN_TOKEN_NAME } from "@/utils/constants";
+import { UserParams } from "@/interfaces/user.interface";
 
 // INVITE ADMIN
 export const inviteAdmin = async (data: InviteAdmin) => {
@@ -38,8 +39,8 @@ export const verifyOTP = async (data: VerificationOtp) => {
 };
 
 // GET USER
-export const getUsers = async () => {
-  const response = await instance.get("/user/get_all_users");
+export const getUsers = async (params?: UserParams) => {
+  const response = await instance.get("/user/get_all_users", { params });
   return response.data;
 };
 

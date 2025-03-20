@@ -180,7 +180,7 @@ export default function ChangePassword() {
               <Button
                 type="submit"
                 disabled={updatePassword?.isPending}
-                className="h-auto items-center justify-center gap-2 rounded-sm bg-black px-5 py-2 text-sm text-main lg:text-base"
+                className="h-auto items-center justify-center gap-2 rounded-sm bg-brand-200 px-5 py-2 text-sm text-brand-100 lg:text-base"
               >
                 {updatePassword?.isPending ? (
                   <>

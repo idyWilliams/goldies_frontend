@@ -54,7 +54,7 @@ export default function ContactInfo({
   return (
     <div className="rounded-md bg-white py-5">
       <p className="px-4 text-lg font-semibold">Customer Information</p>
-      <div className="my-6 ml-8 inline-flex h-24 w-24 items-center justify-center rounded-full bg-[#494848]">
+      <div className="my-6 ml-8 inline-flex h-24 w-24 items-center justify-center rounded-full bg-brand-200">
         <span className="items-center justify-center text-[24px] text-white">
           {customer?.firstName?.charAt(0) ?? "J"}
           {customer?.lastName?.charAt(0) ?? "D"}

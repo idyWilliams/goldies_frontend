@@ -26,7 +26,7 @@ export default function MobileSideBar({ onClose }: { onClose: () => void }) {
       <div className="flex flex-col items-start gap-2 px-4">
         <Link href={"/admin"} className="w-full">
           <button
-            className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname === "/admin" ? "text-goldie-300" : "text-neutral-500"}`}
+            className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname === "/admin" ? "text-brand-200" : "text-neutral-500"}`}
             onClick={onClose}
           >
             <Home2 size="20" /> Overview
@@ -34,7 +34,7 @@ export default function MobileSideBar({ onClose }: { onClose: () => void }) {
         </Link>
         <Link href={"/admin/products"} className="w-full">
           <button
-            className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm  duration-300 hover:text-goldie-300 ${pathname === "/admin/products" ? "text-goldie-300" : "text-neutral-500"}`}
+            className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm  duration-300 hover:text-brand-200 ${pathname === "/admin/products" ? "text-brand-200" : "text-neutral-500"}`}
             onClick={onClose}
           >
             <Cake size="20" />
@@ -43,7 +43,7 @@ export default function MobileSideBar({ onClose }: { onClose: () => void }) {
         </Link>
         <Link href={"/admin/customers"} className="w-full">
           <button
-            className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname === "/admin/customers" ? "text-goldie-300" : "text-neutral-500"}`}
+            className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname === "/admin/customers" ? "text-brand-200" : "text-neutral-500"}`}
             onClick={onClose}
           >
             <IoPeopleOutline size={20} />
@@ -52,7 +52,7 @@ export default function MobileSideBar({ onClose }: { onClose: () => void }) {
         </Link>
         <Link href={"/admin/orders"} className="w-full">
           <button
-            className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname === "/admin/orders" ? "text-goldie-300" : "text-neutral-500"}`}
+            className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname === "/admin/orders" ? "text-brand-200" : "text-neutral-500"}`}
             onClick={onClose}
           >
             <ShoppingBag size="20" />
@@ -61,7 +61,7 @@ export default function MobileSideBar({ onClose }: { onClose: () => void }) {
         </Link>
         <Link href={"/admin/create-products"} className="w-full">
           <button
-            className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname === "/admin/create-products" ? "text-goldie-300" : "text-neutral-500"}`}
+            className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname === "/admin/create-products" ? "text-brand-200" : "text-neutral-500"}`}
             onClick={onClose}
           >
             <FolderAdd size="20" />
@@ -70,7 +70,7 @@ export default function MobileSideBar({ onClose }: { onClose: () => void }) {
         </Link>
         <Link href={"/admin/manage-categories"} className="w-full">
           <button
-            className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/manage-categories") ? "text-goldie-300" : "text-neutral-500"}`}
+            className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname.includes("/admin/manage-categories") ? "text-brand-200" : "text-neutral-500"}`}
             onClick={onClose}
           >
             <Category2 size="20" />
@@ -80,7 +80,7 @@ export default function MobileSideBar({ onClose }: { onClose: () => void }) {
         {auth?.admin?.role === "super_admin" && (
           <Link href={"/admin/invite"}>
             <button
-              className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/manage-categories") ? "text-goldie-300" : "text-neutral-500"}`}
+              className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname.includes("/admin/manage-categories") ? "text-brand-200" : "text-neutral-500"}`}
               onClick={onClose}
             >
               <UserAdd size="20" />
@@ -90,7 +90,7 @@ export default function MobileSideBar({ onClose }: { onClose: () => void }) {
         )}
         <Link href={"/admin/settings"} className="w-full">
           <button
-            className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-goldie-300 ${pathname.includes("/admin/settings") ? "text-goldie-300" : "text-neutral-500"}`}
+            className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname.includes("/admin/settings") ? "text-brand-200" : "text-neutral-500"}`}
             onClick={onClose}
           >
             <Setting2 size="20" />
@@ -99,7 +99,7 @@ export default function MobileSideBar({ onClose }: { onClose: () => void }) {
         </Link>
 
         <button
-          className={`flex w-full cursor-pointer items-center gap-2 whitespace-nowrap py-2 text-sm text-neutral-500 duration-300 hover:text-goldie-300`}
+          className={`flex w-full cursor-pointer items-center gap-2 whitespace-nowrap py-2 text-sm text-neutral-500 duration-300 hover:text-brand-200`}
           onClick={() => {
             onClose;
             adminLogOut(router);

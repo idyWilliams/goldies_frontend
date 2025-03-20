@@ -53,7 +53,7 @@ const CategoryHeader = () => {
           {categories && categories.length >= 1 && (
             <Link
               href={"/admin/manage-categories/create"}
-              className="inline-block rounded-md bg-neutral-900 px-3 py-2 text-sm text-goldie-300"
+              className="inline-block rounded-md bg-brand-200 px-3 py-2 text-sm text-brand-100"
             >
               New Category
             </Link>
@@ -78,7 +78,7 @@ const CategoryHeader = () => {
 
           <button
             disabled={isFormValid && isSubmitting}
-            className="rounded-md bg-neutral-900 px-4 py-2 text-sm text-goldie-300 disabled:opacity-75 disabled:hover:cursor-not-allowed"
+            className="rounded-md bg-brand-200 px-4 py-2 text-sm text-brand-100 disabled:opacity-75 disabled:hover:cursor-not-allowed"
             onClick={() => handleCategorySubmission()}
           >
             {isSubmitting

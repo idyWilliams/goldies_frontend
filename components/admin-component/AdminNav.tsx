@@ -32,7 +32,7 @@ import { useAuth } from "@/context/AuthProvider";
 import { cn } from "@/lib/utils";
 import { adminLogOut } from "@/services/hooks/admin-auth";
 import CurrentTime from "./CurrentTime";
-import Logo from "@/public/assets/new-logo/logo-white.svg";
+import Logo from "@/public/assets/new-logo/logo-colored.svg";
 
 export default function AdminNav() {
   const router = useRouter();
@@ -45,11 +45,13 @@ export default function AdminNav() {
 
   return (
     <>
-      <nav className={` fixed left-0 top-0 z-50 w-full bg-black py-3`}>
+      <nav
+        className={` fixed left-0 top-0 z-50 w-full border-b border-neutral-300 bg-white py-3`}
+      >
         <div className="flex items-center justify-between px-4">
           <div className="flex items-center gap-3">
             <span
-              className="inline-block cursor-pointer text-goldie-300 lg:hidden"
+              className="inline-block cursor-pointer text-brand-200 lg:hidden"
               onClick={() => setIsOpenSidebar(true)}
             >
               <BsList size={24} />
@@ -78,7 +80,7 @@ export default function AdminNav() {
                   autoComplete="off"
                   id="search"
                   placeholder="Search..."
-                  className={`${openSearch ? "px-4 lg:w-[400px]" : "w-0 px-0"} border-none bg-transparent text-[13px] text-goldie-300 duration-300 placeholder:text-goldie-300 placeholder:text-opacity-50 focus:border-0 focus:outline-none focus:ring-0`}
+                  className={`${openSearch ? "px-4 lg:w-[400px]" : "w-0 px-0"} border-none bg-transparent text-[13px] text-brand-200 duration-300 placeholder:text-brand-200 placeholder:text-opacity-50 focus:border-0 focus:outline-none focus:ring-0`}
                 />
               </label>
               <span
@@ -86,36 +88,33 @@ export default function AdminNav() {
                 onClick={() => setOpenSearch((prev) => !prev)}
               >
                 {openSearch ? (
-                  <BsX size={18} className="inline-block text-goldie-300" />
+                  <BsX size={18} className="inline-block text-brand-200" />
                 ) : (
-                  <BsSearch
-                    size={18}
-                    className="inline-block text-goldie-300"
-                  />
+                  <BsSearch size={18} className="inline-block text-brand-200" />
                 )}
               </span>
             </div>
             <Popover>
               <PopoverTrigger>
-                <span className="relative inline-block cursor-pointer text-goldie-300">
+                <span className="relative inline-block cursor-pointer text-brand-200">
                   <IoMdNotificationsOutline size={24} />
                   <span className="absolute right-0.5 top-1 inline-block h-1.5 w-1.5 rounded-full bg-red-600 text-sm outline outline-2 outline-black"></span>
                 </span>
               </PopoverTrigger>
-              <PopoverContent className="w-[320px] border-0 bg-neutral-950 p-0 shadow-[0_0_30px_rgb(228,208,100,0.3)]">
+              <PopoverContent className="w-[320px] border border-white/20 bg-brand-200 p-0 shadow-2xl">
                 <NotificationBar />
               </PopoverContent>
             </Popover>
 
             <div className="hidden gap-3  sm:inline-flex">
-              <CurrentTime text="text-goldie-300" />
+              <CurrentTime text="text-brand-200" />
             </div>
 
             <Popover>
               <PopoverTrigger asChild>
                 <button
                   onClick={() => setOpen((prev) => !prev)}
-                  className="flex items-center gap-2 border-l border-goldie-300 border-opacity-40 pl-4 text-goldie-300"
+                  className="flex items-center gap-2 border-l border-goldie-300 border-opacity-40 pl-4 text-brand-200"
                 >
                   <FaRegUserCircle size={20} />{" "}
                   <div className="hidden text-sm capitalize md:flex md:items-center md:gap-3">
@@ -133,13 +132,13 @@ export default function AdminNav() {
                   </div>
                 </button>
               </PopoverTrigger>
-              <PopoverContent className="w-[190px] rounded-md border-[#E4D064] bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
+              <PopoverContent className="w-[190px] rounded-md border-brand-200 bg-brand-200 p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
                 <div className="mb-2 flex items-center justify-start gap-3 border-b border-black border-opacity-20 p-2 pb-3 sm:hidden">
                   {auth?.admin ? auth?.admin?.userName : "No username"}
                 </div>
                 <div className="">
                   <span
-                    className="flex cursor-pointer items-center gap-2  whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
+                    className="flex cursor-pointer items-center gap-2  whitespace-nowrap rounded-[3px] p-2 text-sm text-brand-100 duration-300 hover:bg-black hover:bg-opacity-20"
                     onClick={() => {
                       setOpen(false);
                       router.push(`/admin/settings?tab=profile`);
@@ -149,7 +148,7 @@ export default function AdminNav() {
                     My Account
                   </span>
                   <span
-                    className="flex cursor-pointer items-center gap-2  whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
+                    className="flex cursor-pointer items-center gap-2  whitespace-nowrap rounded-[3px] p-2 text-sm text-brand-100 duration-300 hover:bg-black hover:bg-opacity-20"
                     onClick={() => {
                       setOpen(false);
                       router.push(`/admin/settings?tab=change-password`);
@@ -161,7 +160,7 @@ export default function AdminNav() {
                 </div>
                 <div className="my-2 border-b border-black border-opacity-50"></div>
                 <button
-                  className="flex w-full cursor-pointer items-center justify-center rounded-sm bg-black  px-7 py-2.5 text-center text-sm  text-[#E4D064] duration-300 hover:bg-neutral-950"
+                  className="flex w-full cursor-pointer items-center justify-center rounded-sm bg-brand-100  px-7 py-2.5 text-center text-sm  text-brand-200 duration-300 hover:bg-brand-100"
                   role="button"
                   onClick={() => adminLogOut(router)}
                 >
@@ -175,7 +174,7 @@ export default function AdminNav() {
           className={`fixed top-0 h-screen w-full duration-300 lg:hidden ${openSider ? "left-0" : "-left-full"}`}
         >
           <span
-            className="absolute left-3 top-4 z-50 inline-block cursor-pointer text-goldie-300"
+            className="absolute left-3 top-4 z-50 inline-block cursor-pointer text-brand-200"
             onClick={() => setIsOpenSidebar(false)}
           >
             <BsX size={30} />
@@ -236,7 +235,7 @@ const NotificationBar = () => {
               key={index}
               className="grid h-full grid-cols-[40px_1fr] items-center gap-3"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-goldie-400 bg-opacity-20 text-goldie-300">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-100 bg-opacity-20 text-brand-200">
                 {notifyType(notification?.type)}
               </div>
               <div className="space-y-1">
@@ -245,7 +244,7 @@ const NotificationBar = () => {
                 >
                   {notification.title}
                 </p>
-                <p className="text-sm text-neutral-400">
+                <p className="text-sm text-neutral-200">
                   {notification.description}
                 </p>
               </div>
@@ -254,7 +253,7 @@ const NotificationBar = () => {
         </div>
       </CardContent>
       <CardFooter className="px-4">
-        <Button className="w-full bg-goldie-400 text-goldie-950 hover:bg-goldie-300">
+        <Button className="w-full bg-transparent text-brand-100 ring-1 ring-brand-100 hover:bg-transparent">
           <CheckIcon className="mr-2 h-4 w-4" /> Mark all as read
         </Button>
       </CardFooter>

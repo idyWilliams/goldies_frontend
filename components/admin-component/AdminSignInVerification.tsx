@@ -63,6 +63,7 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
 
         Cookies.set(ADMIN_TOKEN_NAME, res?.token);
         router.replace(callbackUrl);
+        toast.success(res?.message);
       })
       .catch((error: any) => {
         console.log(error);
@@ -73,8 +74,8 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
   return (
     <>
       <div className="flex  flex-col items-center border bg-white p-6 py-12 shadow-lg  sm:mx-auto sm:w-[440px]">
-        <span className="flex h-20 w-20 items-center justify-center rounded-full bg-goldie-300 bg-opacity-35">
-          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-goldie-300 bg-opacity-35">
+        <span className="bg-brand-200 bg-opacity-50 flex h-20 w-20 items-center justify-center rounded-full">
+          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-200 text-brand-100">
             <RiUserSharedLine size={30} />
           </span>
         </span>
@@ -109,12 +110,12 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
             </div>
             <Button
               disabled={otpVerify?.isPending}
-              className="mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300"
+              className="mt-3 h-auto w-full rounded-none bg-brand-200 py-3 text-base text-brand-100 hover:border hover:border-brand-200 hover:bg-transparent hover:text-brand-200"
               type="submit"
             >
               {otpVerify?.isPending ? "Loading...." : "Submit"}
             </Button>
-            {/* <Button className="mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300">
+            {/* <Button className="mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-brand-200">
                                         Submit
                                     </Button> */}
 

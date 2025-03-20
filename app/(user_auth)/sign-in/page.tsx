@@ -60,7 +60,7 @@ const Page = () => {
       router.replace(callbackUrl);
       toast.success(res?.message);
       reset();
-      // syncLocalCart(); 
+      // syncLocalCart();
     },
     onError: (error: AxiosError<ErrorResponse>) => {
       console.error(error);
@@ -92,14 +92,16 @@ const Page = () => {
     <section className="pb-10 pt-4">
       <div className="wrapper">
         <div className="mx-auto flex w-full flex-col items-center p-4 sm:border sm:bg-white sm:shadow-lg md:p-6 lg:w-[500px]">
-          <span className="flex h-20 w-20 items-center justify-center rounded-full bg-goldie-300 bg-opacity-35">
-            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-goldie-300 bg-opacity-35">
+          <span className="bg-brand-200/50 flex h-20 w-20 items-center justify-center rounded-full">
+            <span className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-200 text-brand-100 ">
               <RiUserSharedLine size={30} />
             </span>
           </span>
           <div className="mb-4 mt-6 text-center">
-            <h1 className="mb-1 text-2xl font-bold capitalize">Sign In</h1>
-            <p className="text-balance text-neutral-600">
+            <h1 className="mb-1 text-2xl font-semibold capitalize text-brand-200">
+              Sign In
+            </h1>
+            <p className="text-balance text-brand-200">
               Welcome Back! Sign in to continue
             </p>
           </div>
@@ -112,7 +114,7 @@ const Page = () => {
               <div>
                 <label
                   htmlFor="email"
-                  className="mb-1 inline-block font-medium capitalize"
+                  className="mb-1 inline-block font-medium capitalize text-brand-200"
                 >
                   Email Address
                 </label>
@@ -138,7 +140,7 @@ const Page = () => {
               <div>
                 <label
                   htmlFor="password"
-                  className="relative mb-1 inline-block font-medium capitalize"
+                  className="relative mb-1 inline-block font-medium capitalize text-brand-200"
                 >
                   Password
                 </label>
@@ -185,25 +187,27 @@ const Page = () => {
                        checked:bg-goldie-300 checked:hover:bg-neutral-800 
                        focus:ring-neutral-800 "
                   />
-                  <span className="text-sm">Keep me signed in</span>
+                  <span className="text-sm text-brand-200">
+                    Keep me signed in
+                  </span>
                 </label>
 
                 <Link
                   href="/forgot-password"
-                  className="text-sm hover:text-goldie-400"
+                  className="text-sm text-brand-200 "
                 >
                   Forgot password?
                 </Link>
               </div>
               <Button
                 disabled={userLogin?.isPending}
-                className="mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300"
+                className="mt-3 h-auto w-full rounded-none bg-brand-200 py-3 text-base text-brand-100 hover:border hover:border-brand-200 hover:bg-transparent hover:text-brand-200"
               >
                 {userLogin?.isPending ? "Loading...." : "Sign In"}
               </Button>
 
               <p className="text-center">
-                Don’t have an account? &nbsp;
+                Don&apos;t have an account? &nbsp;
                 <Link
                   href={
                     callbackUrl !== "/"
@@ -213,7 +217,7 @@ const Page = () => {
                         }
                       : "/sign-up"
                   }
-                  className="text-goldie-300"
+                  className="text-brand-200"
                 >
                   Sign Up
                 </Link>

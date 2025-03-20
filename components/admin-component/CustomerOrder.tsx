@@ -274,7 +274,7 @@ export default function CustomerOrder({ id }: { id: string }) {
                 key={index}
                 className={`w-fit rounded-sm border px-2 ${
                   selectedStatus === tab
-                    ? "bg-black text-goldie-300"
+                    ? "bg-black text-brand-200"
                     : "border-neutral-200 bg-white"
                 }`}
                 onClick={() => setSelectedStatus(tab)}

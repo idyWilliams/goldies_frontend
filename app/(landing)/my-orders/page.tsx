@@ -140,7 +140,7 @@ const MyOrders = () => {
   const filteredTabs = ["All", "Pending", "Completed", "Cancelled"];
 
   return (
-    <section className="bg-neutral-100 py-6">
+    <section className="bg-brand-100 py-6">
       <div className="wrapper">
         <h1 className="mb-8 border-b pb-3 text-2xl font-semibold">
           All Orders
@@ -157,8 +157,8 @@ const MyOrders = () => {
                   key={index}
                   className={`w-fit rounded-sm border px-2 ${
                     selectedStatus === tab
-                      ? "bg-black text-goldie-300"
-                      : "border-neutral-200 bg-white"
+                      ? "bg-brand-200 text-brand-100"
+                      : "border-brand-200 bg-brand-100"
                   }`}
                   onClick={() => setSelectedStatus(tab)}
                 >
@@ -284,7 +284,7 @@ const MyOrders = () => {
                                 onClick={() =>
                                   router.push(`/my-orders/${order?._id}`)
                                 }
-                                className="inline-flex items-center gap-2 bg-neutral-900 px-2 py-1 text-sm text-goldie-300"
+                                className="inline-flex items-center gap-2 bg-neutral-900 px-2 py-1 text-sm text-brand-200"
                               >
                                 <span>View</span> <Eye size={20} />
                               </button>

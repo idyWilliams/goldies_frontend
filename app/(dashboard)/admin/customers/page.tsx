@@ -3,16 +3,15 @@ import AdminPagination from "@/components/admin-component/AdminPagination";
 import DataTable from "@/components/admin-component/DataTable";
 import { Button } from "@/components/ui/button";
 import { initials } from "@/helper/initials";
-import { IUser } from "@/interfaces/user.interface";
-import { getUsers } from "@/services/hooks/admin-auth";
-import { useQuery } from "@tanstack/react-query";
+import { IUser, UserParams } from "@/interfaces/user.interface";
+import useUsers from "@/services/hooks/users/useUsers";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Eye } from "iconsax-react";
 import { Loader2Icon } from "lucide-react";
 import moment from "moment";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
 
@@ -20,15 +19,100 @@ const columnHelper = createColumnHelper<IUser>();
 
 export default function Page() {
   const router = useRouter();
-  const [currentPageIndex, setCurrentPageIndex] = useState(1);
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  const querySortBy = searchParams.get("sortBy") || "date";
+  const queryOrder = searchParams.get("sortOrder") || "desc";
+
+  const [currentPageIndex, setCurrentPageIndex] = useState(
+    parseInt(searchParams.get("page") || "1", 10),
+  );
   const [searchValue, setSearchValue] = useState("");
+  const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
 
   const itemsPerPage = 10;
 
-  const { data, isPending, isError, refetch } = useQuery({
-    queryKey: ["getUsers"],
-    queryFn: getUsers,
+  // const [sortBy, setSortBy] = useState<string>(querySortBy);
+  // const [order, setOrder] = useState<string>(queryOrder);
+
+  const [params, setParams] = useState<UserParams>({
+    page: currentPageIndex,
+    limit: itemsPerPage,
+    sortBy: querySortBy,
+    sortOrder: queryOrder,
   });
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchValue(searchValue);
+    }, 300); // 300ms delay
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchValue]);
+
+  useEffect(() => {
+    const newParams: UserParams = {
+      page: currentPageIndex,
+      limit: itemsPerPage,
+      sortBy: querySortBy,
+      sortOrder: queryOrder,
+  
+    };
+
+    if (searchValue) {
+      newParams.search = searchValue;
+    }
+
+    // Only include sortBy and order if they are not default
+    // if (sortBy !== "default") {
+    //   newParams.sortBy = sortBy;
+    //   newParams.sortOrder = order;
+    // }
+
+    // Update URL with new search query and page
+    const currentParams = new URLSearchParams(searchParams.toString());
+    currentParams.set("page", currentPageIndex.toString());
+
+    if (currentPageIndex !== 1) {
+      currentParams.set("page", currentPageIndex.toString());
+    } else {
+      currentParams.delete("page");
+    }
+
+    if (debouncedSearchValue) {
+      currentParams.set("search", debouncedSearchValue);
+    } else {
+      currentParams.delete("search");
+    }
+
+    // if (sortBy !== "default") {
+    //   currentParams.set("sortBy", sortBy);
+    //   currentParams.set("sortOrder", order);
+    // } else {
+    //   currentParams.delete("sortBy");
+    //   currentParams.delete("sortOrder");
+    // }
+
+    router.push(`${pathname}?${currentParams.toString()}`);
+    setParams(newParams);
+  }, [
+    currentPageIndex,
+    searchValue,
+    debouncedSearchValue,
+    pathname,
+    router,
+    searchParams,
+    querySortBy,
+    queryOrder,
+    // sortBy,
+    // order,
+  ]);
+
+  const { users, isLoading, isError, refetch, totalPages, totalUsers } =
+    useUsers(params);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
@@ -36,42 +120,8 @@ export default function Page() {
 
   const clearInput = () => {
     setSearchValue("");
+    setCurrentPageIndex(1);
   };
-
-  const processedUsers = useMemo<IUser[]>(() => {
-    if (!data?.users) return [];
-
-    let filtered = data.users as IUser[];
-
-    if (searchValue) {
-      filtered = filtered.filter(
-        (user) =>
-          user?.firstName?.toLowerCase().includes(searchValue.toLowerCase()) ||
-          user?.lastName?.toLowerCase().includes(searchValue.toLowerCase()) ||
-          user?.email?.toLowerCase().includes(searchValue.toLowerCase()) ||
-          user?.phoneNumber?.toLowerCase().includes(searchValue.toLowerCase()),
-      );
-    }
-
-    return filtered;
-  }, [data?.users, searchValue]);
-
-  const totalPages = Math.ceil(processedUsers.length / itemsPerPage);
-
-  const paginatedUsers = useMemo(
-    () =>
-      processedUsers.slice(
-        (currentPageIndex - 1) * itemsPerPage,
-        currentPageIndex * itemsPerPage,
-      ),
-    [processedUsers, currentPageIndex],
-  );
-
-  useEffect(() => {
-    if (currentPageIndex > totalPages && totalPages > 0) {
-      setCurrentPageIndex(totalPages);
-    }
-  }, [totalPages, currentPageIndex]);
 
   const columns = [
     columnHelper.accessor((row) => row, {
@@ -157,8 +207,10 @@ export default function Page() {
   ];
   return (
     <>
-      <section className="min-h-screen w-full bg-[#EFEFEF] px-4 py-6">
-        <h1 className="text-lg font-extrabold uppercase">Customers</h1>
+      <section className="min-h-screen w-full px-4 py-6">
+        <h1 className="text-lg font-extrabold uppercase text-brand-200">
+          Customers
+        </h1>
         <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
 
         <div className="my-6 flex flex-col-reverse items-center justify-between gap-4 md:flex-row">
@@ -190,7 +242,7 @@ export default function Page() {
           </div>
         </div>
 
-        {isPending ? (
+        {isLoading ? (
           <div className="flex w-full items-center justify-center py-10">
             <Loader2Icon className="mr-2 animate-spin" />
             <p>Fetching Customers...</p>
@@ -202,12 +254,12 @@ export default function Page() {
             </p>
             <Button onClick={() => refetch()}>Retry</Button>
           </div>
-        ) : processedUsers.length > 0 ? (
+        ) : users.length > 0 ? (
           <>
             <div className="hidden md:block">
               <DataTable
                 columns={columns}
-                data={paginatedUsers}
+                data={users}
                 currentPage={currentPageIndex}
                 totalPages={totalPages}
                 setCurrentPage={setCurrentPageIndex}
@@ -215,19 +267,17 @@ export default function Page() {
             </div>
             <div className="block md:hidden">
               <div className="grid gap-5">
-                {paginatedUsers.map((item, index) => (
+                {users.map((item, index) => (
                   <div key={index} className="bg-white p-4 py-6">
                     <div className="mt-3">
                       <div className="flex flex-col gap-3">
                         <div className="flex items-center">
-                          <div className="mr-4 flex h-14 w-14 items-center justify-center rounded-full bg-black text-goldie-300">
+                          <div className="mr-4 flex h-14 w-14 items-center justify-center rounded-full bg-black text-brand-200">
                             {initials(`${item.firstName} ${item.lastName}`)}
                           </div>
                           <div className="flex justify-between">
                             <div className="flex flex-col gap-2">
-                              <Link
-                                href={`/admin/customers/${item?._id}`}
-                              >
+                              <Link href={`/admin/customers/${item?._id}`}>
                                 <h3 className="whitespace-nowrap font-bold">
                                   {`${item.firstName} ${item.lastName}`}
                                 </h3>
@@ -245,7 +295,7 @@ export default function Page() {
                             {moment(item.createdAt).format("MMM DD, YYYY")}
                           </span>
                           <button
-                            className="bg-black px-5 py-2 text-sm text-goldie-300"
+                            className="bg-black px-5 py-2 text-sm text-brand-200"
                             onClick={() =>
                               router.push(`/admin/customers/${item._id}`)
                             }
