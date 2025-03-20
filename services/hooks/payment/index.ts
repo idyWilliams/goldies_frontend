@@ -1,3 +1,4 @@
+import { OrderParams } from "@/interfaces/order.interface";
 import instance from "@/services/api";
 
 export const initPayment = async (paymentData: any) => {
@@ -87,9 +88,9 @@ export const getOrderByOrderId = async (orderId: string) => {
   }
 };
 
-export const adminGetAllOrders = async () => {
+export const adminGetAllOrders = async (params?: OrderParams) => {
   try {
-    const response = await instance.get(`/order/get_all_order`);
+    const response = await instance.get(`/order/get_all_order`, { params });
     return response.data;
   } catch (error) {
     console.log("error getting admin all orders", error);

@@ -4,17 +4,16 @@ import DataTable from "@/components/admin-component/DataTable";
 import MobileOrderCard from "@/components/admin-component/MobileOrderCard";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/helper/formatCurrency";
-import { IOrder } from "@/interfaces/order.interface";
+import { IOrder, OrderParams } from "@/interfaces/order.interface";
 import { cn } from "@/lib/utils";
-import { adminGetAllOrders } from "@/services/hooks/payment";
-import { useQuery } from "@tanstack/react-query";
+import useOrders from "@/services/hooks/payment/useOrders";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Eye } from "iconsax-react";
 import { Loader2Icon } from "lucide-react";
 import moment from "moment";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
 
@@ -48,15 +47,86 @@ const columnHelper = createColumnHelper<IOrder>();
 
 export default function OrderPage() {
   const router = useRouter();
-  const [currentPage, setCurrentPage] = useState(1);
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  const [currentPage, setCurrentPage] = useState(
+    parseInt(searchParams.get("page") || "1", 10),
+  );
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [searchValue, setSearchValue] = useState("");
+  const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
+
   const itemsPerPage = 10;
 
-  const { data, isLoading, refetch, isError } = useQuery({
-    queryKey: ["adminAllOrders"],
-    queryFn: async () => adminGetAllOrders(),
+  const [params, setParams] = useState<OrderParams>({
+    page: currentPage,
+    limit: itemsPerPage,
+    status: "",
+    startDate: "",
+    endDate: "",
   });
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchValue(searchValue);
+    }, 300); // 300ms delay
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchValue]);
+
+  useEffect(() => {
+    const newParams: OrderParams = {
+      page: currentPage,
+      limit: itemsPerPage,
+      status: "",
+      startDate: "",
+      endDate: "",
+    };
+
+    if (searchValue) {
+      newParams.searchQuery = searchValue;
+    }
+
+    // Update URL with new search query and page
+    const currentParams = new URLSearchParams(searchParams.toString());
+    currentParams.set("page", currentPage.toString());
+
+    if (currentPage !== 1) {
+      currentParams.set("page", currentPage.toString());
+    } else {
+      currentParams.delete("page");
+    }
+
+    if (debouncedSearchValue) {
+      currentParams.set("search", debouncedSearchValue);
+    } else {
+      currentParams.delete("search");
+    }
+
+    // if (sortBy !== "default") {
+    //   currentParams.set("sortBy", sortBy);
+    //   currentParams.set("sortOrder", order);
+    // } else {
+    //   currentParams.delete("sortBy");
+    //   currentParams.delete("sortOrder");
+    // }
+
+    router.push(`${pathname}?${currentParams.toString()}`);
+    setParams(newParams);
+  }, [
+    currentPage,
+    searchValue,
+    debouncedSearchValue,
+    pathname,
+    router,
+    searchParams,
+  ]);
+
+  const { orders, isLoading, isError, refetch, totalPages, totalOrders } =
+    useOrders(params);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
@@ -65,46 +135,6 @@ export default function OrderPage() {
   const clearInput = () => {
     setSearchValue("");
   };
-
-  const processedOrders = useMemo<IOrder[]>(() => {
-    if (!data?.orders) return [];
-
-    let filtered = data.orders as IOrder[];
-    if (selectedStatus !== "All") {
-      filtered = filtered.filter(
-        (order) =>
-          order.orderStatus.toLowerCase() === selectedStatus.toLowerCase(),
-      );
-    }
-
-    if (searchValue) {
-      filtered = filtered.filter(
-        (order) =>
-          order?.orderId?.toLowerCase().includes(searchValue.toLowerCase()) ||
-          order?.firstName?.toLowerCase().includes(searchValue.toLowerCase()) ||
-          order?.lastName?.toLowerCase().includes(searchValue.toLowerCase()),
-      );
-    }
-
-    return filtered;
-  }, [data?.orders, selectedStatus, searchValue]);
-
-  const totalPages = Math.ceil(processedOrders.length / itemsPerPage);
-
-  const paginatedOrders = useMemo(
-    () =>
-      processedOrders.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage,
-      ),
-    [processedOrders, currentPage],
-  );
-
-  useEffect(() => {
-    if (currentPage > totalPages && totalPages > 0) {
-      setCurrentPage(totalPages);
-    }
-  }, [totalPages, currentPage]);
 
   const columns = [
     columnHelper.accessor((row) => row.orderId, {
@@ -231,19 +261,19 @@ export default function OrderPage() {
 
           <Button onClick={() => refetch()}>Retry</Button>
         </div>
-      ) : processedOrders.length > 0 ? (
+      ) : orders && orders?.length > 0 ? (
         <>
           <div className="hidden md:block">
             <DataTable
               columns={columns}
-              data={paginatedOrders}
+              data={orders!}
               currentPage={currentPage}
               totalPages={totalPages}
               setCurrentPage={setCurrentPage}
             />
           </div>
           <div className="block md:hidden">
-            <MobileOrderCard data={paginatedOrders} />
+            <MobileOrderCard data={orders!} />
 
             {totalPages > 1 && (
               <AdminPagination

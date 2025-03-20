@@ -16,7 +16,7 @@ const useUsers = (params: UserParams) => {
     return {
       users: (data.users as IUser[]) ?? [],
       totalPages: data.pagination.totalPages ?? 0,
-      totalUsers: data.pagination.totalDocs ?? 0,
+      totalUsers: data.pagination.totalUsers ?? 0,
     };
   }, [data, isLoading, isError]);
 
