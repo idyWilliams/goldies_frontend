@@ -8,23 +8,61 @@ import ManageCategoriesSkeleton from "./ManageCategoriesSkeleton";
 import { Category } from "@/services/types";
 import AdminPagination from "../AdminPagination";
 import CategoriesCards from "./CategoriesCards";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { CiSearch } from "react-icons/ci";
+import { IoMdClose } from "react-icons/io";
 
-const limit = 8;
+const itemsPerPage = 8;
 
 const AllCategories = () => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
   const setAllCategories = useBoundStore((state) => state.setCategories);
   const setActiveCategory = useBoundStore((state) => state.setActiveCategory);
   const setShowModal = useBoundStore((state) => state.setShowModal);
   const setActionType = useBoundStore((state) => state.setActionType);
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [currentPage, setCurrentPage] = useState<number>(
+    parseInt(searchParams.get("page") || "1", 10),
+  );
   const [totalPages, setTotalPages] = useState<number>(0);
   const [currentData, setCurrentData] = useState<Category[] | null>(null);
   const setLimit = useBoundStore((state) => state.setLimit);
   const setPage = useBoundStore((state) => state.setPage);
+  const [searchValue, setSearchValue] = useState("");
+  const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
 
   useEffect(() => {
     setActiveCategory(null);
   }, [setActiveCategory]);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchValue(searchValue);
+    }, 300); // 300ms delay
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchValue]);
+
+  useEffect(() => {
+    const currentParams = new URLSearchParams(searchParams.toString());
+
+    if (currentPage !== 1) {
+      currentParams.set("page", currentPage.toString());
+    } else {
+      currentParams.delete("page");
+    }
+
+    if (debouncedSearchValue) {
+      currentParams.set("search", debouncedSearchValue);
+    } else {
+      currentParams.delete("search");
+    }
+
+    router.push(`${pathname}?${currentParams.toString()}`);
+  }, [currentPage, debouncedSearchValue, pathname, router, searchParams]);
 
   const {
     data,
@@ -35,8 +73,9 @@ const AllCategories = () => {
     // refetch,
     // isStale,
   } = useQuery({
-    queryKey: ["categories", currentPage, limit],
-    queryFn: async () => getPaginatedCategories(currentPage, limit),
+    queryKey: ["categories", currentPage, itemsPerPage, debouncedSearchValue],
+    queryFn: async () =>
+      getPaginatedCategories(currentPage, itemsPerPage, debouncedSearchValue),
     // initialData: cat,
     placeholderData: keepPreviousData,
     // staleTime: 60 * 1000,
@@ -50,7 +89,7 @@ const AllCategories = () => {
 
   useEffect(() => {
     setPage(currentPage);
-    setLimit(limit);
+    setLimit(itemsPerPage);
   }, [currentPage, setPage, setLimit]);
 
   useEffect(() => {
@@ -79,8 +118,46 @@ const AllCategories = () => {
     setShowModal(true);
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(e.target.value);
+  };
+
+  const clearInput = () => {
+    setSearchValue("");
+    setCurrentPage(1);
+  };
+
   return (
     <>
+      <div className="my-6 flex flex-col-reverse items-center justify-between gap-4 md:flex-row">
+        {/* search input */}
+        <div className="w-full max-w-[500px]">
+          <label htmlFor="search" className="relative block w-full">
+            <input
+              value={searchValue}
+              type="text"
+              name="search"
+              autoComplete="search"
+              placeholder="Search..."
+              className="w-full rounded-[50px] px-4 py-2 pr-10 placeholder:text-sm focus:border-black focus:ring-black"
+              onChange={handleChange}
+            />
+            {searchValue ? (
+              <button
+                onClick={clearInput}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+              >
+                <IoMdClose />
+              </button>
+            ) : (
+              <span className="absolute right-3 top-1/2 -translate-y-1/2">
+                <CiSearch />
+              </span>
+            )}
+          </label>
+        </div>
+      </div>
+
       {isPending && !currentData && <ManageCategoriesSkeleton />}
 
       {isError && !currentData && (

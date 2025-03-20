@@ -56,3 +56,13 @@ export interface ProductParams {
   sortBy?: string; // "createdAt"
   order?: string; //"asc" or "desc"
 }
+
+export interface CategoryParams {
+  search?: string;
+  page?: number;
+  limit?: number;
+  sortByProducts?: string;
+  sortBySubcategories?: string;
+  sortByStatus?: string;
+  order?: string;
+}

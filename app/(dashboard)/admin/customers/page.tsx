@@ -111,7 +111,7 @@ export default function Page() {
     // order,
   ]);
 
-  const { users, isLoading, isError, refetch, totalPages, totalUsers } =
+  const { users, isLoading, isError, refetch, totalPages } =
     useUsers(params);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

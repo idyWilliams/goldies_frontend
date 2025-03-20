@@ -27,9 +27,10 @@ if (typeof window !== "undefined") {
 export const getPaginatedCategories = async (
   pageNum: number,
   limitNum: number,
+  search?: string,
 ) => {
   const response = await instance.get(
-    `/category/get_all_category?page=${pageNum}&limit=${limitNum}`,
+    `/category/get_all_category?page=${pageNum}&limit=${limitNum}&search=${search}`,
   );
   return response.data;
 };
