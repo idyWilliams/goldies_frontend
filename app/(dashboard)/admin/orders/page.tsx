@@ -56,15 +56,14 @@ export default function OrderPage() {
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
   const itemsPerPage = 10;
 
   const [params, setParams] = useState<OrderParams>({
     page: currentPage,
     limit: itemsPerPage,
-    status: "",
-    startDate: "",
-    endDate: "",
   });
 
   useEffect(() => {
@@ -81,13 +80,16 @@ export default function OrderPage() {
     const newParams: OrderParams = {
       page: currentPage,
       limit: itemsPerPage,
-      status: "",
-      startDate: "",
-      endDate: "",
+      status: selectedStatus === "All" ? "" : selectedStatus.toLowerCase(),
     };
 
-    if (searchValue) {
-      newParams.searchQuery = searchValue;
+    if (startDate && endDate) {
+      newParams.startDate = startDate;
+      newParams.endDate = endDate;
+    }
+
+    if (debouncedSearchValue) {
+      newParams.searchQuery = debouncedSearchValue;
     }
 
     // Update URL with new search query and page
@@ -106,13 +108,19 @@ export default function OrderPage() {
       currentParams.delete("search");
     }
 
-    // if (sortBy !== "default") {
-    //   currentParams.set("sortBy", sortBy);
-    //   currentParams.set("sortOrder", order);
-    // } else {
-    //   currentParams.delete("sortBy");
-    //   currentParams.delete("sortOrder");
-    // }
+    if (selectedStatus !== "All") {
+      currentParams.set("status", selectedStatus.toLowerCase());
+    } else {
+      currentParams.delete("status");
+    }
+
+    if (startDate && endDate) {
+      currentParams.set("startDate", startDate);
+      currentParams.set("endDate", endDate);
+    } else {
+      currentParams.delete("startDate");
+      currentParams.delete("endDate");
+    }
 
     router.push(`${pathname}?${currentParams.toString()}`);
     setParams(newParams);
@@ -123,6 +131,9 @@ export default function OrderPage() {
     pathname,
     router,
     searchParams,
+    selectedStatus,
+    startDate,
+    endDate,
   ]);
 
   const { orders, isLoading, isError, refetch, totalPages, totalOrders } =
@@ -134,6 +145,7 @@ export default function OrderPage() {
 
   const clearInput = () => {
     setSearchValue("");
+    setDebouncedSearchValue("");
   };
 
   const columns = [
@@ -200,14 +212,72 @@ export default function OrderPage() {
       <h1 className="text-lg font-extrabold uppercase">Orders</h1>
       <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
 
-      <div className="my-6 flex flex-col-reverse items-center justify-between gap-4 md:flex-row">
+      <div className="my-6 flex flex-col gap-4">
+        <div className="flex items-center justify-between gap-4 flex-wrap-reverse">
+          {/* Date Filters */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="rounded-[50px] px-4 py-2 placeholder:text-sm focus:border-black focus:ring-black"
+            />
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="rounded-[50px] px-4 py-2 placeholder:text-sm focus:border-black focus:ring-black"
+            />
+            <button
+              onClick={() => {
+                setStartDate("");
+                setEndDate("");
+              }}
+              className={cn(
+                "rounded-[50px] bg-gray-200 px-4 py-2 hover:bg-gray-300",
+                !startDate && !endDate && "cursor-not-allowed opacity-50",
+              )}
+              disabled={!startDate && !endDate}
+            >
+              Reset
+            </button>
+          </div>
+
+          {/* search input */}
+          <div className="w-full max-w-[500px]">
+            <label htmlFor="search" className="relative block w-full">
+              <input
+                value={searchValue}
+                type="text"
+                name="search"
+                autoComplete="search"
+                placeholder="Search..."
+                className="w-full rounded-[50px] px-4 py-2 pr-10 placeholder:text-sm focus:border-black focus:ring-black"
+                onChange={handleChange}
+              />
+              {searchValue ? (
+                <button
+                  onClick={clearInput}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                >
+                  <IoMdClose />
+                </button>
+              ) : (
+                <span className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <CiSearch />
+                </span>
+              )}
+            </label>
+          </div>
+        </div>
+
         {/* Filter Tabs */}
         <div className={cn("flex items-center justify-between gap-2 p-[2px]")}>
           <div className="flex items-center gap-1">
             {filteredTabs?.map((tab, index) => (
               <button
                 key={index}
-                className={`w-fit rounded-sm border px-2 ${
+                className={`w-fit rounded-[50px] border px-3 py-0.5 ${
                   selectedStatus === tab
                     ? "bg-brand-200 text-brand-100"
                     : "border-brand-200 bg-white"
@@ -218,33 +288,6 @@ export default function OrderPage() {
               </button>
             ))}
           </div>
-        </div>
-
-        {/* search input */}
-        <div className="w-full max-w-[500px]">
-          <label htmlFor="search" className="relative block w-full">
-            <input
-              value={searchValue}
-              type="text"
-              name="search"
-              autoComplete="search"
-              placeholder="Search..."
-              className="w-full rounded-[50px] px-4 py-2 pr-10 placeholder:text-sm focus:border-black focus:ring-black"
-              onChange={handleChange}
-            />
-            {searchValue ? (
-              <button
-                onClick={clearInput}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
-              >
-                <IoMdClose />
-              </button>
-            ) : (
-              <span className="absolute right-3 top-1/2 -translate-y-1/2">
-                <CiSearch />
-              </span>
-            )}
-          </label>
         </div>
       </div>
 

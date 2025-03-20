@@ -62,8 +62,8 @@ export default function Page() {
   
     };
 
-    if (searchValue) {
-      newParams.search = searchValue;
+    if (debouncedSearchValue) {
+      newParams.search = debouncedSearchValue;
     }
 
     // Only include sortBy and order if they are not default
