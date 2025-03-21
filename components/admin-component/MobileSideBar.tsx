@@ -78,13 +78,13 @@ export default function MobileSideBar({ onClose }: { onClose: () => void }) {
           </button>
         </Link>
         {auth?.admin?.role === "super_admin" && (
-          <Link href={"/admin/invite"}>
+          <Link href={"/admin/admin-users"}>
             <button
               className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname.includes("/admin/manage-categories") ? "text-brand-200" : "text-neutral-500"}`}
               onClick={onClose}
             >
               <UserAdd size="20" />
-              Invite Admin
+              Admin Users
             </button>
           </Link>
         )}

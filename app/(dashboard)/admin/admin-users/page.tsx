@@ -363,7 +363,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { toast } from "@/components/ui/use-toast";
+// import { toast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -382,22 +382,33 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import AdminDataTable, {
-  Admin,
-  AdminPaginationInfo,
-} from "@/components/AdminDataTable";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MdAdminPanelSettings } from "react-icons/md";
 import { HiUserAdd } from "react-icons/hi";
 import { FaSpinner } from "react-icons/fa";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import AdminDataTable, {
+  Admin,
+  AdminPaginationInfo,
+} from "@/components/admin-component/admin-table/adminDataTable";
 import {
+  blockAdmin,
   adminVerify,
   deleteAdmin,
-  blockAdmin,
+  //   blockAdmin,
   unBlockAdmin,
   getAdminUsers,
-} from "@/api/adminService";
+} from "@/services/hooks/admin-auth";
+import { toast } from "sonner";
+// import {
+//   adminVerify,
+//   deleteAdmin,
+//   blockAdmin,
+//   unBlockAdmin,
+//   getAdminUsers,
+// } from "@/api/adminService";
+// import AdminDataTable from "@/components/admin-component/admin-table/adminDataTable";
 
 export default function AdminManagement() {
   const queryClient = useQueryClient();
@@ -411,7 +422,7 @@ export default function AdminManagement() {
     "block" | "delete" | "reactivate" | "activate"
   >("block");
 
-  // Map tab values to status filter
+
   const getStatusFilter = (tab: string) => {
     switch (tab) {
       case "active":
@@ -427,7 +438,7 @@ export default function AdminManagement() {
     }
   };
 
-  // Fetch admins with React Query
+
   const {
     data,
     isPending: isLoading,
@@ -441,7 +452,7 @@ export default function AdminManagement() {
         search: searchQuery,
         status: getStatusFilter(currentTab),
       }),
-    keepPreviousData: true,
+    // keepPreviousData: true,
   });
 
   const admins = data?.admins || [];
@@ -455,11 +466,7 @@ export default function AdminManagement() {
   // Error handling
   useEffect(() => {
     if (isError) {
-      toast({
-        title: "Error",
-        description: "Failed to load admins. Please try again.",
-        variant: "destructive",
-      });
+      toast("Failed to load admins. Please try again.");
     }
   }, [isError]);
 
@@ -467,19 +474,12 @@ export default function AdminManagement() {
   const blockMutation = useMutation({
     mutationFn: blockAdmin,
     onSuccess: () => {
-      toast({
-        title: "Success",
-        description: `Admin ${adminToAction?.userName} has been blocked.`,
-      });
+      toast(`Admin ${adminToAction?.userName} has been blocked.`);
       queryClient.invalidateQueries({ queryKey: ["getAllAdmin"] });
       closeActionDialog();
     },
     onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to block admin. Please try again.",
-        variant: "destructive",
-      });
+      toast("Failed to block admin. Please try again.");
       closeActionDialog();
     },
   });
@@ -487,19 +487,12 @@ export default function AdminManagement() {
   const deleteMutation = useMutation({
     mutationFn: deleteAdmin,
     onSuccess: () => {
-      toast({
-        title: "Success",
-        description: `Admin ${adminToAction?.userName} has been deleted.`,
-      });
+      toast(`Admin ${adminToAction?.userName} has been deleted.`);
       queryClient.invalidateQueries({ queryKey: ["getAllAdmin"] });
       closeActionDialog();
     },
     onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to delete admin. Please try again.",
-        variant: "destructive",
-      });
+      toast("Failed to delete admin. Please try again.");
       closeActionDialog();
     },
   });
@@ -507,19 +500,16 @@ export default function AdminManagement() {
   const unblockMutation = useMutation({
     mutationFn: unBlockAdmin,
     onSuccess: () => {
-      toast({
-        title: "Success",
-        description: `Admin ${adminToAction?.userName} has been reactivated.`,
-      });
+      toast(`Admin ${adminToAction?.userName} has been reactivated.`);
       queryClient.invalidateQueries({ queryKey: ["getAllAdmin"] });
       closeActionDialog();
     },
     onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to reactivate admin. Please try again.",
-        variant: "destructive",
-      });
+      //   toast({
+      //     title: "Error",
+      //     description: "Failed to reactivate admin. Please try again.",
+      //     variant: "destructive",
+      //   });
       closeActionDialog();
     },
   });
@@ -527,19 +517,15 @@ export default function AdminManagement() {
   const verifyMutation = useMutation({
     mutationFn: adminVerify,
     onSuccess: () => {
-      toast({
-        title: "Success",
-        description: `Admin ${adminToAction?.userName}'s account has been activated.`,
-      });
+      //   toast({
+      //     title: "Success",
+      //     description: `Admin ${adminToAction?.userName}'s account has been activated.`,
+      //   });
       queryClient.invalidateQueries({ queryKey: ["getAllAdmin"] });
       closeActionDialog();
     },
     onError: () => {
-      toast({
-        title: "Error",
-        description: "Failed to activate admin. Please try again.",
-        variant: "destructive",
-      });
+      toast("Failed to activate admin. Please try again.");
       closeActionDialog();
     },
   });
@@ -602,11 +588,13 @@ export default function AdminManagement() {
     <div className="container mx-auto space-y-6 py-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <MdAdminPanelSettings className="h-8 w-8 text-primary" />
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">
-              Admin Management
-            </h1>
+            <div className="flex items center gap-2">
+              <MdAdminPanelSettings className="h-8 w-8 text-primary" />
+              <h1 className="text-2xl font-bold tracking-tight">
+                Admin Management
+              </h1>
+            </div>
             <p className="text-muted-foreground">
               Manage admin accounts and permissions
             </p>

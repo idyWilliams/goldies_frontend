@@ -9,6 +9,7 @@ import {
   Setting2,
   ShoppingBag,
   UserAdd,
+  UserOctagon,
 } from "iconsax-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -62,16 +63,16 @@ export default function AdminSideBar() {
           href={"/admin/manage-categories"}
           className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 ${pathname.includes("/admin/manage-categories") ? "rounded-[8px] bg-brand-200 px-2 text-brand-100 hover:text-brand-100" : "text-brand-200"}`}
         >
-          <Category2 size="20" />
+          <UserOctagon size="20" />
           Manage Categories
         </Link>
         {auth?.admin?.role === "super_admin" && (
           <Link
-            href={"/admin/invite"}
-            className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 ${pathname.includes("/admin/invite") ? "rounded-[8px] bg-brand-200 px-2 text-brand-100 hover:text-brand-100" : "text-brand-200"}`}
+            href={"/admin/admin-users"}
+            className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 ${pathname.includes("/admin/admin-users") ? "rounded-[8px] bg-brand-200 px-2 text-brand-100 hover:text-brand-100" : "text-brand-200"}`}
           >
             <UserAdd size="20" />
-            Invite Admin
+            Admin Users
           </Link>
         )}
         <Link

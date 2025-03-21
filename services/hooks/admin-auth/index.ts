@@ -10,6 +10,19 @@ import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.share
 import Cookies from "js-cookie";
 import { ADMIN_TOKEN_NAME } from "@/utils/constants";
 
+interface AdminQueryParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  status?: string;
+  sortField?: string;
+  sortOrder?: "asc" | "desc";
+  role?: string;
+  isActive?: boolean;
+  startDate?: string;
+  endDate?: string;
+}
+
 // INVITE ADMIN
 export const inviteAdmin = async (data: InviteAdmin) => {
   const response = await instance.post("/admin/invite", data);
@@ -32,12 +45,27 @@ export const loginAdmin = async (data: LoginAdmin) => {
 };
 
 // GET Admin
-export const getAdminUsers: () => Promise<{
-  error: boolean;
-  admins: any[];
-  pagination: any;
-}> = async () => {
-  const response = await instance.get("/admin/admins");
+export const getAdminUsers = async (params?: AdminQueryParams) => {
+  // Convert params object to URL query string
+  const queryParams = new URLSearchParams();
+
+  if (params?.page) queryParams.append("page", params.page.toString());
+  if (params?.limit) queryParams.append("limit", params.limit.toString());
+  if (params?.search) queryParams.append("search", params.search);
+  if (params?.status && params.status !== "all")
+    queryParams.append("status", params.status);
+  if (params?.sortField) queryParams.append("sortField", params.sortField);
+  if (params?.sortOrder) queryParams.append("sortOrder", params.sortOrder);
+  if (params?.role) queryParams.append("role", params.role);
+  if (params?.isActive !== undefined)
+    queryParams.append("isActive", params.isActive.toString());
+  if (params?.startDate) queryParams.append("startDate", params.startDate);
+  if (params?.endDate) queryParams.append("endDate", params.endDate);
+
+  const queryString = queryParams.toString();
+  const endpoint = `/admin/admins${queryString ? `?${queryString}` : ""}`;
+
+  const response = await instance.get(endpoint);
   return response.data;
 };
 
