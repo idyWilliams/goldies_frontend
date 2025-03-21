@@ -1,5 +1,5 @@
 "use client";
-import { addToCartStoreDTO } from "@/interfaces/cart.interface";
+import { addToCartStoreDTO, ICart } from "@/interfaces/cart.interface";
 import {
   addToCart as addProductToCart,
   setCart,
@@ -24,6 +24,7 @@ const useCart = () => {
     queryKey: ["cartList"],
     queryFn: getCartList,
     enabled: !!auth?.user,
+    select: (data) => data.cart.products as ICart[],
   });
 
   // Function to handle adding an item to the cart
@@ -34,7 +35,7 @@ const useCart = () => {
   // Sync Redux cart with server cart on mount
   const updateCart = useCallback(() => {
     if (serverCart) {
-      dispatch(setCart(serverCart?.cart?.products || []));
+      dispatch(setCart(serverCart || []));
     }
   }, [serverCart, dispatch]);
 
@@ -42,7 +43,7 @@ const useCart = () => {
     updateCart();
   }, [updateCart]);
 
-  const cart = auth?.user ? serverCart?.cart?.products || [] : localCart;
+  const cart = auth?.user ? serverCart || [] : localCart;
 
   return {
     cart,
