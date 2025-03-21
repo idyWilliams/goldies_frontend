@@ -1,24 +1,54 @@
 "use client";
-import { addToCartStoreDTO } from "@/interfaces/cart.interface";
+import { addToCartStoreDTO, ICart } from "@/interfaces/cart.interface";
 import {
   addToCart as addProductToCart,
-  clearCartFromStore,
+  setCart,
 } from "@/redux/features/product/cartSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { useQuery } from "@tanstack/react-query";
+import { getCartList } from ".";
+import { useCallback, useEffect } from "react";
+import { useAuth } from "@/context/AuthProvider";
 
 const useCart = () => {
   const dispatch = useAppDispatch();
-  const { cart } = useAppSelector((state) => state.cart);
+  const { cart: localCart } = useAppSelector((state) => state.cart);
+  const { auth } = useAuth();
+
+  const {
+    data: serverCart,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: ["cartList"],
+    queryFn: getCartList,
+    enabled: !!auth?.user,
+    select: (data) => data.cart.products as ICart[],
+  });
 
   // Function to handle adding an item to the cart
   const handleAddToCart = (item: addToCartStoreDTO) => {
     dispatch(addProductToCart(item));
   };
 
+  // Sync Redux cart with server cart on mount
+  const updateCart = useCallback(() => {
+    if (serverCart) {
+      dispatch(setCart(serverCart || []));
+    }
+  }, [serverCart, dispatch]);
+
+  useEffect(() => {
+    updateCart();
+  }, [updateCart]);
+
+  const cart = auth?.user ? serverCart || [] : localCart;
+
   return {
     cart,
     handleAddToCart,
-    isLoading: false,
+    isLoading: auth?.user ? isLoading : false,
   };
 };
 

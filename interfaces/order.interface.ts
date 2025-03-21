@@ -59,3 +59,14 @@ export interface IOrderedItems {
   details: string | undefined;
   quantity: number;
 }
+
+export interface OrderParams {
+  page?: number;
+  limit?: number;
+  searchQuery?: string;
+  status?: string;
+  minPrice?: number;
+  maxPrice?: number;
+  startDate?: string;
+  endDate?: string;
+}

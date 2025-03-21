@@ -47,8 +47,8 @@ export default function ProductsPage() {
   const router = useRouter();
   const pathname = usePathname();
 
-  const querySortBy = searchParams.get("sortBy") || "default";
-  const queryOrder = searchParams.get("order") || "asc";
+  const querySortBy = searchParams.get("sortBy") || "";
+  const queryOrder = searchParams.get("order") || "";
 
   const [showModal, setShowModal] = useState(false);
   const [action, setAction] = useState("");
@@ -72,8 +72,6 @@ export default function ProductsPage() {
   const [params, setParams] = useState<ProductParams>({
     page: currentPageIndex,
     limit: itemsPerPage,
-    sortBy: querySortBy,
-    order: queryOrder,
   });
 
   useEffect(() => {
@@ -90,6 +88,9 @@ export default function ProductsPage() {
     const newParams: ProductParams = {
       page: currentPageIndex,
       limit: itemsPerPage,
+      // sortBy: querySortBy,
+      // order: queryOrder,
+  
     };
 
     if (searchValue) {
@@ -97,7 +98,7 @@ export default function ProductsPage() {
     }
 
     // Only include sortBy and order if they are not default
-    if (sortBy !== "default") {
+    if (sortBy !== "") {
       newParams.sortBy = sortBy;
       newParams.order = order;
     }
@@ -118,7 +119,7 @@ export default function ProductsPage() {
       currentParams.delete("searchQuery");
     }
 
-    if (sortBy !== "default") {
+    if (sortBy !== "") {
       currentParams.set("sortBy", sortBy);
       currentParams.set("order", order);
     } else {
@@ -137,6 +138,8 @@ export default function ProductsPage() {
     searchParams,
     sortBy,
     order,
+    queryOrder,
+    querySortBy
   ]);
 
   const {
@@ -221,6 +224,15 @@ export default function ProductsPage() {
         </span>
       ),
       header: () => <span>Price</span>,
+    }),
+    columnHelper.accessor((row) => row, {
+      id: "productType",
+      cell: ({ row }) => (
+        <span className="whitespace-nowrap text-[15px] capitalize">
+          {row.original.productType}
+        </span>
+      ),
+      header: () => <span>Product Type</span>,
     }),
     columnHelper.accessor("createdAt", {
       header: () => <span>Added Date</span>,

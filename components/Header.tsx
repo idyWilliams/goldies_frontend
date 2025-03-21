@@ -2,7 +2,10 @@
 import useActivePath from "@/app/_hooks/useActivePath";
 import { useAuth } from "@/context/AuthProvider";
 import { cn } from "@/helper/cn";
-import { setCart } from "@/redux/features/product/cartSlice";
+import {
+  clearCartFromStore,
+  setCart,
+} from "@/redux/features/product/cartSlice";
 import { useAppDispatch } from "@/redux/hook";
 import useCart from "@/services/hooks/cart/useCart";
 import { USER_DETAILS, USER_TOKEN_NAME } from "@/utils/constants";
@@ -60,7 +63,7 @@ const Header = () => {
     Cookies.remove(USER_DETAILS);
     router.replace("/sign-in");
     queryClient.invalidateQueries({ queryKey: ["cartList"] });
-    dispatch(setCart([]));
+    dispatch(clearCartFromStore());
 
     if (
       pathname.includes("/my-account") ||
@@ -211,7 +214,7 @@ const Header = () => {
                           "absolute -right-1 top-0 inline-flex h-4 w-4 items-center justify-center rounded-full bg-brand-200 text-xs font-medium text-[#fcf7e8]",
                         )}
                       >
-                        {Object.values(cart).length}
+                        {Object.values(cart).length || 0}
                       </span>
                     )}
                   </button>
@@ -339,40 +342,26 @@ const SessionModal: React.FC<ComponentProp> = ({
   content,
   action,
 }) => {
-  const pathname = usePathname();
-  const show = pathname.includes("/sign-in") || pathname.includes("/sign-in");
   return (
-    <>
-      {!show && (
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogHeader className={cn("hidden")}>
-            <DialogTitle className="mb-2 mt-6 font-semibold text-neutral-900">
-              {title}
-            </DialogTitle>
-            <DialogDescription className="text-neutral-500">
-              {content}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogContent>
-            <div className="flex flex-col items-center">
-              <span className="flex h-14 w-14 items-center justify-center rounded-full bg-neutral-800 text-brand-200">
-                <Ghost size={24} />
-              </span>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent>
+        <div className="flex flex-col items-center">
+          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-neutral-800 text-goldie-300">
+            <Ghost size={24} />
+          </span>
 
-              <h3 className="mb-2 mt-6 font-semibold text-neutral-900">
-                {title}
-              </h3>
-              <p className="text-neutral-500">{content}</p>
-              <Button
-                onClick={action}
-                className="mt-6 h-auto w-full rounded-full bg-neutral-900 py-3 text-brand-200"
-              >
-                Continue
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
-    </>
+          <h3 className="mb-2 mt-6 text-center font-semibold text-neutral-900">
+            {title}
+          </h3>
+          <p className="text-center text-neutral-500">{content}</p>
+          <Button
+            onClick={action}
+            className="mt-6 h-auto w-full rounded-full bg-neutral-900 py-3 text-goldie-300"
+          >
+            Continue
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 };

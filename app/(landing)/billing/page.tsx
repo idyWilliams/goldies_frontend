@@ -17,6 +17,7 @@ import { useAuth } from "@/context/AuthProvider";
 import EachElement from "@/helper/EachElement";
 import { cn } from "@/helper/cn";
 import { formatCurrency } from "@/helper/formatCurrency";
+import { ICart } from "@/interfaces/cart.interface";
 import { CreateOrderDTO } from "@/interfaces/order.interface";
 import { IBillingInfo } from "@/interfaces/user.interface";
 import {
@@ -94,7 +95,7 @@ const BillingCheckoutPage = () => {
   const isBuyNow = searchParams.get("buyNow") === "true";
 
   // Determine which products to use
-  const products = isBuyNow && buyNowProduct ? [buyNowProduct] : cart;
+  const products: ICart[] = isBuyNow && buyNowProduct ? [buyNowProduct] : cart;
 
   const [country1, setCountry1] = useState("");
   const [country2, setCountry2] = useState("");
@@ -259,7 +260,7 @@ const BillingCheckoutPage = () => {
       return;
     }
 
-    console.log("data on edit>>", data);
+    // console.log("data on edit>>", data);
 
     try {
       const billingInfo = {
@@ -515,7 +516,7 @@ const BillingCheckoutPage = () => {
     setSelectedMethod(event.target.value);
   };
 
-  // Render fallback UI if no valid products 
+  // Render fallback UI if no valid products
   if (!products) {
     return (
       <div className="flex h-screen flex-col items-center justify-center bg-neutral-100">

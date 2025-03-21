@@ -4,17 +4,16 @@ import DataTable from "@/components/admin-component/DataTable";
 import MobileOrderCard from "@/components/admin-component/MobileOrderCard";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/helper/formatCurrency";
-import { IOrder } from "@/interfaces/order.interface";
+import { IOrder, OrderParams } from "@/interfaces/order.interface";
 import { cn } from "@/lib/utils";
-import { adminGetAllOrders } from "@/services/hooks/payment";
-import { useQuery } from "@tanstack/react-query";
+import useOrders from "@/services/hooks/payment/useOrders";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Eye } from "iconsax-react";
 import { Loader2Icon } from "lucide-react";
 import moment from "moment";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
 
@@ -48,15 +47,97 @@ const columnHelper = createColumnHelper<IOrder>();
 
 export default function OrderPage() {
   const router = useRouter();
-  const [currentPage, setCurrentPage] = useState(1);
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
+  const [currentPage, setCurrentPage] = useState(
+    parseInt(searchParams.get("page") || "1", 10),
+  );
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [searchValue, setSearchValue] = useState("");
+  const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
   const itemsPerPage = 10;
 
-  const { data, isLoading, refetch, isError } = useQuery({
-    queryKey: ["adminAllOrders"],
-    queryFn: async () => adminGetAllOrders(),
+  const [params, setParams] = useState<OrderParams>({
+    page: currentPage,
+    limit: itemsPerPage,
   });
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchValue(searchValue);
+    }, 300); // 300ms delay
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchValue]);
+
+  useEffect(() => {
+    const newParams: OrderParams = {
+      page: currentPage,
+      limit: itemsPerPage,
+      status: selectedStatus === "All" ? "" : selectedStatus.toLowerCase(),
+    };
+
+    if (startDate && endDate) {
+      newParams.startDate = startDate;
+      newParams.endDate = endDate;
+    }
+
+    if (debouncedSearchValue) {
+      newParams.searchQuery = debouncedSearchValue;
+    }
+
+    // Update URL with new search query and page
+    const currentParams = new URLSearchParams(searchParams.toString());
+    currentParams.set("page", currentPage.toString());
+
+    if (currentPage !== 1) {
+      currentParams.set("page", currentPage.toString());
+    } else {
+      currentParams.delete("page");
+    }
+
+    if (debouncedSearchValue) {
+      currentParams.set("search", debouncedSearchValue);
+    } else {
+      currentParams.delete("search");
+    }
+
+    if (selectedStatus !== "All") {
+      currentParams.set("status", selectedStatus.toLowerCase());
+    } else {
+      currentParams.delete("status");
+    }
+
+    if (startDate && endDate) {
+      currentParams.set("startDate", startDate);
+      currentParams.set("endDate", endDate);
+    } else {
+      currentParams.delete("startDate");
+      currentParams.delete("endDate");
+    }
+
+    router.push(`${pathname}?${currentParams.toString()}`);
+    setParams(newParams);
+  }, [
+    currentPage,
+    searchValue,
+    debouncedSearchValue,
+    pathname,
+    router,
+    searchParams,
+    selectedStatus,
+    startDate,
+    endDate,
+  ]);
+
+  const { orders, isLoading, isError, refetch, totalPages, totalOrders } =
+    useOrders(params);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
@@ -64,47 +145,8 @@ export default function OrderPage() {
 
   const clearInput = () => {
     setSearchValue("");
+    setDebouncedSearchValue("");
   };
-
-  const processedOrders = useMemo<IOrder[]>(() => {
-    if (!data?.orders) return [];
-
-    let filtered = data.orders as IOrder[];
-    if (selectedStatus !== "All") {
-      filtered = filtered.filter(
-        (order) =>
-          order.orderStatus.toLowerCase() === selectedStatus.toLowerCase(),
-      );
-    }
-
-    if (searchValue) {
-      filtered = filtered.filter(
-        (order) =>
-          order?.orderId?.toLowerCase().includes(searchValue.toLowerCase()) ||
-          order?.firstName?.toLowerCase().includes(searchValue.toLowerCase()) ||
-          order?.lastName?.toLowerCase().includes(searchValue.toLowerCase()),
-      );
-    }
-
-    return filtered;
-  }, [data?.orders, selectedStatus, searchValue]);
-
-  const totalPages = Math.ceil(processedOrders.length / itemsPerPage);
-
-  const paginatedOrders = useMemo(
-    () =>
-      processedOrders.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage,
-      ),
-    [processedOrders, currentPage],
-  );
-
-  useEffect(() => {
-    if (currentPage > totalPages && totalPages > 0) {
-      setCurrentPage(totalPages);
-    }
-  }, [totalPages, currentPage]);
 
   const columns = [
     columnHelper.accessor((row) => row.orderId, {
@@ -170,14 +212,72 @@ export default function OrderPage() {
       <h1 className="text-lg font-extrabold uppercase">Orders</h1>
       <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
 
-      <div className="my-6 flex flex-col-reverse items-center justify-between gap-4 md:flex-row">
+      <div className="my-6 flex flex-col gap-4">
+        <div className="flex items-center justify-between gap-4 flex-wrap-reverse">
+          {/* Date Filters */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="rounded-[50px] px-4 py-2 placeholder:text-sm focus:border-black focus:ring-black"
+            />
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="rounded-[50px] px-4 py-2 placeholder:text-sm focus:border-black focus:ring-black"
+            />
+            <button
+              onClick={() => {
+                setStartDate("");
+                setEndDate("");
+              }}
+              className={cn(
+                "rounded-[50px] bg-gray-200 px-4 py-2 hover:bg-gray-300",
+                !startDate && !endDate && "cursor-not-allowed opacity-50",
+              )}
+              disabled={!startDate && !endDate}
+            >
+              Reset
+            </button>
+          </div>
+
+          {/* search input */}
+          <div className="w-full max-w-[500px]">
+            <label htmlFor="search" className="relative block w-full">
+              <input
+                value={searchValue}
+                type="text"
+                name="search"
+                autoComplete="search"
+                placeholder="Search..."
+                className="w-full rounded-[50px] px-4 py-2 pr-10 placeholder:text-sm focus:border-black focus:ring-black"
+                onChange={handleChange}
+              />
+              {searchValue ? (
+                <button
+                  onClick={clearInput}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                >
+                  <IoMdClose />
+                </button>
+              ) : (
+                <span className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <CiSearch />
+                </span>
+              )}
+            </label>
+          </div>
+        </div>
+
         {/* Filter Tabs */}
         <div className={cn("flex items-center justify-between gap-2 p-[2px]")}>
           <div className="flex items-center gap-1">
             {filteredTabs?.map((tab, index) => (
               <button
                 key={index}
-                className={`w-fit rounded-sm border px-2 ${
+                className={`w-fit rounded-[50px] border px-3 py-0.5 ${
                   selectedStatus === tab
                     ? "bg-brand-200 text-brand-100"
                     : "border-brand-200 bg-white"
@@ -188,33 +288,6 @@ export default function OrderPage() {
               </button>
             ))}
           </div>
-        </div>
-
-        {/* search input */}
-        <div className="w-full max-w-[500px]">
-          <label htmlFor="search" className="relative block w-full">
-            <input
-              value={searchValue}
-              type="text"
-              name="search"
-              autoComplete="search"
-              placeholder="Search..."
-              className="w-full rounded-[50px] px-4 py-2 pr-10 placeholder:text-sm focus:border-black focus:ring-black"
-              onChange={handleChange}
-            />
-            {searchValue ? (
-              <button
-                onClick={clearInput}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
-              >
-                <IoMdClose />
-              </button>
-            ) : (
-              <span className="absolute right-3 top-1/2 -translate-y-1/2">
-                <CiSearch />
-              </span>
-            )}
-          </label>
         </div>
       </div>
 
@@ -231,19 +304,19 @@ export default function OrderPage() {
 
           <Button onClick={() => refetch()}>Retry</Button>
         </div>
-      ) : processedOrders.length > 0 ? (
+      ) : orders && orders?.length > 0 ? (
         <>
           <div className="hidden md:block">
             <DataTable
               columns={columns}
-              data={paginatedOrders}
+              data={orders!}
               currentPage={currentPage}
               totalPages={totalPages}
               setCurrentPage={setCurrentPage}
             />
           </div>
           <div className="block md:hidden">
-            <MobileOrderCard data={paginatedOrders} />
+            <MobileOrderCard data={orders!} />
 
             {totalPages > 1 && (
               <AdminPagination

@@ -41,6 +41,7 @@ export const cartSlice = createSlice({
   reducers: {
     setCart: (state, action: PayloadAction<ICart[]>) => {
       state.cart = action.payload;
+      localStorage.setItem("goldies_cart", JSON.stringify(state.cart));
     },
     addToCart: (state, action: PayloadAction<addToCartStoreDTO>) => {
       const {

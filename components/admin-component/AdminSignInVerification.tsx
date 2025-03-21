@@ -63,6 +63,7 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
 
         Cookies.set(ADMIN_TOKEN_NAME, res?.token);
         router.replace(callbackUrl);
+        toast.success(res?.message);
       })
       .catch((error: any) => {
         console.log(error);

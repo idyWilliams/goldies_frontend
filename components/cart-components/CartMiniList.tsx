@@ -63,11 +63,11 @@ const CartMiniList = () => {
       <CardContent className="my-1 p-0">
         <div className="max-h-40 divide-y divide-gray-700/50 overflow-y-auto px-2">
           {isLoading ? (
-            <div className="flex h-full items-center justify-center">
+            <div className="flex h-[80px] items-center justify-center">
               <Loader2Icon className="h-6 w-6 animate-spin" />
             </div>
           ) : cartItems.length === 0 ? (
-            <div className="flex h-full items-center justify-center py-4">
+            <div className="flex h-[80px] items-center justify-center py-4">
               <p className="text-sm text-brand-200">Your cart is empty.</p>
             </div>
           ) : (
