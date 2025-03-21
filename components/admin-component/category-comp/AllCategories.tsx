@@ -11,6 +11,7 @@ import CategoriesCards from "./CategoriesCards";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { CiSearch } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
+import { cn } from "@/lib/utils";
 
 const itemsPerPage = 8;
 
@@ -29,8 +30,13 @@ const AllCategories = () => {
   const [currentData, setCurrentData] = useState<Category[] | null>(null);
   const setLimit = useBoundStore((state) => state.setLimit);
   const setPage = useBoundStore((state) => state.setPage);
-  const [searchValue, setSearchValue] = useState("");
+  const [searchValue, setSearchValue] = useState(
+    searchParams.get("search") || "",
+  );
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState(
+    searchParams.get("status") || "All",
+  );
 
   useEffect(() => {
     setActiveCategory(null);
@@ -61,8 +67,33 @@ const AllCategories = () => {
       currentParams.delete("search");
     }
 
+    if (selectedStatus !== "All") {
+      currentParams.set("status", selectedStatus);
+    } else {
+      currentParams.delete("status");
+    }
+
     router.push(`${pathname}?${currentParams.toString()}`);
-  }, [currentPage, debouncedSearchValue, pathname, router, searchParams]);
+  }, [
+    currentPage,
+    debouncedSearchValue,
+    pathname,
+    router,
+    searchParams,
+    selectedStatus,
+  ]);
+
+  // Map selectedStatus to boolean or null for the API
+  const getStatusFilter = () => {
+    switch (selectedStatus) {
+      case "Active":
+        return "true";
+      case "Inactive":
+        return "false";
+      default:
+        return ""; // "All" status
+    }
+  };
 
   const {
     data,
@@ -73,9 +104,20 @@ const AllCategories = () => {
     // refetch,
     // isStale,
   } = useQuery({
-    queryKey: ["categories", currentPage, itemsPerPage, debouncedSearchValue],
+    queryKey: [
+      "categories",
+      currentPage,
+      itemsPerPage,
+      debouncedSearchValue,
+      selectedStatus,
+    ],
     queryFn: async () =>
-      getPaginatedCategories(currentPage, itemsPerPage, debouncedSearchValue),
+      getPaginatedCategories(
+        currentPage,
+        itemsPerPage,
+        debouncedSearchValue,
+        getStatusFilter(),
+      ),
     // initialData: cat,
     placeholderData: keepPreviousData,
     // staleTime: 60 * 1000,
@@ -127,9 +169,11 @@ const AllCategories = () => {
     setCurrentPage(1);
   };
 
+  const filteredTabs = ["All", "Active", "Inactive"];
+
   return (
     <>
-      <div className="my-6 flex flex-col-reverse items-center justify-between gap-4 md:flex-row">
+      <div className="my-6 flex flex-col items-center justify-between gap-4 md:flex-row">
         {/* search input */}
         <div className="w-full max-w-[500px]">
           <label htmlFor="search" className="relative block w-full">
@@ -155,6 +199,24 @@ const AllCategories = () => {
               </span>
             )}
           </label>
+        </div>
+
+        <div className={cn("flex items-center justify-between gap-2 p-[2px]")}>
+          <div className="flex items-center gap-1">
+            {filteredTabs?.map((tab, index) => (
+              <button
+                key={index}
+                className={`w-fit rounded-[50px] border px-3 py-0.5 ${
+                  selectedStatus === tab
+                    ? "bg-brand-200 text-brand-100"
+                    : "border-brand-200 bg-white"
+                }`}
+                onClick={() => setSelectedStatus(tab)}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
