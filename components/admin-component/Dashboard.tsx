@@ -47,7 +47,7 @@ export default function Dashboard() {
 
   return (
     <>
-      <section className="mb-5 w-full rounded-xl bg-brand-200 px-4 py-6 pt-[24px] lg:bg-white lg:p-4 lg:pt-6">
+      <section className="mb-5 w-full rounded-xl bg-transparent px-4 py-6 pt-[24px] lg:bg-white lg:p-4 lg:pt-6">
         <div className="rounded-[8px]">
           <div className="mb-8 flex items-center justify-between">
             <div className="">

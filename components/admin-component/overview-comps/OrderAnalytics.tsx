@@ -28,9 +28,11 @@ const chartData = [
 const chartConfig = {
   orders: {
     label: "Orders",
-    color: "#121212",
+    color: "#4A90E2",
   },
 } satisfies ChartConfig;
+
+console.log(chartConfig.orders);
 
 export function OrderAnalytics() {
   const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1224 });
@@ -46,14 +48,14 @@ export function OrderAnalytics() {
     }
   };
   return (
-    <Card className="border-0 bg-goldie-300">
+    <Card className="rounded-xl border bg-white p-4 shadow-none">
       <CardHeader>
         <CardTitle className="">Order Analytics</CardTitle>
       </CardHeader>
       <CardContent>
         <ChartContainer
           config={chartConfig}
-          className="orders max-h-[300px] min-h-[200px] w-full pl-0 lg:hidden"
+          className="max-h-[300px] min-h-[200px] w-full pl-0 lg:hidden"
         >
           <BarChart
             accessibilityLayer
@@ -83,11 +85,11 @@ export function OrderAnalytics() {
             /> */}
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent indicator="dot" color="#000" />}
+              content={<ChartTooltipContent indicator="dot" color="#2a9d90" />}
             />
             <Bar
               dataKey="orders"
-              fill="var(--color-desktop)"
+              fill={chartConfig.orders.color}
               radius={0}
               barSize={bar()}
             />
@@ -97,7 +99,7 @@ export function OrderAnalytics() {
         {/* DESKTOP */}
         <ChartContainer
           config={chartConfig}
-          className="orders hidden min-h-[200px] w-full pl-0 lg:block lg:max-h-[400px]"
+          className="hidden min-h-[200px] w-full pl-0 lg:block lg:max-h-[400px]"
         >
           <BarChart
             accessibilityLayer
@@ -111,6 +113,8 @@ export function OrderAnalytics() {
               vertical={false}
               strokeOpacity={0.9}
               stroke="hsl(0deg 0% 28.5% / 50%)"
+              strokeDasharray="3 3"
+              opacity={0.5}
             />
             <XAxis
               dataKey="month"
@@ -127,11 +131,11 @@ export function OrderAnalytics() {
             />
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent indicator="dot" />}
+              content={<ChartTooltipContent indicator="dot" color="#2a9d90" />}
             />
             <Bar
               dataKey="orders"
-              fill="var(--color-desktop)"
+              fill={chartConfig.orders.color}
               radius={0}
               barSize={40}
             />
