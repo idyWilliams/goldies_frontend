@@ -31,6 +31,16 @@ export const loginAdmin = async (data: LoginAdmin) => {
   return response.data;
 };
 
+// GET Admin
+export const getAdminUsers: () => Promise<{
+  error: boolean;
+  admins: any[];
+  pagination: any;
+}> = async () => {
+  const response = await instance.get("/admin/admins");
+  return response.data;
+};
+
 // OTP
 export const verifyOTP = async (data: VerificationOtp) => {
   const response = await instance.post("/admin/verify", data);
