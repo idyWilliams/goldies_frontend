@@ -16,7 +16,6 @@ import { useEffect, useMemo, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -35,6 +34,8 @@ import { RiUserAddLine } from "react-icons/ri";
 import AdminPagination from "./adminPagination";
 import { IoMdClose } from "react-icons/io";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import TableSkeletonLoader from "./admin-skeleton";
+
 
 export interface Admin {
   _id: string;
@@ -73,24 +74,23 @@ export interface AdminPaginationInfo {
   pages: number;
 }
 
-// interface DataTableProps<T> {
-//   data: T[];
-//   pagination: AdminPaginationInfo;
-
-//   onBlock?: (admin: T) => void;
-//   onDelete?: (admin: T) => void;
-//   onReactivate?: (admin: T) => void;
-//   onEdit?: (admin: T) => void;
-//   onActivate?: (admin: T) => void;
-//   isLoading?: boolean;
-//   onPageChange: (page: number) => void;
-//   onSearch?: (query: string) => void;
-// }
-
 const isRecentlyCreated = (createdAt: string): boolean => {
   const created = moment(createdAt);
   const now = moment();
   return now.diff(created, "hours") < 24;
+};
+
+
+const needsActivation = (admin: Admin): boolean => {
+  if (!admin.isVerified) return true;
+
+
+  const statusHistory = admin.statusChanges || [];
+  return (
+    statusHistory.some((change) => change.status === "created") &&
+    !admin.isBlocked &&
+    !admin.isDeleted
+  );
 };
 
 const globalFilter: FilterFn<any> = (row, columnId, value) => {
@@ -115,22 +115,51 @@ export default function AdminDataTable<T extends Admin>({
 }: DataTableProps<T>) {
   const [searchQuery, setSearchQuery] = useState("");
   const [localSearchEnabled, setLocalSearchEnabled] = useState(false);
+  const [currentPage, setCurrentPage] = useState(pagination.page);
+
+  // Reset to first page when tab changes
+  useEffect(() => {
+    if (pagination.page !== 1) {
+      onPageChange(1);
+    }
+  }, [currentTab]);
+
+  // Sync local page state with pagination prop
+  useEffect(() => {
+    setCurrentPage(pagination.page);
+  }, [pagination.page]);
 
   const clearInput = () => {
     setSearchQuery("");
-    // setDebouncedSearchValue("");
-    // setCurrentPageIndex(1);
+    if (onSearch) {
+      onSearch("");
+    }
   };
 
   useEffect(() => {
     const delaySearch = setTimeout(() => {
       if (onSearch && !localSearchEnabled) {
         onSearch(searchQuery);
+        // Reset to first page when search changes
+        if (pagination.page !== 1) {
+          onPageChange(1);
+        }
       }
     }, 500);
 
     return () => clearTimeout(delaySearch);
   }, [searchQuery, onSearch, localSearchEnabled]);
+
+  // Handle page change with debounce to prevent flashing
+  const handlePageChange = (newPage: number) => {
+    if (newPage !== currentPage) {
+      setCurrentPage(newPage);
+      // Small timeout to prevent UI jumping
+      setTimeout(() => {
+        onPageChange(newPage);
+      }, 50);
+    }
+  };
 
   const columns = useMemo<ColumnDef<T>[]>(
     () => [
@@ -178,20 +207,7 @@ export default function AdminDataTable<T extends Admin>({
         header: "Status",
         cell: ({ row }) => {
           const admin = row.original;
-          const statusHistory = admin.statusChanges || [];
-          const latestStatus =
-            statusHistory.length > 0
-              ? statusHistory[statusHistory.length - 1].status
-              : admin.isVerified
-                ? "active"
-                : "created";
-
-          // Check if this is a new account that needs activation
-          const needsActivation =
-            !admin.isVerified ||
-            (latestStatus === "created" &&
-              !admin.isBlocked &&
-              !admin.isDeleted);
+          const isPending = needsActivation(admin);
 
           return (
             <div className="flex cursor-pointer items-center gap-2">
@@ -199,7 +215,7 @@ export default function AdminDataTable<T extends Admin>({
                 <Badge className="bg-red-500">Deleted</Badge>
               ) : admin.isBlocked ? (
                 <Badge className="bg-yellow-500">Blocked</Badge>
-              ) : needsActivation ? (
+              ) : isPending ? (
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -231,11 +247,7 @@ export default function AdminDataTable<T extends Admin>({
         header: "Actions",
         cell: ({ row }) => {
           const admin = row.original;
-          const needsActivation =
-            !admin.isVerified ||
-            (admin.statusChanges?.[0]?.status === "created" &&
-              !admin.isBlocked &&
-              !admin.isDeleted);
+          const isPending = needsActivation(admin);
 
           return (
             <DropdownMenu>
@@ -252,7 +264,7 @@ export default function AdminDataTable<T extends Admin>({
                   </DropdownMenuItem>
                 )}
 
-                {onActivate && needsActivation && (
+                {onActivate && isPending && (
                   <DropdownMenuItem onClick={() => onActivate(admin)}>
                     <FaCheck className="mr-2 h-4 w-4 text-green-500" />
                     <span>Activate Account</span>
@@ -314,15 +326,6 @@ export default function AdminDataTable<T extends Admin>({
     <div className="w-full space-y-4">
       {/* Search and filter controls */}
       <div className="flex w-full items-center justify-between">
-        {/* <div className="relative w-72">
-          <CiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-          <Input
-            placeholder="Search admins..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
-          />
-        </div> */}
         <div className="w-full max-w-[500px]">
           <label htmlFor="search" className="relative block w-full">
             <input
@@ -348,41 +351,7 @@ export default function AdminDataTable<T extends Admin>({
             )}
           </label>
         </div>
-        {/* <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">Search mode:</span>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant={localSearchEnabled ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setLocalSearchEnabled(true)}
-                >
-                  Client-side
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Search within loaded data</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant={!localSearchEnabled ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setLocalSearchEnabled(false)}
-                >
-                  Server-side
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Search across all data</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div> */}
+
         <div className="">
           <Tabs
             defaultValue="all"
@@ -392,7 +361,7 @@ export default function AdminDataTable<T extends Admin>({
             <TabsList className="">
               <TabsTrigger value="all">All Admins</TabsTrigger>
               <TabsTrigger value="active">Active</TabsTrigger>
-              <TabsTrigger value="pending">Pending Activation</TabsTrigger>
+              <TabsTrigger value="created">Pending Activation</TabsTrigger>
               <TabsTrigger value="blocked">Blocked</TabsTrigger>
               <TabsTrigger value="deleted">Deleted</TabsTrigger>
             </TabsList>
@@ -402,13 +371,11 @@ export default function AdminDataTable<T extends Admin>({
         </div>
       </div>
 
-      {/* Table */}
+      {/* Table with Skeleton Loader */}
       {isLoading ? (
-        <div className="flex justify-center py-8">
-          <div className="h-8 w-8 animate-spin rounded-full"></div>
-        </div>
+        <TableSkeletonLoader />
       ) : tableData.length > 0 ? (
-        <div className="rounded-md  shadow-sm">
+        <div className="rounded-md shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full bg-[#fff]">
               <thead>
@@ -436,11 +403,7 @@ export default function AdminDataTable<T extends Admin>({
                   : table.getRowModel().rows
                 ).map((row) => {
                   const isNew = isRecentlyCreated(row.original.createdAt);
-                  const needsActivation =
-                    !row.original.isVerified ||
-                    (row.original.statusChanges?.[0]?.status === "created" &&
-                      !row.original.isBlocked &&
-                      !row.original.isDeleted);
+                  const isPending = needsActivation(row.original);
 
                   return (
                     <tr
@@ -451,7 +414,7 @@ export default function AdminDataTable<T extends Admin>({
                           ? "bg-red-50 hover:bg-red-100"
                           : row.original.isBlocked
                             ? "bg-yellow-50 hover:bg-yellow-100"
-                            : needsActivation
+                            : isPending
                               ? "bg-purple-50 hover:bg-purple-100"
                               : isNew
                                 ? "bg-blue-50 hover:bg-blue-100"
@@ -478,8 +441,8 @@ export default function AdminDataTable<T extends Admin>({
             <div className="border-t p-4">
               <AdminPagination
                 totalPage={pagination.pages}
-                page={pagination.page}
-                setPage={(newPage) => onPageChange(newPage)}
+                page={currentPage}
+                setPage={handlePageChange}
               />
             </div>
           )}

@@ -14,7 +14,7 @@ interface AdminQueryParams {
   page?: number;
   limit?: number;
   search?: string;
-  status?: string;
+  status?: string | null;
   sortField?: string;
   sortOrder?: "asc" | "desc";
   role?: string;

@@ -1,369 +1,6 @@
-// // pages/admin/AdminManagement.tsx
-// "use client";
-
-// import { useState, useEffect } from "react";
-
-// import { Button } from "@/components/ui/button";
-// import {
-//   AlertDialog,
-//   AlertDialogAction,
-//   AlertDialogCancel,
-//   AlertDialogContent,
-//   AlertDialogDescription,
-//   AlertDialogFooter,
-//   AlertDialogHeader,
-//   AlertDialogTitle,
-// } from "@/components/ui/alert-dialog";
-// import {
-//   Card,
-//   CardContent,
-//   CardDescription,
-//   CardHeader,
-//   CardTitle,
-// } from "@/components/ui/card";
-
-// import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-// import { MdAdminPanelSettings } from "react-icons/md";
-// import { HiUserAdd } from "react-icons/hi";
-// import { FaSpinner } from "react-icons/fa";
-// import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-// // import {
-// //   adminVerify,
-// //   deleteAdmin,
-// //   blockAdmin,
-// //   unBlockAdmin,
-// //   getAdminUsers,
-// // } from "@/api/adminService";
-// import { Admin } from "@/services/types";
-// import AdminDataTable from "@/components/admin-component/admin-table/adminDataTable";
-// import {
-//   adminVerify,
-//   getAdminUsers,
-//   unBlockAdmin,
-// } from "@/services/hooks/admin-auth";
-
-// export default function AdminManagement() {
-//   const queryClient = useQueryClient();
-//   const [currentTab, setCurrentTab] = useState("all");
-//   const [searchQuery, setSearchQuery] = useState("");
-//   const [page, setPage] = useState(1);
-//   const [adminToAction, setAdminToAction] = useState<Admin | null>(null);
-//   const [actionDialogOpen, setActionDialogOpen] = useState(false);
-//   const [actionType, setActionType] = useState<
-//     "block" | "delete" | "reactivate" | "activate"
-//   >("block");
-
-//   // Fetch admins with React Query
-//   const {
-//     data,
-//     isPending: isLoading,
-//     isError,
-//   } = useQuery({
-//     queryKey: ["getAllAdmin", page, searchQuery, currentTab],
-//     queryFn: () =>
-//       getAdminUsers({
-//         page,
-//         limit: 10,
-//         search: searchQuery,
-//         status: currentTab === "all" ? undefined : currentTab,
-//       }),
-//     keepPreviousData: true,
-//   });
-
-//   const admins = data?.admins || [];
-//   const pagination: AdminPaginationInfo = data?.pagination || {
-//     total: 0,
-//     page: 1,
-//     limit: 10,
-//     pages: 0,
-//   };
-
-//   // Error handling
-//   useEffect(() => {
-//     if (isError) {
-//       toast({
-//         title: "Error",
-//         description: "Failed to load admins. Please try again.",
-//         variant: "destructive",
-//       });
-//     }
-//   }, [isError]);
-
-//   // Mutations
-//   const blockMutation = useMutation({
-//     mutationFn: blockAdmin,
-//     onSuccess: () => {
-//       toast({
-//         title: "Success",
-//         description: `Admin ${adminToAction?.userName} has been blocked.`,
-//       });
-//       queryClient.invalidateQueries({ queryKey: ["getAllAdmin"] });
-//       closeActionDialog();
-//     },
-//     onError: () => {
-//       toast({
-//         title: "Error",
-//         description: "Failed to block admin. Please try again.",
-//         variant: "destructive",
-//       });
-//       closeActionDialog();
-//     },
-//   });
-
-//   const deleteMutation = useMutation({
-//     mutationFn: deleteAdmin,
-//     onSuccess: () => {
-//       toast({
-//         title: "Success",
-//         description: `Admin ${adminToAction?.userName} has been deleted.`,
-//       });
-//       queryClient.invalidateQueries({ queryKey: ["getAllAdmin"] });
-//       closeActionDialog();
-//     },
-//     onError: () => {
-//       toast({
-//         title: "Error",
-//         description: "Failed to delete admin. Please try again.",
-//         variant: "destructive",
-//       });
-//       closeActionDialog();
-//     },
-//   });
-
-//   const unblockMutation = useMutation({
-//     mutationFn: unBlockAdmin,
-//     onSuccess: () => {
-//       toast({
-//         title: "Success",
-//         description: `Admin ${adminToAction?.userName} has been reactivated.`,
-//       });
-//       queryClient.invalidateQueries({ queryKey: ["getAllAdmin"] });
-//       closeActionDialog();
-//     },
-//     onError: () => {
-//       toast({
-//         title: "Error",
-//         description: "Failed to reactivate admin. Please try again.",
-//         variant: "destructive",
-//       });
-//       closeActionDialog();
-//     },
-//   });
-
-//   const verifyMutation = useMutation({
-//     mutationFn: adminVerify,
-//     onSuccess: () => {
-//       toast({
-//         title: "Success",
-//         description: `Admin ${adminToAction?.userName}'s account has been activated.`,
-//       });
-//       queryClient.invalidateQueries({ queryKey: ["getAllAdmin"] });
-//       closeActionDialog();
-//     },
-//     onError: () => {
-//       toast({
-//         title: "Error",
-//         description: "Failed to activate admin. Please try again.",
-//         variant: "destructive",
-//       });
-//       closeActionDialog();
-//     },
-//   });
-
-//   // Filter based on tab
-//   const filteredAdmins = admins.filter((admin) => {
-//     switch (currentTab) {
-//       case "active":
-//         return !admin.isBlocked && !admin.isDeleted && admin.isVerified;
-//       case "blocked":
-//         return admin.isBlocked && !admin.isDeleted;
-//       case "deleted":
-//         return admin.isDeleted;
-//       case "pending":
-//         return (
-//           !admin.isVerified ||
-//           (admin.statusChanges?.[0]?.status === "created" &&
-//             !admin.isBlocked &&
-//             !admin.isDeleted)
-//         );
-//       default:
-//         return true;
-//     }
-//   });
-
-//   // Action handlers
-//   const handleAction = async () => {
-//     if (!adminToAction) return;
-
-//     switch (actionType) {
-//       case "block":
-//         blockMutation.mutate(adminToAction._id);
-//         break;
-//       case "delete":
-//         deleteMutation.mutate(adminToAction._id);
-//         break;
-//       case "reactivate":
-//         unblockMutation.mutate(adminToAction._id);
-//         break;
-//       case "activate":
-//         verifyMutation.mutate(adminToAction._id);
-//         break;
-//     }
-//   };
-
-//   const openActionDialog = (
-//     admin: Admin,
-//     action: "block" | "delete" | "reactivate" | "activate",
-//   ) => {
-//     setAdminToAction(admin);
-//     setActionType(action);
-//     setActionDialogOpen(true);
-//   };
-
-//   const closeActionDialog = () => {
-//     setActionDialogOpen(false);
-//     setAdminToAction(null);
-//   };
-
-//   const handlePageChange = (newPage: number) => {
-//     setPage(newPage);
-//   };
-
-//   const handleSearch = (query: string) => {
-//     setSearchQuery(query);
-//     setPage(1); // Reset to first page on new search
-//   };
-
-//   const isMutationLoading =
-//     blockMutation.isPending ||
-//     deleteMutation.isPending ||
-//     unblockMutation.isPending ||
-//     verifyMutation.isPending;
-
-//   return (
-//     <div className="container mx-auto space-y-6 py-6">
-//       <div className="flex items-center justify-between">
-//         <div className="flex items-center gap-2">
-//           <MdAdminPanelSettings className="h-8 w-8 text-primary" />
-//           <div>
-//             <h1 className="text-2xl font-bold tracking-tight">
-//               Admin Management
-//             </h1>
-//             <p className="text-muted-foreground">
-//               Manage admin accounts and permissions
-//             </p>
-//           </div>
-//         </div>
-//         <Button className="gap-2">
-//           <HiUserAdd className="h-4 w-4" />
-//           <span>Add New Admin</span>
-//         </Button>
-//       </div>
-
-//       <Card>
-//         <CardHeader className="pb-3">
-//           <CardTitle>Admin Accounts</CardTitle>
-//           <CardDescription>
-//             Total of {pagination.total} admin accounts in the system
-//           </CardDescription>
-//         </CardHeader>
-//         <CardContent>
-//           <Tabs
-//             defaultValue="all"
-//             value={currentTab}
-//             onValueChange={setCurrentTab}
-//           >
-//             <TabsList className="mb-4">
-//               <TabsTrigger value="all">All Admins</TabsTrigger>
-//               <TabsTrigger value="active">Active</TabsTrigger>
-//               <TabsTrigger value="pending">Pending Activation</TabsTrigger>
-//               <TabsTrigger value="blocked">Blocked</TabsTrigger>
-//               <TabsTrigger value="deleted">Deleted</TabsTrigger>
-//             </TabsList>
-
-//             <TabsContent value={currentTab} forceMount>
-//               <AdminDataTable
-//                 data={filteredAdmins}
-//                 pagination={pagination}
-//                 isLoading={isLoading}
-//                 onPageChange={handlePageChange}
-//                 onSearch={handleSearch}
-//                 onBlock={(admin) => openActionDialog(admin, "block")}
-//                 onDelete={(admin) => openActionDialog(admin, "delete")}
-//                 onReactivate={(admin) =>
-//                   openActionDialog(
-//                     admin,
-//                     admin.isDeleted ? "reactivate" : "reactivate",
-//                   )
-//                 }
-//                 onActivate={(admin) => openActionDialog(admin, "activate")}
-//               />
-//             </TabsContent>
-//           </Tabs>
-//         </CardContent>
-//       </Card>
-
-//       {/* Action confirmation dialog */}
-//       <AlertDialog open={actionDialogOpen} onOpenChange={setActionDialogOpen}>
-//         <AlertDialogContent>
-//           <AlertDialogHeader>
-//             <AlertDialogTitle>
-//               {actionType === "block"
-//                 ? "Block Admin"
-//                 : actionType === "delete"
-//                   ? "Delete Admin"
-//                   : actionType === "activate"
-//                     ? "Activate Admin Account"
-//                     : "Reactivate Admin"}
-//             </AlertDialogTitle>
-//             <AlertDialogDescription>
-//               {actionType === "block" &&
-//                 "Blocking this admin will prevent them from accessing the system until they are unblocked."}
-//               {actionType === "delete" &&
-//                 "Deleting this admin will remove their account from active use. This can be undone later."}
-//               {actionType === "reactivate" &&
-//                 (adminToAction?.isDeleted
-//                   ? "This will restore the deleted admin account."
-//                   : "This will unblock the admin account and restore access.")}
-//               {actionType === "activate" &&
-//                 "This will activate the admin account and allow them to access the system."}
-//             </AlertDialogDescription>
-//           </AlertDialogHeader>
-//           <AlertDialogFooter>
-//             <AlertDialogCancel>Cancel</AlertDialogCancel>
-//             <AlertDialogAction
-//               onClick={handleAction}
-//               disabled={isMutationLoading}
-//             >
-//               {isMutationLoading ? (
-//                 <>
-//                   <FaSpinner className="mr-2 h-4 w-4 animate-spin" />
-//                   <span>Processing...</span>
-//                 </>
-//               ) : (
-//                 <>
-//                   {actionType === "block"
-//                     ? "Block"
-//                     : actionType === "delete"
-//                       ? "Delete"
-//                       : actionType === "activate"
-//                         ? "Activate"
-//                         : "Reactivate"}
-//                 </>
-//               )}
-//             </AlertDialogAction>
-//           </AlertDialogFooter>
-//         </AlertDialogContent>
-//       </AlertDialog>
-//     </div>
-//   );
-// }
-
-// pages/admin/AdminManagement.tsx
 "use client";
 
 import { useState, useEffect } from "react";
-// import { toast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -382,11 +19,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { cn } from "@/helper/cn";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MdAdminPanelSettings } from "react-icons/md";
 import { HiUserAdd } from "react-icons/hi";
 import { FaSpinner } from "react-icons/fa";
+import { CgSpinner } from "react-icons/cg";
+import { AiOutlineUserAdd } from "react-icons/ai";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import AdminDataTable, {
   Admin,
@@ -396,45 +46,96 @@ import {
   blockAdmin,
   adminVerify,
   deleteAdmin,
-  //   blockAdmin,
   unBlockAdmin,
   getAdminUsers,
+  inviteAdmin,
 } from "@/services/hooks/admin-auth";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
-// import {
-//   adminVerify,
-//   deleteAdmin,
-//   blockAdmin,
-//   unBlockAdmin,
-//   getAdminUsers,
-// } from "@/api/adminService";
-// import AdminDataTable from "@/components/admin-component/admin-table/adminDataTable";
+import { useRouter, useSearchParams } from "next/navigation";
+
+// Validation schema for invite admin form
+const validationSchema = yup
+  .object()
+  .shape({
+    email: yup
+      .string()
+      .email("Please enter a valid email")
+      .required("Email is required"),
+  });
 
 export default function AdminManagement() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const queryClient = useQueryClient();
-  const [currentTab, setCurrentTab] = useState("all");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [page, setPage] = useState(1);
+  const [currentTab, setCurrentTab] = useState(
+    searchParams.get("status") || "all",
+  );
+  const [searchQuery, setSearchQuery] = useState(
+    searchParams.get("search") || "",
+  );
+  const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
   const [limit] = useState(10);
   const [adminToAction, setAdminToAction] = useState<Admin | null>(null);
   const [actionDialogOpen, setActionDialogOpen] = useState(false);
+  const [addAdminDialogOpen, setAddAdminDialogOpen] = useState(false);
   const [actionType, setActionType] = useState<
     "block" | "delete" | "reactivate" | "activate"
   >("block");
+
+  // Form setup for invite admin modal
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({ resolver: yupResolver(validationSchema) });
+
+  const updateUrlParams = (params: {
+    status?: string;
+    search?: string;
+    page?: number;
+  }) => {
+    const url = new URL(window.location.href);
+
+    if (params.status) {
+      if (params.status === "all") {
+        url.searchParams.delete("status");
+      } else {
+        url.searchParams.set("status", params.status);
+      }
+    }
+
+    if (params.search !== undefined) {
+      if (params.search === "") {
+        url.searchParams.delete("search");
+      } else {
+        url.searchParams.set("search", params.search);
+      }
+    }
+
+    if (params.page !== undefined) {
+      if (params.page === 1) {
+        url.searchParams.delete("page");
+      } else {
+        url.searchParams.set("page", params.page.toString());
+      }
+    }
+
+    // Update the URL without refreshing the page
+    router.push(url.pathname + url.search, { scroll: false });
+  };
 
   const getStatusFilter = (tab: string) => {
     switch (tab) {
       case "active":
         return "active";
-      case "pending":
-        return "pending";
       case "blocked":
         return "blocked";
       case "deleted":
         return "deleted";
       default:
-        return undefined;
+        return null;
     }
   };
 
@@ -451,7 +152,6 @@ export default function AdminManagement() {
         search: searchQuery,
         status: getStatusFilter(currentTab),
       }),
-    // keepPreviousData: true,
   });
 
   const admins = data?.admins || [];
@@ -504,11 +204,6 @@ export default function AdminManagement() {
       closeActionDialog();
     },
     onError: () => {
-      //   toast({
-      //     title: "Error",
-      //     description: "Failed to reactivate admin. Please try again.",
-      //     variant: "destructive",
-      //   });
       closeActionDialog();
     },
   });
@@ -516,16 +211,29 @@ export default function AdminManagement() {
   const verifyMutation = useMutation({
     mutationFn: adminVerify,
     onSuccess: () => {
-      //   toast({
-      //     title: "Success",
-      //     description: `Admin ${adminToAction?.userName}'s account has been activated.`,
-      //   });
       queryClient.invalidateQueries({ queryKey: ["getAllAdmin"] });
       closeActionDialog();
     },
     onError: () => {
       toast("Failed to activate admin. Please try again.");
       closeActionDialog();
+    },
+  });
+
+  const inviteAdminMutation = useMutation({
+    mutationFn: inviteAdmin,
+    onSuccess: (data) => {
+      toast.success("Invitation sent successfully!");
+      queryClient.invalidateQueries({ queryKey: ["getAllAdmin"] });
+      reset();
+      setAddAdminDialogOpen(false);
+    },
+    onError: (error: any) => {
+      toast.error(
+        error?.response?.data?.message ||
+          error?.message ||
+          "Failed to send invitation",
+      );
     },
   });
 
@@ -570,11 +278,17 @@ export default function AdminManagement() {
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     setPage(1); // Reset to first page on new search
+    updateUrlParams({ search: query, page: 1 });
   };
 
   const handleTabChange = (tab: string) => {
     setCurrentTab(tab);
-    setPage(1); // Reset to first page on tab change
+    setPage(1);
+    updateUrlParams({ status: tab, page: 1 });
+  };
+
+  const handleAddNewAdmin = (data: any) => {
+    inviteAdminMutation.mutate(data);
   };
 
   const isMutationLoading =
@@ -604,56 +318,81 @@ export default function AdminManagement() {
             </p>
           </div>
         </div>
-        <Button
-          className="flex cursor-pointer items-center gap-1 rounded-md bg-brand-200 text-brand-100 hover:bg-brand-200"
-          //   onClick={handleAddNew}
-        >
-          <HiUserAdd className="h-4 w-4" />
-          <span>Add New Admin</span>
-        </Button>
+
+        <Dialog open={addAdminDialogOpen} onOpenChange={setAddAdminDialogOpen}>
+          <DialogTrigger asChild>
+            <Button className="flex cursor-pointer items-center gap-1 rounded-md bg-brand-200 text-brand-100 hover:bg-brand-200">
+              <HiUserAdd className="h-4 w-4" />
+              <span>Add New Admin</span>
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[440px]">
+            <div className="flex flex-col items-center py-4">
+              <span className="flex h-20 w-20 items-center justify-center rounded-full bg-brand-200 bg-opacity-35">
+                <span className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-200 bg-opacity-35 text-brand-100">
+                  <AiOutlineUserAdd size={30} />
+                </span>
+              </span>
+              <div className="mb-8 mt-6 text-center">
+                <DialogTitle className="mb-1 text-2xl font-bold capitalize">
+                  Invite Admin
+                </DialogTitle>
+                <DialogDescription className="text-balance text-neutral-600">
+                  A link will be sent to the provided email to request admin
+                  access
+                </DialogDescription>
+              </div>
+              <div className="w-full">
+                <form
+                  id="signup"
+                  className="flex flex-col gap-5 md:grid-cols-2"
+                  onSubmit={handleSubmit(handleAddNewAdmin)}
+                >
+                  <label htmlFor="email" className="md:col-span-2">
+                    <span className="mb-1 inline-block font-medium capitalize">
+                      Email Address
+                    </span>
+                    <input
+                      {...register("email")}
+                      type="email"
+                      className={cn(
+                        "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
+                        errors?.email
+                          ? "border border-red-600 focus:border-red-600 focus:ring-0"
+                          : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
+                      )}
+                      id="email"
+                      name="email"
+                      placeholder="admin@example.com"
+                    />
+                    {errors?.email && (
+                      <p className={cn("mt-1 text-sm text-red-600")}>
+                        {errors.email?.message}
+                      </p>
+                    )}
+                  </label>
+                  <Button
+                    disabled={inviteAdminMutation.isPending}
+                    className="col-span-2 mt-3 h-auto w-full rounded-none bg-brand-200 py-3 text-base text-brand-100"
+                    type="submit"
+                  >
+                    {inviteAdminMutation.isPending ? (
+                      <div className="flex items-center justify-center gap-3">
+                        <CgSpinner className="animate-spin" size={20} />
+                        Loading...
+                      </div>
+                    ) : (
+                      "Send Invite"
+                    )}
+                  </Button>
+                </form>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div>
-        {/* <CardHeader className="px-0 pb-3">
-          <CardTitle>Admin Accounts</CardTitle>
-          <CardDescription>
-            Total of admin accounts in the system
-          </CardDescription>
-        </CardHeader> */}
-        {/* <CardContent>
-          <Tabs
-            defaultValue="all"
-            value={currentTab}
-            onValueChange={handleTabChange}
-          >
-            <TabsList className="mb-4">
-              <TabsTrigger value="all">All Admins</TabsTrigger>
-              <TabsTrigger value="active">Active</TabsTrigger>
-              <TabsTrigger value="pending">Pending Activation</TabsTrigger>
-              <TabsTrigger value="blocked">Blocked</TabsTrigger>
-              <TabsTrigger value="deleted">Deleted</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value={currentTab} forceMount>
-              <AdminDataTable
-                data={admins}
-                pagination={pagination}
-                isLoading={isLoading}
-                onPageChange={handlePageChange}
-                onSearch={handleSearch}
-                onBlock={(admin) => openActionDialog(admin, "block")}
-                onDelete={(admin) => openActionDialog(admin, "delete")}
-                onReactivate={(admin) =>
-                  openActionDialog(
-                    admin,
-                    admin.isDeleted ? "reactivate" : "reactivate",
-                  )
-                }
-                onActivate={(admin) => openActionDialog(admin, "activate")}
-              />
-            </TabsContent>
-          </Tabs>
-        </CardContent> */}
         <CardContent className="p-0">
           <AdminDataTable
             data={admins}

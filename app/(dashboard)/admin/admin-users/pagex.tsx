@@ -75,7 +75,7 @@ const Page = () => {
       }}
       className="flex h-dvh flex-col items-center justify-center px-4"
     >
-      {/* <div className="flex  flex-col items-center border bg-white p-6 py-12 shadow-lg  sm:mx-auto sm:w-[440px]">
+      <div className="flex  flex-col items-center border bg-white p-6 py-12 shadow-lg  sm:mx-auto sm:w-[440px]">
         <span className="flex h-20 w-20 items-center justify-center rounded-full bg-brand-200 bg-opacity-35">
           <span className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-200 bg-opacity-35 text-brand-100">
             <AiOutlineUserAdd size={30} />
@@ -131,7 +131,7 @@ const Page = () => {
             </Button>
           </form>
         </div>
-      </div> */}
+      </div>
     </section>
   );
 };
