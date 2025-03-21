@@ -401,6 +401,7 @@ import {
   getAdminUsers,
 } from "@/services/hooks/admin-auth";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
 // import {
 //   adminVerify,
 //   deleteAdmin,
@@ -422,7 +423,6 @@ export default function AdminManagement() {
     "block" | "delete" | "reactivate" | "activate"
   >("block");
 
-
   const getStatusFilter = (tab: string) => {
     switch (tab) {
       case "active":
@@ -437,7 +437,6 @@ export default function AdminManagement() {
         return undefined;
     }
   };
-
 
   const {
     data,
@@ -589,31 +588,39 @@ export default function AdminManagement() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div>
-            <div className="flex items center gap-2">
+            <div className="items center flex gap-2 ">
               <MdAdminPanelSettings className="h-8 w-8 text-primary" />
-              <h1 className="text-2xl font-bold tracking-tight">
-                Admin Management
-              </h1>
+              <div className="flex items-center gap-3">
+                <h1 className="text-2xl font-bold tracking-tight">
+                  Admin Management
+                </h1>
+                <Badge className=" bg-brand-200 text-[10px]">
+                  {pagination.total}
+                </Badge>
+              </div>
             </div>
             <p className="text-muted-foreground">
               Manage admin accounts and permissions
             </p>
           </div>
         </div>
-        <Button className="gap-2">
+        <Button
+          className="flex cursor-pointer items-center gap-1 rounded-md bg-brand-200 text-brand-100 hover:bg-brand-200"
+          //   onClick={handleAddNew}
+        >
           <HiUserAdd className="h-4 w-4" />
           <span>Add New Admin</span>
         </Button>
       </div>
 
-      <Card>
-        <CardHeader className="pb-3">
+      <div>
+        {/* <CardHeader className="px-0 pb-3">
           <CardTitle>Admin Accounts</CardTitle>
           <CardDescription>
-            Total of {pagination.total} admin accounts in the system
+            Total of admin accounts in the system
           </CardDescription>
-        </CardHeader>
-        <CardContent>
+        </CardHeader> */}
+        {/* <CardContent>
           <Tabs
             defaultValue="all"
             value={currentTab}
@@ -646,8 +653,28 @@ export default function AdminManagement() {
               />
             </TabsContent>
           </Tabs>
+        </CardContent> */}
+        <CardContent className="p-0">
+          <AdminDataTable
+            data={admins}
+            pagination={pagination}
+            isLoading={isLoading}
+            currentTab={currentTab}
+            onTabChange={handleTabChange}
+            onPageChange={handlePageChange}
+            onSearch={handleSearch}
+            onBlock={(admin) => openActionDialog(admin, "block")}
+            onDelete={(admin) => openActionDialog(admin, "delete")}
+            onReactivate={(admin) =>
+              openActionDialog(
+                admin,
+                admin.isDeleted ? "reactivate" : "reactivate",
+              )
+            }
+            onActivate={(admin) => openActionDialog(admin, "activate")}
+          />
         </CardContent>
-      </Card>
+      </div>
 
       {/* Action confirmation dialog */}
       <AlertDialog open={actionDialogOpen} onOpenChange={setActionDialogOpen}>

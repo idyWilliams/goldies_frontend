@@ -35,12 +35,12 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
 
   const inviteAnAdmin = useMutation({ mutationFn: inviteAdmin });
-  const { data, isPending, isError, refetch } = useQuery({
-    queryKey: ["getAllAdmin"],
-    queryFn: getAdminUsers,
-  });
+  // const { data, isPending, isError, refetch } = useQuery({
+  //   queryKey: ["getAllAdmin"],
+  //   queryFn: getAdminUsers,
+  // });
 
-  console.log(data, "getAllAdmin");
+  // console.log(data, "getAllAdmin");
 
   const {
     register,

@@ -33,8 +33,9 @@ import {
 } from "@/components/ui/tooltip";
 import { RiUserAddLine } from "react-icons/ri";
 import AdminPagination from "./adminPagination";
+import { IoMdClose } from "react-icons/io";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-// Define the Admin type based on the provided data structure
 export interface Admin {
   _id: string;
   userName: string;
@@ -51,7 +52,20 @@ export interface Admin {
   }>;
   OTP?: string;
 }
-
+interface DataTableProps<T> {
+  data: T[];
+  pagination: AdminPaginationInfo;
+  currentTab: string;
+  onTabChange: (tab: string) => void;
+  onBlock?: (admin: T) => void;
+  onDelete?: (admin: T) => void;
+  onReactivate?: (admin: T) => void;
+  onEdit?: (admin: T) => void;
+  onActivate?: (admin: T) => void;
+  isLoading?: boolean;
+  onPageChange: (page: number) => void;
+  onSearch?: (query: string) => void;
+}
 export interface AdminPaginationInfo {
   total: number;
   page: number;
@@ -59,29 +73,26 @@ export interface AdminPaginationInfo {
   pages: number;
 }
 
-interface DataTableProps<T> {
-  data: T[];
-  pagination: AdminPaginationInfo;
-  // Action handlers
-  onBlock?: (admin: T) => void;
-  onDelete?: (admin: T) => void;
-  onReactivate?: (admin: T) => void;
-  onEdit?: (admin: T) => void;
-  onActivate?: (admin: T) => void;
-  // Optional loading state
-  isLoading?: boolean;
-  onPageChange: (page: number) => void;
-  onSearch?: (query: string) => void;
-}
+// interface DataTableProps<T> {
+//   data: T[];
+//   pagination: AdminPaginationInfo;
 
-// Function to determine if an admin was recently created (within last 24 hours)
+//   onBlock?: (admin: T) => void;
+//   onDelete?: (admin: T) => void;
+//   onReactivate?: (admin: T) => void;
+//   onEdit?: (admin: T) => void;
+//   onActivate?: (admin: T) => void;
+//   isLoading?: boolean;
+//   onPageChange: (page: number) => void;
+//   onSearch?: (query: string) => void;
+// }
+
 const isRecentlyCreated = (createdAt: string): boolean => {
   const created = moment(createdAt);
   const now = moment();
   return now.diff(created, "hours") < 24;
 };
 
-// Global filter function for the table
 const globalFilter: FilterFn<any> = (row, columnId, value) => {
   const searchValue = value.toLowerCase();
   const cellValue = String(row.getValue(columnId)).toLowerCase();
@@ -96,6 +107,8 @@ export default function AdminDataTable<T extends Admin>({
   onReactivate,
   onEdit,
   onActivate,
+  currentTab,
+  onTabChange,
   isLoading = false,
   onPageChange,
   onSearch,
@@ -103,7 +116,12 @@ export default function AdminDataTable<T extends Admin>({
   const [searchQuery, setSearchQuery] = useState("");
   const [localSearchEnabled, setLocalSearchEnabled] = useState(false);
 
-  // Apply search after a short delay to avoid excessive API calls
+  const clearInput = () => {
+    setSearchQuery("");
+    // setDebouncedSearchValue("");
+    // setCurrentPageIndex(1);
+  };
+
   useEffect(() => {
     const delaySearch = setTimeout(() => {
       if (onSearch && !localSearchEnabled) {
@@ -114,7 +132,6 @@ export default function AdminDataTable<T extends Admin>({
     return () => clearTimeout(delaySearch);
   }, [searchQuery, onSearch, localSearchEnabled]);
 
-  // Get columns for the table
   const columns = useMemo<ColumnDef<T>[]>(
     () => [
       {
@@ -177,7 +194,7 @@ export default function AdminDataTable<T extends Admin>({
               !admin.isDeleted);
 
           return (
-            <div className="flex items-center gap-2">
+            <div className="flex cursor-pointer items-center gap-2">
               {admin.isDeleted ? (
                 <Badge className="bg-red-500">Deleted</Badge>
               ) : admin.isBlocked ? (
@@ -186,7 +203,7 @@ export default function AdminDataTable<T extends Admin>({
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Badge className="flex items-center gap-1 bg-purple-500">
+                      <Badge className="flex cursor-pointer items-center gap-1 bg-brand-200">
                         <RiUserAddLine className="h-3 w-3" />
                         <span>Pending Activation</span>
                       </Badge>
@@ -281,7 +298,6 @@ export default function AdminDataTable<T extends Admin>({
     [onActivate, onBlock, onDelete, onEdit, onReactivate],
   );
 
-  // Configure the table
   const table = useReactTable({
     data: tableData,
     columns,
@@ -297,8 +313,8 @@ export default function AdminDataTable<T extends Admin>({
   return (
     <div className="w-full space-y-4">
       {/* Search and filter controls */}
-      <div className="flex items-center justify-between">
-        <div className="relative w-72">
+      <div className="flex w-full items-center justify-between">
+        {/* <div className="relative w-72">
           <CiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <Input
             placeholder="Search admins..."
@@ -306,8 +322,33 @@ export default function AdminDataTable<T extends Admin>({
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10"
           />
+        </div> */}
+        <div className="w-full max-w-[500px]">
+          <label htmlFor="search" className="relative block w-full">
+            <input
+              value={searchQuery}
+              type="text"
+              name="search"
+              autoComplete="search"
+              placeholder="Search admins..."
+              className="w-full rounded-[50px] px-4 py-2 pr-10 placeholder:text-sm focus:border-black focus:ring-black"
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            {searchQuery ? (
+              <button
+                onClick={clearInput}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+              >
+                <IoMdClose />
+              </button>
+            ) : (
+              <span className="absolute right-3 top-1/2 -translate-y-1/2">
+                <CiSearch />
+              </span>
+            )}
+          </label>
         </div>
-        <div className="flex items-center gap-2">
+        {/* <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">Search mode:</span>
           <TooltipProvider>
             <Tooltip>
@@ -341,25 +382,42 @@ export default function AdminDataTable<T extends Admin>({
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
+        </div> */}
+        <div className="">
+          <Tabs
+            defaultValue="all"
+            value={currentTab}
+            onValueChange={onTabChange}
+          >
+            <TabsList className="">
+              <TabsTrigger value="all">All Admins</TabsTrigger>
+              <TabsTrigger value="active">Active</TabsTrigger>
+              <TabsTrigger value="pending">Pending Activation</TabsTrigger>
+              <TabsTrigger value="blocked">Blocked</TabsTrigger>
+              <TabsTrigger value="deleted">Deleted</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value={currentTab} forceMount></TabsContent>
+          </Tabs>
         </div>
       </div>
 
       {/* Table */}
       {isLoading ? (
         <div className="flex justify-center py-8">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+          <div className="h-8 w-8 animate-spin rounded-full"></div>
         </div>
       ) : tableData.length > 0 ? (
-        <div className="rounded-md border shadow-sm">
+        <div className="rounded-md  shadow-sm">
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full bg-[#fff]">
               <thead>
                 {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id} className="bg-muted/50">
+                  <tr key={headerGroup.id} className="bg-brand-200">
                     {headerGroup.headers.map((header) => (
                       <th
                         key={header.id}
-                        className="p-4 text-left text-sm font-medium text-muted-foreground"
+                        className="p-4 text-left capitalize text-brand-100"
                       >
                         {header.isPlaceholder
                           ? null
@@ -388,7 +446,7 @@ export default function AdminDataTable<T extends Admin>({
                     <tr
                       key={row.id}
                       className={cn(
-                        "border-t transition-colors",
+                        "border-t transition-colors odd:bg-brand-100 odd:bg-opacity-20",
                         row.original.isDeleted
                           ? "bg-red-50 hover:bg-red-100"
                           : row.original.isBlocked
@@ -401,7 +459,7 @@ export default function AdminDataTable<T extends Admin>({
                       )}
                     >
                       {row.getVisibleCells().map((cell) => (
-                        <td key={cell.id} className="p-4 text-sm">
+                        <td key={cell.id} className="px-4 py-3">
                           {flexRender(
                             cell.column.columnDef.cell,
                             cell.getContext(),
