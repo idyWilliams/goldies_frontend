@@ -28,11 +28,11 @@ export default function ProductSortBy({
       <ul className="space-y-1 py-2">
         <li
           className={`cursor-pointer px-4 py-2  hover:bg-brand-200 hover:bg-opacity-20  ${
-            isActive("default", "asc")
+            isActive("", "desc")
               ? "bg-brand-200 bg-opacity-20 text-brand-100"
               : "text-brand-200 hover:text-brand-100"
           }`}
-          onClick={() => handleSortChange("default", "asc")}
+          onClick={() => handleSortChange("", "")}
         >
           Default
         </li>
@@ -84,7 +84,7 @@ export default function ProductSortBy({
           }`}
           onClick={() => handleSortChange("maxPrice", "asc")}
         >
-          Price: High to Low
+          Price: Low to High
         </li>
         <li
           className={`cursor-pointer px-4 py-2  hover:bg-brand-200 hover:bg-opacity-20 ${
@@ -94,7 +94,7 @@ export default function ProductSortBy({
           }`}
           onClick={() => handleSortChange("maxPrice", "desc")}
         >
-          Price: Low to High
+          Price: High to Low
         </li>
       </ul>
     </div>

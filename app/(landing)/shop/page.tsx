@@ -44,7 +44,7 @@ const ShopPage = () => {
     ? Number(searchParams.get("maxPrice"))
     : null;
   const querySortBy = searchParams.get("sortBy") || "default";
-  const queryOrder = searchParams.get("order") || "asc";
+  const queryOrder = searchParams.get("order") || "";
 
   const [showFilter, setShowFilter] = useState(false);
   const [currentPageIndex, setCurrentPageIndex] = useState(
@@ -89,8 +89,8 @@ const ShopPage = () => {
   const [params, setParams] = useState<ProductParams>({
     page: currentPageIndex,
     limit: itemsPerPage,
-    sortBy: querySortBy,
-    order: queryOrder,
+    // sortBy: querySortBy,
+    // order: queryOrder,
   });
 
   useEffect(() => {
@@ -112,7 +112,7 @@ const ShopPage = () => {
     }
 
     // Only include sortBy and order if they are not default
-    if (sortBy !== "default") {
+    if (sortBy !== "") {
       newParams.sortBy = sortBy;
       newParams.order = order;
     }
@@ -127,7 +127,7 @@ const ShopPage = () => {
       currentParams.delete("page");
     }
 
-    if (sortBy !== "default") {
+    if (sortBy !== "") {
       currentParams.set("sortBy", sortBy);
       currentParams.set("order", order);
     } else {
@@ -258,7 +258,7 @@ const ShopPage = () => {
     setMinPrice(0);
     setMaxPrice(20000);
     setSelectedIds(new Set());
-    setSortBy("default");
+    setSortBy("");
     router.push(pathname); // Reset URL params
   };
 
@@ -328,7 +328,7 @@ const ShopPage = () => {
                         }
                       >
                         <span>
-                          {sortBy === "default"
+                          {sortBy === ""
                             ? "Sort"
                             : sortBy === "name" && order === "asc"
                               ? "A-Z"
@@ -339,10 +339,10 @@ const ShopPage = () => {
                                   : sortBy === "createdAt" && order === "asc"
                                     ? "Oldest"
                                     : sortBy === "maxPrice" && order === "asc"
-                                      ? "Price: High to Low"
+                                      ? "Price: Low to High"
                                       : sortBy === "maxPrice" &&
                                           order === "desc"
-                                        ? "Price: Low to High"
+                                        ? "Price: High to Low"
                                         : "Sort"}
                         </span>
                         <span>
@@ -358,7 +358,7 @@ const ShopPage = () => {
                           <ul className="py-2">
                             <li
                               className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
-                              onClick={() => handleSortChange("default", "asc")}
+                              onClick={() => handleSortChange("", "")}
                             >
                               Default
                             </li>
@@ -396,7 +396,7 @@ const ShopPage = () => {
                                 handleSortChange("maxPrice", "asc")
                               }
                             >
-                              Price: High to Low
+                              Price: Low to High
                             </li>
                             <li
                               className="cursor-pointer text-nowrap px-4 py-2 hover:bg-neutral-100"
@@ -404,7 +404,7 @@ const ShopPage = () => {
                                 handleSortChange("maxPrice", "desc")
                               }
                             >
-                              Price: Low to High
+                              Price: High to Low
                             </li>
                           </ul>
                         </div>
@@ -504,7 +504,7 @@ const ShopPage = () => {
                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                       >
                         <span>
-                          {sortBy === "default"
+                          {sortBy === ""
                             ? "Sort"
                             : sortBy === "name" && order === "asc"
                               ? "A-Z"
@@ -515,10 +515,10 @@ const ShopPage = () => {
                                   : sortBy === "createdAt" && order === "asc"
                                     ? "Oldest"
                                     : sortBy === "maxPrice" && order === "asc"
-                                      ? "Price: High to Low"
+                                      ? "Price: Low to High"
                                       : sortBy === "maxPrice" &&
                                           order === "desc"
-                                        ? " Price: Low to High"
+                                        ? " Price: High to Low"
                                         : "Sort"}
                         </span>
                         <span>
@@ -534,7 +534,7 @@ const ShopPage = () => {
                           <ul className="py-2">
                             <li
                               className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
-                              onClick={() => handleSortChange("default", "asc")}
+                              onClick={() => handleSortChange("", "")}
                             >
                               Default
                             </li>
@@ -572,7 +572,7 @@ const ShopPage = () => {
                                 handleSortChange("maxPrice", "asc")
                               }
                             >
-                              Price: High to Low
+                              Price: Low to High
                             </li>
                             <li
                               className="cursor-pointer text-nowrap px-4 py-2 hover:bg-neutral-100"
@@ -580,7 +580,7 @@ const ShopPage = () => {
                                 handleSortChange("maxPrice", "desc")
                               }
                             >
-                              Price: Low to High
+                              Price: High to Low
                             </li>
                           </ul>
                         </div>
