@@ -9,6 +9,7 @@ import {
   Setting2,
   ShoppingBag,
   UserAdd,
+  UserOctagon,
 } from "iconsax-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -83,7 +84,7 @@ export default function MobileSideBar({ onClose }: { onClose: () => void }) {
               className={`flex w-full items-center gap-2 whitespace-nowrap py-2 text-sm duration-300 hover:text-brand-200 ${pathname.includes("/admin/manage-categories") ? "text-brand-200" : "text-neutral-500"}`}
               onClick={onClose}
             >
-              <UserAdd size="20" />
+              <UserOctagon size="20" />
               Admin Users
             </button>
           </Link>

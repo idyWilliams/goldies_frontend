@@ -12,7 +12,7 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
 } from "@tanstack/react-table";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -35,7 +35,7 @@ import AdminPagination from "./adminPagination";
 import { IoMdClose } from "react-icons/io";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TableSkeletonLoader from "./admin-skeleton";
-
+import { useSearchParams } from "next/navigation";
 
 export interface Admin {
   _id: string;
@@ -80,10 +80,8 @@ const isRecentlyCreated = (createdAt: string): boolean => {
   return now.diff(created, "hours") < 24;
 };
 
-
 const needsActivation = (admin: Admin): boolean => {
   if (!admin.isVerified) return true;
-
 
   const statusHistory = admin.statusChanges || [];
   return (
@@ -116,9 +114,18 @@ export default function AdminDataTable<T extends Admin>({
   const [searchQuery, setSearchQuery] = useState("");
   const [localSearchEnabled, setLocalSearchEnabled] = useState(false);
   const [currentPage, setCurrentPage] = useState(pagination.page);
-
+  const isInitialTabMount = useRef(true);
+  const searchParams = useSearchParams();
   // Reset to first page when tab changes
+  // Update this useEffect in AdminDataTable.tsx
+  // useEffect(() => {
+  // Only reset page on deliberate tab changes, not on initial mount
   useEffect(() => {
+    if (isInitialTabMount.current) {
+      isInitialTabMount.current = false;
+      return;
+    }
+
     if (pagination.page !== 1) {
       onPageChange(1);
     }
@@ -151,13 +158,19 @@ export default function AdminDataTable<T extends Admin>({
   }, [searchQuery, onSearch, localSearchEnabled]);
 
   // Handle page change with debounce to prevent flashing
+  // const handlePageChange = (newPage: number) => {
+  //   if (newPage !== currentPage) {
+  //     setCurrentPage(newPage);
+  //     // Small timeout to prevent UI jumping
+  //     setTimeout(() => {
+  //       onPageChange(newPage);
+  //     }, 50);
+  //   }
+  // };
+
   const handlePageChange = (newPage: number) => {
     if (newPage !== currentPage) {
-      setCurrentPage(newPage);
-      // Small timeout to prevent UI jumping
-      setTimeout(() => {
-        onPageChange(newPage);
-      }, 50);
+      onPageChange(newPage);
     }
   };
 

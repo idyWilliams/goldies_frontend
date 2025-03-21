@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -55,14 +55,12 @@ import { Badge } from "@/components/ui/badge";
 import { useRouter, useSearchParams } from "next/navigation";
 
 // Validation schema for invite admin form
-const validationSchema = yup
-  .object()
-  .shape({
-    email: yup
-      .string()
-      .email("Please enter a valid email")
-      .required("Email is required"),
-  });
+const validationSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email("Please enter a valid email")
+    .required("Email is required"),
+});
 
 export default function AdminManagement() {
   const router = useRouter();
@@ -74,7 +72,10 @@ export default function AdminManagement() {
   const [searchQuery, setSearchQuery] = useState(
     searchParams.get("search") || "",
   );
-  const [page, setPage] = useState(Number(searchParams.get("page")) || 1);
+  const lastPageChangeRef = useRef(Date.now());
+  const [page, setPage] = useState(() => {
+    return Number(searchParams.get("page")) || 1;
+  });
   const [limit] = useState(10);
   const [adminToAction, setAdminToAction] = useState<Admin | null>(null);
   const [actionDialogOpen, setActionDialogOpen] = useState(false);
@@ -91,40 +92,65 @@ export default function AdminManagement() {
     reset,
   } = useForm({ resolver: yupResolver(validationSchema) });
 
-  const updateUrlParams = (params: {
-    status?: string;
-    search?: string;
-    page?: number;
-  }) => {
-    const url = new URL(window.location.href);
+const updateUrlParams = (params: {
+  status?: string;
+  search?: string;
+  page?: number;
+}) => {
+  const url = new URL(window.location.href);
 
-    if (params.status) {
+  // Track if anything actually changed
+  let hasChanges = false;
+
+  if (params.status) {
+    const currentStatus = url.searchParams.get("status") || "all";
+    if (params.status !== currentStatus) {
       if (params.status === "all") {
         url.searchParams.delete("status");
       } else {
         url.searchParams.set("status", params.status);
       }
+      hasChanges = true;
     }
+  }
 
-    if (params.search !== undefined) {
+  if (params.search !== undefined) {
+    const currentSearch = url.searchParams.get("search") || "";
+    if (params.search !== currentSearch) {
       if (params.search === "") {
         url.searchParams.delete("search");
       } else {
         url.searchParams.set("search", params.search);
       }
+      hasChanges = true;
     }
+  }
 
-    if (params.page !== undefined) {
+  if (params.page !== undefined) {
+    const currentPage = Number(url.searchParams.get("page")) || 1;
+    if (params.page !== currentPage) {
+      // Critical change: Skip if new page matches component state
+      // This prevents the URL update from triggering another state change
+      if (params.page === page) {
+        console.log("Skipping URL update - page already matches state:", page);
+        return;
+      }
+
       if (params.page === 1) {
         url.searchParams.delete("page");
       } else {
         url.searchParams.set("page", params.page.toString());
       }
+      hasChanges = true;
     }
+  }
 
-    // Update the URL without refreshing the page
-    router.push(url.pathname + url.search, { scroll: false });
-  };
+  // Only update if something actually changed
+  if (hasChanges) {
+    console.log("Updating URL params to:", url.search);
+    router.replace(url.pathname + url.search, { scroll: false });
+  }
+};
 
   const getStatusFilter = (tab: string) => {
     switch (tab) {
@@ -271,10 +297,33 @@ export default function AdminManagement() {
     setAdminToAction(null);
   };
 
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage);
-  };
+  //   const handlePageChange = (newPage: number) => {
+  //     if (newPage !== page) {
+  //       setPage(newPage);
+  //       updateUrlParams({ page: newPage });
+  //     }
+  //   };
 
+  //   const handlePageChange = (newPage: number) => {
+  //     if (newPage === page) return;
+  //     console.log("Changing page to:", newPage);
+  //     setPage(newPage);
+  //     updateUrlParams({ page: newPage });
+  //   };
+  const handlePageChange = (newPage: number) => {
+    if (newPage === page) return;
+
+    console.log("AdminManagement: Changing page to", newPage, "from", page);
+    setPage(newPage);
+    const currentChange = Date.now();
+    lastPageChangeRef.current = currentChange;
+
+    setTimeout(() => {
+      if (lastPageChangeRef.current === currentChange) {
+        updateUrlParams({ page: newPage });
+      }
+    }, 50);
+  };
   const handleSearch = (query: string) => {
     setSearchQuery(query);
     setPage(1); // Reset to first page on new search
