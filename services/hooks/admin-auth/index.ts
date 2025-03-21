@@ -110,6 +110,25 @@ export const getAdmin = async (id: string) => {
   return response.data;
 };
 
+//Administrative actions
+
+export const adminVerify = async (id: string) => {
+  const response = await instance.put(`/admins/verify-access/${id}`);
+  return response.data;
+};
+export const deleteAdmin = async (id: string) => {
+  const response = await instance.delete(`/admins/${id}`);
+  return response.data;
+};
+export const blockAdmin = async (id: string) => {
+  const response = await instance.put(`/admins/revoke-access/${id}`);
+  return response.data;
+};
+export const unBlockAdmin = async (id: string) => {
+  const response = await instance.put(`/admins/unblock-access/${id}`);
+  return response.data;
+};
+
 // LOGOUT ADMIN
 export const adminLogOut = async (router: AppRouterInstance) => {
   localStorage.setItem("isLogin", JSON.stringify(false));
