@@ -35,7 +35,9 @@ const useCart = () => {
   // Sync Redux cart with server cart on mount
   const updateCart = useCallback(() => {
     if (serverCart) {
-      dispatch(setCart(serverCart || []));
+      // Filter out deleted products before syncing
+      const validCartItems = serverCart.filter((item) => item.product);
+      dispatch(setCart(validCartItems || []));
     }
   }, [serverCart, dispatch]);
 
@@ -43,7 +45,10 @@ const useCart = () => {
     updateCart();
   }, [updateCart]);
 
-  const cart = auth?.user ? serverCart || [] : localCart;
+  // Filter out deleted products from the cart
+  const cart = auth?.user
+    ? (serverCart || []).filter((item) => item.product)
+    : localCart.filter((item) => item.product);
 
   return {
     cart,
