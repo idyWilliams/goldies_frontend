@@ -57,7 +57,7 @@ export const cartSlice = createSlice({
 
       // Check if the product already exists in the cart
       const existingItem = state.cart.find(
-        (item) => item.product._id === product._id,
+        (item) => item.product?._id === product?._id,
       );
 
       if (existingItem) {
