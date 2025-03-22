@@ -235,6 +235,29 @@ export default function Page() {
     e.preventDefault();
     setIsSubmitting(true);
 
+    // Validate product type
+    if (!formValues.productType) {
+      toast.error("Please select a product type.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Validate variant fields for preorder products
+    if (formValues.productType === "preorder") {
+      if (
+        shapes.length === 0 ||
+        sizes.length === 0 ||
+        flavour.length === 0 ||
+        addOn.length === 0
+      ) {
+        toast.error(
+          "Please fill out all variant fields for preorder products.",
+        );
+        setIsSubmitting(false);
+        return;
+      }
+    }
+
     let newImageArr: (string | null)[] = [];
 
     for (const file of imagesRef.current) {
