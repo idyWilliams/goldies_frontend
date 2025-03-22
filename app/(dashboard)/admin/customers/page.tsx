@@ -229,7 +229,7 @@ export default function Page() {
         </h1>
         <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
 
-        <div className="my-6 flex flex-col-reverse items-center justify-between gap-4 md:flex-row">
+        <div className="my-6 flex items-center justify-between gap-4">
           {/* search input */}
           <div className="w-full max-w-[500px]">
             <label htmlFor="search" className="relative block w-full">
