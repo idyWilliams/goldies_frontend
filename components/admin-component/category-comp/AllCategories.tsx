@@ -1,6 +1,6 @@
 "use client";
 import EmptyStateCard from "@/components/admin-component/category-comp/EmptyStateCard";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { getPaginatedCategories } from "@/services/hooks/category";
 import useBoundStore from "@/zustand/store";
@@ -10,8 +10,10 @@ import AdminPagination from "../AdminPagination";
 import CategoriesCards from "./CategoriesCards";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { CiSearch } from "react-icons/ci";
-import { IoMdClose } from "react-icons/io";
+import { IoIosArrowDown, IoIosArrowUp, IoMdClose } from "react-icons/io";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import CategorySortBy from "./CategorySortBy";
 
 const itemsPerPage = 8;
 
@@ -37,6 +39,13 @@ const AllCategories = () => {
   const [selectedStatus, setSelectedStatus] = useState(
     searchParams.get("status") || "All",
   );
+  const querySortBy = searchParams.get("sortBy") || "";
+  const queryOrder = searchParams.get("sortOrder") || "";
+
+  const sortDropdownRef = useRef<HTMLDivElement>(null);
+  const [isOpen, setOpen] = useState(false);
+  const [sortBy, setSortBy] = useState<string>(querySortBy);
+  const [order, setOrder] = useState<string>(queryOrder);
 
   useEffect(() => {
     setActiveCategory(null);
@@ -130,6 +139,25 @@ const AllCategories = () => {
   }, [data]);
 
   useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        sortDropdownRef.current &&
+        !sortDropdownRef.current.contains(e.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+
+    // Attach the event listener
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Clean up the event listener
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
     setPage(currentPage);
     setLimit(itemsPerPage);
   }, [currentPage, setPage, setLimit]);
@@ -173,32 +201,62 @@ const AllCategories = () => {
 
   return (
     <>
-      <div className="my-6 flex flex-col items-center justify-between gap-4 md:flex-row">
-        {/* search input */}
-        <div className="w-full max-w-[500px]">
-          <label htmlFor="search" className="relative block w-full">
-            <input
-              value={searchValue}
-              type="text"
-              name="search"
-              autoComplete="search"
-              placeholder="Search..."
-              className="w-full rounded-[50px] px-4 py-2 pr-10 placeholder:text-sm focus:border-black focus:ring-black"
-              onChange={handleChange}
-            />
-            {searchValue ? (
-              <button
-                onClick={clearInput}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
-              >
-                <IoMdClose />
-              </button>
-            ) : (
-              <span className="absolute right-3 top-1/2 -translate-y-1/2">
-                <CiSearch />
-              </span>
+      <div className="my-6 flex flex-col gap-4">
+        <div className="flex items-center justify-between gap-4">
+          {/* search input */}
+          <div className="w-full max-w-[500px]">
+            <label htmlFor="search" className="relative block w-full">
+              <input
+                value={searchValue}
+                type="text"
+                name="search"
+                autoComplete="search"
+                placeholder="Search..."
+                className="w-full rounded-[50px] px-4 py-2 pr-10 placeholder:text-sm focus:border-black focus:ring-black"
+                onChange={handleChange}
+              />
+              {searchValue ? (
+                <button
+                  onClick={clearInput}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+                >
+                  <IoMdClose />
+                </button>
+              ) : (
+                <span className="absolute right-3 top-1/2 -translate-y-1/2">
+                  <CiSearch />
+                </span>
+              )}
+            </label>
+          </div>
+
+          {/* sort */}
+          {/* <div ref={sortDropdownRef} className="relative">
+            <Button
+              className="bg-transparent text-brand-200 ring-1 ring-brand-200 hover:bg-transparent "
+              onClick={() => setOpen((prev) => !prev)}
+              disabled={currentData?.length === 0}
+            >
+              Sort by{" "}
+              {!isOpen ? (
+                <IoIosArrowDown className="ml-2" />
+              ) : (
+                <IoIosArrowUp className="ml-2" />
+              )}
+            </Button>
+            {isOpen && (
+              <CategorySortBy
+                sortBy={sortBy}
+                order={order}
+                onSortChange={(sortBy, order) => {
+                  setSortBy(sortBy);
+                  setOrder(order);
+                  setCurrentPage(1);
+                }}
+                setOpen={setOpen}
+              />
             )}
-          </label>
+          </div> */}
         </div>
 
         <div className={cn("flex items-center justify-between gap-2 p-[2px]")}>

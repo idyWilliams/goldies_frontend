@@ -3,11 +3,13 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "iconsax-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import useBoundStore from "@/zustand/store";
 import { log } from "console";
+import { Button } from "@/components/ui/button";
 
 const CategoryHeader = () => {
+  const router = useRouter();
   const pathname = usePathname();
   const isNewCreate = pathname.endsWith("/create");
   const categoryFormRef = useBoundStore((state) => state.categoryFormRef);
@@ -76,17 +78,26 @@ const CategoryHeader = () => {
             </h1>
           </div>
 
-          <button
-            disabled={isFormValid && isSubmitting}
-            className="rounded-md bg-brand-200 px-4 py-2 text-sm text-brand-100 disabled:opacity-75 disabled:hover:cursor-not-allowed"
-            onClick={() => handleCategorySubmission()}
-          >
-            {isSubmitting
-              ? "Saving Category"
-              : isNewCreate
-                ? "Create Category"
-                : "Save Changes"}
-          </button>
+          <div className="flex items-center gap-4">
+            <Button
+              className="rounded-md bg-neutral-400  px-4 py-2 text-sm"
+              onClick={() => router.back()}
+            >
+              Cancel
+            </Button>
+
+            <Button
+              disabled={isFormValid && isSubmitting}
+              className="rounded-md bg-brand-200 px-4 py-2 text-sm text-brand-100 disabled:opacity-75 disabled:hover:cursor-not-allowed"
+              onClick={() => handleCategorySubmission()}
+            >
+              {isSubmitting
+                ? "Saving Category"
+                : isNewCreate
+                  ? "Create Category"
+                  : "Save Changes"}
+            </Button>
+          </div>
         </>
       )}
     </div>

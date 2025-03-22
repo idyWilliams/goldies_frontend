@@ -43,7 +43,7 @@ const ShopPage = () => {
   const queryMaxPrice = searchParams.get("maxPrice")
     ? Number(searchParams.get("maxPrice"))
     : null;
-  const querySortBy = searchParams.get("sortBy") || "default";
+  const querySortBy = searchParams.get("sortBy") || "";
   const queryOrder = searchParams.get("order") || "";
 
   const [showFilter, setShowFilter] = useState(false);
