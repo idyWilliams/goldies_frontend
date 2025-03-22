@@ -30,12 +30,8 @@ const ShopPage = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const queryCat = searchParams.get("cat")
-    ? decodeURIComponent(searchParams.get("cat")!)
-    : null;
-  const querySubCat = searchParams.get("sub")
-    ? decodeURIComponent(searchParams.get("sub")!)
-    : null;
+  const queryCat = searchParams.get("cat") ? searchParams.get("cat")! : null;
+  const querySubCat = searchParams.get("sub") ? searchParams.get("sub")! : null;
   const querySubCatId = searchParams.get("subCategoryIds");
   const queryMinPrice = searchParams.get("minPrice")
     ? Number(searchParams.get("minPrice"))
@@ -270,6 +266,12 @@ const ShopPage = () => {
     setIsMobileDropdownOpen(false);
   };
 
+  const formatText = (text: string) => {
+    return text
+      .replace(/-/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+  };
+
   return (
     <div className="">
       {/* BREADCRUMBS */}
@@ -299,9 +301,10 @@ const ShopPage = () => {
                 <div className="items-center justify-between lg:flex">
                   <div>
                     <h3 className="text-2xl font-bold text-black">
-                      {queryCat ? captalizedName(queryCat) : "All Cakes"}
+                      {queryCat ? formatText(queryCat) : "All Cakes"}
                     </h3>
-                    <span>{querySubCat && captalizedName(querySubCat)}</span>
+                    <span>{querySubCat && formatText(querySubCat)}</span>
+                    {/* <span>{querySubCat && captalizedName(querySubCat)}</span> */}
                   </div>
                 </div>
 
@@ -485,9 +488,9 @@ const ShopPage = () => {
                   <div className="flex flex-col">
                     <div>
                       <h3 className="text-2xl font-bold text-black">
-                        {queryCat ? captalizedName(queryCat) : "All Cakes"}
+                        {queryCat ? formatText(queryCat) : "All Cakes"}
                       </h3>
-                      <span>{querySubCat && captalizedName(querySubCat)}</span>
+                      <span>{querySubCat && formatText(querySubCat)}</span>
                     </div>
 
                     <span className="mt-4 text-sm text-neutral-500 lg:text-base">
