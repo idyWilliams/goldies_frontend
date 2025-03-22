@@ -17,6 +17,7 @@ import { handleImageLoad } from "@/helper/handleImageLoad";
 import sortArray from "@/helper/sortArray";
 import { chunkArray } from "@/helper/chunkArray";
 import AdminPagination from "@/components/admin-component/AdminPagination";
+import { slugify } from "@/helper";
 
 const limit = 6;
 
@@ -200,10 +201,10 @@ const Page = () => {
                               onClick={() => handleSubCategory(sub)}
                             >
                               <Link
-                                href={`/shop?cat=${encodeURIComponent(
-                                  category?.name?.toLowerCase(),
-                                )}&sub=${encodeURIComponent(
-                                  sub?.name?.toLowerCase(),
+                                href={`/shop?cat=${slugify(
+                                  category?.name,
+                                )}&sub=${slugify(
+                                  sub?.name,
                                 )}&subCategoryIds=${sub?._id}`}
                                 className="inline-block w-full text-center font-bold"
                               >

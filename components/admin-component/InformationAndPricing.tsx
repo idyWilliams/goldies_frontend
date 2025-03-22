@@ -134,7 +134,7 @@ export default function InformationAndPricing({
                     autoComplete="off"
                     id="minPrice"
                     placeholder="Price from"
-                    className="w-full border-none bg-transparent pl-12 placeholder:text-[10px] focus:border-0 focus:ring-0"
+                    className="w-full border-none bg-transparent pl-12  focus:border-0 focus:ring-0"
                   />
                 </div>
               </label>
@@ -155,7 +155,7 @@ export default function InformationAndPricing({
                     autoComplete="off"
                     id="maxPrice"
                     placeholder="Price to"
-                    className="w-full border-none bg-transparent pl-12 placeholder:text-[10px] focus:border-0 focus:ring-0"
+                    className="w-full border-none bg-transparent pl-12  focus:border-0 focus:ring-0"
                   />
                 </div>
               </label>

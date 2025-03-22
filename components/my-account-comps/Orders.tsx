@@ -5,6 +5,7 @@ import { getOrderColor } from "@/helper/getOrderColor";
 import { IOrder } from "@/interfaces/order.interface";
 import { getOrdersByUser } from "@/services/hooks/payment";
 import { useQuery } from "@tanstack/react-query";
+import { Eye } from "iconsax-react";
 import moment from "moment";
 import Link from "next/link";
 import { useMemo } from "react";
@@ -80,7 +81,9 @@ const Orders = () => {
                 >
                   <div className="table-cell py-2 pl-2 align-middle">
                     <span className="text-sm font-semibold uppercase leading-none text-neutral-600">
-                      {order?.orderId}
+                      <Link href={`/my-orders/${order._id}`}>
+                        {order?.orderId}
+                      </Link>
                     </span>
                   </div>
                   <div className="table-cell py-2 align-middle">
@@ -104,9 +107,9 @@ const Orders = () => {
                     </span>
                   </div>
                   <div className="table-cell py-2 pr-2 align-middle">
-                    <span className="cursor-pointer">
-                      <BsThreeDots />
-                    </span>
+                    <Link href={`/my-orders/${order._id}`}>
+                      <Eye />
+                    </Link>
                   </div>
                 </div>
               </div>

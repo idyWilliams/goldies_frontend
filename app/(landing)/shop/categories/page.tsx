@@ -28,8 +28,8 @@ const Page = () => {
   const setActiveCategory = useBoundStore((state) => state.setActiveCategory);
 
   const { data, isSuccess, isError, error, isPending } = useQuery({
-    queryKey: ["categories", currentPage, limit],
-    queryFn: async () => getPaginatedCategories(currentPage, limit),
+    queryKey: ["categories", currentPage, limit, "", ""],
+    queryFn: async () => getPaginatedCategories(currentPage, limit, "", ""),
     placeholderData: keepPreviousData,
   });
 

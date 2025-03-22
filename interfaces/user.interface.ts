@@ -41,6 +41,6 @@ export interface UserParams {
   search?: string;
   page?: number;
   limit?: number;
-  sortBy?: string; // "createdAt"
+  sortBy?: string;
   sortOrder?: string; //"asc" or "desc"
 }

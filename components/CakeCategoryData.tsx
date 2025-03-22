@@ -26,8 +26,8 @@ const CakeCategoryData = () => {
   const setActiveCategory = useBoundStore((state) => state.setActiveCategory);
 
   const { data, isError, error, isSuccess, isPending } = useQuery({
-    queryKey: ["categories", 1, 12],
-    queryFn: async () => getPaginatedCategories(1, 12),
+    queryKey: ["categories", 1, 12, "", ""],
+    queryFn: async () => getPaginatedCategories(1, 12, "", ""),
   });
 
   const sortedCategories = useMemo(() => {

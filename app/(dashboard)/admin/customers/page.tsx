@@ -1,5 +1,6 @@
 "use client";
 import AdminPagination from "@/components/admin-component/AdminPagination";
+import UserSortBy from "@/components/admin-component/customers/UserSortBy";
 import DataTable from "@/components/admin-component/DataTable";
 import { Button } from "@/components/ui/button";
 import { initials } from "@/helper/initials";
@@ -11,9 +12,9 @@ import { Loader2Icon } from "lucide-react";
 import moment from "moment";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CiSearch } from "react-icons/ci";
-import { IoMdClose } from "react-icons/io";
+import { IoIosArrowDown, IoIosArrowUp, IoMdClose } from "react-icons/io";
 
 const columnHelper = createColumnHelper<IUser>();
 
@@ -22,26 +23,45 @@ export default function Page() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
-  const querySortBy = searchParams.get("sortBy") || "date";
-  const queryOrder = searchParams.get("sortOrder") || "desc";
+  const querySortBy = searchParams.get("sortBy") || "";
+  const queryOrder = searchParams.get("sortOrder") || "";
 
   const [currentPageIndex, setCurrentPageIndex] = useState(
     parseInt(searchParams.get("page") || "1", 10),
   );
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
+  const [isOpen, setOpen] = useState(false);
 
   const itemsPerPage = 10;
+  const sortDropdownRef = useRef<HTMLDivElement>(null);
 
-  // const [sortBy, setSortBy] = useState<string>(querySortBy);
-  // const [order, setOrder] = useState<string>(queryOrder);
+  const [sortBy, setSortBy] = useState<string>(querySortBy);
+  const [order, setOrder] = useState<string>(queryOrder);
 
   const [params, setParams] = useState<UserParams>({
     page: currentPageIndex,
     limit: itemsPerPage,
-    sortBy: querySortBy,
-    sortOrder: queryOrder,
   });
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        sortDropdownRef.current &&
+        !sortDropdownRef.current.contains(e.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+
+    // Attach the event listener
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Clean up the event listener
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -57,9 +77,6 @@ export default function Page() {
     const newParams: UserParams = {
       page: currentPageIndex,
       limit: itemsPerPage,
-      sortBy: querySortBy,
-      sortOrder: queryOrder,
-  
     };
 
     if (debouncedSearchValue) {
@@ -67,10 +84,10 @@ export default function Page() {
     }
 
     // Only include sortBy and order if they are not default
-    // if (sortBy !== "default") {
-    //   newParams.sortBy = sortBy;
-    //   newParams.sortOrder = order;
-    // }
+    if (sortBy !== "") {
+      newParams.sortBy = sortBy;
+      newParams.sortOrder = order;
+    }
 
     // Update URL with new search query and page
     const currentParams = new URLSearchParams(searchParams.toString());
@@ -88,13 +105,13 @@ export default function Page() {
       currentParams.delete("search");
     }
 
-    // if (sortBy !== "default") {
-    //   currentParams.set("sortBy", sortBy);
-    //   currentParams.set("sortOrder", order);
-    // } else {
-    //   currentParams.delete("sortBy");
-    //   currentParams.delete("sortOrder");
-    // }
+    if (sortBy !== "") {
+      currentParams.set("sortBy", sortBy);
+      currentParams.set("sortOrder", order);
+    } else {
+      currentParams.delete("sortBy");
+      currentParams.delete("sortOrder");
+    }
 
     router.push(`${pathname}?${currentParams.toString()}`);
     setParams(newParams);
@@ -107,12 +124,11 @@ export default function Page() {
     searchParams,
     querySortBy,
     queryOrder,
-    // sortBy,
-    // order,
+    sortBy,
+    order,
   ]);
 
-  const { users, isLoading, isError, refetch, totalPages } =
-    useUsers(params);
+  const { users, isLoading, isError, refetch, totalPages } = useUsers(params);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
@@ -127,7 +143,7 @@ export default function Page() {
     columnHelper.accessor((row) => row, {
       id: "customerName",
       cell: ({ row }) => {
-        const fullName = `${row.original.lastName} ${row.original.firstName}`;
+        const fullName = `${row.original.firstName} ${row.original.lastName}`;
         return (
           <div className="grid grid-cols-[50px_1fr] items-center gap-2">
             <div className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-gray-500">
@@ -213,7 +229,7 @@ export default function Page() {
         </h1>
         <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
 
-        <div className="my-6 flex flex-col-reverse items-center justify-between gap-4 md:flex-row">
+        <div className="my-6 flex items-center justify-between gap-4">
           {/* search input */}
           <div className="w-full max-w-[500px]">
             <label htmlFor="search" className="relative block w-full">
@@ -239,6 +255,34 @@ export default function Page() {
                 </span>
               )}
             </label>
+          </div>
+
+          {/* sort */}
+          <div ref={sortDropdownRef} className="relative">
+            <Button
+              className="bg-transparent text-brand-200 ring-1 ring-brand-200 hover:bg-transparent "
+              onClick={() => setOpen((prev) => !prev)}
+              disabled={users.length === 0}
+            >
+              Sort by{" "}
+              {!isOpen ? (
+                <IoIosArrowDown className="ml-2" />
+              ) : (
+                <IoIosArrowUp className="ml-2" />
+              )}
+            </Button>
+            {isOpen && (
+              <UserSortBy
+                sortBy={sortBy}
+                order={order}
+                onSortChange={(sortBy, order) => {
+                  setSortBy(sortBy);
+                  setOrder(order);
+                  setCurrentPageIndex(1);
+                }}
+                setOpen={setOpen}
+              />
+            )}
           </div>
         </div>
 
@@ -267,46 +311,49 @@ export default function Page() {
             </div>
             <div className="block md:hidden">
               <div className="grid gap-5">
-                {users.map((item, index) => (
-                  <div key={index} className="bg-white p-4 py-6">
-                    <div className="mt-3">
-                      <div className="flex flex-col gap-3">
-                        <div className="flex items-center">
-                          <div className="mr-4 flex h-14 w-14 items-center justify-center rounded-full bg-black text-brand-200">
-                            {initials(`${item.firstName} ${item.lastName}`)}
-                          </div>
-                          <div className="flex justify-between">
-                            <div className="flex flex-col gap-2">
-                              <Link href={`/admin/customers/${item?._id}`}>
-                                <h3 className="whitespace-nowrap font-bold">
-                                  {`${item.firstName} ${item.lastName}`}
-                                </h3>
-                              </Link>
-                              <span className="text-sm">
-                                {item.phoneNumber || "N/A"}
-                              </span>
+                {users.map((item, index) => {
+                  const fullName = `${item.firstName} ${item.lastName}`;
+                  return (
+                    <div key={index} className="bg-white p-4 py-6">
+                      <div className="mt-3">
+                        <div className="flex flex-col gap-3">
+                          <div className="flex items-center">
+                            <div className="mr-4 flex h-14 w-14 items-center justify-center rounded-full bg-black text-brand-200">
+                              {initials(`${item.firstName} ${item.lastName}`)}
+                            </div>
+                            <div className="flex justify-between">
+                              <div className="flex flex-col gap-2">
+                                <Link href={`/admin/customers/${item?._id}`}>
+                                  <h3 className="whitespace-nowrap font-bold">
+                                    {fullName}
+                                  </h3>
+                                </Link>
+                                <span className="text-sm">
+                                  {item.phoneNumber || "N/A"}
+                                </span>
+                              </div>
                             </div>
                           </div>
-                        </div>
 
-                        <div className="flex w-full items-end justify-between">
-                          <span className="text-sm">
-                            Joined:{" "}
-                            {moment(item.createdAt).format("MMM DD, YYYY")}
-                          </span>
-                          <button
-                            className="bg-black px-5 py-2 text-sm text-brand-200"
-                            onClick={() =>
-                              router.push(`/admin/customers/${item._id}`)
-                            }
-                          >
-                            More Info
-                          </button>
+                          <div className="flex w-full items-end justify-between">
+                            <span className="text-sm">
+                              Joined:{" "}
+                              {moment(item.createdAt).format("MMM DD, YYYY")}
+                            </span>
+                            <button
+                              className="bg-black px-5 py-2 text-sm text-brand-200"
+                              onClick={() =>
+                                router.push(`/admin/customers/${item._id}`)
+                              }
+                            >
+                              More Info
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {totalPages > 1 && (

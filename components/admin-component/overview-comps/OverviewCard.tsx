@@ -6,6 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { formatCurrency } from "@/helper/formatCurrency";
 import { BsArrowUpShort } from "react-icons/bs";
 
 const OverviewCard = ({ data }: any) => {
@@ -21,8 +22,9 @@ const OverviewCard = ({ data }: any) => {
       </CardHeader>
       <CardContent className="mt-2 flex h-auto items-center gap-3 pb-0">
         <div className="text-2xl font-bold text-brand-200">
-          {data.isPrice && <span>&euro;</span>}
-          {data?.value?.toLocaleString()}
+          {data.isPrice
+            ? formatCurrency(parseInt(data?.value), "en-NG")
+            : data?.value?.toLocaleString()}
         </div>
         <div className="flex items-center font-medium text-green-800">
           <span>{data?.increaseRate}%</span>
@@ -33,8 +35,11 @@ const OverviewCard = ({ data }: any) => {
       </CardContent>
       <CardFooter className="pt-0">
         <p className="text-brand-200">
-          Compared to ({data?.isPrice && <span>&euro;</span>}
-          {data?.lastValue?.toLocaleString()} yesterday){" "}
+          Compared to (
+          {data?.isPrice
+            ? formatCurrency(parseInt(data?.value), "en-NG")
+            : data?.value?.toLocaleString()}{" "}
+          yesterday)
         </p>
       </CardFooter>
     </Card>

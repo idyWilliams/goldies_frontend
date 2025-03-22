@@ -157,6 +157,63 @@ export default function CreateProductLayout({
 
   const [currentStep, setCurrentStep] = useState(1);
 
+  const validateCurrentStep = (step: number) => {
+    switch (step) {
+      case 1: // Information step
+        if (
+          !formValues.productName ||
+          !formValues.category ||
+          !formValues.productType ||
+          formValues.minPrice <= 0 ||
+          formValues.maxPrice <= 0
+        ) {
+          toast.error("Please fill out all required fields.");
+          return false;
+        }
+        return true;
+      case 2: // Variants step
+        if (formValues.productType === "preorder") {
+          if (
+            shapes.length === 0 ||
+            sizes.length === 0 ||
+            flavour.length === 0 ||
+            addOn.length === 0
+          ) {
+            toast.error(
+              "Please fill out all variant fields for preorder products.",
+            );
+            return false;
+          }
+        }
+        return true;
+      case 3: // Images step
+        if (Object.values(images).filter(Boolean).length === 0) {
+          toast.error("Please upload at least one product image.");
+          return false;
+        }
+        return true;
+      default:
+        return true;
+    }
+  };
+
+  const handleClick = (direction: string) => {
+    let newStep = currentStep;
+
+    if (direction === "next") {
+      if (!validateCurrentStep(currentStep)) {
+        return;
+      }
+      newStep++;
+    } else {
+      newStep--;
+    }
+
+    if (newStep > 0 && newStep <= productStep.length) {
+      setCurrentStep(newStep);
+    }
+  };
+
   // const stepNumber = 3;
   const checkoutStep = productStep;
   const stepDisplay = (productStep: any) => {
@@ -206,13 +263,6 @@ export default function CreateProductLayout({
       default:
         break;
     }
-  };
-
-  const handleClick = (direction: string) => {
-    let newStep = currentStep;
-
-    direction === "next" ? newStep++ : newStep--;
-    newStep > 0 && newStep <= checkoutStep?.length && setCurrentStep(newStep);
   };
 
   return (
