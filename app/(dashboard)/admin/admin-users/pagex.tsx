@@ -13,13 +13,17 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { createUser, loginUser } from "@/services/hooks/user-auth";
 import AuthContext from "@/context/AuthProvider";
 import { useRouter } from "next/navigation";
-import { inviteAdmin, verifyOTP } from "@/services/hooks/admin-auth";
+import {
+  getAdminUsers,
+  inviteAdmin,
+  verifyOTP,
+} from "@/services/hooks/admin-auth";
 import { CgSpinner } from "react-icons/cg";
 import { toast } from "sonner";
 
-const validationSchema = yup.object().shape({
-  email: yup.string().required("Email is required"),
-});
+const validationSchema = yup
+  .object()
+  .shape({ email: yup.string().required("Email is required") });
 
 const Page = () => {
   const router = useRouter();
@@ -30,18 +34,20 @@ const Page = () => {
   const [noSubmit, setNoSubmit] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const inviteAnAdmin = useMutation({
-    mutationFn: inviteAdmin,
-  });
+  const inviteAnAdmin = useMutation({ mutationFn: inviteAdmin });
+  // const { data, isPending, isError, refetch } = useQuery({
+  //   queryKey: ["getAllAdmin"],
+  //   queryFn: getAdminUsers,
+  // });
+
+  // console.log(data, "getAllAdmin");
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm({
-    resolver: yupResolver(validationSchema),
-  });
+  } = useForm({ resolver: yupResolver(validationSchema) });
 
   const onSubmit = async (data: any) => {
     setLoading(false);
