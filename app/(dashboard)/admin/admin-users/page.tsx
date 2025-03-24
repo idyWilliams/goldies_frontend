@@ -347,7 +347,7 @@ const updateUrlParams = (params: {
     verifyMutation.isPending;
 
   return (
-    <div className="container mx-auto space-y-6 py-6">
+    <div className=" w-full px-4 py-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div>
@@ -440,7 +440,7 @@ const updateUrlParams = (params: {
           </DialogContent>
         </Dialog>
       </div>
-
+   <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
       <div>
         <CardContent className="p-0">
           <AdminDataTable

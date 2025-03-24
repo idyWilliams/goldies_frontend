@@ -227,7 +227,7 @@ export default function Page() {
         <h1 className="text-lg font-extrabold uppercase text-brand-200">
           Customers
         </h1>
-        <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
+      c
 
         <div className="my-6 flex items-center justify-between gap-4">
           {/* search input */}
