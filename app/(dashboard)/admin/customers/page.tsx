@@ -227,7 +227,7 @@ export default function Page() {
         <h1 className="text-lg font-extrabold uppercase text-brand-200">
           Customers
         </h1>
-      c
+      
 
         <div className="my-6 flex items-center justify-between gap-4">
           {/* search input */}
