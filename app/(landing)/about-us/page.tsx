@@ -1,5 +1,3 @@
-"use client";
-
 import Image from "next/image";
 import React from "react";
 import Founder from "@/public/assets/about-us/founder.png";
@@ -8,6 +6,13 @@ import BrandSlider from "@/components/about-components/BrandSlider";
 import TeamSlider from "@/components/about-components/TeamSlider";
 import ReviewSlider from "@/components/about-components/ReviewSlider";
 import AboutImg from "@/public/assets/abt-img.jpg";
+import { Metadata } from "next";
+
+const pageTitle = "About Us";
+
+export const metadata: Metadata = {
+  title: pageTitle,
+};
 
 const AboutUs = () => {
   return (

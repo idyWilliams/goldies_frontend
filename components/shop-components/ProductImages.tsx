@@ -12,7 +12,12 @@ import "swiper/css/zoom";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import "swiper/css/free-mode";
-import { ChevronLeftIcon, ChevronRightIcon, ZoomInIcon, ZoomOutIcon } from "lucide-react";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ZoomInIcon,
+  ZoomOutIcon,
+} from "lucide-react";
 
 const exampleImage =
   "https://firebasestorage.googleapis.com/v0/b/goldie-b3ba7.appspot.com/o/products%2Fbanana-cake-with-cinnamon-cream-102945-1.webp?alt=media&token=32e645da-9327-4f7f-9f79-a2cba1102676";
@@ -119,7 +124,7 @@ const ProductImages = ({ product }: { product: IProduct }) => {
         </button>
 
         <button
-          className="absolute bottom-4 right-4 z-10 cursor-zoom-in rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/75"
+          className={`absolute bottom-4 right-4 z-10 rounded-full bg-black/50 p-2 text-white transition-colors hover:bg-black/75 ${isZoomed ? "cursor-zoom-out" : "cursor-zoom-in"}`}
           onClick={toggleZoom}
         >
           {isZoomed ? (
@@ -131,7 +136,7 @@ const ProductImages = ({ product }: { product: IProduct }) => {
       </div>
 
       {/* thumbnails images */}
-      <div className="w-full h-[100px] flex items-center">
+      <div className="flex h-[100px] w-full items-center">
         <Swiper
           onSwiper={setMainThumbsSwiper}
           spaceBetween={8}

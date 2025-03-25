@@ -1,5 +1,12 @@
 // import BespokeImg from "@/public/assets/large.jpeg";
 import TypeForm from "@/components/TypeForm";
+import { Metadata } from "next";
+
+const pageTitle = "Bespoke Cake Order";
+
+export const metadata: Metadata = {
+  title: pageTitle,
+};
 
 const BespokePage = () => {
   return (
