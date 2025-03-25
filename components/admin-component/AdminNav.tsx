@@ -98,18 +98,21 @@ export default function AdminNav() {
       (key) => key.toLowerCase() === searchTerm.trim().toLowerCase(),
     );
 
-    const route = matchedKey
-      ? sectionMap[matchedKey]
-      : `/admin/${searchTerm.trim().toLowerCase()}`;
-    router.push(route);
-    setOpenSearch(false);
-    setSearchTerm("");
+    if (matchedKey) {
+      router.push(sectionMap[matchedKey]);
+      setOpenSearch(false);
+      setSearchTerm("");
+      setSuggestions([]);
+    } else {
+      console.log("No matching section found");
+    }
     setSuggestions([]);
   };
 
   // Handle Enter key press
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
+      e.preventDefault();
       handleSearch();
     }
   };
@@ -163,7 +166,6 @@ export default function AdminNav() {
                 suggestions={suggestions}
                 onSuggestionClick={handleSuggestionClick}
                 onSearch={handleSearch}
-                onKeyPress={handleKeyPress}
                 fetchSuggestions={fetchSuggestions}
               />
             ) : (
