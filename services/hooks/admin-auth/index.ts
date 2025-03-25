@@ -159,11 +159,24 @@ export const unBlockAdmin = async (id: string) => {
 };
 
 // LOGOUT ADMIN
-export const adminLogOut = async (router: AppRouterInstance) => {
+export const adminLogOut = async (
+  router: AppRouterInstance,
+  currentPath?: string,
+) => {
   localStorage.setItem("isLogin", JSON.stringify(false));
   localStorage.removeItem("adminToken");
   localStorage.removeItem("admin");
   Cookies.remove(ADMIN_TOKEN_NAME);
 
-  router.replace("/admin-signin");
+  let signinUrl = "/admin-signin";
+
+  if (
+    currentPath &&
+    !currentPath.startsWith("/admin-signin") &&
+    currentPath.trim() !== ""
+  ) {
+    signinUrl += `?redirect_url=${encodeURIComponent(currentPath)}`;
+  }
+
+  router.replace(signinUrl);
 };
