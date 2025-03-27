@@ -354,15 +354,15 @@ const updateUrlParams = (params: {
             <div className="items center flex gap-2 ">
               <MdAdminPanelSettings className="h-8 w-8 text-primary" />
               <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-bold tracking-tight">
+                <h1 className="text-base md:text-2xl font-bold tracking-tight">
                   Admin Management
                 </h1>
-                <Badge className=" bg-brand-200 text-[10px]">
+                <Badge className=" bg-brand-200 text-[10px] hidden md:block">
                   {pagination.total}
                 </Badge>
               </div>
             </div>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground text-sm md:text-base">
               Manage admin accounts and permissions
             </p>
           </div>
@@ -370,7 +370,7 @@ const updateUrlParams = (params: {
 
         <Dialog open={addAdminDialogOpen} onOpenChange={setAddAdminDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="flex cursor-pointer items-center gap-1 rounded-md bg-brand-200 text-brand-100 hover:bg-brand-200">
+            <Button className="flex cursor-pointer items-center gap-1 rounded-md bg-brand-200 text-brand-100 hover:bg-brand-200 self-start">
               <HiUserAdd className="h-4 w-4" />
               <span>Add New Admin</span>
             </Button>

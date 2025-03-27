@@ -64,7 +64,7 @@ export const getAdminUsers = async (params?: AdminQueryParams) => {
   if (params?.endDate) queryParams.append("endDate", params.endDate);
 
   const queryString = queryParams.toString();
-  const endpoint = `/admin/admins${queryString ? `?${queryString}` : ""}`;
+  const endpoint = `/admin/all${queryString ? `?${queryString}` : ""}`;
 
   const response = await instance.get(endpoint);
   return response.data;
@@ -142,19 +142,19 @@ export const getAdmin = async (id: string) => {
 //Administrative actions
 
 export const adminVerify = async (id: string) => {
-  const response = await instance.put(`/admins/verify-access/${id}`);
+  const response = await instance.put(`/admin/verify-access/${id}`);
   return response.data;
 };
 export const deleteAdmin = async (id: string) => {
-  const response = await instance.delete(`/admins/${id}`);
+  const response = await instance.delete(`/admin/${id}`);
   return response.data;
 };
 export const blockAdmin = async (id: string) => {
-  const response = await instance.put(`/admins/revoke-access/${id}`);
+  const response = await instance.put(`/admin/revoke-access/${id}`);
   return response.data;
 };
 export const unBlockAdmin = async (id: string) => {
-  const response = await instance.put(`/admins/unblock-access/${id}`);
+  const response = await instance.put(`/admin/unblock-access/${id}`);
   return response.data;
 };
 
