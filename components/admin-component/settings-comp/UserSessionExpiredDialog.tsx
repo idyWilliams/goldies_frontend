@@ -10,13 +10,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { usePathname, useRouter } from "next/navigation";
 import { adminLogOut } from "@/services/hooks/admin-auth";
+import { userLogOut } from "@/services/hooks/user-auth";
 
 interface SessionExpiredDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }
 
-export function SessionExpiredDialog({
+export function UserSessionExpiredDialog({
   open,
   onOpenChange,
 }: SessionExpiredDialogProps) {
@@ -24,7 +25,7 @@ export function SessionExpiredDialog({
   const pathname = usePathname();
 
   const handleLogout = () => {
-    adminLogOut(router, pathname);
+    userLogOut(router, pathname);
     onOpenChange(false);
   };
 

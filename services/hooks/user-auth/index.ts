@@ -3,7 +3,7 @@ import {
   CreateUser,
   ForgotPassword,
   LoginUser,
-  ResetPassword
+  ResetPassword,
 } from "@/services/types";
 import { USER_DETAILS, USER_TOKEN_NAME } from "@/utils/constants";
 import Cookies from "js-cookie";
@@ -41,11 +41,25 @@ export const resetPassword = async (data: ResetPassword) => {
 };
 
 // LOGOUT ADMIN
-export const userLogOut = async (router: AppRouterInstance) => {
+export const userLogOut = async (
+  router: AppRouterInstance,
+  currentPath?: string,
+) => {
   localStorage.setItem("isLogin", JSON.stringify(false));
   localStorage.removeItem("userToken");
   localStorage.removeItem("user");
   Cookies.remove(USER_TOKEN_NAME);
   Cookies.remove(USER_DETAILS);
-  router.push("/sign-in");
+
+  let signinUrl = "/sign-in";
+
+  if (
+    currentPath &&
+    !currentPath.startsWith("/sign-in") &&
+    currentPath.trim() !== ""
+  ) {
+    signinUrl += `?redirect_url=${encodeURIComponent(currentPath)}`;
+  }
+
+  router.replace(signinUrl);
 };

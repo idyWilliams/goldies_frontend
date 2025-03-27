@@ -1,20 +1,15 @@
-"use client";
 import type { Metadata } from "next";
-import { ReactNode, Suspense, useEffect } from "react";
-import "./globals.css";
 import { Outfit } from "next/font/google";
+import { ReactNode, Suspense } from "react";
+import "./globals.css";
 
 import { Toaster } from "@/components/ui/sonner";
 import { AuthProvider } from "@/context/AuthProvider";
-import { ProductProvider } from "@/context/ProductInfoContext";
-import { ShoppingCartProvider } from "@/context/ShoppingCartContext";
 import { cn } from "@/helper/cn";
-import tomatoGrotesk from "@/utils/font";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { usePathname } from "next/navigation";
 import Loading from "./(landing)/loading";
 import StoreProvider from "./StoreProvider";
+import QueryProvider from "./providers/QueryProvider";
 
 const outfit = Outfit({
   weight: ["300", "400", "500", "600", "700", "800"],
@@ -25,10 +20,16 @@ const outfit = Outfit({
   preload: true,
 });
 
-const metadata: Metadata = {
-  title: "Goldies Confectioneries | Buy Delicious Cakes Online",
-  description:
-    "Indulge in delectable cakes from Goldies Confectioneries. Browse our wide selection of cakes for every occasion and order now for a taste of perfection!",
+const SITE_TITLE = "Goldies Confectioneries | Buy Delicious Cakes Online";
+const SITE_DESCRIPTION =
+  "Indulge in delectable cakes from Goldies Confectioneries. Browse our wide selection of cakes for every occasion and order now for a taste of perfection!";
+
+export const metadata: Metadata = {
+  title: {
+    default: SITE_TITLE,
+    template: `%s | ${SITE_TITLE}`,
+  },
+  description: SITE_DESCRIPTION,
 };
 
 declare global {
@@ -38,15 +39,11 @@ declare global {
   }
 }
 
-const queryClient = new QueryClient();
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: ReactNode;
 }>) {
-  const pathname = usePathname();
-
   // TAWK_LOAD_START
   // useEffect(() => {
   //   window.Tawk_API = window.Tawk_API || {};
@@ -67,39 +64,31 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <meta name="description" content={metadata.description || ""} />
-        {/* @ts-expect-error */}
-        <title>{metadata.title}</title>
+        {/* <meta name="description" content={metadata.description || ""} /> */}
+        {/* <title>{metadata.title}</title> */}
         <link rel="icon" href="/icon.svg" sizes="any" />
-        <meta
+        {/* <meta
           name="keywords"
           content="delicious cakes, buy cakes online, cake delivery, Goldies Confectioneries"
-        />
+        /> */}
       </head>
       <body className={cn("overflow-x-hidden", outfit.className)}>
-        <QueryClientProvider client={queryClient}>
+        <QueryProvider>
           <AuthProvider>
-            <ShoppingCartProvider>
-              <StoreProvider>
-                <ProductProvider>
-                  <Suspense fallback={<Loading />}>
-                    <main>{children}
-
-                      
-                    </main>
-                    <Toaster
-                      position="top-right"
-                      richColors
-                      expand={true}
-                      closeButton
-                    />
-                  </Suspense>
-                </ProductProvider>
-              </StoreProvider>
-            </ShoppingCartProvider>
+            <StoreProvider>
+              <Suspense fallback={<Loading />}>
+                <main>{children}</main>
+                <Toaster
+                  position="top-right"
+                  richColors
+                  expand={true}
+                  closeButton
+                />
+              </Suspense>
+            </StoreProvider>
           </AuthProvider>
           <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
+        </QueryProvider>
       </body>
     </html>
   );

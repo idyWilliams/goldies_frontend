@@ -16,7 +16,6 @@ interface SearchModalProps {
   suggestions: string[];
   onSuggestionClick: (suggestion: string) => void;
   onSearch: () => void;
-  onKeyPress: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   fetchSuggestions: (query: string) => void;
 }
 
@@ -28,7 +27,6 @@ export function SearchModal({
   suggestions,
   onSuggestionClick,
   onSearch,
-  onKeyPress,
   fetchSuggestions,
 }: SearchModalProps) {
   const [selectedIndex, setSelectedIndex] = useState(-1);

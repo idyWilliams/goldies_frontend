@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import useOrders from "@/services/hooks/payment/useOrders";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Eye } from "iconsax-react";
-import { Loader2Icon } from "lucide-react";
+import { Loader2Icon, Undo2Icon } from "lucide-react";
 import moment from "moment";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -213,36 +213,7 @@ export default function OrderPage() {
       <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
 
       <div className="my-6 flex flex-col gap-4">
-        <div className="flex items-center justify-between gap-4 flex-wrap-reverse">
-          {/* Date Filters */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="rounded-[50px] px-4 py-2 placeholder:text-sm focus:border-black focus:ring-black"
-            />
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="rounded-[50px] px-4 py-2 placeholder:text-sm focus:border-black focus:ring-black"
-            />
-            <button
-              onClick={() => {
-                setStartDate("");
-                setEndDate("");
-              }}
-              className={cn(
-                "rounded-[50px] bg-gray-200 px-4 py-2 hover:bg-gray-300",
-                !startDate && !endDate && "cursor-not-allowed opacity-50",
-              )}
-              disabled={!startDate && !endDate}
-            >
-              Reset
-            </button>
-          </div>
-
+        <div className="flex flex-wrap items-center justify-between gap-4">
           {/* search input */}
           <div className="w-full max-w-[500px]">
             <label htmlFor="search" className="relative block w-full">
@@ -268,6 +239,36 @@ export default function OrderPage() {
                 </span>
               )}
             </label>
+          </div>
+
+          {/* Date Filters */}
+          <div className="flex flex-wrap items-center gap-2">
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="rounded-[50px] px-4 py-2 placeholder:text-sm focus:border-black focus:ring-black"
+            />
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="rounded-[50px] px-4 py-2 placeholder:text-sm focus:border-black focus:ring-black"
+            />
+            <button
+              onClick={() => {
+                setStartDate("");
+                setEndDate("");
+              }}
+              className={cn(
+                "rounded-[50px] bg-gray-200 px-4 py-2 hover:bg-gray-300 flex items-center gap-1",
+                !startDate && !endDate && "cursor-not-allowed opacity-50",
+              )}
+              disabled={!startDate && !endDate}
+            >
+              <Undo2Icon size={16} />
+              Reset
+            </button>
           </div>
         </div>
 

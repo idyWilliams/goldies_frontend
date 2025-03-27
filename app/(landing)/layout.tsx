@@ -1,21 +1,23 @@
 "use client";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 // import { jwtDecode } from "jwt-decode";
 import AuthContext, { useAuth } from "@/context/AuthProvider";
 import { usePathname, useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
-import { userLogOut } from "@/services/hooks/user-auth";
+// import { userLogOut } from "@/services/hooks/user-auth";
 import NextTopLoader from "nextjs-toploader";
 import Cookies from "js-cookie";
 import { USER_DETAILS, USER_TOKEN_NAME } from "@/utils/constants";
 import ThemeChanger from "@/components/admin-component/ThemeChanger";
+import { UserSessionExpiredDialog } from "@/components/admin-component/settings-comp/UserSessionExpiredDialog";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { setAuth } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const [isSessionExpired, setIsSessionExpired] = useState(false);
 
   useEffect(() => {
     const parsedUser = JSON.parse(localStorage.getItem("user") as string);
@@ -28,7 +30,8 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         pathname.includes("/my-orders") ||
         pathname.includes("/billing")
       ) {
-        userLogOut(router);
+        // userLogOut(router);
+        setIsSessionExpired(true);
       } else {
         localStorage.setItem("isLogin", JSON.stringify(false));
         localStorage.removeItem("accessToken");
@@ -79,6 +82,10 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {children}
         <ThemeChanger />
       </main>
+      <UserSessionExpiredDialog
+        open={isSessionExpired}
+        onOpenChange={setIsSessionExpired}
+      />
       <Footer />
     </div>
   );

@@ -1,3 +1,4 @@
+"use client"
 import { IAdmin, IUser } from "@/interfaces/user.interface";
 import {
   createContext,
