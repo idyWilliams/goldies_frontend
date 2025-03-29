@@ -16,6 +16,7 @@ import Slide4 from "../public/assets/slide-4.jpeg";
 import Slide5 from "../public/assets/slide-5.jpeg";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { mergeSampleCart } from "@/lib/test";
 
 const stats = [
   { value: "12000+", title: "Cakes Delivered" },
@@ -90,6 +91,13 @@ const Hero = () => {
                 }}
               >
                 Order Now
+              </Button>
+              <Button
+                size="lg"
+                className="mt-6 h-auto bg-brand-200 py-3 font-medium text-brand-100 hover:bg-brand-200"
+                onClick={()=>mergeSampleCart()}
+              >
+                uyu Order Now
               </Button>
             </div>
           </div>

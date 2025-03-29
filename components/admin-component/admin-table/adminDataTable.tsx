@@ -185,7 +185,7 @@ export default function AdminDataTable<T extends Admin>({
 
           return (
             <div className="flex items-center gap-2">
-              <span className="truncate w-36">{admin.userName}</span>
+              <span className="truncate w-40">{admin.userName}</span>
               {isNew && (
                 <TooltipProvider>
                   <Tooltip>
@@ -338,8 +338,8 @@ export default function AdminDataTable<T extends Admin>({
   return (
     <div className="w-full space-y-4">
       {/* Search and filter controls */}
-      <div className="flex flex-col md:flex-row w-full items-center justify-between space-y-4 mt-">
-        <div className="w-full max-w-[500px]">
+      <div className="block w-full items-center justify-between md:flex">
+        <div className="mt-4 w-full max-w-[500px] md:mt-0">
           <label htmlFor="search" className="relative block w-full">
             <input
               value={searchQuery}
@@ -365,7 +365,7 @@ export default function AdminDataTable<T extends Admin>({
           </label>
         </div>
 
-        <div className=" overflow-auto w-full">
+        <div className="mt-4 overflow-auto md:mt-0">
           <Tabs
             defaultValue="all"
             value={currentTab}
