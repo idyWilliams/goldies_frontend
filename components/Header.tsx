@@ -63,7 +63,9 @@ const Header = () => {
     Cookies.remove(USER_DETAILS);
     router.replace("/sign-in");
     queryClient.invalidateQueries({ queryKey: ["cartList"] });
+    queryClient.removeQueries({ queryKey: ["cartList"] });
     dispatch(clearCartFromStore());
+    dispatch(setCart([]));
 
     if (
       pathname.includes("/my-account") ||
@@ -232,17 +234,19 @@ const Header = () => {
                         e.stopPropagation();
                         setIsOpen((prev) => !prev);
                       }}
-                      className="flex items-center gap-2"
+                      className="flex  items-center gap-2"
                     >
                       <FaRegUserCircle className="text-brand-200" size={20} />
                       {!auth?.user ? (
-                        <span className="uppercase text-brand-200">
+                        <p className="uppercase text-brand-200">
                           Account
-                        </span>
+                        </p>
                       ) : (
-                        <span className="text-brand-200">
-                          {auth?.user?.firstName}
-                        </span>
+                        <div className="max-w-[100px]">
+                          <p className="truncate text-brand-200">
+                            {auth?.user?.firstName}
+                          </p>
+                        </div>
                       )}
                       {!isOpen ? (
                         <IoIosArrowDown className="text-brand-200" />
