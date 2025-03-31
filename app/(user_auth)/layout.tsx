@@ -20,7 +20,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
       <NextTopLoader color="#262626" showSpinner={false} height={4} />
 
       <div className="">
-        <div className="mb-2 hidden justify-center md:flex">
+        <div className="mb-2 justify-center flex">
           <Link href="/" className="relative">
             <Image
               src={Logo}
