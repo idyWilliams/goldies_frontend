@@ -123,8 +123,12 @@ const ProductCard = React.memo(function ProductCard({
         {data?.description}
       </p>
       <div className="inline-flex gap-2">
-        <StarRating iconSize={20} canRate={false} />{" "}
-        <span className="text-sm">(32)</span>
+        <StarRating
+          iconSize={20}
+          canRate={false}
+          defaultRating={data?.averageRating}
+        />
+        <span className="text-sm">({data?.ratingsCount?.total})</span>
       </div>
       <Link href={`/shop/${data?.slug}`}>
         <Button
