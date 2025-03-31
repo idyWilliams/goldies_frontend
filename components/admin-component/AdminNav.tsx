@@ -36,6 +36,7 @@ import Logo from "@/public/assets/new-logo/logo-colored.svg";
 import useMobile from "@/services/hooks/admin/useMobile";
 import { SearchModal } from "./SearchModal";
 import Fuse from "fuse.js";
+import { useUnreadNotificationCount } from "@/services/hooks/admin/useNotifications";
 
 export default function AdminNav() {
   const router = useRouter();
@@ -46,9 +47,10 @@ export default function AdminNav() {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const { auth } = useAuth();
   const isMobile = useMobile();
+  const { data: unreadCount = 0 } = useUnreadNotificationCount();
 
   const formatRole = (status: string) => status?.replace(/_/g, " ");
-
+  console.log(auth, "auth");
   // Map search terms to routes
   const sectionMap: { [key: string]: string } = {
     Overview: "/admin",
