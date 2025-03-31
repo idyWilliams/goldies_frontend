@@ -108,6 +108,9 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
   const { handleAddToCart } = useCart();
   const { auth } = useAuth();
 
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const maxDescriptionLength = 150;
+
   const {
     register,
     handleSubmit,
@@ -368,6 +371,16 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
     }));
   };
 
+  const toggleDescription = () => {
+    setIsDescriptionExpanded(!isDescriptionExpanded);
+  };
+
+  const truncatedDescription =
+    activeProduct?.description &&
+    activeProduct?.description?.length > maxDescriptionLength
+      ? activeProduct.description.substring(0, maxDescriptionLength) + "..."
+      : activeProduct?.description;
+
   if (isLoading || isPending) {
     return <ProductDetailsSkeleton />;
   }
@@ -439,8 +452,18 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                 <div>
                   <h3 className="font-semibold">Description</h3>
                   <p className="text-neutral-600">
-                    {activeProduct?.description}
+                    {isDescriptionExpanded
+                      ? activeProduct?.description
+                      : truncatedDescription}
                   </p>
+                  {activeProduct?.description.length > maxDescriptionLength && (
+                    <button
+                      onClick={toggleDescription}
+                      className="mt-1 text-sm text-blue-500 hover:underline"
+                    >
+                      {isDescriptionExpanded ? "See less" : "See more"}
+                    </button>
+                  )}
                   <ul className="mt-1.5 space-y-1">
                     <li className="">
                       <span className="font-semibold">Category:</span>
