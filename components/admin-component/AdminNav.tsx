@@ -36,7 +36,7 @@ import Logo from "@/public/assets/new-logo/logo-colored.svg";
 import useMobile from "@/services/hooks/admin/useMobile";
 import { SearchModal } from "./SearchModal";
 import Fuse from "fuse.js";
-import { useUnreadNotificationCount } from "@/services/hooks/admin/useNotifications";
+import { useMarkAllAsRead, useNotifications, useUnreadNotificationCount } from "@/services/hooks/admin/useNotifications";
 
 export default function AdminNav() {
   const router = useRouter();
@@ -45,6 +45,8 @@ export default function AdminNav() {
   const [openSearch, setOpenSearch] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
+  const { data, isLoading, isError } = useNotifications(20);
+  const markAllAsReadMutation = useMarkAllAsRead();
   const { auth } = useAuth();
   const isMobile = useMobile();
   const { data: unreadCount = 0 } = useUnreadNotificationCount();

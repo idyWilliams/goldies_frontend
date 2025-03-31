@@ -1,3 +1,5 @@
+"use client";
+
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Socket } from "socket.io-client";
 import { initializeSocket } from "../lib/socket";
@@ -9,16 +11,20 @@ type NotificationContextType = {
   socket: Socket | null;
 };
 
-const NotificationContext = createContext<NotificationContextType>({ socket: null });
+const NotificationContext = createContext<NotificationContextType>({
+  socket: null,
+});
 
 export const useNotificationContext = () => useContext(NotificationContext);
 
-export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-      const { auth } = useAuth();
+export const NotificationProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const { auth } = useAuth();
   const [socket, setSocket] = useState<Socket | null>(null);
   const queryClient = useQueryClient();
-//   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
-//   const user = useAuthStore(state => state.user);
+  //   const isAuthenticated = useAuthStore(state => state.isAuthenticated);
+  //   const user = useAuthStore(state => state.user);
 
   useEffect(() => {
     let socketInstance: Socket | null = null;

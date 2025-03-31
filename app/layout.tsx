@@ -10,6 +10,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Loading from "./(landing)/loading";
 import StoreProvider from "./StoreProvider";
 import QueryProvider from "./providers/QueryProvider";
+import { NotificationProvider } from "@/context/NotificationProvider";
 
 const outfit = Outfit({
   weight: ["300", "400", "500", "600", "700", "800"],
@@ -75,17 +76,19 @@ export default function RootLayout({
       <body className={cn("overflow-x-hidden", outfit.className)}>
         <QueryProvider>
           <AuthProvider>
-            <StoreProvider>
-              <Suspense fallback={<Loading />}>
-                <main>{children}</main>
-                <Toaster
-                  position="top-right"
-                  richColors
-                  expand={true}
-                  closeButton
-                />
-              </Suspense>
-            </StoreProvider>
+            <NotificationProvider>
+              <StoreProvider>
+                <Suspense fallback={<Loading />}>
+                  <main>{children}</main>
+                  <Toaster
+                    position="top-right"
+                    richColors
+                    expand={true}
+                    closeButton
+                  />
+                </Suspense>
+              </StoreProvider>
+            </NotificationProvider>
           </AuthProvider>
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryProvider>
