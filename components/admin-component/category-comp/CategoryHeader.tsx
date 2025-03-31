@@ -8,6 +8,8 @@ import useBoundStore from "@/zustand/store";
 import { log } from "console";
 import { Button } from "@/components/ui/button";
 import { CgSpinner } from "react-icons/cg";
+import useCategories from "@/services/hooks/category/useCategories";
+import { Badge } from "@/components/ui/badge";
 
 const CategoryHeader = () => {
   const router = useRouter();
@@ -20,6 +22,8 @@ const CategoryHeader = () => {
   const isValid = useBoundStore((state) => state.isValid);
   const [isSubmitting, setIsSubmtting] = useState(true);
   const [isFormValid, setIsFormValid] = useState(false);
+
+  const { totalCategories } = useCategories();
 
   useEffect(() => {
     if (!pathname.endsWith("/manage-categories")) {
@@ -54,7 +58,12 @@ const CategoryHeader = () => {
           <div className="">
             <div className="items center flex gap-2 ">
               <Category2 variant="Bold" />
-              <h1 className="text-lg font-extrabold uppercase">Categories</h1>
+              <div className="flex items-center gap-2">
+                <h1 className="text-lg font-extrabold uppercase">Categories</h1>
+                <Badge className=" bg-brand-200 text-[10px]">
+                  {totalCategories}
+                </Badge>
+              </div>
             </div>
             <p className="text-sm"></p>
           </div>

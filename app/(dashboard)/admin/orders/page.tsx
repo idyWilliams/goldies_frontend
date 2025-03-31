@@ -2,6 +2,7 @@
 import AdminPagination from "@/components/admin-component/AdminPagination";
 import DataTable from "@/components/admin-component/DataTable";
 import MobileOrderCard from "@/components/admin-component/MobileOrderCard";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/helper/formatCurrency";
 import { IOrder, OrderParams } from "@/interfaces/order.interface";
@@ -212,7 +213,10 @@ export default function OrderPage() {
       <div className="">
         <div className="items center flex gap-2 ">
           <ShoppingBag variant="Bold" />
-          <h1 className="text-lg font-extrabold uppercase">Orders</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-lg font-extrabold uppercase">Orders</h1>
+            <Badge className=" bg-brand-200 text-[10px]">{totalOrders}</Badge>
+          </div>
         </div>
         <p className="text-sm"></p>
       </div>

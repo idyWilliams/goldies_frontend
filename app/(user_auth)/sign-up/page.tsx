@@ -301,7 +301,7 @@ const Page = () => {
               </label>
               <Button
                 disabled={newUser.isPending}
-                className="col-span-2 mt-3 h-auto w-full rounded-none bg-brand-200 py-3 text-base text-brand-100 hover:border hover:border-brand-200 hover:bg-transparent hover:text-brand-200"
+                className="col-span-2 mt-3 h-auto w-full rounded-none bg-brand-200 py-3 text-base text-brand-100 border border-transparent hover:border hover:border-brand-200 hover:bg-transparent hover:text-brand-200"
               >
                 {newUser.isPending ? (
                   <div className="loader bg-[#fff]"></div>

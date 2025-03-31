@@ -2,6 +2,7 @@
 import AdminPagination from "@/components/admin-component/AdminPagination";
 import UserSortBy from "@/components/admin-component/customers/UserSortBy";
 import DataTable from "@/components/admin-component/DataTable";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { initials } from "@/helper/initials";
 import { IUser, UserParams } from "@/interfaces/user.interface";
@@ -128,7 +129,8 @@ export default function Page() {
     order,
   ]);
 
-  const { users, isLoading, isError, refetch, totalPages } = useUsers(params);
+  const { users, isLoading, isError, refetch, totalPages, totalUsers } =
+    useUsers(params);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
@@ -227,7 +229,10 @@ export default function Page() {
         <div className="">
           <div className="items center flex gap-2 ">
             <People variant="Bold" />
-            <h1 className="text-lg font-extrabold uppercase">Customers</h1>
+            <div className="flex items-center gap-2">
+              <h1 className="text-lg font-extrabold uppercase">Customers</h1>
+              <Badge className=" bg-brand-200 text-[10px]">{totalUsers}</Badge>
+            </div>
           </div>
           <p className="text-sm"></p>
         </div>
