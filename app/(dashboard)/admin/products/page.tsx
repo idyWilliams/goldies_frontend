@@ -4,13 +4,14 @@ import DataTable from "@/components/admin-component/DataTable";
 import MobileProductCard from "@/components/admin-component/MobileProductCard";
 import ProductOptionModal from "@/components/admin-component/ProductOptionModal";
 import ProductSortBy from "@/components/admin-component/ProductSortBy";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/helper/formatCurrency";
 import { IProduct, ProductParams } from "@/interfaces/product.interface";
 import { cn } from "@/lib/utils";
 import useProducts from "@/services/hooks/products/useProducts";
 import { createColumnHelper } from "@tanstack/react-table";
-import { Add, Edit, Eye, Trash } from "iconsax-react";
+import { Add, Cake, Edit, Eye, Trash } from "iconsax-react";
 import { Loader2Icon } from "lucide-react";
 import moment from "moment";
 import Image from "next/image";
@@ -90,7 +91,6 @@ export default function ProductsPage() {
       limit: itemsPerPage,
       // sortBy: querySortBy,
       // order: queryOrder,
-  
     };
 
     if (searchValue) {
@@ -139,7 +139,7 @@ export default function ProductsPage() {
     sortBy,
     order,
     queryOrder,
-    querySortBy
+    querySortBy,
   ]);
 
   const {
@@ -147,6 +147,7 @@ export default function ProductsPage() {
     isError,
     refetch,
     totalPages,
+    totalProducts,
     products: allProducts,
   } = useProducts(params);
 
@@ -292,7 +293,15 @@ export default function ProductsPage() {
       {/* top heading */}
       <div className="flex items-start justify-between gap-6 ">
         <div className="mb-5">
-          <h1 className="text-lg font-extrabold uppercase">Products</h1>
+          <div className="items center flex gap-2 ">
+            <Cake variant="Bold" />
+            <div className="flex items-center gap-2">
+              <h1 className="text-lg font-extrabold uppercase">Products</h1>
+              <Badge className=" bg-brand-200 text-[10px]">
+                {totalProducts}
+              </Badge>
+            </div>
+          </div>
           <p className="text-sm">List of all available products created</p>
         </div>
         <Button

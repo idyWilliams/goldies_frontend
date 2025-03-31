@@ -44,7 +44,7 @@ export default function ProfileInfo() {
     try {
       const update = await updateUserName.mutateAsync({
         userName,
-        id: admin?._id as string,
+        id: admin?.id as string,
       });
       setAuth({
         admin: {

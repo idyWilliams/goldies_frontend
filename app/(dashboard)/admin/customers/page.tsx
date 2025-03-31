@@ -2,12 +2,13 @@
 import AdminPagination from "@/components/admin-component/AdminPagination";
 import UserSortBy from "@/components/admin-component/customers/UserSortBy";
 import DataTable from "@/components/admin-component/DataTable";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { initials } from "@/helper/initials";
 import { IUser, UserParams } from "@/interfaces/user.interface";
 import useUsers from "@/services/hooks/users/useUsers";
 import { createColumnHelper } from "@tanstack/react-table";
-import { Eye } from "iconsax-react";
+import { Eye, People } from "iconsax-react";
 import { Loader2Icon } from "lucide-react";
 import moment from "moment";
 import Link from "next/link";
@@ -128,7 +129,8 @@ export default function Page() {
     order,
   ]);
 
-  const { users, isLoading, isError, refetch, totalPages } = useUsers(params);
+  const { users, isLoading, isError, refetch, totalPages, totalUsers } =
+    useUsers(params);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
@@ -224,10 +226,16 @@ export default function Page() {
   return (
     <>
       <section className="min-h-screen w-full px-4 py-6">
-        <h1 className="text-lg font-extrabold uppercase text-brand-200">
-          Customers
-        </h1>
-      
+        <div className="">
+          <div className="items center flex gap-2 ">
+            <People variant="Bold" />
+            <div className="flex items-center gap-2">
+              <h1 className="text-lg font-extrabold uppercase">Customers</h1>
+              <Badge className=" bg-brand-200 text-[10px]">{totalUsers}</Badge>
+            </div>
+          </div>
+          <p className="text-sm"></p>
+        </div>
 
         <div className="my-6 flex items-center justify-between gap-4">
           {/* search input */}

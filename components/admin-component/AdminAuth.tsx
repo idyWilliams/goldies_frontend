@@ -12,6 +12,7 @@ const AdminAuth = <P extends object>(WrappedComponent: FC<P>) => {
     const pathname = usePathname();
     const [isLogin, setIsLogin] = useState(false);
     const [isSessionExpired, setIsSessionExpired] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
       const storedAdmin = JSON.parse(localStorage.getItem("admin") as string);
@@ -19,6 +20,7 @@ const AdminAuth = <P extends object>(WrappedComponent: FC<P>) => {
 
       if (!adminToken) {
         console.error("Admin token is missing.");
+        setIsLoading(false);
         adminLogOut(router); // Admin redirected to sign-in page
         return;
       }
@@ -30,30 +32,36 @@ const AdminAuth = <P extends object>(WrappedComponent: FC<P>) => {
         const currentTime = new Date().getTime();
         const sessionExpired = currentTime > storedTimestamp;
 
-        console.log("sessioninfo:", {
-          storedTimestamp,
-          currentTime,
-          sessionExpired,
-        });
-
         // When admin session is still valid
         if (!sessionExpired) {
-          console.log("Valid session admin");
           setIsLogin(true);
           setIsSessionExpired(false);
-
-          return;
         } else {
-          // adminLogOut(router); // Session has expired, Admin redirected to sign-in page
           console.log("InValid session admin");
           setIsSessionExpired(true);
           setIsLogin(false);
         }
       } catch (error) {
-        console.log("Error decoding token:", error, storedAdmin, adminToken);
+        console.log("Error decoding token:", error);
         setIsLogin(false);
+      } finally {
+        setIsLoading(false);
       }
     }, [pathname, router]);
+
+    const handleSessionExpired = async () => {
+      setIsLoading(true);
+      setIsSessionExpired(false);
+      await adminLogOut(router, pathname);
+    };
+
+    if (isLoading) {
+      return (
+        <div className="flex h-dvh w-full items-center justify-center md:h-screen">
+          <div className="loader"></div>
+        </div>
+      );
+    }
 
     return (
       <>
@@ -61,6 +69,7 @@ const AdminAuth = <P extends object>(WrappedComponent: FC<P>) => {
         <SessionExpiredDialog
           open={isSessionExpired}
           onOpenChange={setIsSessionExpired}
+          handleLogout={handleSessionExpired}
         />
       </>
     );

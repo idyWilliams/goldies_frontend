@@ -549,7 +549,7 @@ const BillingCheckoutPage = () => {
       </div>
 
       <section className="w-full bg-neutral-100 px-4 py-12">
-        <div className="mx-auto grid-cols-2 gap-8 md:grid lg:max-w-5xl lg:grid-cols-[1fr_400px] lg:gap-8 xl:max-w-6xl">
+        <div className="mx-auto grid grid-cols-1 gap-8 lg:max-w-5xl lg:grid-cols-[1fr_400px] lg:gap-8 xl:max-w-6xl">
           {/* billing form */}
           <div className="w-full lg:w-[85%]">
             <div className="mb-4">
@@ -1111,271 +1111,273 @@ const BillingCheckoutPage = () => {
 
           {/* order summary */}
           <div className="mt-3 md:mt-0">
-            <h3 className="mb-3 hidden text-xl font-semibold md:block">
-              Order Summary
-            </h3>
-            <div className="divide-y">
-              {cartLoading ? (
-                // Skeleton loading for cart items
-                <div className="space-y-3 p-2 md:bg-white">
-                  {[1, 2].map((_, i) => (
-                    <div
-                      key={i}
-                      className="grid grid-cols-[50px_1fr] gap-2 rounded-md bg-white p-4 md:bg-transparent md:p-0"
-                    >
-                      <Skeleton className="h-[50px] w-[50px] shrink-0 rounded-md" />
-                      <div className="flex justify-between">
-                        <div className="pr-4">
-                          <Skeleton className="h-4 w-24" />
-                          <Skeleton className="mt-2 h-4 w-12" />
-                        </div>
-                        <div className="text-right">
-                          <Skeleton className="h-4 w-16" />
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : products.length >= 1 ? (
-                // Render actual cart items
-                products.map((item, i) => (
-                  <div key={i} className="space-y-3 p-2 md:bg-white">
-                    <div className="grid grid-cols-[50px_1fr] gap-2 rounded-md bg-white p-4 md:bg-transparent md:p-0">
-                      <div className="h-[50px] w-[50px] shrink-0">
-                        <Image
-                          src={item?.product.images[0]}
-                          alt={item?.product?.name}
-                          width={50}
-                          height={50}
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
-                      <div className="flex justify-between">
-                        <div className="pr-4">
-                          <h3>{item?.product.name}</h3>
-                          <span className="">x{item.quantity}</span>
-                        </div>
-                        <div className="text-right">
-                          <span className="text-right">
-                            {formatCurrency(
-                              parseInt(item?.product?.maxPrice),
-                              "en-NG",
-                            )}
-                          </span>
+            <div className="lg:sticky lg:top-24">
+              <h3 className="mb-3 hidden text-xl font-semibold md:block">
+                Order Summary
+              </h3>
+              <div className="divide-y">
+                {cartLoading ? (
+                  // Skeleton loading for cart items
+                  <div className="space-y-3 p-2 md:bg-white">
+                    {[1, 2].map((_, i) => (
+                      <div
+                        key={i}
+                        className="grid grid-cols-[50px_1fr] gap-2 rounded-md bg-white p-4 md:bg-transparent md:p-0"
+                      >
+                        <Skeleton className="h-[50px] w-[50px] shrink-0 rounded-md" />
+                        <div className="flex justify-between">
+                          <div className="pr-4">
+                            <Skeleton className="h-4 w-24" />
+                            <Skeleton className="mt-2 h-4 w-12" />
+                          </div>
+                          <div className="text-right">
+                            <Skeleton className="h-4 w-16" />
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    ))}
                   </div>
-                ))
-              ) : (
-                <div className="bg-white p-4">
-                  <p className="p-2 text-center text-neutral-600">
-                    No products in cart.
-                  </p>
-                </div>
-              )}
-            </div>
-            <div className="bordert-t border">
-              <div className="space-y-3 p-2 md:bg-white">
-                <div className="flex items-center justify-between">
-                  <ul className="flex flex-col gap-3">
-                    <li>SubTotal</li>
-                    <li>Delivery Fees</li>
-                    <li className="font-bold">Total</li>
-                  </ul>
-                  <ul className="flex flex-col gap-3 text-right">
-                    <li>{formatCurrency(orderTotal, "en-NG")}</li>
-                    <li>{formatCurrency(deliveryFee, "en-NG")}</li>
-                    <li>{formatCurrency(totalWithDelivery, "en-NG")}</li>
-                  </ul>
-                </div>
+                ) : products.length >= 1 ? (
+                  // Render actual cart items
+                  products.map((item, i) => (
+                    <div key={i} className="space-y-3 p-2 md:bg-white">
+                      <div className="grid grid-cols-[50px_1fr] gap-2 rounded-md bg-white p-4 md:bg-transparent md:p-0">
+                        <div className="h-[50px] w-[50px] shrink-0">
+                          <Image
+                            src={item?.product.images[0]}
+                            alt={item?.product?.name}
+                            width={50}
+                            height={50}
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                        <div className="flex justify-between">
+                          <div className="pr-4">
+                            <h3>{item?.product.name}</h3>
+                            <span className="">x{item.quantity}</span>
+                          </div>
+                          <div className="text-right">
+                            <span className="text-right">
+                              {formatCurrency(
+                                parseInt(item?.product?.maxPrice),
+                                "en-NG",
+                              )}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="bg-white p-4">
+                    <p className="p-2 text-center text-neutral-600">
+                      No products in cart.
+                    </p>
+                  </div>
+                )}
               </div>
-              <button
-                type="submit"
-                className="mt-5 block w-full rounded bg-neutral-900 px-6 py-2.5 text-main"
-                onClick={handleSubmit}
+              <div className="bordert-t border">
+                <div className="space-y-3 p-2 md:bg-white">
+                  <div className="flex items-center justify-between">
+                    <ul className="flex flex-col gap-3">
+                      <li>SubTotal</li>
+                      <li>Delivery Fees</li>
+                      <li className="font-bold">Total</li>
+                    </ul>
+                    <ul className="flex flex-col gap-3 text-right">
+                      <li>{formatCurrency(orderTotal, "en-NG")}</li>
+                      <li>{formatCurrency(deliveryFee, "en-NG")}</li>
+                      <li>{formatCurrency(totalWithDelivery, "en-NG")}</li>
+                    </ul>
+                  </div>
+                </div>
+                <button
+                  type="submit"
+                  className="mt-5 block w-full rounded bg-neutral-900 px-6 py-2.5 text-main"
+                  onClick={handleSubmit}
+                >
+                  Proceed to payment
+                </button>
+              </div>
+
+              {/* Payment Processing Modal */}
+              <Dialog
+                open={isPaymentProcessingModalOpen}
+                onOpenChange={(open) => setIsPaymentProcessingModalOpen(open)}
               >
-                Proceed to payment
-              </button>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle className="text-center text-xl">
+                      Processing Payment
+                    </DialogTitle>
+                    <DialogDescription className="text-center">
+                      Please wait while we initialize your payment.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="flex flex-col items-center justify-center gap-4 py-4">
+                    {isProcessingPayment ? (
+                      <>
+                        <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-900 border-t-transparent" />
+                        <p className="text-center text-sm text-neutral-600">
+                          Redirecting to payment gateway...
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <div>
+                          <CheckCircle size={32} className="text-green-500" />
+                        </div>
+                        <p className="text-center text-sm text-neutral-600">
+                          Payment initialized successfully! Redirecting...
+                        </p>
+                      </>
+                    )}
+                  </div>
+                </DialogContent>
+              </Dialog>
+
+              {/* Payment Verification Modal */}
+              <Dialog
+                open={isPaymentModalOpen}
+                onOpenChange={(open) => setIsPaymentModalOpen(open)}
+              >
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle className="text-center text-xl">
+                      Processing Payment
+                    </DialogTitle>
+                    <DialogDescription className="text-center">
+                      Please wait while we verify your payment and create your
+                      order.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="flex flex-col items-center justify-center gap-4 py-4">
+                    {isSubmitting ? (
+                      <>
+                        <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-900 border-t-transparent" />
+                        <p className="text-center text-sm text-neutral-600">
+                          Verifying payment and creating order...
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <div>
+                          <CheckCircle size={32} className="text-green-500" />
+                        </div>
+                        <p className="text-center text-sm text-neutral-600">
+                          Payment verified successfully!
+                          <br /> Redirecting to your orders...
+                        </p>
+                      </>
+                    )}
+                  </div>
+                </DialogContent>
+              </Dialog>
+
+              {/* create order success modal */}
+              <Dialog
+                open={isSuccessModalOpen}
+                onOpenChange={(open) => setIsSuccessModalOpen(open)}
+              >
+                <DialogContent
+                  className="sm:max-w-[425px]"
+                  onInteractOutside={(e) => {
+                    e.preventDefault();
+                  }}
+                >
+                  <DialogHeader>
+                    <DialogTitle className="text-center text-xl">
+                      Success!
+                    </DialogTitle>
+                    <DialogDescription className="text-center">
+                      Your order has been successfully placed. Thank you for
+                      shopping with us!
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="flex flex-col items-center justify-center gap-4 py-4">
+                    <div>
+                      <CheckCircle size={32} className="text-green-500" />
+                    </div>
+                    <div className="flex w-full gap-4">
+                      <Button
+                        onClick={() => {
+                          // setIsSuccessModalOpen(false);
+                          router.push("/my-orders"); // Redirect to the orders page
+                          setTimeout(() => {
+                            clearCartMutation.mutate();
+                            dispatch(clearCartFromStore());
+                            dispatch(clearBuyNowProduct());
+                          }, 300);
+                        }}
+                        className="w-full"
+                      >
+                        View Orders
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          // setIsSuccessModalOpen(false);
+                          router.push("/"); // Redirect to the home page
+                          setTimeout(() => {
+                            clearCartMutation.mutate();
+                            dispatch(clearCartFromStore());
+                            dispatch(clearBuyNowProduct());
+                          }, 300);
+                        }}
+                        variant="outline"
+                        className="w-full"
+                      >
+                        Go Home
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+
+              {/* failure modal */}
+              <Dialog
+                open={isFailureModalOpen}
+                onOpenChange={(open) => setIsFailureModalOpen(open)}
+              >
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle className="text-center text-xl">
+                      Payment Failed!
+                    </DialogTitle>
+                    <DialogDescription className="text-center">
+                      Your payment could not be processed. Please try again or
+                      contact support.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="flex flex-col items-center justify-center gap-4 py-4">
+                    <div>
+                      <XCircleIcon size={32} className="text-red-500" />{" "}
+                      {/* Error icon */}
+                    </div>
+                    <div className="flex w-full gap-4">
+                      <Button
+                        onClick={() => {
+                          setIsFailureModalOpen(false);
+                          router.push("/billing"); // Redirect to the billing/payment page to retry
+                        }}
+                        className="w-full"
+                      >
+                        Retry Payment
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          setIsFailureModalOpen(false);
+                          router.push("/"); // Redirect to the home page
+                        }}
+                        variant="outline"
+                        className="w-full"
+                      >
+                        Go Home
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
             </div>
-
-            {/* Payment Processing Modal */}
-            <Dialog
-              open={isPaymentProcessingModalOpen}
-              onOpenChange={(open) => setIsPaymentProcessingModalOpen(open)}
-            >
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle className="text-center text-xl">
-                    Processing Payment
-                  </DialogTitle>
-                  <DialogDescription className="text-center">
-                    Please wait while we initialize your payment.
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="flex flex-col items-center justify-center gap-4 py-4">
-                  {isProcessingPayment ? (
-                    <>
-                      <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-900 border-t-transparent" />
-                      <p className="text-center text-sm text-neutral-600">
-                        Redirecting to payment gateway...
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <div>
-                        <CheckCircle size={32} className="text-green-500" />
-                      </div>
-                      <p className="text-center text-sm text-neutral-600">
-                        Payment initialized successfully! Redirecting...
-                      </p>
-                    </>
-                  )}
-                </div>
-              </DialogContent>
-            </Dialog>
-
-            {/* Payment Verification Modal */}
-            <Dialog
-              open={isPaymentModalOpen}
-              onOpenChange={(open) => setIsPaymentModalOpen(open)}
-            >
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle className="text-center text-xl">
-                    Processing Payment
-                  </DialogTitle>
-                  <DialogDescription className="text-center">
-                    Please wait while we verify your payment and create your
-                    order.
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="flex flex-col items-center justify-center gap-4 py-4">
-                  {isSubmitting ? (
-                    <>
-                      <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-900 border-t-transparent" />
-                      <p className="text-center text-sm text-neutral-600">
-                        Verifying payment and creating order...
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <div>
-                        <CheckCircle size={32} className="text-green-500" />
-                      </div>
-                      <p className="text-center text-sm text-neutral-600">
-                        Payment verified successfully!
-                        <br /> Redirecting to your orders...
-                      </p>
-                    </>
-                  )}
-                </div>
-              </DialogContent>
-            </Dialog>
-
-            {/* create order success modal */}
-            <Dialog
-              open={isSuccessModalOpen}
-              onOpenChange={(open) => setIsSuccessModalOpen(open)}
-            >
-              <DialogContent
-                className="sm:max-w-[425px]"
-                onInteractOutside={(e) => {
-                  e.preventDefault();
-                }}
-              >
-                <DialogHeader>
-                  <DialogTitle className="text-center text-xl">
-                    Success!
-                  </DialogTitle>
-                  <DialogDescription className="text-center">
-                    Your order has been successfully placed. Thank you for
-                    shopping with us!
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="flex flex-col items-center justify-center gap-4 py-4">
-                  <div>
-                    <CheckCircle size={32} className="text-green-500" />
-                  </div>
-                  <div className="flex w-full gap-4">
-                    <Button
-                      onClick={() => {
-                        // setIsSuccessModalOpen(false);
-                        router.push("/my-orders"); // Redirect to the orders page
-                        setTimeout(() => {
-                          clearCartMutation.mutate();
-                          dispatch(clearCartFromStore());
-                          dispatch(clearBuyNowProduct());
-                        }, 300);
-                      }}
-                      className="w-full"
-                    >
-                      View Orders
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        // setIsSuccessModalOpen(false);
-                        router.push("/"); // Redirect to the home page
-                        setTimeout(() => {
-                          clearCartMutation.mutate();
-                          dispatch(clearCartFromStore());
-                          dispatch(clearBuyNowProduct());
-                        }, 300);
-                      }}
-                      variant="outline"
-                      className="w-full"
-                    >
-                      Go Home
-                    </Button>
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
-
-            {/* failure modal */}
-            <Dialog
-              open={isFailureModalOpen}
-              onOpenChange={(open) => setIsFailureModalOpen(open)}
-            >
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle className="text-center text-xl">
-                    Payment Failed!
-                  </DialogTitle>
-                  <DialogDescription className="text-center">
-                    Your payment could not be processed. Please try again or
-                    contact support.
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="flex flex-col items-center justify-center gap-4 py-4">
-                  <div>
-                    <XCircleIcon size={32} className="text-red-500" />{" "}
-                    {/* Error icon */}
-                  </div>
-                  <div className="flex w-full gap-4">
-                    <Button
-                      onClick={() => {
-                        setIsFailureModalOpen(false);
-                        router.push("/billing"); // Redirect to the billing/payment page to retry
-                      }}
-                      className="w-full"
-                    >
-                      Retry Payment
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        setIsFailureModalOpen(false);
-                        router.push("/"); // Redirect to the home page
-                      }}
-                      variant="outline"
-                      className="w-full"
-                    >
-                      Go Home
-                    </Button>
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
           </div>
         </div>
       </section>

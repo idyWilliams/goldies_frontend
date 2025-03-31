@@ -2,13 +2,14 @@
 import AdminPagination from "@/components/admin-component/AdminPagination";
 import DataTable from "@/components/admin-component/DataTable";
 import MobileOrderCard from "@/components/admin-component/MobileOrderCard";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatCurrency } from "@/helper/formatCurrency";
 import { IOrder, OrderParams } from "@/interfaces/order.interface";
 import { cn } from "@/lib/utils";
 import useOrders from "@/services/hooks/payment/useOrders";
 import { createColumnHelper } from "@tanstack/react-table";
-import { Eye } from "iconsax-react";
+import { Eye, ShoppingBag } from "iconsax-react";
 import { Loader2Icon, Undo2Icon } from "lucide-react";
 import moment from "moment";
 import Link from "next/link";
@@ -209,8 +210,16 @@ export default function OrderPage() {
 
   return (
     <section className="h-full w-full px-4 pt-6">
-      <h1 className="text-lg font-extrabold uppercase">Orders</h1>
-      <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
+      <div className="">
+        <div className="items center flex gap-2 ">
+          <ShoppingBag variant="Bold" />
+          <div className="flex items-center gap-2">
+            <h1 className="text-lg font-extrabold uppercase">Orders</h1>
+            <Badge className=" bg-brand-200 text-[10px]">{totalOrders}</Badge>
+          </div>
+        </div>
+        <p className="text-sm"></p>
+      </div>
 
       <div className="my-6 flex flex-col gap-4">
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -261,7 +270,7 @@ export default function OrderPage() {
                 setEndDate("");
               }}
               className={cn(
-                "rounded-[50px] bg-gray-200 px-4 py-2 hover:bg-gray-300 flex items-center gap-1",
+                "flex items-center gap-1 rounded-[50px] bg-gray-200 px-4 py-2 hover:bg-gray-300",
                 !startDate && !endDate && "cursor-not-allowed opacity-50",
               )}
               disabled={!startDate && !endDate}

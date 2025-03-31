@@ -103,6 +103,11 @@ const CartItem = ({ item }: CartItemProps) => {
     }
   };
 
+  const subTotal = () => {
+    const price = parseInt(item?.product?.maxPrice) || 0;
+    return price * item.quantity;
+  };
+
   return (
     <>
       <div className="w-full items-start justify-start py-3 sm:inline-grid sm:grid-cols-[2fr_1fr_1fr]">
@@ -139,8 +144,11 @@ const CartItem = ({ item }: CartItemProps) => {
           </button>
         </div>
         <div className="flex items-center justify-between">
-          <span className=" text-brand-200">
+          <span className="hidden md:block text-brand-200">
             {formatCurrency(parseInt(item?.product.maxPrice), "en-NG")}
+          </span>
+          <span className=" text-brand-200">
+            {formatCurrency(subTotal(), "en-NG")}
           </span>
           <span
             onClick={() => {

@@ -36,7 +36,7 @@ import Logo from "@/public/assets/new-logo/logo-colored.svg";
 import useMobile from "@/services/hooks/admin/useMobile";
 import { SearchModal } from "./SearchModal";
 import Fuse from "fuse.js";
-import { useMarkAllAsRead, useNotifications, useUnreadNotificationCount } from "@/services/hooks/admin/useNotifications";
+import { PopoverClose } from "@radix-ui/react-popover";
 
 export default function AdminNav() {
   const router = useRouter();
@@ -45,11 +45,8 @@ export default function AdminNav() {
   const [openSearch, setOpenSearch] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const { data, isLoading, isError } = useNotifications(20);
-  const markAllAsReadMutation = useMarkAllAsRead();
   const { auth } = useAuth();
   const isMobile = useMobile();
-  const { data: unreadCount = 0 } = useUnreadNotificationCount();
 
   const formatRole = (status: string) => status?.replace(/_/g, " ");
   console.log(auth, "auth");
@@ -253,12 +250,12 @@ export default function AdminNav() {
               <PopoverTrigger asChild>
                 <button
                   onClick={() => setOpen((prev) => !prev)}
-                  className="flex items-center gap-2 border-l border-goldie-300 border-opacity-40 pl-4 text-brand-200"
+                  className="flex items-center gap-2 border-l border-goldie-300 border-opacity-40 pl-4 text-brand-200 "
                 >
                   <FaRegUserCircle size={20} />{" "}
                   <div className="hidden text-sm capitalize md:flex md:items-center md:gap-3">
-                    <div className="flex flex-col">
-                      <span>
+                    <div className="flex flex-col max-w-[120px]">
+                      <span className="truncate">
                         {auth?.admin ? auth?.admin?.userName : "No username"}
                       </span>
                       <span className="text-xs">
@@ -273,29 +270,33 @@ export default function AdminNav() {
               </PopoverTrigger>
               <PopoverContent className="w-[190px] rounded-md border-brand-200 bg-brand-200 p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
                 <div className="mb-2 flex items-center justify-start gap-3 border-b border-black border-opacity-20 p-2 pb-3 sm:hidden">
-                  {auth?.admin ? auth?.admin?.userName : "No username"}
+                  <p className="text-brand-100 truncate">{auth?.admin ? auth?.admin?.userName : "No username"}</p>
                 </div>
                 <div className="">
-                  <span
-                    className="flex cursor-pointer items-center gap-2  whitespace-nowrap rounded-[3px] p-2 text-sm text-brand-100 duration-300 hover:bg-black hover:bg-opacity-20"
-                    onClick={() => {
-                      setOpen(false);
-                      router.push(`/admin/settings?tab=profile`);
-                    }}
-                  >
-                    <User size={20} />
-                    My Account
-                  </span>
-                  <span
-                    className="flex cursor-pointer items-center gap-2  whitespace-nowrap rounded-[3px] p-2 text-sm text-brand-100 duration-300 hover:bg-black hover:bg-opacity-20"
-                    onClick={() => {
-                      setOpen(false);
-                      router.push(`/admin/settings?tab=change-password`);
-                    }}
-                  >
-                    <Lock1 size={20} />
-                    Change Password
-                  </span>
+                  <PopoverClose asChild>
+                    <span
+                      className="flex cursor-pointer items-center gap-2  whitespace-nowrap rounded-[3px] p-2 text-sm text-brand-100 duration-300 hover:bg-black hover:bg-opacity-20"
+                      onClick={() => {
+                        setOpen(false);
+                        router.push(`/admin/settings?tab=profile`);
+                      }}
+                    >
+                      <User size={20} />
+                      My Account
+                    </span>
+                  </PopoverClose>
+                  <PopoverClose asChild>
+                    <span
+                      className="flex cursor-pointer items-center gap-2  whitespace-nowrap rounded-[3px] p-2 text-sm text-brand-100 duration-300 hover:bg-black hover:bg-opacity-20"
+                      onClick={() => {
+                        setOpen(false);
+                        router.push(`/admin/settings?tab=change-password`);
+                      }}
+                    >
+                      <Lock1 size={20} />
+                      Change Password
+                    </span>
+                  </PopoverClose>
                 </div>
                 <div className="my-2 border-b border-black border-opacity-50"></div>
                 <button

@@ -60,7 +60,7 @@ export default function ChangePassword() {
       {
         newPassword,
         currentPassword,
-        id: admin?._id,
+        id: admin?.id,
       },
       errors,
       "DATA PASWOSSSS",
@@ -70,7 +70,7 @@ export default function ChangePassword() {
       const update = await updatePassword.mutateAsync({
         newPassword,
         currentPassword,
-        id: admin?._id as string,
+        id: admin?.id as string,
       });
 
       toast.success("Password Updated!!!");

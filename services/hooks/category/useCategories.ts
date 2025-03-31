@@ -1,27 +1,16 @@
 import { useEffect, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import useBoundStore from "@/zustand/store";
 import { getAllCategories } from ".";
 
 const useCategories = () => {
   const { categories, setCategories } = useBoundStore();
-  const initialCategory = categories
-    ? {
-        categories: categories,
-        currentPage: 1,
-        error: false,
-        message: "Categories retrieved successfully",
-        totalCategories: 100,
-        totalPages: 1,
-      }
-    : null;
 
   const { data, isSuccess, isError, error, isPending } = useQuery({
     queryKey: ["allCategories"],
     queryFn: getAllCategories,
-    placeholderData: initialCategory,
+    placeholderData: keepPreviousData,
   });
-
 
   const memoisedCategories = useMemo(() => {
     if (data?.categories) {
@@ -46,6 +35,7 @@ const useCategories = () => {
     isPending,
     isError,
     error,
+    totalCategories: data?.totalCategories,
   };
 };
 

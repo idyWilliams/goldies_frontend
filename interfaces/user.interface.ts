@@ -27,7 +27,7 @@ export interface IBillingInfo {
 }
 
 export interface IAdmin {
-  _id: string;
+  id: string;
   userName: string;
   email: string;
   password: string;

@@ -2,11 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft } from "iconsax-react";
+import { ArrowLeft, Category2 } from "iconsax-react";
 import { usePathname, useRouter } from "next/navigation";
 import useBoundStore from "@/zustand/store";
 import { log } from "console";
 import { Button } from "@/components/ui/button";
+import { CgSpinner } from "react-icons/cg";
+import useCategories from "@/services/hooks/category/useCategories";
+import { Badge } from "@/components/ui/badge";
 
 const CategoryHeader = () => {
   const router = useRouter();
@@ -19,6 +22,8 @@ const CategoryHeader = () => {
   const isValid = useBoundStore((state) => state.isValid);
   const [isSubmitting, setIsSubmtting] = useState(true);
   const [isFormValid, setIsFormValid] = useState(false);
+
+  const { totalCategories } = useCategories();
 
   useEffect(() => {
     if (!pathname.endsWith("/manage-categories")) {
@@ -50,7 +55,18 @@ const CategoryHeader = () => {
     <div className="mb-4 flex items-center justify-between border-b pb-4 ">
       {pathname.endsWith("/manage-categories") && (
         <>
-          <h1 className="text-xl font-bold">Categories</h1>
+          <div className="">
+            <div className="items center flex gap-2 ">
+              <Category2 variant="Bold" />
+              <div className="flex items-center gap-2">
+                <h1 className="text-lg font-extrabold uppercase">Categories</h1>
+                <Badge className=" bg-brand-200 text-[10px]">
+                  {totalCategories}
+                </Badge>
+              </div>
+            </div>
+            <p className="text-sm"></p>
+          </div>
 
           {categories && categories.length >= 1 && (
             <Link
@@ -80,7 +96,7 @@ const CategoryHeader = () => {
 
           <div className="flex items-center gap-4">
             <Button
-              className="rounded-md bg-neutral-400  px-4 py-2 text-sm"
+              className="rounded-md bg-neutral-600  px-4 py-2 text-sm"
               onClick={() => router.back()}
             >
               Cancel
@@ -91,8 +107,9 @@ const CategoryHeader = () => {
               className="rounded-md bg-brand-200 px-4 py-2 text-sm text-brand-100 disabled:opacity-75 disabled:hover:cursor-not-allowed"
               onClick={() => handleCategorySubmission()}
             >
+              {isSubmitting && <CgSpinner className=" h-6 w-6 animate-spin" />}
               {isSubmitting
-                ? "Saving Category"
+                ? "Saving Category..."
                 : isNewCreate
                   ? "Create Category"
                   : "Save Changes"}
