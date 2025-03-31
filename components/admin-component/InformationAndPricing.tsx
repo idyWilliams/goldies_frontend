@@ -4,6 +4,7 @@ import { MultiSelect } from "react-multi-select-component";
 import useCategoryOptions from "@/services/hooks/category/useCategoryOptions";
 import useCategories from "@/services/hooks/category/useCategories";
 import { InformationAndPricingType } from "@/types/products";
+import { formatNumberWithCommas } from "./create-product/CreateProductPricing";
 
 export default function InformationAndPricing({
   category,
@@ -14,6 +15,48 @@ export default function InformationAndPricing({
   formValues,
   handleChange,
 }: InformationAndPricingType) {
+  const [formattedMinPrice, setFormattedMinPrice] = useState<string>("");
+  const [formattedMaxPrice, setFormattedMaxPrice] = useState<string>("");
+
+  useEffect(() => {
+    setFormattedMinPrice(formatNumberWithCommas(formValues.minPrice));
+    setFormattedMaxPrice(formatNumberWithCommas(formValues.maxPrice));
+  }, [formValues.minPrice, formValues.maxPrice]);
+
+  const handleFormattedPriceChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const { name, value } = e.target;
+
+    // Remove all non-digit characters except decimal point
+    const numericValue = value.replace(/[^0-9.]/g, "");
+
+    // Format with commas
+    const formattedValue =
+      numericValue === ""
+        ? ""
+        : parseFloat(numericValue).toLocaleString("en-US");
+
+    // Update the local formatted state
+    if (name === "minPrice") {
+      setFormattedMinPrice(formattedValue);
+    } else {
+      setFormattedMaxPrice(formattedValue);
+    }
+
+    // Create a synthetic event with the parsed numeric value
+    const syntheticEvent = {
+      ...e,
+      target: {
+        ...e.target,
+        name,
+        value: numericValue === "" ? "0" : numericValue,
+      },
+    };
+
+    handleChange(syntheticEvent);
+  };
+
   return (
     <section>
       <div>
@@ -127,10 +170,9 @@ export default function InformationAndPricing({
                   </span>
                   <input
                     name="minPrice"
-                    type="number"
-                    value={formValues.minPrice === 0 ? "" : formValues.minPrice}
-                    min={0}
-                    onChange={handleChange}
+                    type="text"
+                    value={formattedMinPrice}
+                    onChange={handleFormattedPriceChange}
                     autoComplete="off"
                     id="minPrice"
                     placeholder="Price from"
@@ -148,10 +190,9 @@ export default function InformationAndPricing({
                   </span>
                   <input
                     name="maxPrice"
-                    type="number"
-                    value={formValues.maxPrice === 0 ? "" : formValues.maxPrice}
-                    min={0}
-                    onChange={handleChange}
+                    type="text"
+                    value={formattedMaxPrice}
+                    onChange={handleFormattedPriceChange}
                     autoComplete="off"
                     id="maxPrice"
                     placeholder="Price to"

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 type CreatePdctPricingPropType = {
   maxPrice: number;
@@ -6,11 +6,55 @@ type CreatePdctPricingPropType = {
   handleChange: (e: any) => void;
 };
 
+export const formatNumberWithCommas = (value: number): string => {
+  return value === 0 ? "" : value.toLocaleString("en-US");
+};
+
 const CreateProductPricing = ({
   maxPrice,
   minPrice,
   handleChange,
 }: CreatePdctPricingPropType) => {
+  const [formattedMinPrice, setFormattedMinPrice] = useState<string>("");
+  const [formattedMaxPrice, setFormattedMaxPrice] = useState<string>("");
+
+  useEffect(() => {
+    setFormattedMinPrice(formatNumberWithCommas(minPrice));
+    setFormattedMaxPrice(formatNumberWithCommas(maxPrice));
+  }, [minPrice, maxPrice]);
+
+  const handleFormattedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    // Remove all non-digit characters except decimal point
+    const numericValue = value.replace(/[^0-9.]/g, "");
+
+    // Format with commas
+    const formattedValue =
+      numericValue === ""
+        ? ""
+        : parseFloat(numericValue).toLocaleString("en-US");
+
+    // Update the local formatted state
+    if (name === "minPrice") {
+      setFormattedMinPrice(formattedValue);
+    } else {
+      setFormattedMaxPrice(formattedValue);
+    }
+
+    // Create a synthetic event with the parsed numeric value
+    const syntheticEvent = {
+      ...e,
+      target: {
+        ...e.target,
+        name,
+        value: numericValue === "" ? "0" : numericValue,
+      },
+    };
+
+    handleChange(syntheticEvent);
+  };
+
   return (
     <>
       <h1 className="mb-3 font-bold">Product Pricing</h1>
@@ -25,11 +69,9 @@ const CreateProductPricing = ({
             </span>
             <input
               name="minPrice"
-              type="number"
-              value={minPrice === 0 ? "" : minPrice}
-              min={0}
-              step={0.01}
-              onChange={handleChange}
+              type="text"
+              value={formattedMinPrice}
+              onChange={handleFormattedChange}
               autoComplete="off"
               id="minPrice"
               placeholder="Price ranges from"
@@ -43,15 +85,13 @@ const CreateProductPricing = ({
           </span>
           <div className="relative overflow-hidden rounded-md border bg-gray-100 focus-within:border-black">
             <span className="absolute left-0 top-0 flex h-full w-10 items-center justify-center rounded-sm bg-white font-bold">
-            ₦
+              ₦
             </span>
             <input
               name="maxPrice"
-              type="number"
-              value={maxPrice === 0 ? "" : maxPrice}
-              min={0}
-              step={0.01}
-              onChange={handleChange}
+              type="text"
+              value={formattedMaxPrice}
+              onChange={handleFormattedChange}
               autoComplete="off"
               id="maxPrice"
               placeholder="Price ranges to"
