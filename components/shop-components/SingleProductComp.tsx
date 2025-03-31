@@ -787,13 +787,14 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
             </div>
           </div>
         </section>
-        <section className="">
+
+        <section className="mt-10">
           <div className="wrapper">
-            <div className="mb-4 flex items-center gap-3">
+            <div className="mb-4 flex items-center gap-3 justify-between">
               <h3 className="text-2xl font-bold">Related Product</h3>
               <Link
                 href="/shop"
-                className="inline-flex items-center gap-2 text-2xl font-bold text-green-700"
+                className="inline-flex items-center gap-2 font-bold text-green-700 hover:underline"
               >
                 See All <ArrowRight />
               </Link>
