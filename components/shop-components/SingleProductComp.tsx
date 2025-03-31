@@ -439,7 +439,11 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                   />
                 </div>
                 <div className="mt-1 flex items-center justify-between">
-                  <StarRating iconSize={24} canRate={false} defaultRating={4} />
+                  <StarRating
+                    iconSize={24}
+                    canRate={false}
+                    defaultRating={activeProduct?.averageRating}
+                  />
                   <span
                     className="cursor-pointer underline"
                     onClick={() => setShowReviews((prev: any) => !prev)}
@@ -790,7 +794,7 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
 
         <section className="mt-10">
           <div className="wrapper">
-            <div className="mb-4 flex items-center gap-3 justify-between">
+            <div className="mb-4 flex items-center justify-between gap-3">
               <h3 className="text-2xl font-bold">Related Product</h3>
               <Link
                 href="/shop"

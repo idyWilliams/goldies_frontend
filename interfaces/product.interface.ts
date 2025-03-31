@@ -44,6 +44,10 @@ export interface IProduct {
   productCode: string;
   createdAt: string;
   updatedAt: string;
+  averageRating: number;
+  reviewsCount: number;
+  ratingsCount: IRatingsCount;
+  likesCount: number;
 }
 
 export interface ProductParams {
@@ -65,4 +69,13 @@ export interface CategoryParams {
   sortBySubcategories?: string;
   sortByStatus?: string;
   order?: string;
+}
+
+export interface IRatingsCount {
+  1: number;
+  2: number;
+  3: number;
+  4: number;
+  5: number;
+  total: number;
 }

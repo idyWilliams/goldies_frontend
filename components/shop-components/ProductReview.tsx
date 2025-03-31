@@ -66,6 +66,9 @@ const ProductReview = ({ product }: { product: IProduct }) => {
     onSuccess: () => {
       toast.success("Review created successfully");
       queryClient.invalidateQueries({ queryKey: ["reviews", product?._id] });
+      queryClient.invalidateQueries({
+        queryKey: ["getProductBySlug", product?.slug],
+      });
       reset();
     },
     onError: (error: AxiosError<ErrorResponse>) => {
@@ -81,6 +84,9 @@ const ProductReview = ({ product }: { product: IProduct }) => {
     onSuccess: () => {
       toast.success("Review updated successfully");
       queryClient.invalidateQueries({ queryKey: ["reviews", product?._id] });
+      queryClient.invalidateQueries({
+        queryKey: ["getProductBySlug", product?.slug],
+      });
       reset();
       setReviewId(null);
     },
@@ -141,7 +147,12 @@ const ProductReview = ({ product }: { product: IProduct }) => {
           </div>
           <div className="grid gap-2">
             {Array.from({ length: 5 }, (_: any, i: number) => (
-              <RatingRange key={i} />
+              <div
+                key={i}
+                className="h-3 w-full overflow-hidden rounded-full bg-neutral-100"
+              >
+                <div className="h-3 rounded-full bg-goldie-300"></div>
+              </div>
             ))}
           </div>
         </div>
@@ -167,17 +178,33 @@ const ProductReview = ({ product }: { product: IProduct }) => {
       <h3 className="mb-2 font-semibold">Ratings and Reviews</h3>
       <div className="grid grid-cols-2 items-center gap-3">
         <div className="flex flex-col gap-1 rounded-md bg-neutral-800 p-4 text-brand-200">
-          <span>4.5/5.0</span>
+          <span>{product?.averageRating.toFixed(1)}/5.0</span>
           <StarRating
             canRate={false}
             iconSize={24}
             iconColor={"text-brand-200"}
+            defaultRating={product?.averageRating}
           />
-          <span className="text-sm">32 verified ratings</span>
+          <span className="text-sm ">
+            {product?.ratingsCount?.total} verified ratings
+          </span>
         </div>
         <div className="grid gap-2">
-          {Array.from({ length: 5 }, (_: any, i: number) => (
-            <RatingRange key={i} />
+          {[5, 4, 3, 2, 1].map((starValue) => (
+            <RatingRange
+              key={starValue}
+              ratings={
+                product?.ratingsCount || {
+                  1: 0,
+                  2: 0,
+                  3: 0,
+                  4: 0,
+                  5: 0,
+                  total: 0,
+                }
+              }
+              starValue={starValue}
+            />
           ))}
         </div>
       </div>
