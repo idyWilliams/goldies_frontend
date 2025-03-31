@@ -4,8 +4,14 @@ import Image from "next/image";
 import React, { useState } from "react";
 import StatusBar from "./StatusBar";
 import Placeholder from "@/public/assets/placeholder3.png";
-import { Edit, Trash } from "iconsax-react";
+import { CloseSquare, Edit, Trash } from "iconsax-react";
 import { Category } from "@/services/types";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 type CategoriesCardsPropTypes = {
   currentData: Category[];
@@ -19,7 +25,19 @@ const CategoriesCards = ({
   handleDelete,
 }: CategoriesCardsPropTypes) => {
   const [isLoaded, setIsLoaded] = useState<{ [key: string]: boolean }>({});
-  const [isClamped, setIsClamped] = useState<boolean>(true);
+  const [selectedDescription, setSelectedDescription] = useState<{
+    name: string;
+    description: string;
+  } | null>(null);
+
+  const maxDescriptionLength = 100;
+
+  const truncateDescription = (description?: string) => {
+    if (!description) return "";
+    return description.length > maxDescriptionLength
+      ? `${description.substring(0, maxDescriptionLength)}...`
+      : description;
+  };
 
   return (
     <div className="grid gap-5 md:grid-cols-2">
@@ -72,15 +90,26 @@ const CategoriesCards = ({
                   <span className="font-semibold">Category:&nbsp;</span>
                   {item?.name}
                 </h3>
-                <p className="mt-1">
-                  <span className="  font-semibold">Description:&nbsp;</span>
-                  <span
-                    className={` ${isClamped ? "line-clamp-7" : "line-clamp-none"}`}
-                    onClick={() => setIsClamped((old) => !old)}
-                  >
-                    {item?.description}
-                  </span>
-                </p>
+                <div className="mt-1">
+                  <span className="font-semibold">Description:&nbsp;</span>
+                  <div className="inline">
+                    <p className="line-clamp-2">{truncateDescription(item?.description)}</p>
+                    {item?.description &&
+                      item.description.length > maxDescriptionLength && (
+                        <button
+                          onClick={() =>
+                            setSelectedDescription({
+                              name: item.name,
+                              description: item.description,
+                            })
+                          }
+                          className="ml-1 text-sm text-blue-500 hover:underline"
+                        >
+                          See more
+                        </button>
+                      )}
+                  </div>
+                </div>
               </div>
             </div>
             <div className="mt-4 space-y-2">
@@ -113,6 +142,30 @@ const CategoriesCards = ({
           </div>
         )}
       />
+
+      {/* Description Dialog */}
+      <Dialog
+        open={!!selectedDescription}
+        onOpenChange={(open) => !open && setSelectedDescription(null)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{selectedDescription?.name}</DialogTitle>
+
+            <span
+              className="absolute right-2 top-0 z-10 cursor-pointer bg-white"
+              onClick={() => setSelectedDescription(null)}
+            >
+              <CloseSquare size={24} />
+            </span>
+          </DialogHeader>
+          <div className="max-h-[60vh] overflow-y-auto">
+            <p className="whitespace-pre-wrap">
+              {selectedDescription?.description}
+            </p>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
