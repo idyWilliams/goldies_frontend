@@ -159,7 +159,7 @@ const ConfirmModal: React.FC<ModalProps> = ({ catOrSub }) => {
   return (
     <div
       className={cn(
-        "fixed left-0 top-0 flex h-full w-full items-center justify-center bg-black bg-opacity-45 p-4",
+        "fixed left-0 top-0 flex h-full w-full items-center justify-center bg-black bg-opacity-45 p-4 z-50",
       )}
     >
       <div className="w-full rounded-lg bg-brand-200 sm:w-[400px] md:w-[500px]">

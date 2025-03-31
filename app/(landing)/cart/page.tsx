@@ -75,18 +75,26 @@ const CartPage = () => {
 
           {/* Cart Items */}
           {!isLoadingCart && cartItems.length > 0 && (
-            <div className="mb-5 grid grid-cols-[2fr_1fr] border-b border-brand-200 pb-2 sm:grid-cols-[2fr_1fr_1fr]">
+            <div className="mb-5 grid grid-cols-[2fr_1fr] border-b border-brand-200 pb-2 md:grid-cols-[2fr_1fr_1fr]">
               <p className="text-lg font-semibold text-brand-200">Product</p>
               <p className="hidden text-lg font-semibold text-brand-200 md:block">
                 Quantity
               </p>
-              <p className="text-lg font-semibold text-brand-200">Sub Total</p>
+              <div className="flex items-center justify-end md:justify-between">
+                <p className="hidden text-lg font-semibold text-brand-200 md:block mr-2">
+                  Price
+                </p>
+                <p className="text-lg font-semibold text-brand-200">
+                  Sub Total
+                </p>
+                <div className="hidden md:block"></div>
+              </div>
             </div>
           )}
 
           {/* CART FOR DESKTOP */}
           {!isLoadingCart && (
-            <div className="hidden divide-y divide-gray-400 sm:block">
+            <div className="hidden divide-y divide-gray-400 md:block">
               {cartItems.map((item, i) => {
                 return <CartItem key={i} item={item} />;
               })}

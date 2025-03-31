@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Moneys, Profile2User, ShoppingBag } from "iconsax-react";
+import { Home, Moneys, Profile2User, ShoppingBag } from "iconsax-react";
 import EachElement from "@/helper/EachElement";
 import OverviewCard from "./overview-comps/OverviewCard";
 import { Button } from "../ui/button";
@@ -43,7 +43,7 @@ const Overviews = [
 export default function Dashboard() {
   const router = useRouter();
 
-  console.log(Date.now());
+  // console.log(Date.now());
 
   return (
     <>
@@ -51,8 +51,13 @@ export default function Dashboard() {
         <div className="rounded-[8px]">
           <div className="mb-8 flex items-center justify-between">
             <div className="">
-              <p className="font-bold text-brand-200">Today&apos;s Sales</p>
-              <p className="text-[13px] text-brand-200">Sales summary</p>
+              <div className="items center flex gap-2 ">
+                <Home variant="Bold" />
+                <h1 className="text-lg font-extrabold uppercase">
+                  Today&apos;s Sales
+                </h1>
+              </div>
+              <p className="text-sm">Sales summary</p>
             </div>
             <Button
               onClick={() => router.push("/admin/create-products")}

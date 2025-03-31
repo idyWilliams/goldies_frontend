@@ -202,7 +202,7 @@ const AllCategories = () => {
   return (
     <>
       <div className="my-6 flex flex-col gap-4">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
           {/* search input */}
           <div className="w-full max-w-[500px]">
             <label htmlFor="search" className="relative block w-full">
@@ -257,9 +257,7 @@ const AllCategories = () => {
               />
             )}
           </div> */}
-        </div>
 
-        <div className={cn("flex items-center justify-between gap-2 p-[2px]")}>
           <div className="flex items-center gap-1">
             {filteredTabs?.map((tab, index) => (
               <button

@@ -102,9 +102,14 @@ const MobileCartItem = ({ item }: CartItemProps) => {
     }
   };
 
+  const subTotal = () => {
+    const price = parseInt(item?.product?.maxPrice) || 0;
+    return price * item.quantity;
+  };
+
   return (
     <>
-      <div className="grid grid-cols-[2fr_1fr] py-3 sm:grid-cols-[2fr_1fr_1fr] md:hidden">
+      <div className="grid grid-cols-[2fr_1fr] py-3 md:grid-cols-[2fr_1fr_1fr] md:hidden">
         <div className="flex gap-6 pr-8">
           <figure className="h-[60px] w-[60px] shrink-0">
             <Image
@@ -117,7 +122,10 @@ const MobileCartItem = ({ item }: CartItemProps) => {
           </figure>
 
           <div className="flex flex-col">
-            <h3 className=" text-brand-200">{item?.product.name}</h3>
+            <h3 className=" text-brand-200 truncate line-clamp-2">{item?.product.name}</h3>
+            <span className="text-brand-200">
+              {formatCurrency(parseInt(item?.product.maxPrice), "en-NG")}
+            </span>
             <div className="mt-3 inline-flex w-fit items-center gap-3 rounded-[50px] bg-white px-1.5 py-1">
               <button
                 onClick={handleDecreaseQuantity}
@@ -138,7 +146,7 @@ const MobileCartItem = ({ item }: CartItemProps) => {
         </div>
         <div className="flex flex-col ">
           <span className="text-right text-brand-200">
-            {formatCurrency(parseInt(item?.product.maxPrice), "en-NG")}
+            {formatCurrency(subTotal(), "en-NG")}
           </span>
         </div>
 
