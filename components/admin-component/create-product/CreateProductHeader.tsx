@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { FolderAdd } from "iconsax-react";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { CgSpinner } from "react-icons/cg";
@@ -19,9 +20,12 @@ const CreateProductHeader = ({
   };
   return (
     <div className="flex items-center justify-between">
-      <h1 className="font-bold">
-        {editId ? "Edit Product" : "Create New Product"}
-      </h1>
+      <div className="items center flex gap-2 ">
+        <FolderAdd variant="Bold" />
+        <h1 className="text-lg font-extrabold uppercase">
+          {editId ? "Edit Product" : "Create New Product"}
+        </h1>
+      </div>
 
       <div className="flex items-center gap-4">
         <Button
