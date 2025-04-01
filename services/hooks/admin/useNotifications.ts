@@ -1,83 +1,73 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-// Assuming you have an axios instance set up
+// src/services/notification.api.ts
 import instance from "@/services/api";
-import axios from "axios";
 
-export const useNotifications = (limit = 10) => {
-  return useQuery({
-    queryKey: ["notifications", limit],
-    queryFn: async () => {
-      const { data } = await axios.get(
-        `/api/notifications/admin?limit=${limit}`,
-      );
-      return data;
+export interface INotification {
+  _id: string;
+  title: string;
+  message: string;
+  type: "order" | "user" | "product" | "system" | "payment" | "critical";
+  relatedId?: string;
+  isRead: boolean;
+  visibility: "admin" | "super_admin" | "all";
+  createdAt: string;
+  updatedAt: string;
+}
+
+let accessToken = "";
+
+if (typeof window !== "undefined") {
+  accessToken = localStorage.getItem("adminToken") || "";
+}
+
+// Get all notifications for current admin
+export const getNotifications = async (): Promise<INotification[]> => {
+  const response = await instance.get("/api/notifications", {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
     },
-    refetchInterval: 60000, // Refetch every minute as a fallback
   });
-};
-
-
-export const getActiveProduct = async (productId: string) => {
-  const response = await instance.get(`/product/get_product/${productId}`);
   return response.data;
 };
 
-export const useUnreadNotificationCount = () => {
-  return useQuery({
-    queryKey: ["unreadNotifications"],
-    queryFn: async () => {
-      const { data } = await axios.get("/api/notifications/admin?limit=1");
-      return data.unreadCount;
+// Mark notification as read
+export const markNotificationAsRead = async (
+  id: string,
+): Promise<INotification> => {
+  const response = await instance.patch(
+    `/api/notifications/${id}/read`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     },
-    refetchInterval: 30000, // Refetch count more frequently
-  });
+  );
+  return response.data;
 };
 
-export const useMarkAsRead = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (ids: string[]) => {
-      const { data } = await axios.post("/api/notifications/mark-read", {
-        ids,
-      });
-      return data;
+// Mark all notifications as read
+export const markAllNotificationsAsRead = async (): Promise<void> => {
+  await instance.patch(
+    "/api/notifications/read-all",
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notifications"] });
-      queryClient.invalidateQueries({ queryKey: ["unreadNotifications"] });
-    },
-  });
+  );
 };
 
-export const useMarkAllAsRead = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (type?: string) => {
-      const url = type
-        ? `/api/notifications/mark-all-read?type=${type}`
-        : "/api/notifications/mark-all-read";
-      const { data } = await axios.post(url);
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notifications"] });
-      queryClient.invalidateQueries({ queryKey: ["unreadNotifications"] });
+// Create admin alert (super_admin only)
+export const createAdminAlert = async (data: {
+  title: string;
+  message: string;
+  recipientId?: string;
+}): Promise<INotification> => {
+  const response = await instance.post("/api/notifications/admin-alert", data, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
     },
   });
-};
-
-export const useArchiveNotification = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (id: string) => {
-      const { data } = await axios.patch(`/api/notifications/archive/${id}`);
-      return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notifications"] });
-    },
-  });
+  return response.data;
 };

@@ -1,22 +1,41 @@
-import { io } from "socket.io-client";
 
 import { BASEURL } from "@/services/api";
+import { io } from "socket.io-client";
 
-export const initializeSocket = () => {
- const isAdmin =
-   window.location.pathname.startsWith("/admin/") ||
-   window.location.pathname === "/admin";
+// const SOCKET_URL =
+//   process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:2030";
 
- // Retrieve token dynamically
- const accessToken = isAdmin
-   ? localStorage.getItem("adminToken") || ""
-   : localStorage.getItem("userToken") || "";
+export const socket = io(BASEURL, {
+  autoConnect: false,
+  withCredentials: true,
+  auth: (cb) => {
+    const token =
+      typeof window !== "undefined" ? localStorage.getItem("adminToken") : null;
+    cb({ token });
+  },
+});
 
-  const socket = io(BASEURL, {
-    auth: {
-      accessToken,
-    },
+// Reconnect logic
+if (typeof window !== "undefined") {
+  socket.on("disconnect", () => {
+    console.log("Disconnected from server");
   });
 
-  return socket;
-};
+  socket.on("connect_error", (err) => {
+    console.log("Connection error:", err.message);
+  });
+
+  // Reconnect when token changes
+  const handleStorageChange = (e: StorageEvent) => {
+    if (e.key === "adminToken") {
+      if (e.newValue) {
+        socket.auth = { token: e.newValue };
+        socket.connect();
+      } else {
+        socket.disconnect();
+      }
+    }
+  };
+
+  window.addEventListener("storage", handleStorageChange);
+}
