@@ -124,7 +124,7 @@ const AccountInfo = ({
     onSuccess: (data) => {
       const storedUser = JSON.parse(localStorage.getItem("user") as string);
       // console.log(storedUser);
-      
+
       const newUser = {
         ...storedUser,
         user: {
@@ -203,7 +203,7 @@ const AccountInfo = ({
               id="firstName"
               // defaultValue={firstName}
               className={cn(
-                "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
+                "form-input block w-full rounded border border-neutral-200 bg-white  text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
                 errors.firstName && "border-red-600 focus:border-red-600",
               )}
             />
@@ -222,7 +222,7 @@ const AccountInfo = ({
               id="lastName"
               // defaultValue={lastName}
               className={cn(
-                "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
+                "form-input block w-full rounded border border-neutral-200 bg-white  text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
                 errors.lastName && "border-red-600 focus:border-red-600",
               )}
             />
@@ -242,7 +242,7 @@ const AccountInfo = ({
               disabled
               // defaultValue={email}
               className={cn(
-                "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0 disabled:cursor-not-allowed disabled:opacity-75",
+                "form-input block w-full rounded border border-neutral-200 bg-white  text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0 disabled:cursor-not-allowed disabled:opacity-75",
                 errors.email && "border-red-600 focus:border-red-600",
               )}
             />
@@ -271,7 +271,7 @@ const AccountInfo = ({
                     name: "phone",
                     id: "phone",
                     className:
-                      "pl-12 w-full rounded-sm z-50 border-none text-sm text-neutral-700 bg-gray-100 focus:border focus:border-black focus:ring-black",
+                      "pl-12 w-full bg-white rounded-sm z-50 border-none text-sm text-neutral-700 bg-gray-100 focus:border focus:border-black focus:ring-black",
                   }}
                   defaultErrorMessage="Phone number is required"
                   dropdownClass={"relative z-50"}
@@ -298,7 +298,7 @@ const AccountInfo = ({
                     setCountry(val);
                   }}
                   classes={cn(
-                    "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
+                    "form-input block w-full rounded border border-neutral-200  text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
                     errors.country && "border-red-600 focus:border-red-600",
                   )}
                 />
@@ -324,7 +324,7 @@ const AccountInfo = ({
                     setState(region);
                   }}
                   classes={cn(
-                    "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
+                    "form-input block w-full rounded border border-neutral-200  text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
                     errors.state && "border-red-600 focus:border-red-600",
                   )}
                 />
@@ -344,7 +344,7 @@ const AccountInfo = ({
               id="address"
               placeholder="Enter your address"
               className={cn(
-                "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
+                "form-input block w-full rounded border border-neutral-200  text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
                 errors.address && "border-red-600 focus:border-red-600",
               )}
             />
