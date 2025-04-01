@@ -147,10 +147,10 @@ const Page = () => {
                   {...register("firstName")}
                   type="text"
                   className={cn(
-                    "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
+                    "form-input w-full bg-white py-3 placeholder:text-neutral-500",
                     errors?.firstName
                       ? "border border-red-600 focus:border-red-600 focus:ring-0"
-                      : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
+                      : "border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900",
                   )}
                   id="firstName"
                   name="firstName"
@@ -170,10 +170,10 @@ const Page = () => {
                   {...register("lastName")}
                   type="text"
                   className={cn(
-                    "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
+                    "form-input w-full bg-white py-3 placeholder:text-neutral-500",
                     errors?.lastName
                       ? "border border-red-600 focus:border-red-600 focus:ring-0"
-                      : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
+                      : "border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900",
                   )}
                   id="lastName"
                   name="lastName"
@@ -193,10 +193,10 @@ const Page = () => {
                   {...register("email")}
                   type="email"
                   className={cn(
-                    "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
+                    "form-input w-full bg-white py-3 placeholder:text-neutral-500",
                     errors?.email
                       ? "border border-red-600 focus:border-red-600 focus:ring-0"
-                      : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
+                      : "border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900",
                   )}
                   id="email"
                   name="email"
@@ -225,7 +225,7 @@ const Page = () => {
                       inputProps={{
                         name: "phone",
                         id: "phone",
-                        className: `pl-12 w-full rounded-sm border-none bg-gray-100 focus:border focus:border-black focus:ring-black`,
+                        className: `pl-12 w-full rounded-sm border bg-white focus:border focus:border-black focus:ring-brand-200 border-neutral-300`,
                       }}
                       defaultErrorMessage="Phone number is required"
                     />
@@ -246,10 +246,10 @@ const Page = () => {
                     {...register("password")}
                     type={visible ? "text" : "password"}
                     className={cn(
-                      "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
+                      "form-input w-full bg-white py-3 placeholder:text-neutral-500",
                       errors?.password
                         ? "border border-red-600 focus:border-red-600 focus:ring-0"
-                        : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
+                        : "border border-neutral-300 focus:border-neutral-900 focus:ring-neutral-900",
                     )}
                     id="password"
                     name="password"
@@ -301,7 +301,7 @@ const Page = () => {
               </label>
               <Button
                 disabled={newUser.isPending}
-                className="col-span-2 mt-3 h-auto w-full rounded-none bg-brand-200 py-3 text-base text-brand-100 border border-transparent hover:border hover:border-brand-200 hover:bg-transparent hover:text-brand-200"
+                className="col-span-2 mt-3 h-auto w-full rounded-none border border-transparent bg-brand-200 py-3 text-base text-brand-100 hover:border hover:border-brand-200 hover:bg-transparent hover:text-brand-200"
               >
                 {newUser.isPending ? (
                   <div className="loader bg-[#fff]"></div>

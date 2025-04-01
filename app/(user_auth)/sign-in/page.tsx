@@ -124,10 +124,10 @@ const Page = () => {
                   {...register("email")}
                   type="email"
                   className={cn(
-                    "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
+                    "form-input w-full border border-neutral-200 bg-white py-3 placeholder:text-neutral-500",
                     errors?.email
                       ? "border border-red-600 focus:border-red-600"
-                      : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
+                      : "focus:border-neutral-900 focus:ring-neutral-900",
                   )}
                   name="email"
                   placeholder="Your email"
@@ -151,10 +151,10 @@ const Page = () => {
                     {...register("password")}
                     type={visible ? "text" : "password"}
                     className={cn(
-                      "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
+                      "form-input w-full border border-neutral-200 bg-white py-3 placeholder:text-neutral-500",
                       errors?.password
                         ? "border border-red-600 focus:border-red-600"
-                        : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
+                        : "focus:border-neutral-900 focus:ring-neutral-900",
                     )}
                     name="password"
                     placeholder="Your password"
@@ -186,7 +186,7 @@ const Page = () => {
                     id="agree"
                     // checked
                     className="checked:focus:ring-neutral-800, form-checkbox h-4 w-4
-                       checked:bg-goldie-300 checked:hover:bg-neutral-800 
+                       checked:bg-brand-200 checked:hover:bg-neutral-800 
                        focus:ring-neutral-800 "
                   />
                   <span className="text-sm text-brand-200">
@@ -203,7 +203,7 @@ const Page = () => {
               </div>
               <Button
                 disabled={userLogin?.isPending}
-                className="mt-3 h-auto w-full rounded-none bg-brand-200 py-3 text-base text-brand-100 border border-transparent hover:border hover:border-brand-200 hover:bg-transparent hover:text-brand-200 "
+                className="mt-3 h-auto w-full rounded-none border border-transparent bg-brand-200 py-3 text-base text-brand-100 hover:border hover:border-brand-200 hover:bg-transparent hover:text-brand-200 "
               >
                 {userLogin?.isPending ? "Loading...." : "Sign In"}
               </Button>
