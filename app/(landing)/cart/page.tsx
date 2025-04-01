@@ -11,17 +11,25 @@ import { getAllBllingInfo } from "@/services/hooks/payment";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const CartPage = () => {
   const router = useRouter();
-  const { cart, isLoading: isLoadingCart } = useCart();
+  const { cart } = useCart();
   const queryClient = useQueryClient();
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const { data, isLoading, refetch, isError } = useQuery({
     queryKey: ["allBllingInfo"],
     queryFn: async () => getAllBllingInfo(),
   });
+
+  useEffect(() => {
+    // If we have products, initial load is complete
+    if (cart && cart.length > 0) {
+      setIsInitialLoad(false);
+    }
+  }, [cart]);
 
   const billingInfos = data?.user as IBillingInfo[];
 
@@ -67,21 +75,21 @@ const CartPage = () => {
           </h2>
 
           {/* Loading State */}
-          {isLoadingCart && (
+          {isInitialLoad && (
             <div className="flex justify-center py-10">
               <p className="text-brand-200">Retrieving your cart items...</p>
             </div>
           )}
 
           {/* Cart Items */}
-          {!isLoadingCart && cartItems.length > 0 && (
+          {!isInitialLoad && cartItems.length > 0 && (
             <div className="mb-5 grid grid-cols-[2fr_1fr] border-b border-brand-200 pb-2 md:grid-cols-[2fr_1fr_1fr]">
               <p className="text-lg font-semibold text-brand-200">Product</p>
               <p className="hidden text-lg font-semibold text-brand-200 md:block">
                 Quantity
               </p>
               <div className="flex items-center justify-end md:justify-between">
-                <p className="hidden text-lg font-semibold text-brand-200 md:block mr-2">
+                <p className="mr-2 hidden text-lg font-semibold text-brand-200 md:block">
                   Price
                 </p>
                 <p className="text-lg font-semibold text-brand-200">
@@ -93,7 +101,7 @@ const CartPage = () => {
           )}
 
           {/* CART FOR DESKTOP */}
-          {!isLoadingCart && (
+          {!isInitialLoad && (
             <div className="hidden divide-y divide-gray-400 md:block">
               {cartItems.map((item, i) => {
                 return <CartItem key={i} item={item} />;
@@ -102,7 +110,7 @@ const CartPage = () => {
           )}
 
           {/* CART FOR MOBILE */}
-          {!isLoadingCart && (
+          {!isInitialLoad && (
             <div className="divide-y divide-gray-400">
               {cartItems.map((item, i) => {
                 return <MobileCartItem key={i} item={item} />;
@@ -111,7 +119,7 @@ const CartPage = () => {
           )}
 
           {/* PAYMENT DETAILS */}
-          {!isLoadingCart && cartItems.length > 0 ? (
+          {!isInitialLoad && cartItems.length > 0 ? (
             <div className="my-8 w-full border-t border-brand-200">
               <h2 className="mb-8 mt-4 text-xl font-bold capitalize text-brand-200">
                 Payment Details
@@ -165,7 +173,7 @@ const CartPage = () => {
               </div>
             </div>
           ) : (
-            !isLoadingCart && (
+            !isInitialLoad && (
               <div className="h-full space-y-4 py-10 text-center text-brand-200">
                 <figure className="mx-auto h-28 w-24">
                   <Image
