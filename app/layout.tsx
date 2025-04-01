@@ -78,7 +78,7 @@ export default function RootLayout({
             <StoreProvider>
               <Suspense fallback={<Loading />}>
                 <main>{children}</main>
-                <Toaster
+                <Toaster theme="light"
                   position="top-right"
                   richColors
                   expand={true}

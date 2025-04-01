@@ -95,12 +95,12 @@ const CategoryHeader = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            <Button
+            {/* <Button
               className="rounded-md bg-neutral-600  px-4 py-2 text-sm"
               onClick={() => router.back()}
             >
               Cancel
-            </Button>
+            </Button> */}
 
             <Button
               disabled={isFormValid && isSubmitting}

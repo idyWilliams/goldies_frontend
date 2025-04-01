@@ -52,7 +52,7 @@ export function OrderAnalytics() {
       <CardHeader>
         <CardTitle className="">Order Analytics</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-0">
         <ChartContainer
           config={chartConfig}
           className="max-h-[300px] min-h-[200px] w-full pl-0 lg:hidden"
