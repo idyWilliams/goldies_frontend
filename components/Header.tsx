@@ -62,8 +62,8 @@ const Header = () => {
     Cookies.remove(USER_TOKEN_NAME);
     Cookies.remove(USER_DETAILS);
     router.replace("/sign-in");
-    queryClient.invalidateQueries({ queryKey: ["cartList"] });
-    queryClient.removeQueries({ queryKey: ["cartList"] });
+    // queryClient.invalidateQueries({ queryKey: ["cartList"] });
+    // queryClient.removeQueries({ queryKey: ["cartList"] });
     dispatch(clearCartFromStore());
     dispatch(setCart([]));
 

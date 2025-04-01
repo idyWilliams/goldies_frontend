@@ -13,12 +13,12 @@ export default function CartConfirmModal({
   item,
   setShowModal,
   removeItem,
-  isDeleting,
+  // isDeleting,
 }: {
   item: ICart;
   setShowModal: (value: boolean) => void;
   removeItem: (id: string) => void;
-  isDeleting: boolean;
+  // isDeleting: boolean;
 }) {
   const handleConfirm = () => {
     removeItem(item?.product?._id);
@@ -53,7 +53,7 @@ export default function CartConfirmModal({
             <button
               className="cursor-pointer rounded-md bg-brand-200 px-4 py-1.5 text-sm text-brand-100"
               onClick={handleConfirm}
-              disabled={isDeleting}
+              // disabled={isDeleting}
             >
               Yes
             </button>

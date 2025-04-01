@@ -42,7 +42,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CheckCircle, Edit2Icon, XCircleIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
 import { Controller, useForm } from "react-hook-form";
 import PhoneInput from "react-phone-input-2";
@@ -86,7 +86,7 @@ const BillingCheckoutPage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { buyNowProduct } = useAppSelector((state) => state.cart);
-  const { cart, isLoading: cartLoading } = useCart();
+  const { cart } = useCart();
   const { auth } = useAuth();
 
   const { user } = auth;
@@ -95,7 +95,11 @@ const BillingCheckoutPage = () => {
   const isBuyNow = searchParams.get("buyNow") === "true";
 
   // Determine which products to use
-  const products: ICart[] = isBuyNow && buyNowProduct ? [buyNowProduct] : cart;
+  const products = useMemo(() => {
+    return isBuyNow && buyNowProduct ? [buyNowProduct] : cart;
+  }, [isBuyNow, buyNowProduct, cart]);
+
+  const retryPaymentUrl = isBuyNow ? "/billing?buyNow=true" : "/billing";
 
   const [country1, setCountry1] = useState("");
   const [country2, setCountry2] = useState("");
@@ -119,6 +123,7 @@ const BillingCheckoutPage = () => {
   const hasVerified = useRef(false);
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const { data, isLoading, refetch, isError } = useQuery({
     queryKey: ["allBllingInfo"],
@@ -126,6 +131,13 @@ const BillingCheckoutPage = () => {
   });
 
   const billingInfos = data?.user as IBillingInfo[];
+
+  useEffect(() => {
+    // If we have products, initial load is complete
+    if (products && products.length > 0) {
+      setIsInitialLoad(false);
+    }
+  }, [products]);
 
   const form1 = useForm({
     resolver: yupResolver(form1Schema),
@@ -151,12 +163,12 @@ const BillingCheckoutPage = () => {
   const updateBillingDetails = useMutation({
     mutationFn: updateDetailsBillings,
   });
-  const clearCartMutation = useMutation({
-    mutationFn: clearCart,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cartList"] });
-    },
-  });
+  // const clearCartMutation = useMutation({
+  //   mutationFn: clearCart,
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ["cartList"] });
+  //   },
+  // });
   const createOrder = useMutation({
     mutationFn: orderCreate,
     onSuccess: () => {
@@ -185,7 +197,7 @@ const BillingCheckoutPage = () => {
     const reference = searchParams.get("reference");
 
     // Ensure cart is fetched and products are available
-    if (reference && !hasVerified.current && cart) {
+    if (reference && !hasVerified.current && products) {
       hasVerified.current = true; // Prevent duplicate execution
 
       verifyAndCreateOrder(reference).then(() => {
@@ -200,7 +212,7 @@ const BillingCheckoutPage = () => {
         );
       });
     }
-  }, [searchParams, cart]);
+  }, [searchParams, products]);
 
   // Add this effect to reset form with billing info when data loads
   useEffect(() => {
@@ -517,7 +529,7 @@ const BillingCheckoutPage = () => {
   };
 
   // Render fallback UI if no valid products
-  if (!products) {
+  if (!isInitialLoad && !products) {
     return (
       <div className="flex h-screen flex-col items-center justify-center bg-neutral-100">
         <h2 className="mb-4 text-xl font-semibold">No Products to Checkout</h2>
@@ -1116,7 +1128,7 @@ const BillingCheckoutPage = () => {
                 Order Summary
               </h3>
               <div className="divide-y">
-                {cartLoading ? (
+                {isInitialLoad ? (
                   // Skeleton loading for cart items
                   <div className="space-y-3 p-2 md:bg-white">
                     {[1, 2].map((_, i) => (
@@ -1203,7 +1215,10 @@ const BillingCheckoutPage = () => {
               {/* Payment Processing Modal */}
               <Dialog
                 open={isPaymentProcessingModalOpen}
-                onOpenChange={(open) => setIsPaymentProcessingModalOpen(open)}
+                onOpenChange={(open) => {
+                  if (!open) return;
+                  setIsPaymentProcessingModalOpen(open);
+                }}
               >
                 <DialogContent className="sm:max-w-[425px]">
                   <DialogHeader>
@@ -1239,7 +1254,10 @@ const BillingCheckoutPage = () => {
               {/* Payment Verification Modal */}
               <Dialog
                 open={isPaymentModalOpen}
-                onOpenChange={(open) => setIsPaymentModalOpen(open)}
+                onOpenChange={(open) => {
+                  if (!open) return;
+                  setIsPaymentModalOpen(open);
+                }}
               >
                 <DialogContent className="sm:max-w-[425px]">
                   <DialogHeader>
@@ -1277,7 +1295,10 @@ const BillingCheckoutPage = () => {
               {/* create order success modal */}
               <Dialog
                 open={isSuccessModalOpen}
-                onOpenChange={(open) => setIsSuccessModalOpen(open)}
+                onOpenChange={(open) => {
+                  if (!open) return;
+                  setIsSuccessModalOpen(open);
+                }}
               >
                 <DialogContent
                   className="sm:max-w-[425px]"
@@ -1304,7 +1325,7 @@ const BillingCheckoutPage = () => {
                           // setIsSuccessModalOpen(false);
                           router.push("/my-orders"); // Redirect to the orders page
                           setTimeout(() => {
-                            clearCartMutation.mutate();
+                            // clearCartMutation.mutate();
                             dispatch(clearCartFromStore());
                             dispatch(clearBuyNowProduct());
                           }, 300);
@@ -1318,7 +1339,7 @@ const BillingCheckoutPage = () => {
                           // setIsSuccessModalOpen(false);
                           router.push("/"); // Redirect to the home page
                           setTimeout(() => {
-                            clearCartMutation.mutate();
+                            // clearCartMutation.mutate();
                             dispatch(clearCartFromStore());
                             dispatch(clearBuyNowProduct());
                           }, 300);
@@ -1336,7 +1357,10 @@ const BillingCheckoutPage = () => {
               {/* failure modal */}
               <Dialog
                 open={isFailureModalOpen}
-                onOpenChange={(open) => setIsFailureModalOpen(open)}
+                onOpenChange={(open) => {
+                  if (!open) return;
+                  setIsFailureModalOpen(open);
+                }}
               >
                 <DialogContent className="sm:max-w-[425px]">
                   <DialogHeader>
@@ -1356,8 +1380,8 @@ const BillingCheckoutPage = () => {
                     <div className="flex w-full gap-4">
                       <Button
                         onClick={() => {
+                          router.push(retryPaymentUrl); // Redirect to the billing/payment page to retry
                           setIsFailureModalOpen(false);
-                          router.push("/billing"); // Redirect to the billing/payment page to retry
                         }}
                         className="w-full"
                       >
@@ -1365,7 +1389,7 @@ const BillingCheckoutPage = () => {
                       </Button>
                       <Button
                         onClick={() => {
-                          setIsFailureModalOpen(false);
+                          // setIsFailureModalOpen(false);
                           router.push("/"); // Redirect to the home page
                         }}
                         variant="outline"
