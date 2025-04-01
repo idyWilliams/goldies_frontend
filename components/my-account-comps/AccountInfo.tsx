@@ -12,6 +12,10 @@ import { toast } from "sonner";
 import * as yup from "yup";
 import ConfirmDeletion from "./ConfirmDeletion";
 import { Skeleton } from "../ui/skeleton";
+import { CgSpinner } from "react-icons/cg";
+import { update } from "lodash-es";
+import { Button } from "../ui/button";
+import { useAuth } from "@/context/AuthProvider";
 
 const schema = yup.object().shape({
   firstName: yup.string().required("First name is required"),
@@ -34,6 +38,7 @@ const AccountInfo = ({
   fetchedUser: IUser;
   isLoading: boolean;
 }) => {
+  const { auth, setAuth } = useAuth();
   const router = useRouter();
   const queryClient = useQueryClient();
   const [user, setUser] = useState<any>(null);
@@ -118,12 +123,8 @@ const AccountInfo = ({
     mutationFn: updateUser,
     onSuccess: (data) => {
       const storedUser = JSON.parse(localStorage.getItem("user") as string);
-      console.log(storedUser);
-      const user = {
-        ...storedUser.user,
-        firstName: data.data.firstName,
-        lastName: data.data.lasttName,
-      };
+      // console.log(storedUser);
+      
       const newUser = {
         ...storedUser,
         user: {
@@ -132,6 +133,13 @@ const AccountInfo = ({
           lastName: data.data.lastName,
         },
       };
+
+      setAuth({
+        user: {
+          _id: data?.data?.id,
+          ...data?.data,
+        },
+      });
       // console.log(newUser);
 
       localStorage.setItem("user", JSON.stringify(newUser));
@@ -149,7 +157,7 @@ const AccountInfo = ({
   // console.log("values ", getValues(), "user: ", user);
 
   const handleSave = (data: any) => {
-    console.log(data);
+    // console.log(data);
     updateProfile.mutate(data);
     // toast.success("Account information updated successfully");
     // console.log("Form errors:", errors);
@@ -347,12 +355,17 @@ const AccountInfo = ({
         </div>
 
         <div className="mt-7 flex items-center justify-start gap-3">
-          <button
+          <Button
             type="submit"
+            size={"lg"}
             className="rounded border border-neutral-900 bg-brand-200 px-5 py-2.5 text-brand-100"
+            disabled={updateProfile.isPending}
           >
-            Save changes
-          </button>
+            {updateProfile.isPending && (
+              <CgSpinner className=" h-6 w-6 animate-spin" />
+            )}
+            {updateProfile.isPending ? "Saving..." : "Save Changes"}
+          </Button>
         </div>
       </form>
 
