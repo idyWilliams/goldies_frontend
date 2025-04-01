@@ -1,6 +1,6 @@
 "use client";
 import Layout from "@/app/(landing)/layout";
-import AuthContext from "@/context/AuthProvider";
+import AuthContext, { useAuth } from "@/context/AuthProvider";
 import { loginUser } from "@/services/hooks/user-auth";
 import { useMutation } from "@tanstack/react-query";
 import { Key, Sms } from "iconsax-react";
@@ -10,46 +10,47 @@ import { useContext, useState } from "react";
 import { BiArrowBack } from "react-icons/bi";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
+import Cookies from "js-cookie";
+import { USER_DETAILS, USER_TOKEN_NAME } from "@/utils/constants";
 
 export default function PasswordReset({ password }: { password: string }) {
   const router = useRouter();
   // @ts-ignore
-  const { setIsLogin } = useContext(AuthContext);
+  const { setIsLogin, setAuth } = useAuth();
   const [loading, setLoading] = useState(false);
+
   const userLogin = useMutation({
     mutationFn: loginUser,
+    onSuccess: (res) => {
+      setIsLogin(true);
+      setAuth({ user: res?.user });
+
+      localStorage.setItem("isLogin", JSON.stringify(true));
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ token: res?.token, user: res?.user }),
+      );
+      localStorage.setItem("userToken", res?.token);
+      localStorage.removeItem("forgotPasswordEmail");
+
+      const userToken = JSON.stringify(res?.user);
+      Cookies.set(USER_DETAILS, userToken);
+      Cookies.set(USER_TOKEN_NAME, res?.token);
+
+      router.replace("/");
+    },
   });
 
   const autoLogin = () => {
-    setLoading(true);
-    const email: string = localStorage.getItem("email") || "";
+    const email: string = localStorage.getItem("forgotPasswordEmail") || "";
     const userEmail = JSON.parse(email);
 
     const data = {
-      email: userEmail.email,
+      email: userEmail,
       password,
     };
 
-    userLogin
-      .mutateAsync(data)
-      .then((res: any) => {
-        console.log(res);
-        setIsLogin(true);
-        localStorage.setItem("isLogin", JSON.stringify(true));
-        localStorage.removeItem("userToken");
-        localStorage.removeItem("user");
-        localStorage.removeItem("email");
-        localStorage.setItem(
-          "user",
-          JSON.stringify({ token: res?.token, user: res?.user }),
-        );
-        localStorage.setItem("userToken", res?.token);
-        router.push("/");
-      })
-      .catch((err: any) => {
-        console.log(err);
-        toast.error(err.message);
-      });
+    userLogin.mutate(data);
   };
 
   return (
@@ -68,15 +69,13 @@ export default function PasswordReset({ password }: { password: string }) {
           </p>
         </div>
 
-        <div className={`${userLogin.isPending ? "cursor-not-allowed" : ""}`}>
-          <Button
-            className="my-5 w-full rounded bg-neutral-900 py-2 text-sm text-brand-200 disabled:hover:cursor-not-allowed"
-            disabled={loading}
-            onClick={() => autoLogin()}
-          >
-            {loading ? "Signing in" : "Continue"}
-          </Button>
-        </div>
+        <Button
+          className="my-5 w-full rounded bg-neutral-900 py-2 text-sm text-brand-200 disabled:hover:cursor-not-allowed"
+          disabled={userLogin.isPending}
+          onClick={() => autoLogin()}
+        >
+          {userLogin.isPending ? "Loading...." : "Continue"}
+        </Button>
 
         <div className="flex cursor-pointer items-center justify-center gap-3 ">
           <Link
