@@ -200,72 +200,72 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
       }
     }
 
-    if (auth?.user) {
-      cartMutation
-        .mutateAsync({
-          product: activeProduct?._id as string,
-          quantity: quantity,
-          size:
-            activeProduct?.productType === "preorder" ? data.sizes : undefined,
-          shape:
-            activeProduct?.productType === "preorder" ? data.shape : undefined,
-          toppings:
-            activeProduct?.productType === "preorder"
-              ? (data.toppings as string[])
-              : undefined,
-          flavour:
-            activeProduct?.productType === "preorder"
-              ? (data.flavours as string[])
-              : undefined,
-          dateNeeded:
-            activeProduct?.productType === "preorder"
-              ? data.cakeTimes
-              : undefined,
-          details:
-            activeProduct?.productType === "preorder"
-              ? data.message
-              : undefined,
-        })
-        .then(() => {
-          handleAddToCart({
-            product: activeProduct as IProduct,
-            quantity: quantity,
-            size:
-              activeProduct?.productType === "preorder"
-                ? data.sizes
-                : undefined,
-            shape:
-              activeProduct?.productType === "preorder"
-                ? data.shape
-                : undefined,
-            toppings:
-              activeProduct?.productType === "preorder"
-                ? (data.toppings as string[])
-                : undefined,
-            flavour:
-              activeProduct?.productType === "preorder"
-                ? (data.flavours as string[])
-                : undefined,
-            dateNeeded:
-              activeProduct?.productType === "preorder"
-                ? data.cakeTimes
-                : undefined,
-            details:
-              activeProduct?.productType === "preorder"
-                ? data.message
-                : undefined,
-          });
-          reset({
-            sizes: "",
-            shape: "",
-            toppings: [],
-            flavours: [],
-            cakeTimes: "",
-            message: "",
-          });
-          setQuantity(1);
-        });
-    } else {
+    // if (auth?.user) {
+    //   cartMutation
+    //     .mutateAsync({
+    //       product: activeProduct?._id as string,
+    //       quantity: quantity,
+    //       size:
+    //         activeProduct?.productType === "preorder" ? data.sizes : undefined,
+    //       shape:
+    //         activeProduct?.productType === "preorder" ? data.shape : undefined,
+    //       toppings:
+    //         activeProduct?.productType === "preorder"
+    //           ? (data.toppings as string[])
+    //           : undefined,
+    //       flavour:
+    //         activeProduct?.productType === "preorder"
+    //           ? (data.flavours as string[])
+    //           : undefined,
+    //       dateNeeded:
+    //         activeProduct?.productType === "preorder"
+    //           ? data.cakeTimes
+    //           : undefined,
+    //       details:
+    //         activeProduct?.productType === "preorder"
+    //           ? data.message
+    //           : undefined,
+    //     })
+    //     .then(() => {
+    //       handleAddToCart({
+    //         product: activeProduct as IProduct,
+    //         quantity: quantity,
+    //         size:
+    //           activeProduct?.productType === "preorder"
+    //             ? data.sizes
+    //             : undefined,
+    //         shape:
+    //           activeProduct?.productType === "preorder"
+    //             ? data.shape
+    //             : undefined,
+    //         toppings:
+    //           activeProduct?.productType === "preorder"
+    //             ? (data.toppings as string[])
+    //             : undefined,
+    //         flavour:
+    //           activeProduct?.productType === "preorder"
+    //             ? (data.flavours as string[])
+    //             : undefined,
+    //         dateNeeded:
+    //           activeProduct?.productType === "preorder"
+    //             ? data.cakeTimes
+    //             : undefined,
+    //         details:
+    //           activeProduct?.productType === "preorder"
+    //             ? data.message
+    //             : undefined,
+    //       });
+    //       reset({
+    //         sizes: "",
+    //         shape: "",
+    //         toppings: [],
+    //         flavours: [],
+    //         cakeTimes: "",
+    //         message: "",
+    //       });
+    //       setQuantity(1);
+    //     });
+    // } else {
       handleAddToCart({
         product: activeProduct as IProduct,
         quantity: quantity,
@@ -298,7 +298,7 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
       });
       setQuantity(1);
       toast.success("Product added to cart successfully");
-    }
+    // }
   });
 
   const handleBuyNow = handleSubmit((data) => {
@@ -348,6 +348,73 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
     // Navigate to billing page
     router.push(`/billing?buyNow=true`);
   });
+
+  // For available products (non-preorder)
+  const handleAddToCartAvailable = () => {
+    // if (auth?.user) {
+    //   cartMutation
+    //     .mutateAsync({
+    //       product: activeProduct?._id as string,
+    //       quantity: quantity,
+    //       size: undefined,
+    //       shape: undefined,
+    //       toppings: undefined,
+    //       flavour: undefined,
+    //       dateNeeded: undefined,
+    //       details: undefined,
+    //     })
+    //     .then(() => {
+    //       handleAddToCart({
+    //         product: activeProduct as IProduct,
+    //         quantity: quantity,
+    //         size: undefined,
+    //         shape: undefined,
+    //         toppings: undefined,
+    //         flavour: undefined,
+    //         dateNeeded: undefined,
+    //         details: undefined,
+    //       });
+    //       setQuantity(1);
+    //     });
+    // } else {
+      handleAddToCart({
+        product: activeProduct as IProduct,
+        quantity: quantity,
+        size: undefined,
+        shape: undefined,
+        toppings: undefined,
+        flavour: undefined,
+        dateNeeded: undefined,
+        details: undefined,
+      });
+      setQuantity(1);
+      toast.success("Product added to cart successfully");
+    // }
+  };
+
+  // For available products (non-preorder)
+  const handleBuyNowAvailable = () => {
+    if (!isLogin) {
+      setPreviewFav(false);
+      return;
+    }
+
+    dispatch(
+      setBuyNowProduct({
+        product: activeProduct as IProduct,
+        quantity: quantity,
+        size: undefined,
+        shape: undefined,
+        toppings: undefined,
+        flavour: undefined,
+        dateNeeded: undefined,
+        details: undefined,
+      }),
+    );
+
+    // Navigate to billing page
+    router.push(`/billing?buyNow=true`);
+  };
 
   const selectTheme = (theme: any) => ({
     ...theme,
@@ -749,43 +816,67 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                     </div>
                   </form>
                 ) : (
-                  <div className="mt-4 grid grid-cols-2 gap-3 after:grid">
-                    {isLogin ? (
-                      <Button
-                        type="button"
-                        size={"lg"}
-                        variant={"secondary"}
-                        className="cursor-pointer bg-neutral-300 px-4 py-2 text-neutral-900"
-                        onClick={handleBuyNow}
-                      >
-                        Buy now
-                      </Button>
-                    ) : (
-                      <DialogCloseButton setPreviewFav={setPreviewFav}>
+                  <>
+                    <div className="my-3 mt-6 inline-flex gap-3">
+                      <span>Quantity</span>
+                      <div className="inline-flex items-center gap-2 rounded-md bg-neutral-200 px-3 py-1 tabular-nums">
+                        <span
+                          className="cursor-pointer font-semibold"
+                          onClick={() =>
+                            setQuantity((prev: any) =>
+                              prev === 1 ? prev : prev - 1,
+                            )
+                          }
+                        >
+                          <BsDash />
+                        </span>
+                        <span className="font-semibold">{quantity}</span>
+                        <span
+                          className="cursor-pointer font-semibold"
+                          onClick={() => setQuantity((prev: any) => prev + 1)}
+                        >
+                          <BsPlus />
+                        </span>
+                      </div>
+                    </div>
+                    <div className="mt-4 grid grid-cols-2 gap-3 after:grid">
+                      {isLogin ? (
                         <Button
                           type="button"
                           size={"lg"}
                           variant={"secondary"}
                           className="cursor-pointer bg-neutral-300 px-4 py-2 text-neutral-900"
+                          onClick={handleBuyNowAvailable}
                         >
                           Buy now
                         </Button>
-                      </DialogCloseButton>
-                    )}
-
-                    <Button
-                      type="button"
-                      size={"lg"}
-                      className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
-                      onClick={handleAddItemToCart}
-                      disabled={cartMutation.isPending}
-                    >
-                      {cartMutation.isPending && (
-                        <Loader2 className="mr-1 animate-spin" />
+                      ) : (
+                        <DialogCloseButton setPreviewFav={setPreviewFav}>
+                          <Button
+                            type="button"
+                            size={"lg"}
+                            variant={"secondary"}
+                            className="cursor-pointer bg-neutral-300 px-4 py-2 text-neutral-900"
+                          >
+                            Buy now
+                          </Button>
+                        </DialogCloseButton>
                       )}
-                      Add to cart
-                    </Button>
-                  </div>
+
+                      <Button
+                        type="button"
+                        size={"lg"}
+                        className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
+                        onClick={handleAddToCartAvailable}
+                        disabled={cartMutation.isPending}
+                      >
+                        {cartMutation.isPending && (
+                          <Loader2 className="mr-1 animate-spin" />
+                        )}
+                        Add to cart
+                      </Button>
+                    </div>
+                  </>
                 )}
               </div>
             </div>

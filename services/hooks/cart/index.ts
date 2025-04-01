@@ -1,4 +1,9 @@
-import { addToCartDTO, ICart, UpdateItemDTO } from "@/interfaces/cart.interface";
+import {
+  addToCartDTO,
+  ICart,
+  IMergeCart,
+  UpdateItemDTO,
+} from "@/interfaces/cart.interface";
 import instance from "@/services/api";
 
 let accessToken = "";
@@ -60,6 +65,16 @@ export const getCartList = async () => {
 // clear cart.
 export const clearCart = async () => {
   const response = await instance.delete(`/cart/clear`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  return response.data;
+};
+
+// merge local cart.
+export const mergeLocalCart = async (data: IMergeCart) => {
+  const response = await instance.post(`/cart/merge-local-cart`, data, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
