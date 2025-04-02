@@ -80,7 +80,7 @@ export default function RootLayout({
             <SocketProvider>
               <StoreProvider>
                 <Suspense fallback={<Loading />}>
-                  <SocketDebug />
+                  {/* <SocketDebug /> */}
                   <main>{children}</main>
                   <Toaster
                     position="top-right"

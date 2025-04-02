@@ -44,17 +44,7 @@ const Overviews = [
 export default function Dashboard() {
   const router = useRouter();
 
-const { socket } = useSocket();
 
-useEffect(() => {
-  socket.on("join-user-room", (data) => {
-    console.log("Received test event:", data);
-  });
-
-  return () => {
-    socket.off("join-user-room");
-  };
-}, [socket]);
 
   return (
     <>
@@ -76,14 +66,7 @@ useEffect(() => {
             >
               Create Product
             </Button>
-            <Button
-              onClick={() =>
-                socket.emit("test-event", { time: new Date().toISOString() })
-              }
-              className="m-0 bg-brand-200 text-brand-100"
-            >
-              test Product
-            </Button>
+           
           </div>
 
           <div className="hide-scrollbar w-full overflow-x-auto">

@@ -21,7 +21,7 @@ if (typeof window !== "undefined") {
 
 // Get all notifications for current admin
 export const getNotifications = async (): Promise<INotification[]> => {
-  const response = await instance.get("/api/notifications", {
+  const response = await instance.get("/notifications", {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
@@ -34,7 +34,7 @@ export const markNotificationAsRead = async (
   id: string,
 ): Promise<INotification> => {
   const response = await instance.patch(
-    `/api/notifications/${id}/read`,
+    `/notifications/${id}/read`,
     {},
     {
       headers: {
@@ -48,7 +48,7 @@ export const markNotificationAsRead = async (
 // Mark all notifications as read
 export const markAllNotificationsAsRead = async (): Promise<void> => {
   await instance.patch(
-    "/api/notifications/read-all",
+    "/notifications/read-all",
     {},
     {
       headers: {
@@ -64,7 +64,7 @@ export const createAdminAlert = async (data: {
   message: string;
   recipientId?: string;
 }): Promise<INotification> => {
-  const response = await instance.post("/api/notifications/admin-alert", data, {
+  const response = await instance.post("/notifications/admin-alert", data, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },

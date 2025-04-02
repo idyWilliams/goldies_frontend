@@ -21,7 +21,7 @@ export const socket = io(getSocketUrl()!, {
   withCredentials: true,
   reconnectionAttempts: 5,
   reconnectionDelay: 1000,
-  timeout: 10000, // Increase timeout
+  timeout: 10000, 
   auth: (cb) => {
     const token =
       typeof window !== "undefined" ? localStorage.getItem("adminToken") : null;
