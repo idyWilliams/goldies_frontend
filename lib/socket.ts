@@ -8,6 +8,7 @@ import { io } from "socket.io-client";
 export const socket = io(BASEURL, {
   autoConnect: false,
   withCredentials: true,
+  transports: ["websocket", "polling"],
   auth: (cb) => {
     const token =
       typeof window !== "undefined" ? localStorage.getItem("adminToken") : null;
@@ -39,3 +40,18 @@ if (typeof window !== "undefined") {
 
   window.addEventListener("storage", handleStorageChange);
 }
+
+
+// lib/socket.ts
+// import { io } from "socket.io-client";
+
+// const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:2030";
+
+// export const socket = io(SOCKET_URL, {
+//   autoConnect: false,
+//   withCredentials: true,
+//   transports: ["websocket", "polling"],
+//   auth: {
+//     token: typeof window !== "undefined" ? localStorage.getItem("adminToken") : null
+//   }
+// });

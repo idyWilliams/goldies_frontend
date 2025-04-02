@@ -11,6 +11,7 @@ import Loading from "./(landing)/loading";
 import StoreProvider from "./StoreProvider";
 import QueryProvider from "./providers/QueryProvider";
 import { SocketProvider } from "@/context/SocketProvider";
+import { SocketDebug } from "@/components/notification/SocketStatus";
 
 const outfit = Outfit({
   weight: ["300", "400", "500", "600", "700", "800"],
@@ -79,6 +80,7 @@ export default function RootLayout({
             <SocketProvider>
               <StoreProvider>
                 <Suspense fallback={<Loading />}>
+                  <SocketDebug />
                   <main>{children}</main>
                   <Toaster
                     position="top-right"

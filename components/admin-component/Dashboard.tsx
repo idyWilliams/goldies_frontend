@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Home, Moneys, Profile2User, ShoppingBag } from "iconsax-react";
 import EachElement from "@/helper/EachElement";
 import OverviewCard from "./overview-comps/OverviewCard";
@@ -11,6 +11,7 @@ import { CategoryChart } from "./overview-comps/CategoryChart";
 import { OrderAnalytics } from "./overview-comps/OrderAnalytics";
 import { CustomersAnalytics } from "./overview-comps/CustomerAnalytics";
 import { TopProducts } from "./overview-comps/TopProducts";
+import { useSocket } from "@/context/SocketProvider";
 
 const Overviews = [
   {
@@ -43,7 +44,17 @@ const Overviews = [
 export default function Dashboard() {
   const router = useRouter();
 
-  // console.log(Date.now());
+const { socket } = useSocket();
+
+useEffect(() => {
+  socket.on("join-user-room", (data) => {
+    console.log("Received test event:", data);
+  });
+
+  return () => {
+    socket.off("join-user-room");
+  };
+}, [socket]);
 
   return (
     <>
@@ -64,6 +75,14 @@ export default function Dashboard() {
               className="m-0 bg-brand-200 text-brand-100"
             >
               Create Product
+            </Button>
+            <Button
+              onClick={() =>
+                socket.emit("test-event", { time: new Date().toISOString() })
+              }
+              className="m-0 bg-brand-200 text-brand-100"
+            >
+              test Product
             </Button>
           </div>
 
