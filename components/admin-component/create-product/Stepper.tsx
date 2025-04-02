@@ -42,7 +42,7 @@ export default function Stepper({
   }, [checkoutStep, currentStep]);
 
   return (
-    <div className="bg-black p-4">
+    <div className="bg-brand-200 p-4">
       <div>
         <div className="flex w-full flex-col items-center justify-center">
           <h1 className="text-lg font-bold text-[#D9D9D9]">
@@ -54,7 +54,7 @@ export default function Stepper({
           {newStep.map((step, index) => (
             <div key={index} className="flex items-center justify-center gap-2">
               <div
-                className={`${step.completed ? "bg-[#14AE56] text-white" : " bg-[#D9D9D9]"} flex h-[32px] w-[32px] items-center justify-center rounded-full ${step.selected && "bg-[#E4D064]"} text-sm text-black`}
+                className={`${step.completed ? "bg-[#14AE56] text-white" : " bg-[#D9D9D9]"} flex h-[32px] w-[32px] items-center justify-center rounded-full ${step.selected && "border border-brand-100 bg-brand-200 text-brand-100"} text-sm text-black`}
               >
                 {step.completed ? index + 1 : index + 1}
               </div>

@@ -24,35 +24,35 @@ import { removeFromCart } from "@/services/hooks/cart";
 
 const CartMiniList = () => {
   const { auth } = useAuth();
-  const { cart, isLoading } = useCart();
+  const { cart } = useCart();
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
 
   const cartItems = Object.values(cart);
 
-  const removeMutation = useMutation({
-    mutationFn: removeFromCart,
-    onSuccess: (data) => {
-      toast.success(data.message);
-      queryClient.invalidateQueries({ queryKey: ["cartList"] });
-    },
-    onError: (error: AxiosError<ErrorResponse>) => {
-      const resError = error.response?.data;
-      console.error(resError);
-      const errorMessage = resError?.message ? resError?.message : resError;
-      toast.error(`Error: ${errorMessage}`);
-    },
-  });
+  // const removeMutation = useMutation({
+  //   mutationFn: removeFromCart,
+  //   onSuccess: (data) => {
+  //     toast.success(data.message);
+  //     queryClient.invalidateQueries({ queryKey: ["cartList"] });
+  //   },
+  //   onError: (error: AxiosError<ErrorResponse>) => {
+  //     const resError = error.response?.data;
+  //     console.error(resError);
+  //     const errorMessage = resError?.message ? resError?.message : resError;
+  //     toast.error(`Error: ${errorMessage}`);
+  //   },
+  // });
 
   const handleRemove = (id: string) => {
-    if (auth?.user) {
-      removeMutation.mutateAsync(id).then(() => {
-        dispatch(removeFromCartSlice(id));
-      });
-    } else {
+    // if (auth?.user) {
+    //   removeMutation.mutateAsync(id).then(() => {
+    //     dispatch(removeFromCartSlice(id));
+    //   });
+    // } else {
       dispatch(removeFromCartSlice(id));
       toast.success("Product removed from cart");
-    }
+    // }
   };
 
   return (
@@ -62,11 +62,7 @@ const CartMiniList = () => {
       </CardHeader>
       <CardContent className="my-1 p-0">
         <div className="max-h-40 divide-y divide-gray-700/50 overflow-y-auto px-2">
-          {isLoading ? (
-            <div className="flex h-[80px] items-center justify-center">
-              <Loader2Icon className="h-6 w-6 animate-spin" />
-            </div>
-          ) : cartItems.length === 0 ? (
+          {cartItems.length === 0 ? (
             <div className="flex h-[80px] items-center justify-center py-4">
               <p className="text-sm text-brand-200">Your cart is empty.</p>
             </div>
@@ -96,7 +92,7 @@ const CartMiniList = () => {
           )}
         </div>
       </CardContent>
-      {!isLoading && cartItems.length > 0 && (
+      {cartItems.length > 0 && (
         <CardFooter className="border-t border-gray-700/50 p-0">
           <div className="flex w-full flex-col gap-1">
             <PopoverClose asChild>

@@ -64,8 +64,8 @@ const Header = () => {
     Cookies.remove(USER_TOKEN_NAME);
     Cookies.remove(USER_DETAILS);
     router.replace("/sign-in");
-    queryClient.invalidateQueries({ queryKey: ["cartList"] });
-    queryClient.removeQueries({ queryKey: ["cartList"] });
+    // queryClient.invalidateQueries({ queryKey: ["cartList"] });
+    // queryClient.removeQueries({ queryKey: ["cartList"] });
     dispatch(clearCartFromStore());
     dispatch(setCart([]));
 
@@ -100,7 +100,7 @@ const Header = () => {
   return (
     <>
       <header
-        className={`left-0 top-0 bg-brand-100 duration-300 ${sticky ? "fixed bg-brand-100 shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "absolute border-b border-[]"} z-50 flex  w-full items-center py-3 lg:h-20`}
+        className={`left-0 top-0 bg-brand-100 duration-300 ${sticky ? "fixed bg-brand-100 shadow-lg" : "absolute border-b border-[]"} z-50 flex  w-full items-center py-3 lg:h-20`}
       >
         <div className="wrapper flex items-center justify-between">
           <div className="hidden items-center gap-8 xl:flex">

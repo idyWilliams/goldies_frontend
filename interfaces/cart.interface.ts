@@ -36,3 +36,7 @@ export interface UpdateItemDTO {
   product: string;
   quantity: number;
 }
+
+export interface IMergeCart{
+  localCartItems: addToCartDTO[];
+}

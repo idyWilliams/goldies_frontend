@@ -66,7 +66,7 @@ export default function MobileOrderCard({ data }: { data: IOrder[] }) {
 
               <div className="flex justify-end">
                 <Button
-                  className="rounded-sm bg-goldie-300 text-black hover:bg-goldie-400"
+                  className="rounded-sm bg-brand-200 text-brand-100 hover:border hover:border-brand-200 hover:bg-transparent hover:text-brand-200"
                   onClick={() => router.push(`/admin/orders/${data._id}`)}
                 >
                   View Details

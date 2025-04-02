@@ -50,7 +50,7 @@ export interface ForgotPassword {
 }
 export interface ResetPassword {
   password: string;
-  token: string;
+  emailToken: string;
 }
 
 // Interfaces for the admin signup and invite admin
