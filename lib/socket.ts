@@ -1,38 +1,59 @@
-
 import { BASEURL } from "@/services/api";
 import { io } from "socket.io-client";
 
-// const SOCKET_URL =
-//   process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:2030";
+export const getSocketUrl = () => {
+  const apiUrl =
+    process.env.NODE_ENV === "production"
+      ? process.env.NEXT_PUBLIC_PRODUCTION_API_BASE_URL
+      : process.env.NEXT_PUBLIC_API_BASE_URL;
 
-export const socket = io(BASEURL, {
+  const baseUrl = apiUrl?.replace(/\/api$/, "");
+
+  console.log("Socket connecting to:", baseUrl);
+  return baseUrl;
+};
+console.log("Socket connecting to:", BASEURL);
+
+export const socket = io(getSocketUrl()!, {
+  path: "/socket.io",
+  transports: ["websocket", "polling"],
   autoConnect: false,
   withCredentials: true,
-  transports: ["websocket", "polling"],
+  reconnectionAttempts: 5,
+  reconnectionDelay: 1000,
+  timeout: 10000, // Increase timeout
   auth: (cb) => {
     const token =
       typeof window !== "undefined" ? localStorage.getItem("adminToken") : null;
+    console.log("Auth token available:", !!token);
     cb({ token });
   },
 });
 
-// Reconnect logic
+// Enhanced debugging for connection issues
 if (typeof window !== "undefined") {
-  socket.on("disconnect", () => {
-    console.log("Disconnected from server");
+  socket.on("connect", () => {
+    console.log("Connected to server with ID:", socket.id);
+  });
+
+  socket.on("disconnect", (reason) => {
+    console.log("Disconnected from server:", reason);
   });
 
   socket.on("connect_error", (err) => {
-    console.log("Connection error:", err.message);
+    console.error("Connection error:", err.message);
+    console.error("Error details:", err);
   });
 
   // Reconnect when token changes
   const handleStorageChange = (e: StorageEvent) => {
     if (e.key === "adminToken") {
       if (e.newValue) {
+        console.log("Token changed, reconnecting...");
         socket.auth = { token: e.newValue };
         socket.connect();
       } else {
+        console.log("Token removed, disconnecting...");
         socket.disconnect();
       }
     }
@@ -40,18 +61,3 @@ if (typeof window !== "undefined") {
 
   window.addEventListener("storage", handleStorageChange);
 }
-
-
-// lib/socket.ts
-// import { io } from "socket.io-client";
-
-// const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:2030";
-
-// export const socket = io(SOCKET_URL, {
-//   autoConnect: false,
-//   withCredentials: true,
-//   transports: ["websocket", "polling"],
-//   auth: {
-//     token: typeof window !== "undefined" ? localStorage.getItem("adminToken") : null
-//   }
-// });
