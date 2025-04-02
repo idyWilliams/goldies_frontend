@@ -266,38 +266,34 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
     //       setQuantity(1);
     //     });
     // } else {
-      handleAddToCart({
-        product: activeProduct as IProduct,
-        quantity: quantity,
-        size:
-          activeProduct?.productType === "preorder" ? data.sizes : undefined,
-        shape:
-          activeProduct?.productType === "preorder" ? data.shape : undefined,
-        toppings:
-          activeProduct?.productType === "preorder"
-            ? (data.toppings as string[])
-            : undefined,
-        flavour:
-          activeProduct?.productType === "preorder"
-            ? (data.flavours as string[])
-            : undefined,
-        dateNeeded:
-          activeProduct?.productType === "preorder"
-            ? data.cakeTimes
-            : undefined,
-        details:
-          activeProduct?.productType === "preorder" ? data.message : undefined,
-      });
-      reset({
-        sizes: "",
-        shape: "",
-        toppings: [],
-        flavours: [],
-        cakeTimes: "",
-        message: "",
-      });
-      setQuantity(1);
-      toast.success("Product added to cart successfully");
+    handleAddToCart({
+      product: activeProduct as IProduct,
+      quantity: quantity,
+      size: activeProduct?.productType === "preorder" ? data.sizes : undefined,
+      shape: activeProduct?.productType === "preorder" ? data.shape : undefined,
+      toppings:
+        activeProduct?.productType === "preorder"
+          ? (data.toppings as string[])
+          : undefined,
+      flavour:
+        activeProduct?.productType === "preorder"
+          ? (data.flavours as string[])
+          : undefined,
+      dateNeeded:
+        activeProduct?.productType === "preorder" ? data.cakeTimes : undefined,
+      details:
+        activeProduct?.productType === "preorder" ? data.message : undefined,
+    });
+    reset({
+      sizes: "",
+      shape: "",
+      toppings: [],
+      flavours: [],
+      cakeTimes: "",
+      message: "",
+    });
+    setQuantity(1);
+    toast.success("Product added to cart successfully");
     // }
   });
 
@@ -377,18 +373,18 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
     //       setQuantity(1);
     //     });
     // } else {
-      handleAddToCart({
-        product: activeProduct as IProduct,
-        quantity: quantity,
-        size: undefined,
-        shape: undefined,
-        toppings: undefined,
-        flavour: undefined,
-        dateNeeded: undefined,
-        details: undefined,
-      });
-      setQuantity(1);
-      toast.success("Product added to cart successfully");
+    handleAddToCart({
+      product: activeProduct as IProduct,
+      quantity: quantity,
+      size: undefined,
+      shape: undefined,
+      toppings: undefined,
+      flavour: undefined,
+      dateNeeded: undefined,
+      details: undefined,
+    });
+    setQuantity(1);
+    toast.success("Product added to cart successfully");
     // }
   };
 
@@ -795,7 +791,7 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                             type="button"
                             size={"lg"}
                             variant={"secondary"}
-                            className="cursor-pointer bg-neutral-300 px-4 py-2 text-neutral-900"
+                            className="cursor-pointer border border-brand-200 bg-transparent px-4 py-2 text-brand-200 hover:bg-transparent"
                           >
                             Buy now
                           </Button>
@@ -805,7 +801,7 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                       <Button
                         type="submit"
                         size={"lg"}
-                        className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
+                        className="cursor-pointer bg-brand-200 px-4 py-2 text-brand-100"
                         disabled={cartMutation.isPending}
                       >
                         {cartMutation.isPending && (
@@ -856,7 +852,7 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                             type="button"
                             size={"lg"}
                             variant={"secondary"}
-                            className="cursor-pointer bg-neutral-300 px-4 py-2 text-neutral-900"
+                            className="cursor-pointer border border-brand-200 bg-transparent px-4 py-2 text-brand-200 shadow-none hover:bg-transparent "
                           >
                             Buy now
                           </Button>
@@ -866,7 +862,7 @@ const SingleProductComp = ({ slug }: { slug: string }) => {
                       <Button
                         type="button"
                         size={"lg"}
-                        className="cursor-pointer bg-neutral-900 px-4 py-2 text-goldie-300"
+                        className="cursor-pointer bg-brand-200 px-4 py-2 text-brand-100 hover:bg-brand-200"
                         onClick={handleAddToCartAvailable}
                         disabled={cartMutation.isPending}
                       >

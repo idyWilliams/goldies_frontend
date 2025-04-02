@@ -136,7 +136,7 @@ const ProductReview = ({ product }: { product: IProduct }) => {
       <div className="mt-5">
         <h3 className="mb-2 font-semibold">Ratings and Reviews</h3>
         <div className="grid grid-cols-2 items-center gap-3">
-          <div className="flex flex-col gap-1 rounded-md bg-neutral-800 p-4 text-brand-200">
+          <div className="flex flex-col gap-1 rounded-md bg-brand-200 p-4 text-brand-100">
             <span>4.5/5.0</span>
             <StarRating
               canRate={false}
@@ -177,7 +177,7 @@ const ProductReview = ({ product }: { product: IProduct }) => {
     <div className="mt-5">
       <h3 className="mb-2 font-semibold">Ratings and Reviews</h3>
       <div className="grid grid-cols-2 items-center gap-3">
-        <div className="flex flex-col gap-1 rounded-md bg-neutral-800 p-4 text-brand-200">
+        <div className="flex flex-col gap-1 rounded-md bg-brand-200 p-4 text-brand-100">
           <span>{product?.averageRating.toFixed(1)}/5.0</span>
           <StarRating
             canRate={false}
