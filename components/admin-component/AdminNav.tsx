@@ -5,7 +5,15 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { CheckIcon } from "@radix-ui/react-icons";
-import { Bag, Lock1, User, UserCirlceAdd } from "iconsax-react";
+import {
+  Bag,
+  Check,
+  Clock,
+  Lock1,
+  MessageSquare,
+  User,
+  UserCirlceAdd,
+} from "iconsax-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -37,6 +45,9 @@ import useMobile from "@/services/hooks/admin/useMobile";
 import { SearchModal } from "./SearchModal";
 import Fuse from "fuse.js";
 import { PopoverClose } from "@radix-ui/react-popover";
+import { useNotifications } from "@/services/hooks/admin/adminNotification/useNotifications";
+import { useSocket } from "@/context/SocketProvider";
+import { AlertCircle, Bell } from "lucide-react";
 
 export default function AdminNav() {
   const router = useRouter();
@@ -47,7 +58,15 @@ export default function AdminNav() {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const { auth } = useAuth();
   const isMobile = useMobile();
-
+  const {
+    notifications,
+    unreadCount,
+    markAsRead,
+    markAllAsRead,
+    isLoading,
+    error,
+    refresh,
+  } = useNotifications(auth?.admin?.id, auth?.admin?.role!);
   const formatRole = (status: string) => status?.replace(/_/g, " ");
   console.log(auth, "auth");
   // Map search terms to routes
@@ -234,11 +253,24 @@ export default function AdminNav() {
               <PopoverTrigger>
                 <span className="relative inline-block cursor-pointer text-brand-200">
                   <IoMdNotificationsOutline size={24} />
-                  <span className="absolute right-0.5 top-1 inline-block h-1.5 w-1.5 rounded-full bg-red-600 text-sm outline outline-2 outline-black"></span>
+                  {unreadCount > 0 && (
+                    <span className="absolute right-0.5 top-1 inline-flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-[10px] text-white">
+                      {unreadCount > 9 ? "9+" : unreadCount}
+                    </span>
+                  )}
                 </span>
               </PopoverTrigger>
+              {/* <PopoverTrigger>
+                <span className="relative inline-block cursor-pointer text-brand-200">
+                  <IoMdNotificationsOutline size={24} />
+                  <span className="absolute right-0.5 top-1 inline-block h-1.5 w-1.5 rounded-full bg-red-600 text-sm outline outline-2 outline-black"></span>
+                </span>
+              </PopoverTrigger> */}
               <PopoverContent className="w-[320px] border border-white/20 bg-brand-200 p-0 shadow-2xl">
-                <NotificationBar />
+                <NotificationBar
+                  adminId={auth?.admin?.id!}
+                  role={auth?.admin?.role!}
+                />
               </PopoverContent>
             </Popover>
 
@@ -254,7 +286,7 @@ export default function AdminNav() {
                 >
                   <FaRegUserCircle size={20} />{" "}
                   <div className="hidden text-sm capitalize md:flex md:items-center md:gap-3">
-                    <div className="flex flex-col max-w-[120px]">
+                    <div className="flex max-w-[120px] flex-col">
                       <span className="truncate">
                         {auth?.admin ? auth?.admin?.userName : "No username"}
                       </span>
@@ -270,7 +302,9 @@ export default function AdminNav() {
               </PopoverTrigger>
               <PopoverContent className="w-[190px] rounded-md border-brand-200 bg-brand-200 p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
                 <div className="mb-2 flex items-center justify-start gap-3 border-b border-black border-opacity-20 p-2 pb-3 sm:hidden">
-                  <p className="text-brand-100 truncate">{auth?.admin ? auth?.admin?.userName : "No username"}</p>
+                  <p className="truncate text-brand-100">
+                    {auth?.admin ? auth?.admin?.userName : "No username"}
+                  </p>
                 </div>
                 <div className="">
                   <PopoverClose asChild>
@@ -332,21 +366,6 @@ export default function AdminNav() {
   );
 }
 
-const notifications = [
-  {
-    title: "New Order Received!",
-    description: "A new order has been placed.",
-    isRead: false,
-    type: "order",
-  },
-  {
-    title: "New Customer Joined!",
-    description: "A new customer has just signed up.",
-    isRead: false,
-    type: "user",
-  },
-];
-
 const notifyType = (type: string) => {
   switch (type?.toLowerCase()) {
     case "user":
@@ -358,45 +377,110 @@ const notifyType = (type: string) => {
       break;
   }
 };
+interface NotificationBarProps {
+  adminId: string | undefined;
+  role: string;
+}
 
-const NotificationBar = () => {
+const NotificationBar = ({ adminId, role }: NotificationBarProps) => {
+  const {
+    notifications,
+    unreadCount,
+    markAsRead,
+    markAllAsRead,
+    isLoading,
+    error,
+    refresh,
+  } = useNotifications(adminId, role);
+  const { socket } = useSocket();
+
+  const handleMarkAllAsRead = () => {
+    markAllAsRead();
+    // Emit to backend
+    socket?.emit("mark-all-read");
+  };
+
+  const notifyType = (type: string) => {
+    switch (type) {
+      case "message":
+        return <MessageSquare className="h-5 w-5" />;
+      case "alert":
+        return <AlertCircle className="h-5 w-5" />;
+      case "reminder":
+        return <Clock className="h-5 w-5" />;
+      default:
+        return <Bell className="h-5 w-5" />;
+    }
+  };
+
   return (
     <Card className={cn("w-full border-0 bg-transparent shadow-none")}>
       <CardHeader className="mb-2 px-4 text-white">
         <CardTitle className="text-white">Notifications</CardTitle>
         <CardDescription className="text-neutral-300">
-          You have 2 unread messages.
+          You have {unreadCount} unread{" "}
+          {unreadCount === 1 ? "message" : "messages"}.
         </CardDescription>
       </CardHeader>
       <CardContent className="px-4">
-        <div className="grid gap-8">
-          {notifications.map((notification, index) => (
-            <div
-              key={index}
-              className="grid h-full grid-cols-[40px_1fr] items-center gap-3"
-            >
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-100 bg-opacity-20 text-brand-200">
-                {notifyType(notification?.type)}
+        {isLoading ? (
+          <div className="flex h-40 items-center justify-center">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-neutral-600 border-t-brand-100"></div>
+          </div>
+        ) : notifications.length > 0 ? (
+          <div className="grid gap-6">
+            {notifications.map((notification) => (
+              <div
+                key={notification._id}
+                className="grid h-full cursor-pointer grid-cols-[40px_1fr] items-start gap-3 rounded-lg p-3 transition-colors hover:bg-neutral-800"
+                onClick={() => markAsRead(notification._id)}
+              >
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-100 bg-opacity-20 text-brand-200">
+                  {notifyType(notification.type)}
+                </div>
+                <div className="space-y-2">
+                  <p
+                    className={cn(
+                      "text-sm font-medium leading-none text-white",
+                      !notification.isRead && "font-semibold",
+                    )}
+                  >
+                    {notification.title}
+                  </p>
+                  <p className="text-sm text-neutral-200">
+                    {notification.message}
+                  </p>
+                  <p className="text-xs text-neutral-400">
+                    {new Date(notification.createdAt).toLocaleString()}
+                  </p>
+                </div>
               </div>
-              <div className="space-y-1">
-                <p
-                  className={cn("text-sm font-medium leading-none text-white")}
-                >
-                  {notification.title}
-                </p>
-                <p className="text-sm text-neutral-200">
-                  {notification.description}
-                </p>
-              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-neutral-800">
+              <Bell className="h-8 w-8 text-neutral-400" />
             </div>
-          ))}
-        </div>
+            <p className="text-lg font-medium text-neutral-300">
+              No notifications
+            </p>
+            <p className="mt-2 text-sm text-neutral-400">
+              You&apos;re all caught up!
+            </p>
+          </div>
+        )}
       </CardContent>
-      <CardFooter className="px-4">
-        <Button className="w-full bg-transparent text-brand-100 ring-1 ring-brand-100 hover:bg-transparent">
-          <CheckIcon className="mr-2 h-4 w-4" /> Mark all as read
-        </Button>
-      </CardFooter>
+      {notifications.length > 0 && (
+        <CardFooter className="px-4">
+          <Button
+            className="w-full bg-transparent text-brand-100 ring-1 ring-brand-100 hover:bg-brand-100 hover:bg-opacity-10"
+            onClick={handleMarkAllAsRead}
+          >
+            <Check className="mr-2 h-4 w-4" /> Mark all as read
+          </Button>
+        </CardFooter>
+      )}
     </Card>
   );
 };

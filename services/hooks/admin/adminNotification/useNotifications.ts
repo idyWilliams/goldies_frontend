@@ -23,8 +23,8 @@ export interface INotification {
 }
 
 export const useNotifications = (
-  adminId: string | null,
-  role: "admin" | "super_admin" | null,
+  adminId: string | undefined,
+  role: string,
 ) => {
   const [notifications, setNotifications] = useState<INotification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
