@@ -6,16 +6,17 @@ import StatusColumn from "@/components/myOrdersComps/StatusColumn";
 import { Button } from "@/components/ui/button";
 import EachElement from "@/helper/EachElement";
 import { formatCurrency } from "@/helper/formatCurrency";
-import { IOrder } from "@/interfaces/order.interface";
+import { IOrder, OrderParams } from "@/interfaces/order.interface";
 import { cn } from "@/lib/utils";
 import { getOrdersByUser } from "@/services/hooks/payment";
+import useSpecificUserOrders from "@/services/hooks/payment/useSpecificUserOrders";
 import { useQuery } from "@tanstack/react-query";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Eye } from "iconsax-react";
 import { Loader2Icon } from "lucide-react";
 import moment from "moment";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
@@ -75,22 +76,78 @@ const columns = [
 
 const MyOrders = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchValue, setSearchValue] = useState("");
+  const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
 
   const itemsPerPage = 10;
 
-  const {
-    data: ordersResponse,
-    isPending,
-    isSuccess,
-    isError,
-    refetch,
-  } = useQuery({
-    queryKey: ["ordersByUser"],
-    queryFn: getOrdersByUser,
+  const [params, setParams] = useState<OrderParams>({
+    page: currentPage,
+    limit: itemsPerPage,
   });
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchValue(searchValue);
+    }, 300); // 300ms delay
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchValue]);
+
+  useEffect(() => {
+    const newParams: OrderParams = {
+      page: currentPage,
+      limit: itemsPerPage,
+      status: selectedStatus === "All" ? "" : selectedStatus.toLowerCase(),
+    };
+
+    if (debouncedSearchValue) {
+      newParams.searchQuery = debouncedSearchValue;
+    }
+
+    // Update URL with new search query and page
+    const currentParams = new URLSearchParams(searchParams.toString());
+    currentParams.set("page", currentPage.toString());
+
+    if (currentPage !== 1) {
+      currentParams.set("page", currentPage.toString());
+    } else {
+      currentParams.delete("page");
+    }
+
+    if (debouncedSearchValue) {
+      currentParams.set("search", debouncedSearchValue);
+    } else {
+      currentParams.delete("search");
+    }
+
+    if (selectedStatus !== "All") {
+      currentParams.set("status", selectedStatus.toLowerCase());
+    } else {
+      currentParams.delete("status");
+    }
+
+    router.push(`${pathname}?${currentParams.toString()}`);
+    setParams(newParams);
+  }, [
+    currentPage,
+    searchValue,
+    debouncedSearchValue,
+    pathname,
+    router,
+    searchParams,
+    selectedStatus,
+  ]);
+
+  const { orders, isLoading, isError, refetch, totalPages, totalOrders } =
+    useSpecificUserOrders(params);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
@@ -98,44 +155,8 @@ const MyOrders = () => {
 
   const clearInput = () => {
     setSearchValue("");
+    setDebouncedSearchValue("");
   };
-
-  const processedOrders = useMemo<IOrder[]>(() => {
-    if (!ordersResponse?.userOrder) return [];
-
-    let filtered = ordersResponse?.userOrder as IOrder[];
-    if (selectedStatus !== "All") {
-      filtered = filtered.filter(
-        (order) =>
-          order.orderStatus.toLowerCase() === selectedStatus.toLowerCase(),
-      );
-    }
-
-    if (searchValue) {
-      filtered = filtered.filter((order) =>
-        order?.orderId?.toLowerCase().includes(searchValue.toLowerCase()),
-      );
-    }
-
-    return filtered;
-  }, [ordersResponse?.userOrder, selectedStatus, searchValue]);
-
-  const totalPages = Math.ceil(processedOrders.length / itemsPerPage);
-
-  const paginatedOrders = useMemo(
-    () =>
-      processedOrders.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage,
-      ),
-    [processedOrders, currentPage],
-  );
-
-  useEffect(() => {
-    if (currentPage > totalPages && totalPages > 0) {
-      setCurrentPage(totalPages);
-    }
-  }, [totalPages, currentPage]);
 
   const filteredTabs = ["All", "Pending", "Completed", "Cancelled"];
 
@@ -146,28 +167,7 @@ const MyOrders = () => {
           All Orders
         </h1>
 
-        <div className="my-6 flex flex-col-reverse items-center justify-between gap-4 md:flex-row">
-          {/* Filter Tabs */}
-          <div
-            className={cn("flex items-center justify-between gap-2 p-[2px]")}
-          >
-            <div className="flex items-center gap-1">
-              {filteredTabs?.map((tab, index) => (
-                <button
-                  key={index}
-                  className={`w-fit rounded-sm border px-2 ${
-                    selectedStatus === tab
-                      ? "bg-brand-200 text-brand-100"
-                      : "border-brand-200 bg-brand-100"
-                  }`}
-                  onClick={() => setSelectedStatus(tab)}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-          </div>
-
+        <div className="my-6 flex flex-col items-center justify-between gap-4 md:flex-row">
           {/* search input */}
           <div className="w-full max-w-[500px]">
             <label htmlFor="search" className="relative block w-full">
@@ -194,9 +194,30 @@ const MyOrders = () => {
               )}
             </label>
           </div>
+
+          {/* Filter Tabs */}
+          <div
+            className={cn("flex items-center justify-between gap-2 p-[2px]")}
+          >
+            <div className="flex items-center gap-1">
+              {filteredTabs?.map((tab, index) => (
+                <button
+                  key={index}
+                  className={`w-fit rounded-sm border px-2 ${
+                    selectedStatus === tab
+                      ? "bg-brand-200 text-brand-100"
+                      : "border-brand-200 bg-brand-100"
+                  }`}
+                  onClick={() => setSelectedStatus(tab)}
+                >
+                  {tab}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
-        {isPending ? (
+        {isLoading ? (
           <div className="flex w-full items-center justify-center py-10">
             <Loader2Icon className="mr-2 animate-spin" />
             <p>Fetching Your Orders...</p>
@@ -209,12 +230,12 @@ const MyOrders = () => {
 
             <Button onClick={() => refetch()}>Retry</Button>
           </div>
-        ) : processedOrders.length > 0 ? (
+        ) : orders && orders.length > 0 ? (
           <>
             <div className="hidden lg:block">
               <DataTable
                 columns={columns}
-                data={paginatedOrders}
+                data={orders}
                 currentPage={currentPage}
                 totalPages={totalPages}
                 setCurrentPage={setCurrentPage}
@@ -224,7 +245,7 @@ const MyOrders = () => {
             <div className="lg:hidden">
               <div className="mt-5 grid gap-5 md:grid-cols-2">
                 <EachElement
-                  of={paginatedOrders}
+                  of={orders}
                   render={(order: IOrder, index: number) => {
                     return (
                       <div key={index} className="rounded-md bg-white p-4">

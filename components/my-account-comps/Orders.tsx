@@ -2,25 +2,16 @@ import { Skeleton } from "@/components/ui/skeleton"; // Import Skeleton from Sha
 import { cn } from "@/helper/cn";
 import { formatCurrency } from "@/helper/formatCurrency";
 import { getOrderColor } from "@/helper/getOrderColor";
-import { IOrder } from "@/interfaces/order.interface";
-import { getOrdersByUser } from "@/services/hooks/payment";
-import { useQuery } from "@tanstack/react-query";
+import useSpecificUserOrders from "@/services/hooks/payment/useSpecificUserOrders";
 import { Eye } from "iconsax-react";
 import moment from "moment";
 import Link from "next/link";
-import { useMemo } from "react";
-import { BsThreeDots } from "react-icons/bs";
 
 const Orders = () => {
-  const { data: ordersResponse, isPending } = useQuery({
-    queryKey: ["ordersByUser"],
-    queryFn: getOrdersByUser,
+  const { orders, isLoading } = useSpecificUserOrders({
+    page: 1,
+    limit: 10,
   });
-
-  const processedOrders = useMemo<IOrder[]>(() => {
-    if (!ordersResponse?.userOrder) return [];
-    return ordersResponse?.userOrder as IOrder[];
-  }, [ordersResponse?.userOrder]);
 
   return (
     <div>
@@ -47,7 +38,7 @@ const Orders = () => {
             </div>
           </div>
 
-          {isPending ? (
+          {isLoading ? (
             // Skeleton Loading Placeholder
             <div className="table-row-group">
               {[...Array(5)].map((_, index) => (
@@ -71,7 +62,9 @@ const Orders = () => {
               ))}
             </div>
           ) : (
-            processedOrders.slice(0, 10).map((order, index) => (
+            orders &&
+            orders.length > 0 &&
+            orders.map((order, index) => (
               <div className="table-row-group" key={index}>
                 <div
                   className={cn(
