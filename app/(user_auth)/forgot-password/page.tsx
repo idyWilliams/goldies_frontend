@@ -64,8 +64,8 @@ export default function Page() {
       ) : (
         <div className="block w-full bg-white p-5 sm:mx-auto sm:w-[400px] sm:border sm:bg-white sm:p-6 sm:shadow-lg md:border-0 md:shadow-none">
           <div className="mb-6 flex flex-col items-center justify-center">
-            <span className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-[#BC8123] bg-opacity-10">
-              <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[#BC8123] bg-opacity-10">
+            <span className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-brand-200 bg-opacity-10">
+              <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-brand-200 bg-opacity-10 text-brand-100">
                 <Key className="" />
               </span>
             </span>
@@ -90,7 +90,7 @@ export default function Page() {
                 id="email"
                 placeholder="Enter your email"
                 className={cn(
-                  "form-input w-full rounded border-none bg-neutral-100 placeholder:text-sm focus:border-neutral-900 focus:ring-0",
+                  "form-input w-full rounded border border-none border-neutral-400 bg-white placeholder:text-sm focus:border-neutral-900 focus:ring-0",
                   errors?.email && "border-red-600 focus:border-red-600",
                 )}
                 autoComplete="email"
@@ -104,7 +104,7 @@ export default function Page() {
 
             <Button
               type="submit"
-              className="my-5 w-full rounded bg-neutral-900 py-2 text-sm text-brand-200 hover:bg-neutral-800 disabled:hover:cursor-not-allowed"
+              className="my-5 w-full rounded bg-brand-200  py-2 text-sm text-brand-100 hover:bg-brand-200 disabled:hover:cursor-not-allowed"
               disabled={submitEmail.isPending || !isValid}
             >
               {submitEmail.isPending ? "Sending..." : "Reset Password"}

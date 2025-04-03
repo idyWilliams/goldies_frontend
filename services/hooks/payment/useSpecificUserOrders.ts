@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { getOrdersByUser } from ".";
 
 const useSpecificUserOrders = (params: OrderParams) => {
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isLoading, isError, refetch, isSuccess } = useQuery({
     queryKey: ["ordersByUser", params],
     queryFn: async () => getOrdersByUser(params),
   });
@@ -27,6 +27,7 @@ const useSpecificUserOrders = (params: OrderParams) => {
     isLoading,
     isError,
     refetch,
+    isSuccess
   };
 };
 

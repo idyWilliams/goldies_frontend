@@ -214,7 +214,7 @@ export default function CustomerOrder({ id }: { id: string }) {
       {
         title: "Total Ordered",
         total: totalOrdered,
-        icon: <ShoppingCart size={32} className="text-goldie-400" />,
+        icon: <ShoppingCart size={32} className="text-brand-200" />,
       },
       {
         title: "Total Delivered",
@@ -230,7 +230,7 @@ export default function CustomerOrder({ id }: { id: string }) {
   }, [allOrders]);
 
   return (
-    <section className="bg-neutral-100 p-4">
+    <section className="min-h-dvh bg-neutral-100 p-4">
       <div
         className="mb-5 inline-flex cursor-pointer items-center gap-2"
         onClick={() => router.push(`/admin/customers/${id}`)}
@@ -274,8 +274,8 @@ export default function CustomerOrder({ id }: { id: string }) {
                 key={index}
                 className={`w-fit rounded-sm border px-2 ${
                   selectedStatus === tab
-                    ? "bg-black text-brand-200"
-                    : "border-neutral-200 bg-white"
+                    ? "bg-brand-200 text-brand-100"
+                    : "border-brand-200 bg-white"
                 }`}
                 onClick={() => setSelectedStatus(tab)}
               >

@@ -50,7 +50,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
               className="w-[200px] lg:w-[230px]"
               width={175}
               height={92}
-              alt="Goldis Logo"
+              alt="cake Logo"
               priority
             />
           </Link>

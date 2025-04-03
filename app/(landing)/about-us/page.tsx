@@ -40,7 +40,7 @@ const AboutUs = () => {
             About us
           </h1>
           <p className="w-3/4 font-normal text-brand-100 lg:max-w-2xl  lg:text-2xl">
-            Everything you need to know about Goldies Confectionery.
+            Everything you need to know about this Cake App.
           </p>
         </div>
       </section>
@@ -56,10 +56,10 @@ const AboutUs = () => {
               <span className="block h-0.5 w-[60px] bg-brand-200"></span>
             </div>
             <p className="max-w-[924px] text-center text-brand-200">
-              Goldis offers a wide range of cakes for different occasions.
+              This Cake App offers a wide range of cakes for different occasions.
               Whether you seek a whimsical unicorn cake for your child&apos;s
               birthday, an elegant tiered cake for a lavish wedding, or a
-              heartfelt heart-shaped cake for a romantic anniversary, Goldis has
+              heartfelt heart-shaped cake for a romantic anniversary, The Cake App has
               the perfect choice for you. Our cakes embody more than just
               exceptional taste; they symbolize personal emotions, celebrating
               love, joy, and treasured memories.

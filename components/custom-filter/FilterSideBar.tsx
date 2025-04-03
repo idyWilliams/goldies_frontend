@@ -23,7 +23,7 @@ const FilterSidebar = ({
       onClick={() => setShowFilter(false)}
     >
       <div
-        className="w-[280px] bg-white px-4 py-5 sm:w-[300px]"
+        className="w-[280px] bg-white px-4 h-screen py-5 sm:w-[300px]"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-3 flex items-center justify-between gap-2 text-neutral-500">

@@ -54,7 +54,7 @@ export function CustomersAnalytics() {
           Customers Analytics
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-4">
+      <CardContent className="p-0">
         <ChartContainer
           config={chartConfig}
           className="sales max-h-[300px] min-h-[200px] w-full pl-0 lg:hidden"

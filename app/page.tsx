@@ -8,6 +8,7 @@ import "aos/dist/aos.css";
 import { useEffect } from "react";
 import FeaturedProducts from "@/components/FeaturedProducts";
 import Cta from "@/components/Cta";
+// import { mergeSampleCart } from "@/lib/test";
 
 const Home = () => {
   useEffect(() => {
@@ -23,12 +24,11 @@ const Home = () => {
         <div className="" />
         <main className="">
           <Hero />
+
           <CakeCategory />
           <FeaturedProducts />
           <Testimonials />
           <Cta />
-
-          
         </main>
       </Layout>
     </>

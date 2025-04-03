@@ -17,6 +17,7 @@ import Slide5 from "../public/assets/slide-5.jpeg";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+
 const stats = [
   { value: "12000+", title: "Cakes Delivered" },
   { value: "12000+", title: "Verified Customers" },
@@ -91,6 +92,7 @@ const Hero = () => {
               >
                 Order Now
               </Button>
+
             </div>
           </div>
         </SwiperSlide>

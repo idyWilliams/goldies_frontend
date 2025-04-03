@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { IoMdStar, IoMdStarHalf, IoMdStarOutline } from "react-icons/io";
 import { MdStarOutline } from "react-icons/md";
+type SetRatingFunction = (rating: number) => void;
 
 type StarRatingProps = {
   maxRating?: number;
@@ -18,7 +19,7 @@ const StarRating: React.FC<StarRatingProps> = ({
   iconSize,
   canRate,
   onSetRating,
-  iconColor = "text-[#FE6600]",
+  iconColor,
   allowHalfStars = true, // Default to true
 }) => {
   const [rating, setRating] = useState(defaultRating);
@@ -29,7 +30,7 @@ const StarRating: React.FC<StarRatingProps> = ({
     setRating(defaultRating);
   }, [defaultRating]);
 
-  const handleRating = (newRating: number) => {
+  const handleRating: SetRatingFunction = (newRating) => {
     setRating(newRating);
     if (onSetRating) {
       onSetRating(newRating);
@@ -84,14 +85,14 @@ const StarRating: React.FC<StarRatingProps> = ({
               <IoMdStar size={iconSize} className={iconColor} />
             ) : isHalfFilled ? (
               <>
-                <IoMdStarOutline size={iconSize} className="text-[#797979]" />
+                <IoMdStarOutline size={iconSize} className="text-amber-500" />
                 <IoMdStarHalf
                   size={iconSize}
                   className={`absolute left-0 top-0 ${iconColor}`}
                 />
               </>
             ) : (
-              <MdStarOutline size={iconSize} className="text-[#797979]" />
+              <MdStarOutline size={iconSize} className="text-amber-500" />
             )}
           </div>
         );

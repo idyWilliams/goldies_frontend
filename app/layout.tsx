@@ -10,6 +10,8 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import Loading from "./(landing)/loading";
 import StoreProvider from "./StoreProvider";
 import QueryProvider from "./providers/QueryProvider";
+import { SocketProvider } from "@/context/SocketProvider";
+import { SocketDebug } from "@/components/notification/SocketStatus";
 
 const outfit = Outfit({
   weight: ["300", "400", "500", "600", "700", "800"],
@@ -20,9 +22,9 @@ const outfit = Outfit({
   preload: true,
 });
 
-const SITE_TITLE = "Goldies Confectioneries | Buy Delicious Cakes Online";
+const SITE_TITLE = " Buy Delicious Cakes Online";
 const SITE_DESCRIPTION =
-  "Indulge in delectable cakes from Goldies Confectioneries. Browse our wide selection of cakes for every occasion and order now for a taste of perfection!";
+  "Indulge in delectable cakes from this cake app. Browse our wide selection of cakes for every occasion and order now for a taste of perfection!";
 
 export const metadata: Metadata = {
   title: {
@@ -75,17 +77,20 @@ export default function RootLayout({
       <body className={cn("overflow-x-hidden", outfit.className)}>
         <QueryProvider>
           <AuthProvider>
-            <StoreProvider>
-              <Suspense fallback={<Loading />}>
-                <main>{children}</main>
-                <Toaster
-                  position="top-right"
-                  richColors
-                  expand={true}
-                  closeButton
-                />
-              </Suspense>
-            </StoreProvider>
+            <SocketProvider>
+              <StoreProvider>
+                <Suspense fallback={<Loading />}>
+                  {/* <SocketDebug /> */}
+                  <main>{children}</main>
+                  <Toaster
+                    position="top-right"
+                    richColors
+                    expand={true}
+                    closeButton
+                  />
+                </Suspense>
+              </StoreProvider>
+            </SocketProvider>
           </AuthProvider>
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryProvider>

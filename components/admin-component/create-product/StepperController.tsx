@@ -31,7 +31,7 @@ export default function StepperController({
       <Button
         type="button"
         variant={"secondary"}
-        className="relative bg-neutral-400 text-sm "
+        className="relative border border-brand-200 bg-transparent text-sm "
         onClick={handleCancel}
       >
         Cancel
@@ -81,7 +81,7 @@ export default function StepperController({
           <Button
             type="button"
             onClick={submitDetails}
-            className="bg-black text-brand-200"
+            className="bg-brand-200 text-brand-100"
           >
             <span className="inline-flex items-center gap-2">Next</span>
           </Button>

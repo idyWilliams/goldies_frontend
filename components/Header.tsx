@@ -48,6 +48,8 @@ const Header = () => {
 
   const { cart } = useCart();
 
+  console.log(auth, "auth");
+
   const handleClick = () => {
     setShow((show: boolean) => !show);
     setIsOpen(false);

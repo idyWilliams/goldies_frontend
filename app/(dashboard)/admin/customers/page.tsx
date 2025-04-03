@@ -326,7 +326,7 @@ export default function Page() {
                       <div className="mt-3">
                         <div className="flex flex-col gap-3">
                           <div className="flex items-center">
-                            <div className="mr-4 flex h-14 w-14 items-center justify-center rounded-full bg-black text-brand-200">
+                            <div className="mr-4 flex h-14 w-14 items-center justify-center rounded-full bg-brand-200 text-brand-100">
                               {initials(`${item.firstName} ${item.lastName}`)}
                             </div>
                             <div className="flex justify-between">
@@ -349,7 +349,7 @@ export default function Page() {
                               {moment(item.createdAt).format("MMM DD, YYYY")}
                             </span>
                             <button
-                              className="bg-black px-5 py-2 text-sm text-brand-200"
+                              className="border border-brand-200 bg-transparent px-5 py-2 text-sm text-brand-200"
                               onClick={() =>
                                 router.push(`/admin/customers/${item._id}`)
                               }

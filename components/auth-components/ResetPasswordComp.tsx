@@ -47,7 +47,7 @@ const ResetPasswordComp = ({ token }: { token: string }) => {
       const errorMessage =
         error.response?.data?.message ||
         "Password reset failed. Please try again.";
-      
+
       if (errorMessage.toLowerCase().includes("expired")) {
         setIsExpired(true);
       } else {
@@ -84,9 +84,9 @@ const ResetPasswordComp = ({ token }: { token: string }) => {
     <div className="mx-auto flex w-full items-center justify-center px-4 py-10 sm:w-[560px] md:h-[70vh] md:w-[640px] lg:w-[500px]">
       <div className="block w-full bg-white p-5 sm:mx-auto sm:w-[400px] sm:border sm:bg-white sm:p-6 sm:shadow-lg md:border-0 md:shadow-none">
         <div className="mb-6 flex flex-col items-center justify-center">
-          <span className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-[#BC8123] bg-opacity-10">
-            <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-[#BC8123] bg-opacity-10">
-              <Key className="" />
+          <span className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-brand-200 bg-opacity-10">
+            <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-brand-200 bg-opacity-10 text-brand-100">
+              <Key size={32} className="" />
             </span>
           </span>
           <h3 className="mt-5 text-[20px] font-bold">Set a new password</h3>
@@ -110,7 +110,7 @@ const ResetPasswordComp = ({ token }: { token: string }) => {
                 type={showPassword ? "text" : "password"}
                 id="newPassword"
                 placeholder="Enter your new password"
-                className="form-input w-full rounded border-none bg-neutral-100 placeholder:text-sm focus:border-neutral-900 focus:ring-0"
+                className="focus:border-brad-200 form-input w-full rounded border border-none border-neutral-500 bg-white placeholder:text-sm focus:ring-0"
                 autoComplete="new-password"
               />
               <button
@@ -141,7 +141,7 @@ const ResetPasswordComp = ({ token }: { token: string }) => {
                 type={showConfirmPassword ? "text" : "password"}
                 id="confirm"
                 placeholder="Confirm your new password"
-                className="form-input w-full rounded border-none bg-neutral-100 placeholder:text-sm focus:border-neutral-900 focus:ring-0"
+                className="focus:border-brad-200 form-input w-full rounded border border-none border-neutral-500 bg-white placeholder:text-sm focus:ring-0"
                 autoComplete="new-password"
               />
               <button
@@ -179,7 +179,7 @@ const ResetPasswordComp = ({ token }: { token: string }) => {
 
           <Button
             type="submit"
-            className="my-5 w-full rounded bg-neutral-900 py-2 text-sm text-brand-200 disabled:hover:cursor-not-allowed"
+            className="my-5 w-full rounded bg-brand-200 py-2 text-sm text-brand-100 disabled:hover:cursor-not-allowed"
             disabled={passwordMutation.isPending || !passesChecklist}
             aria-disabled={passwordMutation.isPending || !passesChecklist}
           >

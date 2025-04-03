@@ -17,9 +17,9 @@ const RatingRange = ({
   return (
     <div className="flex items-center gap-1">
       <span className="w-4 text-xs">{starValue}</span>
-      <div className="h-3 w-full overflow-hidden rounded-full bg-neutral-100">
+      <div className="h-3 w-full overflow-hidden rounded-full bg-neutral-200">
         <div
-          className="h-3 rounded-full bg-goldie-300"
+          className="h-3 rounded-full bg-amber-500"
           style={{ width: `${calculatePercentage()}%` }}
         ></div>
       </div>

@@ -34,9 +34,9 @@ import { cn } from "@/helper/cn";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MdAdminPanelSettings } from "react-icons/md";
 import { HiUserAdd } from "react-icons/hi";
-import { FaSpinner } from "react-icons/fa";
+import { FaSpinner, FaUserShield } from "react-icons/fa";
 import { CgSpinner } from "react-icons/cg";
-import { AiOutlineUserAdd } from "react-icons/ai";
+import { AiOutlineSetting, AiOutlineUserAdd } from "react-icons/ai";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import AdminDataTable, {
   Admin,
@@ -54,14 +54,21 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { useRouter, useSearchParams } from "next/navigation";
 
+type FormData = {
+  email: string;
+  role: "admin" | "super_admin";
+};
 // Validation schema for invite admin form
-const validationSchema = yup.object().shape({
+const validationSchema = yup.object({
   email: yup
     .string()
     .email("Please enter a valid email")
     .required("Email is required"),
+  role: yup
+    .string()
+    .oneOf(["admin", "super_admin"] as const, "Invalid role")
+    .required("Role is required"),
 });
-
 export default function AdminManagement() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -90,67 +97,77 @@ export default function AdminManagement() {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm({ resolver: yupResolver(validationSchema) });
+    watch,
+  } = useForm<FormData>({
+    resolver: yupResolver(validationSchema),
+    defaultValues: {
+      email: "",
+      role: "admin", // Default role is admin
+    },
+  });
 
-const updateUrlParams = (params: {
-  status?: string;
-  search?: string;
-  page?: number;
-}) => {
-  const url = new URL(window.location.href);
+  const updateUrlParams = (params: {
+    status?: string;
+    search?: string;
+    page?: number;
+  }) => {
+    const url = new URL(window.location.href);
 
-  // Track if anything actually changed
-  let hasChanges = false;
+    // Track if anything actually changed
+    let hasChanges = false;
 
-  if (params.status) {
-    const currentStatus = url.searchParams.get("status") || "all";
-    if (params.status !== currentStatus) {
-      if (params.status === "all") {
-        url.searchParams.delete("status");
-      } else {
-        url.searchParams.set("status", params.status);
+    if (params.status) {
+      const currentStatus = url.searchParams.get("status") || "all";
+      if (params.status !== currentStatus) {
+        if (params.status === "all") {
+          url.searchParams.delete("status");
+        } else {
+          url.searchParams.set("status", params.status);
+        }
+        hasChanges = true;
       }
-      hasChanges = true;
     }
-  }
 
-  if (params.search !== undefined) {
-    const currentSearch = url.searchParams.get("search") || "";
-    if (params.search !== currentSearch) {
-      if (params.search === "") {
-        url.searchParams.delete("search");
-      } else {
-        url.searchParams.set("search", params.search);
+    if (params.search !== undefined) {
+      const currentSearch = url.searchParams.get("search") || "";
+      if (params.search !== currentSearch) {
+        if (params.search === "") {
+          url.searchParams.delete("search");
+        } else {
+          url.searchParams.set("search", params.search);
+        }
+        hasChanges = true;
       }
-      hasChanges = true;
     }
-  }
 
-  if (params.page !== undefined) {
-    const currentPage = Number(url.searchParams.get("page")) || 1;
-    if (params.page !== currentPage) {
-      // Critical change: Skip if new page matches component state
-      // This prevents the URL update from triggering another state change
-      if (params.page === page) {
-        console.log("Skipping URL update - page already matches state:", page);
-        return;
-      }
+    if (params.page !== undefined) {
+      const currentPage = Number(url.searchParams.get("page")) || 1;
+      if (params.page !== currentPage) {
+        // Critical change: Skip if new page matches component state
+        // This prevents the URL update from triggering another state change
+        if (params.page === page) {
+          console.log(
+            "Skipping URL update - page already matches state:",
+            page,
+          );
+          return;
+        }
 
-      if (params.page === 1) {
-        url.searchParams.delete("page");
-      } else {
-        url.searchParams.set("page", params.page.toString());
+        if (params.page === 1) {
+          url.searchParams.delete("page");
+        } else {
+          url.searchParams.set("page", params.page.toString());
+        }
+        hasChanges = true;
       }
-      hasChanges = true;
     }
-  }
 
-  // Only update if something actually changed
-  if (hasChanges) {
-    console.log("Updating URL params to:", url.search);
-    router.replace(url.pathname + url.search, { scroll: false });
-  }
-};
+    // Only update if something actually changed
+    if (hasChanges) {
+      console.log("Updating URL params to:", url.search);
+      router.replace(url.pathname + url.search, { scroll: false });
+    }
+  };
 
   const getStatusFilter = (tab: string) => {
     switch (tab) {
@@ -297,19 +314,6 @@ const updateUrlParams = (params: {
     setAdminToAction(null);
   };
 
-  //   const handlePageChange = (newPage: number) => {
-  //     if (newPage !== page) {
-  //       setPage(newPage);
-  //       updateUrlParams({ page: newPage });
-  //     }
-  //   };
-
-  //   const handlePageChange = (newPage: number) => {
-  //     if (newPage === page) return;
-  //     console.log("Changing page to:", newPage);
-  //     setPage(newPage);
-  //     updateUrlParams({ page: newPage });
-  //   };
   const handlePageChange = (newPage: number) => {
     if (newPage === page) return;
 
@@ -339,7 +343,7 @@ const updateUrlParams = (params: {
   const handleAddNewAdmin = (data: any) => {
     inviteAdminMutation.mutate(data);
   };
-
+  const selectedRole = watch("role");
   const isMutationLoading =
     blockMutation.isPending ||
     deleteMutation.isPending ||
@@ -354,15 +358,15 @@ const updateUrlParams = (params: {
             <div className="items center flex gap-2 ">
               <MdAdminPanelSettings className="h-8 w-8 text-primary" />
               <div className="flex items-center gap-3">
-                <h1 className="text-2xl font-bold tracking-tight">
+                <h1 className="text-base font-bold tracking-tight md:text-2xl">
                   Admin Management
                 </h1>
-                <Badge className=" bg-brand-200 text-[10px]">
+                <Badge className=" hidden bg-brand-200 text-[10px] md:block">
                   {pagination.total}
                 </Badge>
               </div>
             </div>
-            <p className="text-muted-foreground">
+            <p className="text-sm text-muted-foreground md:text-base">
               Manage admin accounts and permissions
             </p>
           </div>
@@ -370,7 +374,7 @@ const updateUrlParams = (params: {
 
         <Dialog open={addAdminDialogOpen} onOpenChange={setAddAdminDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="flex cursor-pointer items-center gap-1 rounded-md bg-brand-200 text-brand-100 hover:bg-brand-200">
+            <Button className="flex cursor-pointer items-center gap-1 self-start rounded-md bg-brand-200 text-brand-100 hover:bg-brand-200">
               <HiUserAdd className="h-4 w-4" />
               <span>Add New Admin</span>
             </Button>
@@ -392,7 +396,7 @@ const updateUrlParams = (params: {
                 </DialogDescription>
               </div>
               <div className="w-full">
-                <form
+                {/* <form
                   id="signup"
                   className="flex flex-col gap-5 md:grid-cols-2"
                   onSubmit={handleSubmit(handleAddNewAdmin)}
@@ -434,13 +438,141 @@ const updateUrlParams = (params: {
                       "Send Invite"
                     )}
                   </Button>
+                </form> */}
+
+                <form
+                  className="w-full space-y-6"
+                  onSubmit={handleSubmit(handleAddNewAdmin)}
+                >
+                  <div>
+                    <label htmlFor="email" className="mb-1 block font-medium">
+                      Email Address
+                    </label>
+                    <input
+                      {...register("email")}
+                      type="email"
+                      className={cn(
+                        "form-input w-full bg-neutral-100 py-3 placeholder:text-neutral-500",
+                        errors?.email
+                          ? "border border-red-600 focus:border-red-600 focus:ring-0"
+                          : "border-0 focus:border-neutral-900 focus:ring-neutral-900",
+                      )}
+                      id="email"
+                      placeholder="admin@example.com"
+                    />
+                    {errors?.email && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.email?.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="mb-1 block font-medium">Assign Admin Type</label>
+                    <div className="grid grid-cols-2 gap-4">
+                      <label
+                        className={cn(
+                          "flex cursor-pointer flex-col items-center justify-center rounded-lg border border-neutral-200 p-4 transition-all",
+                          selectedRole === "admin"
+                            ? "border-brand-100 bg-brand-200 bg-opacity-10"
+                            : "hover:border-neutral-300",
+                        )}
+                      >
+                        <input
+                          type="radio"
+                          {...register("role")}
+                          value="admin"
+                          className="sr-only"
+                        />
+                        <FaUserShield
+                          size={24}
+                          className={cn(
+                            "mb-2",
+                            selectedRole === "admin"
+                              ? "text-brand-100"
+                              : "text-neutral-500",
+                          )}
+                        />
+                        <span
+                          className={cn(
+                            "font-medium",
+                            selectedRole === "admin"
+                              ? "text-brand-100"
+                              : "text-neutral-700",
+                          )}
+                        >
+                          Admin
+                        </span>
+                        <span className="mt-1 text-center text-xs text-neutral-500">
+                          Standard admin access
+                        </span>
+                      </label>
+
+                      <label
+                        className={cn(
+                          "flex cursor-pointer flex-col items-center justify-center rounded-lg border border-neutral-200 p-4 transition-all",
+                          selectedRole === "super_admin"
+                            ? "border-brand-100 bg-brand-200 bg-opacity-10"
+                            : "hover:border-neutral-300",
+                        )}
+                      >
+                        <input
+                          type="radio"
+                          {...register("role")}
+                          value="super_admin"
+                          className="sr-only"
+                        />
+                        <AiOutlineSetting
+                          size={24}
+                          className={cn(
+                            "mb-2",
+                            selectedRole === "super_admin"
+                              ? "text-brand-100"
+                              : "text-neutral-500",
+                          )}
+                        />
+                        <span
+                          className={cn(
+                            "font-medium",
+                            selectedRole === "super_admin"
+                              ? "text-brand-100"
+                              : "text-neutral-700",
+                          )}
+                        >
+                          Super Admin
+                        </span>
+                        <span className="mt-1 text-center text-xs text-neutral-500">
+                          Full system access
+                        </span>
+                      </label>
+                    </div>
+                    {errors?.role && (
+                      <p className="mt-1 text-sm text-red-600">
+                        {errors.role?.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <Button
+                    disabled={inviteAdminMutation.isPending}
+                    className="hover:bg-brand-200/90 h-auto w-full bg-brand-200 py-3 text-base font-medium text-brand-100"
+                  >
+                    {inviteAdminMutation.isPending ? (
+                      <div className="flex items-center justify-center gap-3">
+                        <CgSpinner className="animate-spin" size={20} />
+                        Sending Invitation...
+                      </div>
+                    ) : (
+                      "Send Invite"
+                    )}
+                  </Button>
                 </form>
               </div>
             </div>
           </DialogContent>
         </Dialog>
       </div>
-   <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
+      <hr className="my-3 mb-8 hidden border-0 border-t border-[#D4D4D4] md:block" />
       <div>
         <CardContent className="p-0">
           <AdminDataTable

@@ -106,7 +106,7 @@ const ConfirmDeletion = () => {
               type="text"
               value={confirmationText}
               onChange={(e) => setConfirmationText(e.target.value)}
-              className={`${error && "border-red-500"} form-input w-full rounded border p-2`}
+              className={`${error && "border-red-500"} form-input w-full rounded border p-2 focus:border-brand-200 focus:ring-brand-200`}
             />
             {error && <p className="text-sm text-red-500">{error}</p>}
           </div>
