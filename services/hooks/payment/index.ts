@@ -68,9 +68,11 @@ export const orderCreate = async (orderInfo: any) => {
   return response.data;
 };
 
-export const getOrdersByUser = async () => {
+export const getOrdersByUser = async (params?: OrderParams) => {
   try {
-    const response = await instance.get("/order/get_specific_user_order");
+    const response = await instance.get("/order/get_specific_user_order", {
+      params,
+    });
     return response.data;
   } catch (error) {
     console.log("error getting user specific order", error);

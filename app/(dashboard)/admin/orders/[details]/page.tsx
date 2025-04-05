@@ -288,20 +288,8 @@ export default function Page({ params }: { params: { details: string } }) {
                 </div>
               </div>
               <div className="rounded-md bg-brand-100 p-4">
-                <div className="">
-                  <h3 className="mb-3 text-[15px] font-semibold">Order Note</h3>
-                  <ul className="list-disc pl-4">
-                    {order?.orderedItems.map((item, i) => (
-                      <li key={i}>
-                        <span className="italic">{item?.product?.name}</span>-{" "}
-                        {item?.details}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
                 <div>
-                  <h3 className="my-3 text-[15px] font-semibold">
+                  <h3 className=" text-[15px] font-semibold">
                     Shipping Address
                   </h3>
                   <p className="mb-4 text-sm">
@@ -310,6 +298,33 @@ export default function Page({ params }: { params: { details: string } }) {
                     <br />
                     {order?.country}
                   </p>
+                </div>
+
+                <div className="">
+                  <h3 className=" text-[15px] font-semibold">Order Note</h3>
+                  {order &&
+                  order?.orderedItems.filter(
+                    (item) => item.product?.productType === "preorder",
+                  ).length > 0 ? (
+                    <ul className="list-disc pl-4">
+                      {order.orderedItems
+                        .filter(
+                          (item) => item.product?.productType === "preorder",
+                        )
+                        .map((item, i) => (
+                          <li key={i}>
+                            <span className="italic">
+                              {item?.product?.name}
+                            </span>
+                            - {item?.details}
+                          </li>
+                        ))}
+                    </ul>
+                  ) : (
+                    <p className="text-sm text-gray-500">
+                      No preorder items in this order
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -356,13 +371,13 @@ export default function Page({ params }: { params: { details: string } }) {
                           <div className="table-cell py-2 align-top">
                             {item?.quantity}
                           </div>
-                          <div className="table-cell py-3 pl-5 text-right align-top">
+                          <div className="table-cell py-3 pl-5 align-top">
                             {formatCurrency(
                               parseInt(item?.product?.maxPrice),
                               "en-NG",
                             )}
                           </div>
-                          <div className="table-cell py-3 pl-5 text-right align-top">
+                          <div className="table-cell py-3 pl-5 align-top">
                             {formatCurrency(
                               parseInt(item?.product?.maxPrice) *
                                 item?.quantity,
@@ -494,7 +509,7 @@ export default function Page({ params }: { params: { details: string } }) {
               </div>
             </div>
             <div className="rounded-md bg-white p-3">
-              <div className="mb-4 grid gap-2">
+              <div className=" grid gap-2">
                 <div className="flex justify-between">
                   <span className="font-semibold">
                     Order ID: {order?.orderId}
@@ -510,7 +525,7 @@ export default function Page({ params }: { params: { details: string } }) {
                 </p>
               </div>
             </div>
-            <div className="rounded-md bg-white p-3">
+            <div className="rounded-md bg-white px-3">
               <div>
                 <h3 className="font-semibold">Billing Information</h3>
                 <div className="my-3 border-b border-neutral-400"></div>
@@ -526,6 +541,32 @@ export default function Page({ params }: { params: { details: string } }) {
                 </p>
                 <div className="mb-3">{`+${order?.phoneNumber}`}</div>
                 <div className="mb-3">{order?.email}</div>
+              </div>
+
+              <div className="mt-8">
+                <h3 className=" text-[15px] font-semibold">Order Note</h3>
+                <div className="my-3 border-b border-neutral-400"></div>
+                {order &&
+                order?.orderedItems.filter(
+                  (item) => item.product?.productType === "preorder",
+                ).length > 0 ? (
+                  <ul className="list-disc pl-4">
+                    {order.orderedItems
+                      .filter(
+                        (item) => item.product?.productType === "preorder",
+                      )
+                      .map((item, i) => (
+                        <li key={i}>
+                          <span className="italic">{item?.product?.name}</span>-{" "}
+                          {item?.details}
+                        </li>
+                      ))}
+                  </ul>
+                ) : (
+                  <p className="text-sm text-gray-500">
+                    No preorder items in this order
+                  </p>
+                )}
               </div>
             </div>
           </div>

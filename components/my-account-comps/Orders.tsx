@@ -2,32 +2,19 @@ import { Skeleton } from "@/components/ui/skeleton"; // Import Skeleton from Sha
 import { cn } from "@/helper/cn";
 import { formatCurrency } from "@/helper/formatCurrency";
 import { getOrderColor } from "@/helper/getOrderColor";
-import { IOrder } from "@/interfaces/order.interface";
-import { getOrdersByUser } from "@/services/hooks/payment";
-import { useQuery } from "@tanstack/react-query";
-import { Eye, ShoppingCart } from "iconsax-react";
+import useSpecificUserOrders from "@/services/hooks/payment/useSpecificUserOrders";
+import { Eye } from "iconsax-react";
 import { ArchiveX } from "lucide-react";
 import moment from "moment";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
-import { BsThreeDots } from "react-icons/bs";
 
 const Orders = () => {
   const router = useRouter();
-  const {
-    data: ordersResponse,
-    isPending,
-    isSuccess,
-  } = useQuery({
-    queryKey: ["ordersByUser"],
-    queryFn: getOrdersByUser,
+  const { orders, isLoading, isSuccess } = useSpecificUserOrders({
+    page: 1,
+    limit: 10,
   });
-
-  const processedOrders = useMemo<IOrder[]>(() => {
-    if (!ordersResponse?.userOrder) return [];
-    return ordersResponse?.userOrder as IOrder[];
-  }, [ordersResponse?.userOrder]);
 
   return (
     <div>
@@ -36,13 +23,14 @@ const Orders = () => {
 
         <button
           onClick={() => router.push("/my-orders")}
-          disabled={processedOrders?.length < 1}
+          disabled={orders && orders?.length < 1}
           className="cursor-pointer rounded-md bg-brand-200 px-5 py-2 text-sm text-brand-100 disabled:cursor-not-allowed disabled:opacity-40"
         >
           See all
         </button>
       </div>
-      {isSuccess && processedOrders?.length > 0 ? (
+
+      {isSuccess && orders && orders?.length > 0 ? (
         <>
           <div>
             <div className="table w-full">
@@ -62,7 +50,7 @@ const Orders = () => {
                 </div>
               </div>
 
-              {isPending ? (
+              {isLoading ? (
                 // Skeleton Loading Placeholder
                 <div className="table-row-group">
                   {[...Array(5)].map((_, index) => (
@@ -86,7 +74,7 @@ const Orders = () => {
                   ))}
                 </div>
               ) : (
-                processedOrders.slice(0, 10).map((order, index) => (
+                orders.map((order, index) => (
                   <div className="table-row-group" key={index}>
                     <div
                       className={cn(

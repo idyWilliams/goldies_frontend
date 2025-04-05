@@ -73,7 +73,7 @@ const Testimonials = () => {
             data-aos="fade-down"
             className="text-center text-2xl font-semibold capitalize text-brand-100  md:text-center  md:text-3xl "
           >
-            What our Customers said about Goldies
+            What our Customers said about The Cake App
           </h2>
 
           <div className="pb-10 pt-8">
