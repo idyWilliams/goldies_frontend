@@ -293,7 +293,7 @@ const ProductReview = ({ product }: { product: IProduct }) => {
             </div>
             <Button
               type="submit"
-              className="text-brand-200"
+              className="bg-brand-200 text-brand-100 hover:bg-brand-200"
               disabled={
                 createReviewMutation.isPending || updateReviewMutation.isPending
               }
