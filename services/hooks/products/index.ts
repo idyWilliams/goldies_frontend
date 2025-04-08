@@ -162,3 +162,17 @@ export const deleteProductReview = async (reviewId: string) => {
   });
   return response.data;
 };
+
+// delete review
+export const likeReview = async (reviewId: string) => {
+  const response = await instance.post(
+    `/reviews/${reviewId}/like`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    },
+  );
+  return response.data;
+};

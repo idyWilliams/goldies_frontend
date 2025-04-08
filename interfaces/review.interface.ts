@@ -15,9 +15,17 @@ export interface UpdateReviewDTO {
 export interface IReview {
   _id: string;
   user: IUser;
-  product: IProduct
+  product: IProduct;
   rating: number;
-  comment: string
+  comment: string;
+  likes: IUser[];
   createdAt: string;
   updatedAt: string;
+}
+
+export interface LikeReviewResponse {
+  error: boolean;
+  message: string;
+  liked?: boolean;
+  likesCount: number;
 }
