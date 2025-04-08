@@ -113,7 +113,8 @@ const CategoriesCards = ({
               </div>
             </div>
             <div className="mt-4 space-y-2">
-              <h3 className="font-semibold">Subcategories</h3>
+              <h3 className="font-semibold">Products ({item?.productCount})</h3>
+              <h3 className="font-semibold">Subcategories ({item?.subCategoryCount})</h3>
               {!item?.subCategories ||
                 (item?.subCategories?.length < 1 && (
                   <p>There are no subcategories </p>
