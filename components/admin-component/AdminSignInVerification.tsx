@@ -11,18 +11,28 @@ import { ADMIN_TOKEN_NAME } from "@/utils/constants";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
 import Cookies from "js-cookie";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { RiUserSharedLine } from "react-icons/ri";
 import { toast } from "sonner";
 import * as yup from "yup";
+import { useEffect } from "react";
 
 const validationSchema = yup.object().shape({
   otp: yup.string().required("otp required"),
 });
 
-const AdminSignInVerification = ({ email }: { email: string }) => {
+interface AdminSignInVerificationProps {
+  email: string;
+  onResendVerification: () => void;
+  isResending: boolean;
+}
+
+const AdminSignInVerification: React.FC<AdminSignInVerificationProps> = ({
+  email,
+  onResendVerification,
+  isResending,
+}) => {
   const { setIsLogin, setRole, setAuth } = useAuth();
   const queryParams = useSearchParams();
   const router = useRouter();
@@ -38,9 +48,23 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
     formState: { errors },
     reset,
     control,
+    watch,
   } = useForm({
     resolver: yupResolver(validationSchema),
+    defaultValues: {
+      otp: "",
+    },
   });
+
+  const otpValue = watch("otp");
+
+  useEffect(() => {
+    if (otpValue && otpValue.length === 6) {
+      setTimeout(() => {
+        handleSubmit(onSubmit)();
+      }, 100);
+    }
+  }, [otpValue]);
 
   const onSubmit = async (data: any) => {
     otpVerify
@@ -73,7 +97,7 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
 
   return (
     <>
-      <div className="flex  flex-col items-center border bg-white p-6 py-12 shadow-lg  sm:mx-auto sm:w-[440px]">
+      <div className="flex flex-col items-center border bg-white p-6 py-12 shadow-lg sm:mx-auto sm:w-[440px]">
         <span className="flex h-20 w-20 items-center justify-center rounded-full bg-brand-200 bg-opacity-50">
           <span className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-200 text-brand-100">
             <RiUserSharedLine size={30} />
@@ -87,12 +111,17 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
         </div>
         <div className="w-full">
           <form className="grid gap-5" onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex flex-col items-center justify-center   ">
+            <div className="flex flex-col items-center justify-center">
               <Controller
                 name="otp"
                 control={control}
                 render={({ field: { value, onChange } }) => (
-                  <InputOTP maxLength={6} onChange={onChange} value={value}>
+                  <InputOTP
+                    maxLength={6}
+                    onChange={onChange}
+                    value={value}
+                    disabled={otpVerify.isPending}
+                  >
                     <InputOTPGroup className="gap-5">
                       <InputOTPSlot index={0} />
                       <InputOTPSlot index={1} />
@@ -108,21 +137,26 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
                 <p className="text-red-600">{errors?.otp?.message} </p>
               )}
             </div>
+
+            {/* Submit button is still available as a fallback */}
             <Button
-              disabled={otpVerify?.isPending}
+              disabled={
+                otpVerify?.isPending ||
+                (otpValue?.length === 6 && otpVerify.isIdle)
+              }
               className="mt-3 h-auto w-full rounded-none border border-transparent bg-brand-200 py-3 text-base text-brand-100 hover:border hover:border-brand-200 hover:bg-transparent hover:text-brand-200"
               type="submit"
             >
-              {otpVerify?.isPending ? "Loading...." : "Submit"}
+              {otpVerify?.isPending ? "Verifying..." : "Submit"}
             </Button>
 
             <div className="flex items-center justify-center">
-              <Link
-                href="/admin-signin"
-                className="text-center text-sm hover:text-goldie-400"
+              <p
+                onClick={onResendVerification}
+                className="cursor-pointer text-center text-sm hover:text-goldie-400"
               >
-                Resend code
-              </Link>
+                {isResending ? "Resending..." : "Resend code"}
+              </p>
             </div>
           </form>
         </div>

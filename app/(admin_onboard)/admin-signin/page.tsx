@@ -25,6 +25,7 @@ const AdminLogin = () => {
   const [visible, setVisible] = useState(false);
   const [email, setEmail] = useState<string>("");
   const authContext = useContext(AuthContext);
+  const [loginData, setLoginData] = useState(null);
 
   // @ts-ignore
   const { setIsLogin } = authContext;
@@ -48,7 +49,7 @@ const AdminLogin = () => {
 
   const onSubmit = (data: any) => {
     setEmail(data.email);
-
+    setLoginData(data);
     adminLogin
       .mutateAsync(data)
       .then((res: any) => {
@@ -59,13 +60,30 @@ const AdminLogin = () => {
       });
   };
 
+  const handleResendVerification = () => {
+    if (loginData) {
+      adminLogin
+        .mutateAsync(loginData)
+        .then((res: any) => {
+          toast.success("Verification code resent successfully!");
+        })
+        .catch((err: any) => {
+          toast.error(err?.response?.data?.message || err?.message);
+        });
+    }
+  };
+
   // AUTO REDIRECT TO DASHBOARD IF TOKEN IS STILL VALID
   useEffect(() => {}, []);
 
   return (
     <>
       {adminLogin.isSuccess ? (
-        <AdminSignInVerification email={email} />
+        <AdminSignInVerification
+          email={email}
+          onResendVerification={handleResendVerification}
+          isResending={adminLogin.isPending}
+        />
       ) : (
         <>
           <div className="flex w-full max-w-md flex-col items-center border bg-white px-6 py-12 shadow-lg sm:mx-auto sm:w-[440px]">
@@ -164,7 +182,7 @@ const AdminLogin = () => {
 
                 <Button
                   disabled={adminLogin?.isPending}
-                  className="mt-3 h-auto w-full rounded-none bg-brand-200 py-3 text-base text-brand-100 border border-transparent hover:border hover:border-brand-200 hover:bg-transparent hover:text-brand-200"
+                  className="mt-3 h-auto w-full rounded-none border border-transparent bg-brand-200 py-3 text-base text-brand-100 hover:border hover:border-brand-200 hover:bg-transparent hover:text-brand-200"
                   type="submit"
                 >
                   {adminLogin?.isPending ? "Loading...." : "Sign In"}
