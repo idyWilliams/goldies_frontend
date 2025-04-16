@@ -1,27 +1,32 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import StarRating from "../StarRating";
-import RatingRange from "./RatingRange";
-import { useForm } from "react-hook-form";
-import * as yup from "yup";
-import { useEffect, useState } from "react";
+import { useAuth } from "@/context/AuthProvider";
 import { IProduct } from "@/interfaces/product.interface";
+import {
+  IReview,
+  UpdateReviewDTO
+} from "@/interfaces/review.interface";
 import {
   createProductReview,
   deleteProductReview,
   getAllProductReviews,
+  likeReview,
   updateProductReview,
 } from "@/services/hooks/products";
-import { AxiosError } from "axios";
 import { ErrorResponse } from "@/types/products";
-import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
-import { Button } from "../ui/button";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { IReview, UpdateReviewDTO } from "@/interfaces/review.interface";
-import ReviewSkeleton from "./reviews/ReviewSkeleton";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { Like1 } from "iconsax-react";
+import { Loader2 } from "lucide-react";
 import moment from "moment";
-import { useAuth } from "@/context/AuthProvider";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import * as yup from "yup";
+import StarRating from "../StarRating";
+import { Button } from "../ui/button";
+import RatingRange from "./RatingRange";
+import ReviewSkeleton from "./reviews/ReviewSkeleton";
 
 const reviewSchema = yup.object().shape({
   rating: yup.number().required("Rating is required"),
@@ -111,6 +116,18 @@ const ProductReview = ({ product }: { product: IProduct }) => {
     },
   });
 
+  const likeReviewMutation = useMutation({
+    mutationFn: likeReview,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["reviews", product?._id] });
+    },
+    onError: (error: AxiosError<ErrorResponse>) => {
+      const errorMessage =
+        error.response?.data?.message || "Failed to like review";
+      toast.error(`Error: ${errorMessage}`);
+    },
+  });
+
   const handleSubmitReview = handleSubmit((data) => {
     if (reviewId) {
       // Update existing review
@@ -129,6 +146,10 @@ const ProductReview = ({ product }: { product: IProduct }) => {
 
   const handleDeleteReview = (reviewId: string) => {
     deleteReviewMutation.mutate(reviewId);
+  };
+
+  const handleLikeReview = (reviewId: string) => {
+    likeReviewMutation.mutate(reviewId);
   };
 
   if (isLoading) {
@@ -233,11 +254,22 @@ const ProductReview = ({ product }: { product: IProduct }) => {
                 </span>
               </div>
               <p className="my-3">{review.comment}</p>
-              <span className="text-sm">
-                by{" "}
-                {review.user?.firstName + " " + review?.user?.lastName ||
-                  "Anonymous"}
-              </span>
+
+              <div className="flex items-center justify-between">
+                <span className="text-sm">
+                  by{" "}
+                  {review.user?.firstName + " " + review?.user?.lastName ||
+                    "Anonymous"}
+                </span>
+                <button
+                  onClick={() => handleLikeReview(review._id)}
+                  className="flex items-center gap-1 text-sm"
+                  disabled={likeReviewMutation.isPending}
+                >
+                  <Like1 size={16} />
+                  {review.likes.length || 0}
+                </button>
+              </div>
 
               {/* Conditionally render Edit and Delete buttons */}
               {auth?.user && auth?.user._id === review.user?._id && (

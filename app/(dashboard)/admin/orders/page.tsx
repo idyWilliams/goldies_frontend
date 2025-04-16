@@ -4,17 +4,24 @@ import DataTable from "@/components/admin-component/DataTable";
 import MobileOrderCard from "@/components/admin-component/MobileOrderCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { formatCurrency } from "@/helper/formatCurrency";
 import { IOrder, OrderParams } from "@/interfaces/order.interface";
 import { cn } from "@/lib/utils";
 import useOrders from "@/services/hooks/payment/useOrders";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Eye, ShoppingBag } from "iconsax-react";
-import { Loader2Icon, Undo2Icon } from "lucide-react";
+import { CalendarIcon, Loader2Icon, Undo2Icon } from "lucide-react";
 import moment from "moment";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { DateRange } from "react-day-picker";
 import { CiSearch } from "react-icons/ci";
 import { IoMdClose } from "react-icons/io";
 
@@ -57,8 +64,7 @@ export default function OrderPage() {
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [searchValue, setSearchValue] = useState("");
   const [debouncedSearchValue, setDebouncedSearchValue] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [date, setDate] = useState<DateRange | undefined>(undefined);
 
   const itemsPerPage = 10;
 
@@ -83,10 +89,9 @@ export default function OrderPage() {
       limit: itemsPerPage,
       status: selectedStatus === "All" ? "" : selectedStatus.toLowerCase(),
     };
-
-    if (startDate && endDate) {
-      newParams.startDate = startDate;
-      newParams.endDate = endDate;
+    if (date?.from && date?.to) {
+      newParams.startDate = moment(date.from).format("YYYY-MM-DD");
+      newParams.endDate = moment(date.to).format("YYYY-MM-DD");
     }
 
     if (debouncedSearchValue) {
@@ -115,9 +120,9 @@ export default function OrderPage() {
       currentParams.delete("status");
     }
 
-    if (startDate && endDate) {
-      currentParams.set("startDate", startDate);
-      currentParams.set("endDate", endDate);
+    if (date?.from && date?.to) {
+      currentParams.set("startDate", moment(date.from).format("YYYY-MM-DD"));
+      currentParams.set("endDate", moment(date.to).format("YYYY-MM-DD"));
     } else {
       currentParams.delete("startDate");
       currentParams.delete("endDate");
@@ -133,8 +138,7 @@ export default function OrderPage() {
     router,
     searchParams,
     selectedStatus,
-    startDate,
-    endDate,
+    date,
   ]);
 
   const { orders, isLoading, isError, refetch, totalPages, totalOrders } =
@@ -250,30 +254,51 @@ export default function OrderPage() {
             </label>
           </div>
 
-          {/* Date Filters */}
+          {/* Date Range Picker */}
           <div className="flex flex-wrap items-center gap-2">
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="rounded-[50px] px-4 py-2 placeholder:text-sm focus:border-black focus:ring-black"
-            />
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="rounded-[50px] px-4 py-2 placeholder:text-sm focus:border-black focus:ring-black"
-            />
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  id="date"
+                  variant={"outline"}
+                  className={cn(
+                    "w-[250px] justify-start rounded-[50px] border border-black px-4 py-3 text-left placeholder:text-sm focus:border-black focus:ring-black",
+                    !date && "text-muted-foreground",
+                  )}
+                >
+                  <CalendarIcon className="mr-2" />
+                  {date?.from ? (
+                    date.to ? (
+                      <>
+                        {moment(date.from).format("MMM DD, YYYY")} -{" "}
+                        {moment(date.to).format("MMM DD, YYYY")}
+                      </>
+                    ) : (
+                      moment(date.from).format("MMM DD, YYYY")
+                    )
+                  ) : (
+                    <span>Pick a date range</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="end">
+                <Calendar
+                  initialFocus
+                  mode="range"
+                  defaultMonth={date?.from}
+                  selected={date}
+                  onSelect={setDate}
+                  numberOfMonths={2}
+                />
+              </PopoverContent>
+            </Popover>
             <button
-              onClick={() => {
-                setStartDate("");
-                setEndDate("");
-              }}
+              onClick={() => setDate(undefined)}
               className={cn(
                 "flex items-center gap-1 rounded-[50px] bg-gray-200 px-4 py-2 hover:bg-gray-300",
-                !startDate && !endDate && "cursor-not-allowed opacity-50",
+                !date && "cursor-not-allowed opacity-50",
               )}
-              disabled={!startDate && !endDate}
+              disabled={!date}
             >
               <Undo2Icon size={16} />
               Reset

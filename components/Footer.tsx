@@ -276,9 +276,22 @@ const Footer = () => {
       </div>
       <div className="mt-5 flex items-center bg-neutral-700 py-3">
         <div className="wrapper flex w-full flex-col-reverse justify-between gap-5 md:flex-row md:items-center">
-          <p className="text-xs text-white md:text-sm">
-            {getYear()} &copy; The Cake App. All Rights Reserved
-          </p>
+          <div className="flex flex-col gap-1 md:flex-row md:items-center md:gap-2">
+            <p className="text-xs text-white md:text-sm">
+              {getYear()} &copy; The Cake App. All Rights Reserved
+            </p>
+            <p className="text-xs text-white/70 md:text-sm">
+              • Built with <span className="mx-0.5 text-red-400">❤</span> by{" "}
+              <Link
+                href="https://www.isentrytechnologies.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-colors hover:text-white hover:underline"
+              >
+                iSentry Technologies
+              </Link>
+            </p>
+          </div>
           <div className="inline-flex gap-8">
             <Link href={"#"} className="text-xs text-white md:text-sm">
               Terms of Service
