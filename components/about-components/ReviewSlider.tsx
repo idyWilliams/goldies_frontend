@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation } from "swiper/modules";
@@ -15,21 +15,21 @@ const reviews = [
     client: "Sarah Johnson",
     title: "Deliciously Decadent Treat!",
     comment:
-      "Goldis Cake offers a delightful range of flavors and textures. Each bite is like a symphony of sweetness that melts in your mouth. Simply divine!",
+      "Cake App offers a delightful range of flavors and textures. Each bite is like a symphony of sweetness that melts in your mouth. Simply divine!",
     platform: "Facebook",
   },
   {
     client: "Michael Chang",
     title: "Sensational Sweetness in Every Slice!",
     comment:
-      "Goldis Cake truly knows how to satisfy a sweet tooth. From the moist sponge to the rich frosting, every slice is bursting with flavor. It's a dessert lover's dream come true!",
+      "Cake App truly knows how to satisfy a sweet tooth. From the moist sponge to the rich frosting, every slice is bursting with flavor. It's a dessert lover's dream come true!",
     platform: "twitter",
   },
   {
     client: "Emily Rodriguez",
     title: "Heavenly Indulgence on a Plate!",
     comment:
-      "Indulging in Goldis Cake is like taking a trip to dessert paradise. The cakes are moist, the toppings are scrumptious, and every bite is a taste sensation. Pure bliss!",
+      "Indulging in Cake App is like taking a trip to dessert paradise. The cakes are moist, the toppings are scrumptious, and every bite is a taste sensation. Pure bliss!",
     platform: "Facebook",
   },
 ];

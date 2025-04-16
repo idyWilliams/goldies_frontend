@@ -45,7 +45,7 @@ const Hero = () => {
         {
           icon: <Book size={24} variant="Bold" />,
           value: "Loading...",
-          title: "Cakes Recipes",
+          title: "Cakes Categories",
         },
       ];
     }
@@ -65,8 +65,8 @@ const Hero = () => {
       },
       {
         icon: <Book size={24} variant="Bold" />,
-        value: recipesCount > 0 ? `${recipesCount}+` : "0",
-        title: "Cakes Recipes",
+        value: recipesCount > 0 ? `${recipesCount}` : "0",
+        title: "Cakes Categories",
       },
     ];
   }, [data, isLoading, isError]);
