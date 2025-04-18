@@ -158,25 +158,36 @@ export const unBlockAdmin = async (id: string) => {
   return response.data;
 };
 
+export const refreshToken = async () => {
+  const res = await instance.post("/admin/refresh-token");
+  return res.data;
+};
+
 // LOGOUT ADMIN
 export const adminLogOut = async (
   router: AppRouterInstance,
   currentPath?: string,
 ) => {
-  localStorage.setItem("isLogin", JSON.stringify(false));
-  localStorage.removeItem("adminToken");
-  localStorage.removeItem("admin");
-  Cookies.remove(ADMIN_TOKEN_NAME);
+  try {
+    await instance.post("/admin/logout");
+  } catch (error) {
+    console.error("Logout API error:", error);
+  } finally {
+    localStorage.setItem("isLogin", JSON.stringify(false));
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("admin");
+    Cookies.remove(ADMIN_TOKEN_NAME);
 
-  let signinUrl = "/admin-signin";
+    let signinUrl = "/admin-signin";
 
-  if (
-    currentPath &&
-    !currentPath.startsWith("/admin-signin") &&
-    currentPath.trim() !== ""
-  ) {
-    signinUrl += `?redirect_url=${encodeURIComponent(currentPath)}`;
+    if (
+      currentPath &&
+      !currentPath.startsWith("/admin-signin") &&
+      currentPath.trim() !== ""
+    ) {
+      signinUrl += `?redirect_url=${encodeURIComponent(currentPath)}`;
+    }
+
+    router.replace(signinUrl);
   }
-
-  router.replace(signinUrl);
 };

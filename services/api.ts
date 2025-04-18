@@ -5,7 +5,6 @@ export const BASEURL =
     ? process.env.NEXT_PUBLIC_PRODUCTION_API_BASE_URL
     : process.env.NEXT_PUBLIC_API_BASE_URL;
 
-
 // Firebase storage URL
 export const ImageStorageUrl = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_API;
 
@@ -40,5 +39,6 @@ instance.interceptors.request.use((config) => {
 //   baseURL: BASEURL,
 //   headers: instance.defaults.headers,
 // });
+
 
 export default instance;
