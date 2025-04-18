@@ -134,12 +134,14 @@ const Testimonials = () => {
               })}
             </div>
 
-            <Button
-              variant={"outline"}
-              className="mx-auto mt-10 block h-auto w-[150px] border border-brand-100 bg-transparent py-3 text-base font-normal uppercase text-brand-100 "
-            >
-              View More
-            </Button>
+            <Link href={'/testimonials'}>
+              <Button
+                variant={"outline"}
+                className="mx-auto mt-10 block h-auto w-[150px] border border-brand-100 bg-transparent py-3 text-base font-normal uppercase text-brand-100 "
+              >
+                View More
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
