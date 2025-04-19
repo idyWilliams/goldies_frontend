@@ -1,147 +1,183 @@
+// OrderAnalytics.tsx
 "use client";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
+import React, { useState } from "react";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  TooltipProps,
+} from "recharts";
+import { PackageIcon, Calendar, ChevronDown } from "lucide-react";
+import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useMediaQuery } from "react-responsive";
 
-const chartData = [
-  { month: "January", orders: 186 },
-  { month: "February", orders: 305 },
-  { month: "March", orders: 237 },
-  { month: "April", orders: 73 },
-  { month: "May", orders: 209 },
-  { month: "June", orders: 214 },
-  { month: "July", orders: 186 },
-  { month: "August", orders: 305 },
-  { month: "September", orders: 237 },
-  { month: "October", orders: 73 },
-  { month: "November", orders: 209 },
-  { month: "December", orders: 214 },
-];
+interface OrderAnalyticsProps {
+  data?: Array<{
+    month: string;
+    orders: number;
+  }>;
+}
 
-const chartConfig = {
-  orders: {
-    label: "Orders",
-    color: "#4A90E2",
-  },
-} satisfies ChartConfig;
-
-console.log(chartConfig.orders);
-
-export function OrderAnalytics() {
+export const OrderAnalytics = ({ data = [] }: OrderAnalyticsProps) => {
+  const [timeRange, setTimeRange] = useState("This Year");
   const isTablet = useMediaQuery({ minWidth: 768, maxWidth: 1224 });
   const isMobile = useMediaQuery({ maxWidth: 767 });
 
-  const bar = () => {
-    if (isMobile) {
-      return 10;
-    } else if (isTablet) {
-      return 30;
-    } else {
-      return 30;
-    }
-  };
-  return (
-    <Card className="rounded-xl border bg-white p-4 shadow-none">
-      <CardHeader>
-        <CardTitle className="">Order Analytics</CardTitle>
-      </CardHeader>
-      <CardContent className="p-0">
-        <ChartContainer
-          config={chartConfig}
-          className="max-h-[300px] min-h-[200px] w-full pl-0 lg:hidden"
-        >
-          <BarChart
-            accessibilityLayer
-            data={chartData}
-            margin={{
-              left: 0,
-              right: 0,
-            }}
-          >
-            <CartesianGrid
-              vertical={false}
-              strokeOpacity={0.9}
-              stroke="hsl(0deg 0% 28.5% / 50%)"
-            />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={true}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
-            {/* <YAxis
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickCount={10}
-            /> */}
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent indicator="dot" color="#2a9d90" />}
-            />
-            <Bar
-              dataKey="orders"
-              fill={chartConfig.orders.color}
-              radius={0}
-              barSize={bar()}
-            />
-          </BarChart>
-        </ChartContainer>
+  // Ensure we have data to display
+  const chartData =
+    data && data.length > 0
+      ? data
+      : Array(12)
+          .fill(0)
+          .map((_, i) => ({
+            month: [
+              "Jan",
+              "Feb",
+              "Mar",
+              "Apr",
+              "May",
+              "Jun",
+              "Jul",
+              "Aug",
+              "Sep",
+              "Oct",
+              "Nov",
+              "Dec",
+            ][i],
+            orders: 0,
+          }));
 
-        {/* DESKTOP */}
-        <ChartContainer
-          config={chartConfig}
-          className="hidden min-h-[200px] w-full pl-0 lg:block lg:max-h-[400px]"
+  // Calculate total orders
+  const totalOrders = chartData.reduce((sum, item) => sum + item.orders, 0);
+
+  // Get bar size based on screen size
+  const getBarSize = () => {
+    if (isMobile) return 12;
+    if (isTablet) return 30;
+    return 40;
+  };
+
+  // Custom tooltip component
+  const CustomTooltip = ({
+    active,
+    payload,
+    label,
+  }: TooltipProps<number, string>) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="rounded-lg border bg-white p-3 shadow-md">
+          <p className="font-medium text-gray-800">{label}</p>
+          <p className="mt-1 font-semibold text-brand-200">
+            {payload[0].value} Orders
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  return (
+    <Card className="rounded-xl border shadow-sm">
+      <CardHeader className="flex flex-row items-center justify-between">
+        <div>
+          <div className="flex items-center gap-2">
+            <PackageIcon size={18} className="text-brand-200" />
+            <CardTitle className="text-lg font-bold text-gray-800">
+              Order Analytics
+            </CardTitle>
+          </div>
+          <p className="mt-1 text-sm text-gray-500">
+            Monthly order performance
+          </p>
+        </div>
+
+        <DropdownMenu>
+          <DropdownMenuTrigger className="flex items-center gap-2 rounded-lg border bg-white px-3 py-2 text-sm focus:outline-none">
+            <Calendar size={16} />
+            <span>{timeRange}</span>
+            <ChevronDown size={16} className="opacity-70" />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem onClick={() => setTimeRange("This Year")}>
+              This Year
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setTimeRange("Last 6 Months")}>
+              Last 6 Months
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setTimeRange("Last 3 Months")}>
+              Last 3 Months
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </CardHeader>
+
+      <CardContent>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="mb-6 rounded-lg bg-gradient-to-br from-indigo-50 to-blue-50 p-4"
         >
-          <BarChart
-            accessibilityLayer
-            data={chartData}
-            margin={{
-              left: 0,
-              right: 0,
-            }}
-          >
-            <CartesianGrid
-              vertical={false}
-              strokeOpacity={0.9}
-              stroke="hsl(0deg 0% 28.5% / 50%)"
-              strokeDasharray="3 3"
-              opacity={0.5}
-            />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={true}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
-            <YAxis
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickCount={10}
-            />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent indicator="dot" color="#2a9d90" />}
-            />
-            <Bar
-              dataKey="orders"
-              fill={chartConfig.orders.color}
-              radius={0}
-              barSize={40}
-            />
-          </BarChart>
-        </ChartContainer>
+          <div className="text-sm text-gray-600">Total Orders</div>
+          <div className="mt-2 text-2xl font-bold text-gray-900">
+            {totalOrders}
+          </div>
+
+          <div className="mt-3 flex items-center gap-1 text-sm">
+            <PackageIcon size={16} className="text-brand-200" />
+            <span className="font-medium text-brand-200">
+              {totalOrders > 0 ? "Active Orders" : "No orders yet"}
+            </span>
+          </div>
+        </motion.div>
+
+        <div className="h-80 w-full">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={chartData}
+              margin={{ top: 10, right: 0, left: 0, bottom: 20 }}
+            >
+              <CartesianGrid
+                strokeDasharray="3 3"
+                vertical={false}
+                stroke="#E5E7EB"
+              />
+              <XAxis
+                dataKey="month"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: "#6B7280", fontSize: 12 }}
+                tickFormatter={(value) => value.substring(0, 3)}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: "#6B7280", fontSize: 12 }}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              <Bar
+                dataKey="orders"
+                fill="#4F46E5"
+                barSize={getBarSize()}
+                radius={[4, 4, 0, 0]}
+                animationDuration={1500}
+              />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </CardContent>
     </Card>
   );
-}
+};

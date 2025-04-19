@@ -1,49 +1,84 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+// OverviewCard.tsx
+import React from "react";
+import { motion } from "framer-motion";
+import { TrendingDown, TrendingUp } from "lucide-react";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { formatCurrency } from "@/helper/formatCurrency";
-import { BsArrowUpShort } from "react-icons/bs";
 
-const OverviewCard = ({ data }: any) => {
+interface OverviewCardProps {
+  data: {
+    title: string;
+    icon: any;
+    value: number;
+    increaseRate: number;
+    lastValue: number;
+    isPrice: boolean;
+  };
+}
+
+export const OverviewCard = ({ data }: OverviewCardProps) => {
+  const isPositiveChange = data.increaseRate >= 0;
+
+  const formatValue = (value: number, isPrice: boolean) => {
+    if (isPrice) {
+      return formatCurrency(value, "en-NG");
+    }
+    return value.toLocaleString();
+  };
+
   return (
-    <Card className="w-full border-0 bg-brand-100 md:w-[400px] xl:w-full">
-      <CardHeader className="pb-0">
-        <CardTitle>
-          <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-brand-200 text-brand-100">
-            <data.icon />
-          </span>
-          <p className="mt-3 text-lg text-brand-200">{data?.title}</p>
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="mt-2 flex h-auto items-center gap-3 pb-0">
-        <div className="text-2xl font-bold text-brand-200">
-          {data.isPrice
-            ? formatCurrency(parseInt(data?.value), "en-NG")
-            : data?.value?.toLocaleString()}
+    <Card className="overflow-hidden border shadow-sm transition-all duration-300 hover:shadow-md">
+      <CardHeader className="bg-gradient-to-r from-indigo-50 to-blue-50 pb-4">
+        <div className="flex items-center gap-3">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", stiffness: 200, damping: 15 }}
+            className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-200 text-white shadow-md"
+          >
+            <data.icon size={24} />
+          </motion.div>
+          <h3 className="text-lg font-medium text-gray-800">{data.title}</h3>
         </div>
-        <div className="flex items-center font-medium text-green-800">
-          <span>{data?.increaseRate}%</span>
-          <span className="text-green-800">
-            <BsArrowUpShort size={24} />
-          </span>
+      </CardHeader>
+
+      <CardContent className="pt-4">
+        <div className="flex items-center justify-between">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1, duration: 0.4 }}
+            className="text-3xl font-bold text-gray-900"
+          >
+            {formatValue(data.value, data.isPrice)}
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.4 }}
+            className={`flex items-center gap-1 rounded-full px-3 py-1 ${
+              isPositiveChange
+                ? "bg-green-50 text-green-600"
+                : "bg-red-50 text-red-600"
+            }`}
+          >
+            <span className="text-sm font-medium">
+              {Math.abs(data.increaseRate)}%
+            </span>
+            {isPositiveChange ? (
+              <TrendingUp size={16} />
+            ) : (
+              <TrendingDown size={16} />
+            )}
+          </motion.div>
         </div>
       </CardContent>
-      <CardFooter className="pt-0">
-        <p className="text-brand-200">
-          Compared to (
-          {data?.isPrice
-            ? formatCurrency(parseInt(data?.value), "en-NG")
-            : data?.value?.toLocaleString()}{" "}
-          yesterday)
-        </p>
+
+      <CardFooter className="border-t bg-gray-50 px-4 py-2 text-xs text-gray-500">
+        {isPositiveChange ? "Increased from" : "Decreased from"}{" "}
+        {formatValue(data.lastValue, data.isPrice)} yesterday
       </CardFooter>
     </Card>
   );
 };
-
-export default OverviewCard;

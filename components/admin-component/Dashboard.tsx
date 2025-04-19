@@ -1,107 +1,288 @@
+// Dashboard.tsx
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Home, Moneys, Profile2User, ShoppingBag } from "iconsax-react";
-import EachElement from "@/helper/EachElement";
-import OverviewCard from "./overview-comps/OverviewCard";
-import { Button } from "../ui/button";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import {
+  getDashBoard,
+  getExtendedDashBoard,
+} from "@/services/hooks/admin/adminDashboard";
+
 import { SaleChart } from "./overview-comps/SaleChart";
 import { CategoryChart } from "./overview-comps/CategoryChart";
 import { OrderAnalytics } from "./overview-comps/OrderAnalytics";
 import { CustomersAnalytics } from "./overview-comps/CustomerAnalytics";
 import { TopProducts } from "./overview-comps/TopProducts";
-import { useSocket } from "@/context/SocketProvider";
+import { DashboardSkeleton } from "./dashboardSkeleton";
+import { OverviewCard } from "./overview-comps/OverviewCard";
 
-const Overviews = [
-  {
-    title: "Total sales",
-    icon: Moneys,
+// Types for dashboard data
+export interface TodaySummary {
+  totalSales: {
+    value: number;
+    percentChange: number;
+    yesterday: number;
+  };
+  totalOrders: {
+    value: number;
+    percentChange: number;
+    yesterday: number;
+  };
+  newCustomers: {
+    value: number;
+    percentChange: number;
+    yesterday: number;
+  };
+}
 
-    value: 53000,
-    increaseRate: 6,
-    lastValue: 50000,
-    isPrice: true,
-  },
-  {
-    title: "Total Orders",
-    value: 22,
-    icon: ShoppingBag,
-    increaseRate: 3,
-    lastValue: 16,
-    isPrice: false,
-  },
-  {
-    title: "New Customers",
-    icon: Profile2User,
-    value: 5,
-    increaseRate: 5,
-    lastValue: 2,
-    isPrice: false,
-  },
-];
+export interface DashboardData {
+  todaySummary: TodaySummary;
+  revenueReport: Array<{
+    month: string;
+    revenue: number;
+  }>;
+  categoryDistribution: Array<{
+    name: string;
+    value: number;
+  }>;
+  orderAnalytics: Array<{
+    month: string;
+    orders: number;
+  }>;
+  customerAnalytics: Array<{
+    month: string;
+    customers: number;
+  }>;
+  topProductSales: Array<{
+    name: string;
+    value: number;
+  }>;
+}
 
 export default function Dashboard() {
   const router = useRouter();
+  const [animateCharts, setAnimateCharts] = useState(false);
 
+  // Main dashboard data query
+  const { data, isError, isLoading, refetch } = useQuery({
+    queryKey: ["getDashBoard"],
+    queryFn: getDashBoard,
+  });
 
+  // Extended dashboard data query
+  const { data: extData, isLoading: extLoading } = useQuery({
+    queryKey: ["getExtendedDashBoard"],
+    queryFn: getExtendedDashBoard,
+  });
+
+  // Combined data
+  const dashboardData: DashboardData | undefined = extData;
+
+  // Trigger animations after initial render
+  useEffect(() => {
+    setTimeout(() => {
+      setAnimateCharts(true);
+    }, 500);
+  }, []);
+
+  // Handle loading state
+  if (isLoading || extLoading) {
+    return <DashboardSkeleton />;
+  }
+
+  // Handle error state
+  if (isError) {
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <div className="rounded-lg bg-red-50 p-6 text-center">
+          <h3 className="text-lg font-medium text-red-800">
+            Unable to load dashboard
+          </h3>
+          <p className="mt-2 text-red-600">Please try again later</p>
+          <Button
+            onClick={() => refetch()}
+            className="mt-4 bg-red-600 hover:bg-red-700"
+          >
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
+  console.log(extData, "extData");
+  // Create overview cards data
+  const overviewCards = [
+    {
+      title: "Total Sales",
+      icon: Moneys,
+      value: dashboardData?.todaySummary?.totalSales?.value || 0,
+      increaseRate: dashboardData?.todaySummary?.totalSales?.percentChange || 0,
+      lastValue: dashboardData?.todaySummary?.totalSales?.yesterday || 0,
+      isPrice: true,
+    },
+    {
+      title: "Total Orders",
+      icon: ShoppingBag,
+      value: dashboardData?.todaySummary?.totalOrders?.value || 0,
+      increaseRate:
+        dashboardData?.todaySummary?.totalOrders?.percentChange || 0,
+      lastValue: dashboardData?.todaySummary?.totalOrders?.yesterday || 0,
+      isPrice: false,
+    },
+    {
+      title: "New Customers",
+      icon: Profile2User,
+      value: dashboardData?.todaySummary?.newCustomers?.value || 0,
+      increaseRate:
+        dashboardData?.todaySummary?.newCustomers?.percentChange || 0,
+      lastValue: dashboardData?.todaySummary?.newCustomers?.yesterday || 0,
+      isPrice: false,
+    },
+  ];
 
   return (
-    <>
-      <section className="mb-5 w-full rounded-xl bg-transparent px-4 py-6 pt-[24px] lg:bg-white lg:p-4 lg:pt-6">
-        <div className="rounded-[8px]">
-          <div className="mb-8 flex items-center justify-between">
-            <div className="">
-              <div className="items center flex gap-2 ">
-                <Home variant="Bold" />
-                <h1 className="text-lg font-extrabold uppercase">
-                  Today&apos;s Sales
+    <div className="min-h-screen bg-gray-50 pb-8">
+      {/* Header section */}
+      <motion.section
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="mb-5 w-full rounded-xl bg-transparent px-4 py-6 pt-6 lg:bg-white lg:p-6 lg:shadow-sm"
+      >
+        <div className="rounded-lg">
+          <div className="mb-6 flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2">
+                <Home variant="Bold" className="text-brand-200" />
+                <h1 className="text-xl font-bold text-gray-800">
+                  Today&apos;s Performance
                 </h1>
               </div>
-              <p className="text-sm">Sales summary</p>
+              <p className="mt-1 text-sm text-gray-500">
+                Sales and activity summary
+              </p>
             </div>
             <Button
               onClick={() => router.push("/admin/create-products")}
-              className="m-0 bg-brand-200 text-brand-100"
+              className="bg-brand-200 transition-all hover:bg-brand-300 duration-300"
             >
               Create Product
             </Button>
-           
           </div>
 
+          {/* Overview cards */}
           <div className="hide-scrollbar w-full overflow-x-auto">
-            <div className="w-full gap-6 space-y-4 text-brand-200 md:flex md:w-min md:space-y-0 lg:grid-cols-3 xl:grid xl:w-full xl:gap-6">
-              <EachElement
-                of={Overviews}
-                render={(item: any, index: any) => (
-                  <OverviewCard key={index} data={item} />
-                )}
-              />
+            <div className="grid w-full gap-4 md:grid-cols-3">
+              {overviewCards.map((card, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: index * 0.1 }}
+                >
+                  <OverviewCard data={card} />
+                </motion.div>
+              ))}
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
+      {/* Charts section - Mobile & Tablet */}
       <div className="space-y-6 px-4 xl:hidden">
-        <SaleChart />
-        <div className="grid gap-5 md:grid-cols-2 md:items-start">
-          {" "}
-          <CategoryChart /> <TopProducts />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={animateCharts ? { opacity: 1, scale: 1 } : {}}
+          transition={{ duration: 0.5 }}
+        >
+          <SaleChart data={dashboardData?.revenueReport} />
+        </motion.div>
+
+        <div className="grid gap-6 md:grid-cols-2 md:items-start">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={animateCharts ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            <CategoryChart data={dashboardData?.categoryDistribution} />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={animateCharts ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <TopProducts data={dashboardData?.topProductSales} />
+          </motion.div>
         </div>
-        <OrderAnalytics />
-        <CustomersAnalytics />
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={animateCharts ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <OrderAnalytics data={dashboardData?.orderAnalytics} />
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={animateCharts ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.5, delay: 0.4 }}
+        >
+          <CustomersAnalytics data={dashboardData?.customerAnalytics} />
+        </motion.div>
       </div>
 
+      {/* Charts section - Desktop */}
       <div className="hidden space-y-6 px-4 xl:block">
-        <SaleChart />
-        <div className="grid gap-5 md:grid-cols-[0.5fr_2fr] md:items-stretch">
-          <CategoryChart /> <OrderAnalytics />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={animateCharts ? { opacity: 1, scale: 1 } : {}}
+          transition={{ duration: 0.5 }}
+        >
+          <SaleChart data={dashboardData?.revenueReport} />
+        </motion.div>
+
+        <div className="grid gap-6 md:grid-cols-[1fr_2fr] md:items-stretch">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={animateCharts ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            <CategoryChart data={dashboardData?.categoryDistribution} />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={animateCharts ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <OrderAnalytics data={dashboardData?.orderAnalytics} />
+          </motion.div>
         </div>
-        <div className="grid gap-5 md:grid-cols-[2fr_0.5fr] md:items-stretch">
-          <CustomersAnalytics />
-          <TopProducts />
+
+        <div className="grid gap-6 md:grid-cols-[2fr_1fr] md:items-stretch">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={animateCharts ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <CustomersAnalytics data={dashboardData?.customerAnalytics} />
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={animateCharts ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
+            <TopProducts data={dashboardData?.topProductSales} />
+          </motion.div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

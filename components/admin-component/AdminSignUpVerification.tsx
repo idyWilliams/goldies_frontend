@@ -26,9 +26,6 @@ const validationSchema = yup.object().shape({
     .required("OTP is required"),
 });
 
-
-
-
 const AdminSignUpVerification = ({ email }: { email: string }) => {
   const router = useRouter();
   const { setIsLogin, setRole, setAuth } = useAuth();
@@ -46,36 +43,78 @@ const AdminSignUpVerification = ({ email }: { email: string }) => {
     resolver: yupResolver(validationSchema),
   });
 
-  const onSubmit = async (data: any) => {
-    console.log(data);
-    sendOtp
-      .mutateAsync({
-        otp: data.otp,
-        email,
-      })
-      .then((res: any) => {
-        console.log(res);
-        // UPDATE THE AUTH PROVIDER
-        setIsLogin(true);
-        setRole(res?.admin?.role);
-        setAuth({ token: res?.token, ...res?.admin });
+  // const onSubmit = async (data: any) => {
+  //   console.log(data);
+  //   sendOtp
+  //     .mutateAsync({
+  //       otp: data.otp,
+  //       email,
+  //     })
+  //     .then((res: any) => {
+  //       console.log(res);
+  //       // UPDATE THE AUTH PROVIDER
+  //       setIsLogin(true);
+  //       setRole(res?.admin?.role);
+  //       setAuth({ token: res?.token, ...res?.admin });
 
-        // UPDATE LOCALSTORAGE
-        localStorage.removeItem("adminToken");
-        localStorage.removeItem("admin");
-        localStorage.setItem("isLogin", JSON.stringify(true));
-        localStorage.setItem(
-          "admin",
-          JSON.stringify({ token: res?.token, ...res?.admin }),
-        );
-        localStorage.setItem("adminToken", res?.token);
-        router.push("/admin");
-      })
-      .catch((err: any) => {
-        toast.error(err.message);
+  //       // UPDATE LOCALSTORAGE
+  //       localStorage.removeItem("adminToken");
+  //       localStorage.removeItem("admin");
+  //       localStorage.setItem("isLogin", JSON.stringify(true));
+  //       localStorage.setItem(
+  //         "admin",
+  //         JSON.stringify({ token: res?.token, ...res?.admin }),
+  //       );
+  //       localStorage.setItem("adminToken", res?.token);
+  //       router.push("/admin");
+  //     })
+  //     .catch((err: any) => {
+  //       toast.error(err.message);
+  //     });
+  // };
+ const onSubmit = async (data: any) => {
+  try {
+    const res = await sendOtp.mutateAsync({
+      otp: data.otp,
+      email,
+    });
+
+    // Show a success toast with action button
+    toast.success("Verification successful! Redirecting to dashboard...", {
+      duration: 5000,
+      action: {
+        label: "Go to Dashboard",
+        onClick: () => window.location.href = "/admin"
+      },
+    });
+
+    // First update localStorage
+    localStorage.setItem("isLogin", JSON.stringify(true));
+    localStorage.setItem("admin", JSON.stringify({ token: res?.token, ...res?.admin }));
+    localStorage.setItem("adminToken", res?.token);
+
+    // Then update context state
+    setIsLogin(true);
+    setRole(res?.admin?.role);
+    setAuth({ token: res?.token, ...res?.admin });
+
+    // Try to navigate programmatically
+    router.push('/admin');
+
+    // Show a fallback toast after a short delay if still on the page
+    setTimeout(() => {
+      toast.info("Taking longer than expected? Click the button to go to dashboard", {
+        action: {
+          label: "Go to Dashboard",
+          onClick: () => window.location.href = "/admin"
+        },
       });
-  };
+    }, 3000);
 
+  } catch (err: any) {
+    toast.error(err.message);
+  }
+};
   return (
     <div className="flex  flex-col items-center border bg-white p-6 py-12 shadow-lg  sm:mx-auto sm:w-[440px]">
       <span className="bg-brand-200/50 flex h-20 w-20 items-center justify-center rounded-full">

@@ -1,107 +1,101 @@
+// TopProducts.tsx
 "use client";
 
-import { TrendingUp } from "lucide-react";
-import { Pie, PieChart } from "recharts";
+import React from "react";
+import { BarChart, Bar, ResponsiveContainer, Cell } from "recharts";
+import { TrendingUp, Award } from "lucide-react";
+import { motion } from "framer-motion";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import EachElement from "@/helper/EachElement";
-import { cn } from "@/helper/cn";
-const chartData = [
-  { category: "Crimson Delight", sales: 200, fill: "#4A90E2" },
-  { category: "themed", sales: 100, fill: "#2ECC71" },
-  { category: "kids", sales: 187, fill: "#F5A623" },
-  { category: "cupcakes", sales: 173, fill: "#9B51E0" },
-];
-
-const chartConfig = {
-  Categories: {
-    label: "Cake Categories",
-  },
-  milestones: {
-    label: "Crimson Delight Cakes",
-    color: "#13B136",
-  },
-  themed: {
-    label: "Red  Velvet Cakes",
-    color: "#FFCC00",
-  },
-  kids: {
-    label: "Lemon Cake",
-    color: "#E4D064",
-  },
-  cupcakes: {
-    label: "Kid Cakes",
-    color: "#E03131",
-  },
-} satisfies ChartConfig;
-
-const colors = ["#4A90E2", "#2ECC71", "#F5A623", "#9B51E0", "#95A5A6"];
-
-export function TopProducts() {
-  return (
-    <div className="flex flex-col rounded-xl border bg-white p-4">
-      <h2 className="font-bold text-brand-200">Top Product Sales</h2>
-      <div className="items-center justify-center xl:flex xl:flex-col">
-        <div className="pb-0">
-          <ChartContainer
-            config={chartConfig}
-            className="mx-auto aspect-square max-h-[250px] xl:min-h-[250px]"
-          >
-            <PieChart>
-              <ChartTooltip
-                cursor={false}
-                content={<ChartTooltipContent hideLabel />}
-              />
-              <Pie
-                data={chartData}
-                dataKey="sales"
-                nameKey="category"
-                innerRadius={55}
-              />
-            </PieChart>
-          </ChartContainer>
-        </div>
-        <div className="mx-auto flex flex-col items-start gap-3 lg:w-[200px] xl:w-auto">
-          <EachElement
-            of={chartData}
-            render={(item: any, index: number) => (
-              <div className="flex items-center gap-2" key={index}>
-                <span
-                  style={{ backgroundColor: `${colors[index]}` }}
-                  className={cn(
-                    "inline-block h-3 w-3 rounded-full",
-                    `bg-[${colors[index]}]`,
-                  )}
-                ></span>
-
-                <span className="capitalize text-brand-200">
-                  {item?.category} cakes
-                </span>
-              </div>
-            )}
-          />
-        </div>
-      </div>
-    </div>
-  );
+interface TopProductsProps {
+  data?: Array<{
+    name: string;
+    value: number;
+  }>;
 }
 
-// const chartData = [
-//   { category: "milestone cakes", sales: 275, fill: "#13B136" },
-//   { category: "themed cakes", sales: 200, fill: "#FFCC00" },
-//   { category: "kids cakes", sales: 187, fill: "#E4D064" },
-//   { category: "cupcakes", sales: 173, fill: "#E03131" },
-// ];
+export const TopProducts = ({ data = [] }: TopProductsProps) => {
+  const COLORS = ["#4F46E5", "#10B981", "#F59E0B", "#EF4444", "#8B5CF6"];
+
+  // Check if we have valid data or use placeholders
+  const chartData =
+    data && data.length > 0 && data.some((item) => item.value > 0)
+      ? data
+      : [
+          { name: "Dark Chocolate Cakes", value: 31 },
+          { name: "Kid's Cake", value: 3 },
+        ];
+
+  // Sort products by value in descending order
+  const sortedData = [...chartData].sort((a, b) => b.value - a.value);
+
+  // Get top product
+  const topProduct =
+    sortedData.length > 0 ? sortedData[0] : { name: "No data", value: 0 };
+
+  return (
+    <Card className="h-full rounded-xl border shadow-sm">
+      <CardHeader className="pb-2">
+        <div className="flex items-center gap-2">
+          <Award size={18} className="text-brand-200" />
+          <CardTitle className="text-lg font-bold text-gray-800">
+            Top Products
+          </CardTitle>
+        </div>
+        <p className="mt-1 text-sm text-gray-500">Best performing items</p>
+      </CardHeader>
+
+      <CardContent>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="mb-4 rounded-lg bg-gradient-to-br from-indigo-50 to-blue-50 p-4"
+        >
+          <div className="text-sm text-gray-600">Best Seller</div>
+          <div className="mt-1 line-clamp-1 text-xl font-semibold text-gray-900">
+            {topProduct.name}
+          </div>
+
+          <div className="mt-3 flex items-center gap-1 text-sm">
+            <TrendingUp size={16} className="text-brand-200" />
+            <span className="font-medium text-brand-200">
+              {topProduct.value} Orders
+            </span>
+          </div>
+        </motion.div>
+
+        <div className="space-y-4">
+          {sortedData.map((product, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.1 * index }}
+              className="space-y-2"
+            >
+              <div className="flex items-center justify-between">
+                <span className="max-w-[70%] truncate text-sm font-medium text-gray-700">
+                  {product.name}
+                </span>
+                <span className="text-sm font-semibold text-brand-200">
+                  {product.value} orders
+                </span>
+              </div>
+
+              <div className="h-2 w-full rounded-full bg-gray-100">
+                <div
+                  className="h-2 rounded-full"
+                  style={{
+                    backgroundColor: COLORS[index % COLORS.length],
+                    width: `${Math.min(100, (product.value / topProduct.value) * 100)}%`,
+                  }}
+                />
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
