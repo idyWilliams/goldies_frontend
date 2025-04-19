@@ -128,7 +128,7 @@ export const OrderAnalytics = ({ data = [] }: OrderAnalyticsProps) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="mb-6 rounded-lg bg-gradient-to-br from-indigo-50 to-blue-50 p-4"
+          className="mb-6 rounded-lg bg-gradient-to-br from-brand-100 to-brand-100 p-4"
         >
           <div className="text-sm text-gray-600">Total Orders</div>
           <div className="mt-2 text-2xl font-bold text-gray-900">

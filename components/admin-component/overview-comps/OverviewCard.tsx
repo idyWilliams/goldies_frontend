@@ -28,7 +28,7 @@ export const OverviewCard = ({ data }: OverviewCardProps) => {
 
   return (
     <Card className="overflow-hidden border shadow-sm transition-all duration-300 hover:shadow-md">
-      <CardHeader className="bg-gradient-to-r from-indigo-50 to-blue-50 pb-4">
+      <CardHeader className="bg-gradient-to-r from-brand-100 to-brand-100 pb-4">
         <div className="flex items-center gap-3">
           <motion.div
             initial={{ scale: 0 }}

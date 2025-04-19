@@ -138,7 +138,7 @@ export const SaleChart = ({ data = [] }: SaleChartProps) => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="rounded-lg bg-gradient-to-br from-indigo-50 to-blue-50 p-4"
+              className="rounded-lg bg-gradient-to-br from-brand-100 to-brand-100 p-4"
             >
               <div className="text-sm text-gray-600">Total Revenue</div>
               <div className="mt-2 text-2xl font-bold text-gray-900">

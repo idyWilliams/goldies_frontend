@@ -50,7 +50,7 @@ export const TopProducts = ({ data = [] }: TopProductsProps) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="mb-4 rounded-lg bg-gradient-to-br from-indigo-50 to-blue-50 p-4"
+          className="mb-4 rounded-lg bg-gradient-to-br from-brand-100 to-brand-100 p-4"
         >
           <div className="text-sm text-gray-600">Best Seller</div>
           <div className="mt-1 line-clamp-1 text-xl font-semibold text-gray-900">
