@@ -9,9 +9,11 @@ type AccordionProp = {
 };
 export default function Accordion({ arr }: AccordionProp) {
   const [openIndex, setOpenIndex] = useState(null);
+
   const handleClick = (index: any) => {
     setOpenIndex(index === openIndex ? null : index);
   };
+
   return (
     <div className="mt-4 space-y-3">
       {arr.map((item: any, i: number) => (
@@ -53,7 +55,7 @@ function AccordionItem({
       <div
         className={twMerge(
           "mb-3 flex items-center justify-between p-4",
-          isOpen && "text-goldie-300 bg-black",
+          isOpen && "bg-black text-brand-200",
         )}
       >
         <span className="capitalize">{title}</span>

@@ -1,30 +1,24 @@
 "use client";
-import EachElement from "@/helper/EachElement";
 import { cn } from "@/helper/cn";
 import { SubCategoryProps } from "@/utils/categoryTypes";
-import { newSubcategory } from "@/utils/formData";
 import { yupResolver } from "@hookform/resolvers/yup";
-
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { deleteImageFromFirebase, uploadImageToFirebase } from "@/lib/utils";
+import { createSubCategory, editSubCategory } from "@/services/hooks/category";
+import { Category, SubCategory } from "@/services/types";
+import { optimisticSubCatUpdate } from "@/utils/optimisticCategoryUpdate";
+import useBoundStore from "@/zustand/store";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { BsX } from "react-icons/bs";
 import "react-toggle/style.css";
+import { toast } from "sonner";
 import * as yup from "yup";
 import CreateSubcategoryImage from "./CreateSubcategoryImage";
 import CreateSubcategoryInput from "./CreateSubcategoryInput";
 import SubCategoryBtn from "./SubCategoryBtn";
-import { uploadImageToFirebase } from "@/lib/utils";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  createSubCategory,
-  editSubCategory,
-  getSubCategory,
-} from "@/services/hooks/category";
-import useBoundStore from "@/zustand/store";
-import { toast } from "sonner";
-import { Category, SubCategory } from "@/services/types";
-import { optimisticSubCatUpdate } from "@/utils/optimisticCategoryUpdate";
+import { AxiosError } from "axios";
 
 type SubCatQueryDataType = {
   [x: string]: any;
@@ -40,12 +34,17 @@ const schema = yup.object().shape({
     .test("fileOrUrl", "Image is required", function (value: any) {
       if (!value) return false;
       if (typeof value === "string" && value !== "") return true;
-      if (value && value[0] instanceof File) return true;
+      if (value instanceof File) return true;
       return false;
     })
     .required(" Image is required"),
   status: yup.boolean().required("Status is required"),
 });
+
+interface ErrorResponse {
+  message: string;
+  [key: string]: any;
+}
 
 const CreateSubategory = () => {
   const queryClient = useQueryClient();
@@ -53,14 +52,11 @@ const CreateSubategory = () => {
   const categoryId = queryParams.get("categoryId");
 
   const [imageUrl, setImageUrl] = useState<string>("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
-  const activeSubcategory = useBoundStore((state) => state.activeSubcategory);
-  const setActiveSubcategory = useBoundStore(
-    (state) => state.setActiveSubcategory,
-  );
-  const setShowSub = useBoundStore((state) => state.setShowSub);
-  const showSub = useBoundStore((state) => state.showSub);
-  const refetchCategory = useBoundStore((state) => state.refetchCategory);
+  const { activeSubcategory, setActiveSubcategory, setShowSub, showSub } =
+    useBoundStore();
+  // const refetchCategory = useBoundStore((state) => state.refetchCategory);
   // const isFetchingCategory = useBoundStore((state) => state.isFetchingCategory);
 
   const {
@@ -106,92 +102,35 @@ const CreateSubategory = () => {
   // MUTATION HOOK TO ADD NEW SUBCATEGORY
   const newSubCategory = useMutation({
     mutationFn: createSubCategory,
-
-    onMutate: async (variable) => {
-      await queryClient.cancelQueries({ queryKey: ["categories", categoryId] });
-      const previousCategory = queryClient.getQueryData([
-        "categories",
-        categoryId,
-      ]);
-      console.log(previousCategory);
-
-      if (!previousCategory) return;
-
-      queryClient.setQueryData(
-        ["categories", categoryId],
-        (old: SubCatQueryDataType) => {
-          const newData = optimisticSubCatUpdate("create", old, variable);
-          console.log(newData);
-
-          return { ...newData };
-        },
-      );
-      return { previousCategory };
-    },
-
-    onSettled: (variable) => {
-      queryClient.invalidateQueries({ queryKey: ["categories", categoryId] });
-    },
-
     onSuccess: (data) => {
+      toast.success(data.message);
+      queryClient.invalidateQueries({ queryKey: ["categories", categoryId] });
       setShowSub(false);
-      toast.success("Subcategory succesfully created");
     },
 
-    onError: (error, newCategory, context) => {
-      queryClient.setQueryData(
-        ["categories", categoryId],
-        context?.previousCategory,
-      );
-      console.error(error);
-      toast.error("There was an error creating this Subcategory");
+    onError: (error: AxiosError<ErrorResponse>) => {
+      const resError = error.response?.data;
+      console.error(resError);
+      const errorMessage = resError?.message ? resError?.message : resError;
+      toast.error(`Error: ${errorMessage}`);
     },
   });
 
   // MUTATION HOOK TO EDIT EXSITING SUBCATEGORY
   const editActiveSubcategory = useMutation({
     mutationFn: editSubCategory,
-    onMutate: async (variable) => {
-      console.log(variable);
-      console.log(categoryId);
-
-      await queryClient.cancelQueries({ queryKey: ["categories", categoryId] });
-      const previousCategory = queryClient.getQueryData([
-        "categories",
-        categoryId,
-      ]);
-      console.log(previousCategory);
-
-      if (!previousCategory) return;
-
-      queryClient.setQueryData(
-        ["categories", categoryId],
-        (old: SubCatQueryDataType) => {
-          const newData = optimisticSubCatUpdate("edit", old, variable);
-          console.log(newData);
-
-          return { ...newData };
-        },
-      );
-      return { previousCategory };
-    },
-
-    onSettled: (variable) => {
-      queryClient.invalidateQueries({ queryKey: ["categories", categoryId] });
-    },
 
     onSuccess: (data) => {
+      toast.success(data.message);
+      queryClient.invalidateQueries({ queryKey: ["categories", categoryId] });
       setShowSub(false);
-      toast.success("Subcategory succesfully updated");
     },
 
-    onError: (error, newCategory, context) => {
-      queryClient.setQueryData(
-        ["categories", categoryId],
-        context?.previousCategory,
-      );
-      console.error(error);
-      toast.error("There was an error updating this Subcategory");
+    onError: (error: AxiosError<ErrorResponse>) => {
+      const resError = error.response?.data;
+      console.error(resError);
+      const errorMessage = resError?.message ? resError?.message : resError;
+      toast.error(`Error: ${errorMessage}`);
     },
   });
 
@@ -206,7 +145,7 @@ const CreateSubategory = () => {
       });
       if (!watch("image")?.[0]) {
         setImageUrl(activeSubcategory?.image || "");
-        setValue("image", activeSubcategory?.image);
+        setValue("image", activeSubcategory?.image, { shouldValidate: true });
       }
     }
   }, [activeSubcategory, reset, watch, setValue]);
@@ -231,45 +170,80 @@ const CreateSubategory = () => {
     return () => imageSubscription.unsubscribe();
   }, [watch]);
 
+  // Handle image selection
+  const handleImageChange = (file: File | null) => {
+    if (file) {
+      setImageFile(file);
+      const url = URL.createObjectURL(file); // Create a temporary URL for preview
+      setImageUrl(url);
+      setValue("image", file, { shouldValidate: true }); // Update the form value
+    }
+  };
+
   // HANDLE SUBCATEGORY FORM MODAL SUBMISSION
   const onSubmit = async (data: SubCategoryProps) => {
-    const subcategory: SubCategory = {
-      name: data.name,
-      description: data.description,
-      image: "",
-      status: data.status,
-      categoryId: categoryId,
-    };
-
-    if (typeof data.image === "string") {
-      subcategory.image = data.image;
-    }
-
     try {
-      if (data.image[0] instanceof File) {
-        const file = data.image[0];
-        const imageURL = await uploadImageToFirebase(file);
-        subcategory.image = imageURL;
+      let imageURL = "";
+
+      // Upload the image to Firebase if a new file is selected
+      if (imageFile) {
+        imageURL = await uploadImageToFirebase(imageFile);
+      } else if (typeof data.image === "string") {
+        // Use the existing URL if it's already a string
+        imageURL = data.image;
       }
+
+      const payload: SubCategory = {
+        name: data.name,
+        description: data.description,
+        image: imageURL,
+        status: data.status,
+        categoryId: categoryId,
+      };
+
       if (!activeSubcategory) {
-        newSubCategory.mutate(subcategory);
+        newSubCategory.mutate(payload);
       } else {
-        const updatedSubCategory = { ...subcategory };
+        const updatedSubCategory = { ...payload };
         delete updatedSubCategory.categoryId;
 
         editActiveSubcategory.mutate({
           subCategory: updatedSubCategory,
           subCategoryId: activeSubcategory?._id,
         });
+        setActiveSubcategory(null);
       }
     } catch (error) {
       console.error(error);
     }
   };
 
+  const handleRemoveImage = useCallback(async () => {
+    if (
+      imageUrl &&
+      typeof imageUrl === "string" &&
+      imageUrl.startsWith("https://")
+    ) {
+      try {
+        await deleteImageFromFirebase(imageUrl);
+      } catch (error: any) {
+        if (error.code === "storage/object-not-found") {
+          console.warn("Image not found in Firebase Storage:", imageUrl);
+        } else {
+          console.error("Failed to delete image from Firebase:", error);
+        }
+      }
+    }
+
+    setImageUrl("");
+    setValue("image", ""); // Reset the form value for the image
+    toast.success("Image removed");
+  }, [imageUrl, setValue]);
+
   const handleClose = () => {
     setShowSub(false);
     setActiveSubcategory(null);
+    reset()
   };
 
   return (
@@ -304,6 +278,8 @@ const CreateSubategory = () => {
                 errors={errors}
                 imageUrl={imageUrl}
                 setImageUrl={setImageUrl}
+                handleRemoveImage={handleRemoveImage}
+                setImageFile={handleImageChange}
               />
 
               <SubCategoryBtn

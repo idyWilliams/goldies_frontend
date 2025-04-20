@@ -1,19 +1,29 @@
 "use client";
 import type { Metadata } from "next";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, Suspense, useEffect } from "react";
 import "./globals.css";
+import { Outfit } from "next/font/google";
 
-import { Provider } from "react-redux";
-import { store } from "@/redux/store";
-import { ShoppingCartProvider } from "@/context/ShoppingCartContext";
+import { Toaster } from "@/components/ui/sonner";
+import { AuthProvider } from "@/context/AuthProvider";
 import { ProductProvider } from "@/context/ProductInfoContext";
+import { ShoppingCartProvider } from "@/context/ShoppingCartContext";
 import { cn } from "@/helper/cn";
 import tomatoGrotesk from "@/utils/font";
-import { usePathname } from "next/navigation";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BASEURL } from "@/services/api";
-import { AuthProvider } from "@/context/AuthProvider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { usePathname } from "next/navigation";
+import Loading from "./(landing)/loading";
+import StoreProvider from "./StoreProvider";
+
+const outfit = Outfit({
+  weight: ["300", "400", "500", "600", "700", "800"],
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-outfit",
+  fallback: ["system-ui", "arial"],
+  preload: true,
+});
 
 const metadata: Metadata = {
   title: "Goldies Confectioneries | Buy Delicious Cakes Online",
@@ -27,8 +37,6 @@ declare global {
     Tawk_LoadStart: Date;
   }
 }
-
-console.log("Current NODE_ENV:", process.env.NODE_ENV, BASEURL);
 
 const queryClient = new QueryClient();
 
@@ -68,22 +76,31 @@ export default function RootLayout({
           content="delicious cakes, buy cakes online, cake delivery, Goldies Confectioneries"
         />
       </head>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <ShoppingCartProvider>
-            <Provider store={store}>
-              <ProductProvider>
-                <body
-                  className={cn("overflow-x-hidden", tomatoGrotesk.className)}
-                >
-                  {children}
-                </body>
-              </ProductProvider>
-            </Provider>
-          </ShoppingCartProvider>
-        </AuthProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
+      <body className={cn("overflow-x-hidden", outfit.className)}>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <ShoppingCartProvider>
+              <StoreProvider>
+                <ProductProvider>
+                  <Suspense fallback={<Loading />}>
+                    <main>{children}
+
+                      
+                    </main>
+                    <Toaster
+                      position="top-right"
+                      richColors
+                      expand={true}
+                      closeButton
+                    />
+                  </Suspense>
+                </ProductProvider>
+              </StoreProvider>
+            </ShoppingCartProvider>
+          </AuthProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+      </body>
     </html>
   );
 }

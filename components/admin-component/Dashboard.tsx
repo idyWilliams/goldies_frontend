@@ -47,23 +47,23 @@ export default function Dashboard() {
 
   return (
     <>
-      <section className="mb-5 w-full bg-goldie-300 px-4 py-6 pt-[24px] lg:bg-white lg:p-4 lg:pt-6">
-        <div className="bg-goldie-300 lg:p-4">
+      <section className="mb-5 w-full rounded-xl bg-transparent px-4 py-6 pt-[24px] lg:bg-white lg:p-4 lg:pt-6">
+        <div className="rounded-[8px]">
           <div className="mb-8 flex items-center justify-between">
             <div className="">
-              <p className="font-bold">Today&apos;s Sales</p>
-              <p className="text-[13px]">Sales summary</p>
+              <p className="font-bold text-brand-200">Today&apos;s Sales</p>
+              <p className="text-[13px] text-brand-200">Sales summary</p>
             </div>
             <Button
               onClick={() => router.push("/admin/create-products")}
-              className="m-0 bg-stone-700 text-goldie-300"
+              className="m-0 bg-brand-200 text-brand-100"
             >
               Create Product
             </Button>
           </div>
 
           <div className="hide-scrollbar w-full overflow-x-auto">
-            <div className="w-full gap-6 space-y-4 text-goldie-300 md:flex md:w-min md:space-y-0 lg:grid-cols-3 xl:grid xl:w-full xl:gap-6">
+            <div className="w-full gap-6 space-y-4 text-brand-200 md:flex md:w-min md:space-y-0 lg:grid-cols-3 xl:grid xl:w-full xl:gap-6">
               <EachElement
                 of={Overviews}
                 render={(item: any, index: any) => (

@@ -48,9 +48,9 @@ export function CustomersAnalytics() {
     }
   };
   return (
-    <Card className="border-0 bg-neutral-900">
+    <Card className="rounded-xl border bg-white p-4 shadow-none">
       <CardHeader>
-        <CardTitle className="text-goldie-300 lg:mb-8">
+        <CardTitle className="text-brand-200 lg:mb-8">
           Customers Analytics
         </CardTitle>
       </CardHeader>
@@ -97,8 +97,8 @@ export function CustomersAnalytics() {
             /> */}
             <Bar
               dataKey="orders"
-              fill="#e4d064"
-              radius={[50, 50, 0, 0]}
+              fill="#4A90E2"
+              radius={[0, 0, 0, 0]}
               barSize={bar()}
             />
           </BarChart>
@@ -107,7 +107,7 @@ export function CustomersAnalytics() {
         {/* DESKTOP */}
         <ChartContainer
           config={chartConfig}
-          className="sales hidden min-h-[200px] w-full pl-0 lg:block lg:max-h-[350px]"
+          className="hidden min-h-[200px] w-full pl-0 lg:block lg:max-h-[350px]"
         >
           <BarChart
             accessibilityLayer
@@ -147,8 +147,8 @@ export function CustomersAnalytics() {
             /> */}
             <Bar
               dataKey="orders"
-              fill="#e4d064"
-              radius={[50, 50, 0, 0]}
+              fill="#4A90E2"
+              radius={[0, 0, 0, 0]}
               barSize={40}
             />
           </BarChart>

@@ -3,13 +3,13 @@ import Accordion from "@/components/Accordion";
 import ChangePassword from "@/components/admin-component/settings-comp/ChangePassword";
 import ProfileInfo from "@/components/admin-component/settings-comp/ProfileInfo";
 import { Lock1, Profile } from "iconsax-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import Info from "@/public/assets/rafiki.svg";
 import Reset from "@/public/assets/reset-password.svg";
 import Image from "next/image";
 import { cn } from "@/helper/cn";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const tabs = [
   {
@@ -25,8 +25,10 @@ const tabs = [
 ];
 
 export default function Page() {
-  const [selectedTab, setSelectedTab] = useState(0);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const tabQuery = searchParams.get("tab");
+  const [selectedTab, setSelectedTab] = useState(0);
 
   const items = [
     {
@@ -39,14 +41,26 @@ export default function Page() {
     },
   ];
 
+  useEffect(() => {
+    if (tabQuery) {
+      const activeTabIndex = tabs.findIndex(
+        (tabObj) =>
+          tabObj.label.toLowerCase().replace(/ /g, "-") ===
+          tabQuery.toLowerCase(),
+      );
+      setSelectedTab(activeTabIndex >= 0 ? activeTabIndex : 0);
+    }
+  }, [tabQuery]);
+
   const handleTab = (index: number, value: string) => {
     setSelectedTab(index);
     router.replace(`/admin/settings?tab=${encodeURIComponent(value)}`);
+    window.scrollTo(0, 0);
   };
 
   return (
     <section>
-      <div className="min-h-screen px-4 py-5 lg:bg-neutral-300 lg:px-8">
+      <div className="min-h-screen px-4 py-5 lg:bg-brand-100 lg:px-8">
         <div className="">
           <div className="relative mb-5 lg:mb-4 ">
             <span className="absolute left-0 top-1/2 inline-flex -translate-y-1/2 items-center gap-2 lg:hidden">
@@ -71,7 +85,7 @@ export default function Page() {
                     key={index}
                     className={twMerge(
                       "mb-3 inline-flex cursor-pointer items-center gap-2 bg-neutral-100 px-3 py-2 text-black duration-300",
-                      selectedTab === index && "bg-black text-goldie-300",
+                      selectedTab === index && "bg-brand-200 text-brand-100",
                     )}
                     onClick={() => handleTab(index, tab?.value)}
                   >

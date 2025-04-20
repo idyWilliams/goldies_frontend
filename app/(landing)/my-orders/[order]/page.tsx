@@ -11,16 +11,11 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { recentOrders } from "@/utils/adminData";
 import { useQuery } from "@tanstack/react-query";
 import { getOrderByOrderId } from "@/services/hooks/payment";
-
-type MyOrderList = {
-  id: number;
-  name: string;
-  image: any;
-  price: number;
-  quantity: number;
-  category: string;
-  total: number;
-};
+import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import moment from "moment";
+import { formatCurrency } from "@/helper/formatCurrency";
+import { IOrder, IOrderProduct } from "@/interfaces/order.interface";
 
 function getStatus(status: string) {
   switch (status?.toLowerCase()) {
@@ -51,400 +46,389 @@ function getStatus(status: string) {
   }
 }
 
-const orderItems = [
-  {
-    id: 0,
-    name: "Chocolate Fudge Cake",
-    image: Chocolate,
-    price: 508.98,
-    quantity: 1,
-    category: "Milestone Cakes",
-    total: 508.98,
-  },
-  {
-    id: 1,
-    name: "Red Velvet Cake",
-    image: RedVelvet,
-    price: 100.0,
-    quantity: 1,
-    category: "Milestone Cakes",
-    total: 100.0,
-  },
-];
-
-const columnHelper = createColumnHelper<MyOrderList>();
-const columns = [
-  columnHelper.accessor((row) => row, {
-    id: "product",
-    header: () => <span>Product</span>,
-    cell: (info) => (
-      <div className="grid grid-cols-[70px_1fr] items-center gap-2">
-        <Image
-          src={info.cell.row.original.image}
-          alt={info.cell.row.original.name}
-          className="h-[50px] w-full object-cover"
-        />
-        <span>{info.cell.row.original.name}</span>
-      </div>
-    ),
-  }),
-  columnHelper.accessor((row) => row, {
-    id: "category",
-    header: () => <span>Category</span>,
-    cell: (info) => <span className="">{info.cell.row.original.category}</span>,
-  }),
-  columnHelper.accessor("quantity", {
-    header: () => <span>Qnty</span>,
-    cell: (info) => <div className="">{info.cell.row.original.quantity}</div>,
-  }),
-  columnHelper.accessor("price", {
-    header: () => <span>Amount</span>,
-    cell: (info) => (
-      <div className="">&euro;{info.cell.row.original.price}</div>
-    ),
-  }),
-  columnHelper.accessor("total", {
-    header: () => <span>Shipping</span>,
-    cell: (info) => (
-      <div className="">&euro;{info.cell.row.original.total}</div>
-    ),
-  }),
-];
-
-const MyOrderDetails = ({ params }: { params: any }) => {
+const MyOrderDetails = ({ params }: { params: { order: string } }) => {
   const { order: id } = params;
-  const [order, setOrder] = useState<any>();
-  const [isLoading, setIsLoading] = useState<boolean>(true); // To handle loading state
-  const [error, setError] = useState<string | null>(null); 
-  // const { data: orderById, isPending, isSuccess, isError, } = useQuery({
-  //   queryKey: ["Order By Id"],
-  //   // queryFn: getOrderByOrderId,
-  // });
+  const [order, setOrder] = useState<IOrder>();
 
-  // console.log('orderbyId: ', orderById)
+  const { data, isError, isLoading, refetch } = useQuery({
+    queryKey: ["getOrderByOrderId", id],
+    queryFn: async () => getOrderByOrderId(id),
+  });
 
-      //   const orderId = orderbyId.order.map((order: any) => ({
-      //   date: new Date(order.createdAt).toLocaleDateString(),
-      //   id: order._id,
-      //   name: order?.placeholder,
-      //   price: order?.fee?.total,
-      //   quantity: order?.orderedItems?.lengths,
-      //   shippingFee: order?.fee?.deliveryFee,
-      //   status: order?.orderStatus,
-        
-      // }))
-
-      
-// {name: 'Strawberry Sponge Cake', id: 'B736383836hgdy73', date: '2024-05-06', price: '300.00', status: 'Pending', …}
-// date: "2024-05-06"
-// id: "B736383836hgdy73"
-// name: "Strawberry Sponge Cake"
-// price: "300.00"
-// quantity: 2
-// shippingFee: 5.5
-// status: "Pending"
-// total: 100
-
-  // useEffect(() => {
-  //   const orderDetails = recentOrders.find((order) => order?.id === id);
-
-  //   console.log(orderDetails);
-
-  //   setOrder(orderDetails);
-  // }, [params, id]);
- useEffect(() => {
-   const fetchOrderDetails = async () => {
-     try {
-       setIsLoading(true);
-       const orderDetails = await getOrderByOrderId(id); // Fetch order details from API
-        console.log('orderDetails: ', orderDetails)
-       setOrder(orderDetails);
-       if (orderDetails.error) {
-         setError(orderDetails.message || "Failed to fetch order details.");
-       } else {
-         setOrder(orderDetails.order); 
-       }
-
-     } catch (err) {
-       setError("Failed to fetch order details.");
-     } finally {
-       setIsLoading(false);
-     }
-   };
-
-   fetchOrderDetails();
- }, [id]);
-  
-  
-    if (isLoading) {
-      return <div>Loading...</div>;
+  useEffect(() => {
+    if (!isLoading && data) {
+      setOrder(data.order);
     }
+  }, [isLoading, data]);
 
-    // If there's an error, display the error message
-    if (error) {
-      return <div>{error}</div>;
-  }
-    if (!order) {
-      return <div>No order details available.</div>;
-    }
-  return (
-    <>
-      <div className="mt-[64px]" />
+  if (isLoading) {
+    return (
       <section className="bg-neutral-100 py-6">
         <div className="wrapper">
           <div className="py-0">
-            <Link
-              href={"/my-orders"}
-              className="inline-flex items-center gap-2"
-            >
-              <span className="">
-                <ArrowLeft />
-              </span>
-              <span className="text-lg font-semibold md:text-2xl">
-                Order Details
-              </span>
-            </Link>
+            <Skeleton className="h-8 w-24" />
           </div>
-          <hr className="mb-4 border-0 border-b pb-3 " />
-
+          <hr className="mb-4 border-0 border-b pb-3" />
           <div className="space-y-5 lg:hidden">
             <div className="rounded-md bg-white p-4">
               <ul className="space-y-3">
                 <li>
-                  <div className="flex items-center justify-between">
-                    {/* <span>Order ID: #GOL{order?.id.slice(0, 4)}</span> */}
-                    {order.orderId}
-
-                    <span>
-                      <StatusColumn status={order?.orderStatus} />
-                      {/* {order?.orderStatus} */}
-                    </span>
-                  </div>
+                  <Skeleton className="h-6 w-full" />
                 </li>
                 <li>
-                  <div className="flex items-center justify-between bg-goldie-50 px-1 py-2">
-                    <span>Name</span>
-                    <span>
-                      {order?.firstName} {order?.lastName}
-                    </span>
-                  </div>
+                  <Skeleton className="h-6 w-full" />
                 </li>
                 <li>
-                  <div className="flex items-center justify-between">
-                    <span>Email</span>
-                    <span>
-                      <span>{order?.email}</span>
-                    </span>
-                  </div>
+                  <Skeleton className="h-6 w-full" />
                 </li>
                 <li>
-                  <div className="flex items-center justify-between bg-goldie-50 px-1 py-2">
-                    <span>Contact No</span>
-                    <span>
-                      <span>{order?.phoneNumber}</span>
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className="flex items-center justify-between">
-                    <span>Order Date:</span>
-                    {/* <span>{order?.date.replace(/-/g, "/")}</span> */}
-                    <span>
-{new Date(order?.createdAt).toISOString().split('T')[0]}
-                    </span>
-                  </div>
+                  <Skeleton className="h-6 w-full" />
                 </li>
               </ul>
             </div>
             <div className="rounded-md bg-white p-4">
               <ul className="space-y-3">
                 <li>
-                  <div className="flex flex-col  bg-goldie-50 px-1 py-2">
-                    <h3 className="mb-1 font-medium">Billing Address</h3>
-                    <p className="text-neutral-600">
-                      {order?.streetAddress}, {order?.cityOrTown},
-                      {order?.country}
-                    </p>
-                  </div>
+                  <Skeleton className="h-6 w-full" />
                 </li>
                 <li>
-                  <div className="flex flex-col">
-                    <h3 className="mb-1 font-medium">Shipping Address</h3>
-                    <p className="text-neutral-600">
-                      {order?.streetAddress}, {order?.cityOrTown},
-                      {order?.country}
-                    </p>
-                  </div>
+                  <Skeleton className="h-6 w-full" />
                 </li>
               </ul>
             </div>
             <div className="rounded-md bg-white p-4">
               <ul className="space-y-3">
-                {/* <li>
-                  <div className="flex items-center justify-between">
-                    <div className="grid grid-cols-[80px_1fr] items-center gap-2">
-                      <Image
-                        src={Chocolate}
-                        alt="chocolate cake"
-                        width={100}
-                        height={55}
-                        className="h-[55px] w-full object-cover"
-                      />
-                      <div>
-                        <h3>Chocolate Fudge Cake</h3>
-                        <span>1 Qty</span>
-                      </div>
-                    </div>
-                    <span>€508.98</span>
-                  </div>
-                </li> */}
                 <li>
-                  <div className="flex items-center justify-between">
-                    <div className="grid grid-cols-[80px_1fr] items-center gap-2">
-                      <Image
-                        src={RedVelvet}
-                        alt="Redvelvet cake"
-                        width={100}
-                        height={55}
-                        className="h-[55px] w-full object-cover"
-                      />
-                      <div>
-                        <h3>Red Velvet Cake</h3>
-                        <span>1 Qty</span>
-                      </div>
-                    </div>
-                    <span>€508.98</span>
-                  </div>
+                  <Skeleton className="h-6 w-full" />
                 </li>
                 <li>
-                  <div className="flex items-center justify-between bg-goldie-50 px-1 py-2">
-                    <span>Category</span>
-                    <span>
-                      <span>Milestone Cakes</span>
-                    </span>
-                  </div>
+                  <Skeleton className="h-6 w-full" />
                 </li>
                 <li>
-                  <div className="flex items-center justify-between">
-                    <span>Subcategory</span>
-                    <span>
-                      <span>Birthday Cakes</span>
-                    </span>
-                  </div>
+                  <Skeleton className="h-6 w-full" />
                 </li>
                 <li>
-                  <div className="flex items-center justify-between bg-goldie-50 px-1 py-2">
-                    <span>Price</span>
-                    <span>
-                      <span>&euro;{order?.fee?.subTotal}</span>
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className="flex items-center justify-between">
-                    <span>Tax</span>
-                    <span>
-                      <span>&euro;{order?.fee?.deliveryFee}</span>
-                    </span>
-                  </div>
-                </li>
-                <li>
-                  <div className="flex items-center justify-between border-t bg-goldie-50 px-1 py-2">
-                    <span>Total</span>
-                    <span>
-                      <span>&euro;{order?.fee?.total}</span>
-                    </span>
-                  </div>
+                  <Skeleton className="h-6 w-full" />
                 </li>
               </ul>
             </div>
           </div>
           <div className="hidden lg:mx-auto lg:block xl:max-w-[90%]">
-            {/* ORDER DETAILS */}
             <div className="rounded-md bg-white p-5">
-              <span className="font-semibold ">
-                {/* Order ID : #GOL{order?.id?.slice(0, 4)} */}
-                {order.orderId}
-              </span>
-
+              <Skeleton className="h-8 w-24" />
               <div className="mt-3 flex justify-between">
                 <div className="flex flex-col gap-5">
-                  <ul>
-                    <li className="font-medium">Name</li>
-                    <li className="text-neutral-600">
-                      {order?.firstName} {order?.lastName}
-                    </li>
-                  </ul>
-                  <ul>
-                    <li className="font-medium">Email</li>
-                    <li className="text-neutral-600">{order?.email}</li>
-                  </ul>
-                  <ul>
-                    <li className="font-medium">Billing Address</li>
-                    <li className="text-neutral-600">
-                      {order?.streetAddress}, {order?.cityOrTown},
-                      {order?.country}
-                    </li>
-                  </ul>
-                  <ul>
-                    <li className="font-medium">Shipping Address</li>
-                    <li className="text-neutral-600">
-                      {order?.streetAddress}, {order?.cityOrTown},
-                      {order?.country}
-                    </li>
-                  </ul>
+                  <Skeleton className="h-6 w-48" />
+                  <Skeleton className="h-6 w-48" />
+                  <Skeleton className="h-6 w-48" />
+                  <Skeleton className="h-6 w-48" />
                 </div>
                 <div className="flex flex-col gap-5">
-                  <ul>
-                    <li className="font-medium">Status</li>
-                    <li>{getStatus(order?.orderStatus)}</li>
-                    {/* <li>{order?.orderStatus}</li> */}
-                  </ul>
-                  <ul>
-                    <li className="font-medium">Contact No</li>
-                    <li className="text-neutral-600">{order?.phoneNumber}</li>
-                  </ul>
-                  <ul>
-                    <li className="font-medium">Order Date</li>
-                    {/* <li className="text-neutral-600">{order?.date}</li> */}
-                    <li className="text-neutral-600">
-{new Date(order?.createdAt).toISOString().split('T')[0]}
-                    </li>
-                  </ul>
+                  <Skeleton className="h-6 w-48" />
+                  <Skeleton className="h-6 w-48" />
+                  <Skeleton className="h-6 w-48" />
                 </div>
               </div>
             </div>
-
-            {/* ORDER ITEMS TABLE */}
             <div className="mt-5">
-              <ProductTable
-                columns={columns}
-                Tdata={orderItems}
-                filteredTabs={[]}
-                showSearchBar={false}
-              />
-
-              <div className=" mt-5 flex justify-end">
-                <div className="flex w-[300px] flex-col gap-3 bg-white p-4">
-                  <div className="inline-flex items-center justify-between">
-                    <span>Subtotal</span>
-                    <span>€{order.fee.subTotal}</span>
-                  </div>
-                  <div className="inline-flex items-center justify-between">
-                    <span>Tax</span>
-                    <span>€{order.fee.deliveryFee}</span>
-                  </div>
-                  <div className="inline-flex items-center justify-between border-t pt-3">
-                    <span>Total</span>
-                    <span>€{order.fee.total}</span>
-                  </div>
-                </div>
+              <Skeleton className="h-64 w-full" />
+              <div className="mt-5 flex justify-end">
+                <Skeleton className="h-24 w-[300px]" />
               </div>
             </div>
           </div>
         </div>
       </section>
-    </>
+    );
+  }
+
+  if (isError) {
+    <div className="py-5 text-center">
+      <p className="mb-4 text-center text-red-500">
+        Failed to load order details. Please try again.
+      </p>
+
+      <Button onClick={() => refetch()}>Retry</Button>
+    </div>;
+  }
+
+  if (!order) {
+    return <div>No order details available.</div>;
+  }
+
+  console.log(">>>>order>>>> " + order);
+  return (
+    <section className="bg-neutral-100 py-6">
+      <div className="wrapper">
+        <div className="py-0">
+          <Link href={"/my-orders"} className="inline-flex items-center gap-2">
+            <span className="">
+              <ArrowLeft />
+            </span>
+            <span className="text-lg font-semibold md:text-2xl">
+              Order Details
+            </span>
+          </Link>
+        </div>
+        <hr className="mb-4 border-0 border-b pb-3 " />
+
+        <div className="space-y-5 lg:hidden">
+          <div className="rounded-md bg-white p-4">
+            <ul className="space-y-3">
+              <li>
+                <div className="flex items-center justify-between">
+                  {order.orderId}
+
+                  <span>
+                    <StatusColumn status={order?.orderStatus} />
+                  </span>
+                </div>
+              </li>
+              <li>
+                <div className="flex items-center justify-between bg-goldie-50 px-1 py-2">
+                  <span>Name</span>
+                  <span>
+                    {order?.firstName} {order?.lastName}
+                  </span>
+                </div>
+              </li>
+              <li>
+                <div className="flex items-center justify-between">
+                  <span>Email</span>
+                  <span>
+                    <span>{order?.email}</span>
+                  </span>
+                </div>
+              </li>
+              <li>
+                <div className="flex items-center justify-between bg-goldie-50 px-1 py-2">
+                  <span>Contact No</span>
+                  <span>
+                    <span>{order?.phoneNumber}</span>
+                  </span>
+                </div>
+              </li>
+              <li>
+                <div className="flex items-center justify-between">
+                  <span>Order Date:</span>
+                  <span>
+                    {moment(order?.createdAt).format("MMM DD, YYYY HH:mm A")}
+                  </span>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div className="rounded-md bg-white p-4">
+            <ul className="space-y-3">
+              <li>
+                <div className="flex flex-col  bg-goldie-50 px-1 py-2">
+                  <h3 className="mb-1 font-medium">Billing Address</h3>
+                  <p className="text-neutral-600">
+                    {order?.streetAddress}, {order?.cityOrTown},{order?.country}
+                  </p>
+                </div>
+              </li>
+              <li>
+                <div className="flex flex-col">
+                  <h3 className="mb-1 font-medium">Shipping Address</h3>
+                  <p className="text-neutral-600">
+                    {order?.streetAddress}, {order?.cityOrTown},{order?.country}
+                  </p>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div className="rounded-md bg-white p-4">
+            <ul className="divide-y divide-gray-200">
+              {order?.orderedItems?.map((item) => (
+                <>
+                  <li>
+                    <div className="flex items-center justify-between py-2">
+                      <div className="flex items-center gap-4">
+                        <div className="h-[50px] w-[50px] shrink-0 overflow-hidden">
+                          <Image
+                            src={item?.product?.images[0]}
+                            alt={item?.product?.name}
+                            width={50}
+                            height={30}
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                        <div>
+                          <h3>{item?.product?.name}</h3>
+                          <span>x{item?.quantity}</span>
+                        </div>
+                      </div>
+                      <span>
+                        {formatCurrency(
+                          parseInt(item?.product?.maxPrice),
+                          "en-NG",
+                        )}
+                      </span>
+                    </div>
+                  </li>
+                </>
+              ))}
+            </ul>
+          </div>
+
+          <div className="rounded-md bg-white p-4">
+            <ul className="space-y-3">
+              <li>
+                <div className="flex items-center justify-between">
+                  <span>Shipping</span>
+                  <span>
+                    <span>{formatCurrency(order?.fee?.deliveryFee, "en-NG")}</span>
+                  </span>
+                </div>
+              </li>
+              <li>
+                <div className="flex items-center justify-between border-t bg-goldie-50 px-1 py-2">
+                  <span className="font-bold">Total</span>
+                  <span className="font-bold">
+                  {formatCurrency(order?.fee?.total!, "en-NG")}
+                  </span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="hidden lg:mx-auto lg:block xl:max-w-[90%]">
+          {/* ORDER DETAILS */}
+          <div className="rounded-md bg-white p-5">
+            <span className="font-semibold ">{order.orderId}</span>
+
+            <div className="mt-3 flex justify-between">
+              <div className="flex flex-col gap-5">
+                <ul>
+                  <li className="font-medium">Name</li>
+                  <li className="text-neutral-600">
+                    {order?.firstName} {order?.lastName}
+                  </li>
+                </ul>
+                <ul>
+                  <li className="font-medium">Email</li>
+                  <li className="text-neutral-600">{order?.email}</li>
+                </ul>
+                <ul>
+                  <li className="font-medium">Billing Address</li>
+                  <li className="text-neutral-600">
+                    {order?.streetAddress}, {order?.cityOrTown},{order?.country}
+                  </li>
+                </ul>
+                <ul>
+                  <li className="font-medium">Shipping Address</li>
+                  <li className="text-neutral-600">
+                    {order?.streetAddress}, {order?.cityOrTown},{order?.country}
+                  </li>
+                </ul>
+              </div>
+              <div className="flex flex-col gap-5">
+                <ul>
+                  <li className="font-medium">Status</li>
+                  <li>{getStatus(order?.orderStatus)}</li>
+                </ul>
+                <ul>
+                  <li className="font-medium">Contact No</li>
+                  <li className="text-neutral-600">{order?.phoneNumber}</li>
+                </ul>
+                <ul>
+                  <li className="font-medium">Order Date</li>
+                  <li className="text-neutral-600">
+                    {moment(order?.createdAt).format("MMM DD, YYYY HH:mm A")}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* ORDER ITEMS TABLE */}
+          <div className="mt-5">
+            <div className="rounded-md bg-white p-6">
+              <div className="table w-full table-auto border-collapse">
+                <div className="table-header-group">
+                  <div className="table-row">
+                    <div className="table-cell border-b border-neutral-300 pb-3 font-bold">
+                      Product
+                    </div>
+                    <div className="table-cell border-b border-neutral-300 pb-3 font-bold">
+                      Qty
+                    </div>
+                    <div className="table-cell border-b border-neutral-300 pb-3 pl-5 font-bold">
+                      Price
+                    </div>
+                    <div className="table-cell border-b border-neutral-300 pb-3 pl-5 font-bold">
+                      Total
+                    </div>
+                  </div>
+                </div>
+                <div className="table-row-group divide-y divide-gray-200">
+                  {order?.orderedItems?.map((item, index) => {
+                    return (
+                      <div key={index} className="table-row">
+                        <div className="table-cell py-2">
+                          <div className="grid w-full grid-cols-[600px_1fr] text-sm">
+                            <div className=" flex items-center gap-2">
+                              <div className="h-[50px] w-[50px] overflow-hidden">
+                                <Image
+                                  src={item?.product?.images[0]}
+                                  alt={item?.product?.name}
+                                  width={50}
+                                  height={30}
+                                  className="h-full w-full object-cover"
+                                />
+                              </div>
+                              <h3>{item?.product?.name}</h3>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="table-cell py-2 align-top">
+                          {item?.quantity}
+                        </div>
+                        <div className="table-cell py-3 pl-5 text-right align-top">
+                          {formatCurrency(
+                            parseInt(item?.product?.maxPrice),
+                            "en-NG",
+                          )}
+                        </div>
+                        <div className="table-cell py-3 pl-5 text-right align-top">
+                          {formatCurrency(
+                            parseInt(item?.product?.maxPrice) * item?.quantity,
+                            "en-NG",
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+
+            <div className=" mt-5 flex justify-end">
+              <div className="flex w-[300px] flex-col gap-3 bg-white p-4">
+                <div className="inline-flex items-center justify-between">
+                  <span>Subtotal</span>
+                  <span>{formatCurrency(order?.fee?.subTotal!, "en-NG")}</span>
+                </div>
+                <div className="inline-flex items-center justify-between">
+                  <span>Shipping</span>
+                  <span>
+                    {formatCurrency(order?.fee?.deliveryFee!, "en-NG")}
+                  </span>
+                </div>
+                <div className="inline-flex items-center justify-between border-t pt-3">
+                  <span className="font-bold">Total</span>
+                  <span className="font-bold">
+                    {formatCurrency(order?.fee?.total!, "en-NG")}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 };
 

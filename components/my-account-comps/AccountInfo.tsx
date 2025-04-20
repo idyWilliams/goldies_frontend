@@ -1,16 +1,17 @@
 import { cn } from "@/helper/cn";
+import { IUser } from "@/interfaces/user.interface";
+import { updateUser } from "@/services/hooks/users";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import * as yup from "yup";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-import { useCallback, useEffect, useState } from "react";
-import { CountryDropdown, RegionDropdown } from "react-country-region-selector";
-import { getUser } from "@/services/hooks/users";
-import { useMutation, useQuery } from "@tanstack/react-query";
-// import { toast } from "sonner";
-import { toast, Toaster } from "sonner";
-import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import * as yup from "yup";
+import ConfirmDeletion from "./ConfirmDeletion";
+import { Skeleton } from "../ui/skeleton";
 
 const schema = yup.object().shape({
   firstName: yup.string().required("First name is required"),
@@ -21,20 +22,36 @@ const schema = yup.object().shape({
     .required("Valid Phone Number is required")
     .min(6, "Valid Phone Number must be at least 6 characters")
     .max(15, "Valid Phone Number must not exceed 12 characters"),
-  address: yup.string().required("Shipping address is required"),
-  state: yup.string().required("State is required"),
-  country: yup.string().required("Country is required"),
+  // address: yup.string().required("Shipping address is required"),
+  // state: yup.string().required("State is required"),
+  // country: yup.string().required("Country is required"),
 });
 
-const AccountInfo = () => {
-  const [phone, setPhone] = useState("");
-  const [country, setCountry] = useState("");
-  const [state, setState] = useState("");
-  const [user, setUser] = useState<any>(null);
+const AccountInfo = ({
+  fetchedUser,
+  isLoading,
+}: {
+  fetchedUser: IUser;
+  isLoading: boolean;
+}) => {
   const router = useRouter();
+  const queryClient = useQueryClient();
+  const [user, setUser] = useState<any>(null);
+  const [phone, setPhone] = useState("");
+  // const [country, setCountry] = useState("");
+  // const [state, setState] = useState("");
   // const [lastName, setLastName] = useState("");
   // const [email, setEmail] = useState("");
   // const [address, setAddress] = useState("");
+
+  // const { data, isError, isSuccess } = useQuery({
+  //   queryKey: [user],
+  //   queryFn: getUser,
+  // });
+
+  // useEffect(() => {
+  //   if (isSuccess) console.log(data);
+  // }, [isSuccess, data]);
 
   const {
     reset,
@@ -47,47 +64,124 @@ const AccountInfo = () => {
   } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
-      firstName: user?.firstName || "taiwo",
-      lastName: user?.lastName || "",
-      email: user?.email || "",
+      firstName: fetchedUser?.firstName || "",
+      lastName: fetchedUser?.lastName || "",
+      email: fetchedUser?.email || "",
+      phone: fetchedUser?.phoneNumber || "",
     },
+
+    // defaultValues: user
+    //   ? {
+    //       firstName: user?.firstName,
+    //       lastName: user?.lastName,
+    //       email: user?.email,
+    //       phone: user?.phone,
+    //     }
+    //   : {
+    //       firstName: "",
+    //       lastName: "",
+    //       email: "",
+    //       phone: "",
+    //     },
   });
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user") as string);
     if (storedUser) {
       setUser(storedUser.user);
-      console.log("stored is", storedUser.user);
     } else {
       toast.error("Session expired! Please log in again");
       router.push("/sign-in");
     }
-  }, []);
-  console.log("data is", user);
+  }, [router]);
+  // console.log("data is", user);
 
   useEffect(() => {
-    console.log("reset ", user);
+    if (fetchedUser) {
+      reset({
+        firstName: fetchedUser.firstName || "",
+        lastName: fetchedUser.lastName || "",
+        email: fetchedUser.email || "",
+        phone: fetchedUser.phoneNumber || "",
+      });
+    }
 
-    reset({
-      firstName: user?.firstName || "",
-      lastName: user?.lastName || "",
-      email: user?.email || "",
-    });
-  }, [user, reset]);
+    // reset({
+    //   firstName: user?.firstName || "",
+    //   lastName: user?.lastName || "",
+    //   email: user?.email || "",
+    // });
+  }, [fetchedUser, reset]);
 
-  console.log("values ", getValues(), "user: ", user);
+  const updateProfile = useMutation({
+    mutationKey: ["update user profile"],
+    mutationFn: updateUser,
+    onSuccess: (data) => {
+      const storedUser = JSON.parse(localStorage.getItem("user") as string);
+      console.log(storedUser);
+      const user = {
+        ...storedUser.user,
+        firstName: data.data.firstName,
+        lastName: data.data.lasttName,
+      };
+      const newUser = {
+        ...storedUser,
+        user: {
+          ...storedUser.user,
+          firstName: data.data.firstName,
+          lastName: data.data.lastName,
+        },
+      };
+      // console.log(newUser);
+
+      localStorage.setItem("user", JSON.stringify(newUser));
+
+      toast.success("Account information updated successfully");
+      console.log(data);
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
+    onError: (error) => {
+      console.error(error);
+      toast.error("There was an error updating account information");
+    },
+  });
+
+  // console.log("values ", getValues(), "user: ", user);
 
   const handleSave = (data: any) => {
     console.log(data);
-    toast.success("Account information updated successfully");
-    console.log("Form errors:", errors);
+    updateProfile.mutate(data);
+    // toast.success("Account information updated successfully");
+    // console.log("Form errors:", errors);
   };
+
+  if (isLoading) {
+    return (
+      <div>
+        <div className="mb-4 border-b border-neutral-200 pb-4">
+          <Skeleton className="mb-2 h-6 w-[200px]" />
+          <Skeleton className="h-4 w-[300px]" />
+        </div>
+        <div className="space-y-4 md:grid md:grid-cols-2 md:gap-3 md:space-y-0">
+          <Skeleton className="h-10" />
+          <Skeleton className="h-10" />
+          <Skeleton className="h-10" />
+          <Skeleton className="h-10" />
+          <Skeleton className="h-10 w-32" />
+        </div>
+
+        <div className="mt-4">
+          <Skeleton className="ml-auto h-10 w-32" />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="">
       <div className="mb-4 border-b border-neutral-200 pb-4">
         <h2 className="text-xl font-semibold">Account Information</h2>
-        <p>This is your default shipping information</p>
+        <p>This is your default account information</p>
       </div>
       <form onSubmit={handleSubmit(handleSave)}>
         <div className="space-y-3 md:grid md:grid-cols-2 md:gap-3 md:space-y-0">
@@ -105,9 +199,10 @@ const AccountInfo = () => {
                 errors.firstName && "border-red-600 focus:border-red-600",
               )}
             />
-            {errors?.firstName && (
-              <p className="text-red-600">{errors?.firstName?.message}</p>
-            )}
+            {errors?.firstName &&
+              typeof errors.firstName.message === "string" && (
+                <p className="text-red-600">{errors?.firstName?.message}</p>
+              )}
           </label>
           <label htmlFor="lastName" className="block w-full">
             <span className="mb-1 inline-block text-sm font-medium">
@@ -123,9 +218,10 @@ const AccountInfo = () => {
                 errors.lastName && "border-red-600 focus:border-red-600",
               )}
             />
-            {errors?.lastName && (
-              <p className="text-red-600">{errors?.lastName?.message}</p>
-            )}
+            {errors?.lastName?.message &&
+              typeof errors.lastName.message === "string" && (
+                <p className="text-red-600">{errors?.lastName?.message}</p>
+              )}
           </label>
           <label htmlFor="email" className="block w-full">
             <span className="mb-1 inline-block text-sm font-medium">
@@ -135,13 +231,14 @@ const AccountInfo = () => {
               {...register("email")}
               type="email"
               id="email"
+              disabled
               // defaultValue={email}
               className={cn(
-                "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0",
+                "form-input block w-full rounded border border-neutral-200 bg-neutral-100 text-sm text-neutral-700 focus:border-neutral-900 focus:ring-0 disabled:cursor-not-allowed disabled:opacity-75",
                 errors.email && "border-red-600 focus:border-red-600",
               )}
             />
-            {errors?.email && (
+            {errors?.email && typeof errors?.email?.message === "string" && (
               <p className="text-red-600">{errors?.email?.message}</p>
             )}
           </label>
@@ -152,10 +249,9 @@ const AccountInfo = () => {
             <Controller
               name="phone"
               control={control}
-              rules={{ required: true }}
+              rules={{ required: "Phone number is required" }}
               render={({ field }) => (
                 <PhoneInput
-                  {...field}
                   country={"ng"}
                   value={field.value || phone}
                   onChange={(phoneNumber) => {
@@ -174,8 +270,11 @@ const AccountInfo = () => {
                 />
               )}
             />
+            {errors?.phone && typeof errors?.phone?.message === "string" && (
+              <p className="text-red-600">{errors?.phone?.message}</p>
+            )}
           </label>
-          <label htmlFor="country" className="block w-full">
+          {/* <label htmlFor="country" className="block w-full">
             <span className="mb-1 inline-block text-sm font-medium">
               Country
             </span>
@@ -200,8 +299,8 @@ const AccountInfo = () => {
             {errors?.country && (
               <p className="text-red-600">{errors?.country?.message}</p>
             )}
-          </label>
-          <label htmlFor="state" className="block w-full">
+          </label> */}
+          {/* <label htmlFor="state" className="block w-full">
             <span className="mb-1 inline-block text-sm font-medium">State</span>
             <Controller
               name="state"
@@ -226,9 +325,9 @@ const AccountInfo = () => {
             {errors?.state && (
               <p className="text-red-600">{errors?.state?.message}</p>
             )}
-          </label>
+          </label> */}
 
-          <label htmlFor="address" className="block w-full md:col-span-2">
+          {/* <label htmlFor="address" className="block w-full md:col-span-2">
             <span className="mb-1 inline-block text-sm font-medium">
               Shipping address
             </span>
@@ -244,21 +343,26 @@ const AccountInfo = () => {
             {errors?.address && (
               <p className="text-red-600">{errors?.address.message}</p>
             )}
-          </label>
+          </label> */}
         </div>
 
         <div className="mt-7 flex items-center justify-start gap-3">
           <button
             type="submit"
-            className="rounded border border-neutral-900 bg-neutral-900 px-5 py-2.5 text-goldie-300"
+            className="rounded border border-neutral-900 bg-brand-200 px-5 py-2.5 text-brand-100"
           >
             Save changes
           </button>
-          <button className="rounded border border-red-600 px-5 py-2.5 font-medium text-red-600">
-            Close account
-          </button>
         </div>
       </form>
+
+      <div className="mt-8 flex items-center justify-between rounded-lg border border-red-500 p-4">
+        <div>
+          <p className="text-red-500">Danger zone</p>
+        </div>
+
+        <ConfirmDeletion />
+      </div>
     </div>
   );
 };

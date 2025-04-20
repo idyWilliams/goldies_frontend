@@ -1,89 +1,161 @@
 "use client";
 import BreadCrumbs from "@/components/BreadCrumbs";
-import { cakeProducts1 } from "@/utils/cakeData";
-import { addSlugToCakes } from "@/helper";
+import FilterComp from "@/components/custom-filter/FilterComp";
+import FilterSidebar from "@/components/custom-filter/FilterSideBar";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import { useEffect, useState } from "react";
 import { ArrowDown2, Shuffle } from "iconsax-react";
-import FilterComp from "@/components/custom-filter/FilterComp";
+import { useEffect, useRef, useState } from "react";
 import { IoList } from "react-icons/io5";
-import FilterSidebar from "@/components/custom-filter/FilterSideBar";
-import { chunkArray } from "@/helper/chunkArray";
-import Pagination from "@/components/custom-filter/Pagination";
+
+import AdminPagination from "@/components/admin-component/AdminPagination";
 import ProductCard from "@/components/shop-components/ProductCard";
+import ProductCardSkeleton from "@/components/shop-components/ProductCardSkeleton";
+import EachElement from "@/helper/EachElement";
 import { captalizedName } from "@/helper/nameFormat";
-// import { useQuery } from "@tanstack/react-query";
-// import { fetchProducts } from "@/services/hooks/products";
+import {
+  IProduct,
+  ProductParams,
+  UCategory,
+} from "@/interfaces/product.interface";
+import { fetchCategories } from "@/services/hooks/category";
+import useProducts from "@/services/hooks/products/useProducts";
+import { useQuery } from "@tanstack/react-query";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 let itemsPerPage = 6;
 
 const ShopPage = () => {
-  const [cakes, setCakes] = useState<any[]>(addSlugToCakes(cakeProducts1));
-  const [query, setQuery] = useState<any>();
-  const [currentPageIndex, setCurrentPageIndex] = useState(1);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const queryCat = searchParams.get("cat")
+    ? decodeURIComponent(searchParams.get("cat")!)
+    : null;
+  const querySubCat = searchParams.get("sub")
+    ? decodeURIComponent(searchParams.get("sub")!)
+    : null;
+  const querySubCatId = searchParams.get("subCategoryIds");
+  const queryMinPrice = searchParams.get("minPrice")
+    ? Number(searchParams.get("minPrice"))
+    : null;
+  const queryMaxPrice = searchParams.get("maxPrice")
+    ? Number(searchParams.get("maxPrice"))
+    : null;
+  const querySortBy = searchParams.get("sortBy") || "default";
+  const queryOrder = searchParams.get("order") || "asc";
+
   const [showFilter, setShowFilter] = useState(false);
-  const cakesProducts = addSlugToCakes(cakeProducts1);
-  const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
-  const [cat, setCat] = useState<string>("");
+  const [currentPageIndex, setCurrentPageIndex] = useState(
+    parseInt(searchParams.get("page") || "1", 10),
+  );
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [categories, setCategories] = useState<UCategory[]>([]);
+  const [openIndexes, setOpenIndexes] = useState<number[]>([]);
+  const [minPrice, setMinPrice] = useState<number>(queryMinPrice ?? 0);
+  const [maxPrice, setMaxPrice] = useState<number>(queryMaxPrice ?? 20000);
+  const [sortBy, setSortBy] = useState<string>(querySortBy);
+  const [order, setOrder] = useState<string>(queryOrder);
 
-  const handleNext = () => {
-    if (currentPageIndex !== chunkArray(cakes, itemsPerPage).length) {
-      setCurrentPageIndex(currentPageIndex + 1);
-      window.scroll(0, 0);
-    } else {
-      return;
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileDropdownOpen, setIsMobileDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const mobileDropdownRef = useRef<HTMLDivElement>(null);
+
+  const {
+    data: categoryData,
+    isPending: loadingCat,
+    isSuccess,
+  } = useQuery({
+    queryFn: fetchCategories,
+    queryKey: ["all categories"],
+  });
+
+  useEffect(() => {
+    if (!loadingCat && isSuccess && categoryData?.categories) {
+      setCategories(categoryData?.categories);
+      setOpenIndexes(
+        categoryData.categories.map((_: UCategory, index: number) => index),
+      ); // Open all initially
     }
-  };
+  }, [loadingCat, isSuccess, categoryData]);
 
-  const handlePaginateClick = (index: number) => {
-    setCurrentPageIndex(index + 1);
-    window.scroll(0, 0);
-  };
+  useEffect(() => {
+    setMinPrice(queryMinPrice ?? 0);
+    setMaxPrice(queryMaxPrice ?? 20000);
+  }, [queryMinPrice, queryMaxPrice]);
 
-  const handlePrev = () => {
+  const [params, setParams] = useState<ProductParams>({
+    page: currentPageIndex,
+    limit: itemsPerPage,
+    sortBy: querySortBy,
+    order: queryOrder,
+  });
+
+  useEffect(() => {
+    const newParams: ProductParams = {
+      page: currentPageIndex,
+      limit: itemsPerPage,
+    };
+
+    if (querySubCatId) {
+      newParams.subCategoryIds = querySubCatId;
+    }
+
+    if (queryMinPrice !== null && !isNaN(queryMinPrice)) {
+      newParams.minPrice = queryMinPrice;
+    }
+
+    if (queryMaxPrice !== null && !isNaN(queryMaxPrice)) {
+      newParams.maxPrice = queryMaxPrice;
+    }
+
+    // Only include sortBy and order if they are not default
+    if (sortBy !== "default") {
+      newParams.sortBy = sortBy;
+      newParams.order = order;
+    }
+
+    // Update URL with new page using router
+    const currentParams = new URLSearchParams(searchParams.toString());
+    currentParams.set("page", currentPageIndex.toString());
+
     if (currentPageIndex !== 1) {
-      setCurrentPageIndex(currentPageIndex - 1);
-      window.scroll(0, 0);
+      currentParams.set("page", currentPageIndex.toString());
     } else {
-      return;
+      currentParams.delete("page");
     }
-  };
 
-  const min = () => {
-    if (Array.isArray(cakes)) {
-      const cakeMinPrices = cakes?.map((s: any) => s?.minPrice);
-      return Math.trunc(Math?.min(...cakeMinPrices));
+    if (sortBy !== "default") {
+      currentParams.set("sortBy", sortBy);
+      currentParams.set("order", order);
+    } else {
+      currentParams.delete("sortBy");
+      currentParams.delete("order");
     }
-    return 0; // or any default value
-  };
 
-  const max = () => {
-    if (Array.isArray(cakes)) {
-      const cakeMaxPrices = cakes?.map((s: any) => s?.maxPrice);
-      return Math.trunc(Math?.max(...cakeMaxPrices));
-    }
-    return 100; // or any default value
-  };
+    router.push(`${pathname}?${currentParams.toString()}`);
 
-  // const searchParams = useSearchParams();
-  // const cat = '';
-  // console.log("cat is", cat);
+    setParams(newParams); // Update params state when URL changes
+  }, [
+    querySubCatId,
+    queryMinPrice,
+    queryMaxPrice,
+    currentPageIndex,
+    sortBy,
+    order,
+    pathname,
+    router,
+    searchParams,
+  ]);
 
-  const handleFilter = () => {
-    const queryString = window.location.search;
-    const searchParams = new URLSearchParams(queryString);
-    const category = searchParams.get("cat") || "";
-    const subcategory = searchParams.get("sub");
-    setCat(category);
-
-    console.log("Category:", category, "Subcategory:", subcategory);
-    setCakes(
-      cakes?.filter((cake: any) =>
-        selectedOptions?.includes(cake?.subcategory?.toLowerCase()),
-      ),
-    );
-  };
+  const {
+    isLoading,
+    totalPages,
+    totalProducts,
+    products: allProducts,
+  } = useProducts(params);
 
   useEffect(() => {
     AOS.init({
@@ -93,201 +165,486 @@ const ShopPage = () => {
     });
   }, []);
 
+  // Close dropdown when clicking outside
   useEffect(() => {
-    if (cat) {
-      const cate = addSlugToCakes(cakeProducts1)?.filter(
-        (product: any) => product?.category?.toLowerCase() === cat,
-      );
-      setCakes((prevCakes) =>
-        JSON.stringify(prevCakes) !== JSON.stringify(cate) ? cate : prevCakes,
-      );
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+
+      if (
+        mobileDropdownRef.current &&
+        !mobileDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsMobileDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const handleClick = (index: number) => {
+    setOpenIndexes(
+      (prev) =>
+        prev.includes(index)
+          ? prev.filter((i) => i !== index) // Remove if already open
+          : [...prev, index], // Add if not open
+    );
+  };
+
+  const handleRangeChange = (newMin: number, newMax: number) => {
+    setMinPrice(newMin);
+    setMaxPrice(newMax);
+  };
+
+  const handleSelectedItem = (id: string, isChecked: boolean) => {
+    setSelectedIds((prev) => {
+      const updatedSet = new Set(prev);
+      if (isChecked) {
+        updatedSet.add(id);
+      } else {
+        updatedSet.delete(id);
+      }
+      return new Set(updatedSet); // Ensures re-render
+    });
+  };
+
+  const applyFilter = () => {
+    const params = new URLSearchParams(searchParams);
+
+    if (selectedIds.size > 0) {
+      params.set("subCategoryIds", Array.from(selectedIds).join(","));
     } else {
-      setCakes((prevCakes) =>
-        JSON.stringify(prevCakes) !== JSON.stringify(cakesProducts)
-          ? cakesProducts
-          : prevCakes,
-      );
+      params.delete("subCategoryIds");
     }
-    console.log("updated");
-  }, [cat, cakesProducts]);
 
-  console.log("currentPage", query);
+    // Only set price parameters if they differ from the default values
+    if (minPrice > 0) {
+      params.set("minPrice", String(minPrice));
+    } else {
+      params.delete("minPrice");
+    }
 
-  // useEffect(() => {
-  //   const queryString = window.location.search;
-  //   console.log("window is", window.location.search);
-  //   const searchParams = new URLSearchParams(queryString);
-  //   // setQuery({ cat: searchParams.get("cat"), sub: searchParams.get("sub") });
-  //   const category = searchParams.get("cat");
-  //   const subcategory = searchParams.get("sub");
-  //   // setQuery(category ? category : "");
-  //   setQuery({ cat: category, sub: subcategory });
-  //   console.log(
-  //     queryString,
-  //     "query",
-  //     searchParams.get("cat"),
-  //     searchParams.get("sub"),
-  //     "category", category,
-  //     "subcategory", subcategory,
-  //   );
-  // }, [setQuery]);
+    if (maxPrice < 20000) {
+      params.set("maxPrice", String(maxPrice));
+    } else {
+      params.delete("maxPrice");
+    }
+
+    // Reset to page 1 on filter change
+    params.set("page", "1");
+    setCurrentPageIndex(1);
+
+    router.push(`${pathname}?${params.toString()}`);
+
+    setParams((prev) => ({
+      ...prev,
+      page: 1,
+      limit: itemsPerPage,
+      subCategoryIds:
+        selectedIds.size > 0 ? Array.from(selectedIds).join(",") : undefined,
+      minPrice: minPrice > 0 ? minPrice : undefined,
+      maxPrice: maxPrice < 20000 ? maxPrice : undefined,
+    }));
+  };
+
+  const handleReset = () => {
+    setMinPrice(0);
+    setMaxPrice(20000);
+    setSelectedIds(new Set());
+    setSortBy("default");
+    router.push(pathname); // Reset URL params
+  };
+
+  const handleSortChange = (sortBy: string, order: string) => {
+    setSortBy(sortBy);
+    setOrder(order);
+    setCurrentPageIndex(1);
+    setIsDropdownOpen(false);
+    setIsMobileDropdownOpen(false);
+  };
 
   return (
-    <>
-      <>
-        {/* BREADCRUMBS */}
-        <div className="bg-black pb-4 pt-20 lg:pt-[96px]">
-          <div className="wrapper">
-            <BreadCrumbs
-              items={[
-                {
-                  name: "Home",
-                  link: "/",
-                },
-                {
-                  name: "Shop",
-                  link: "/shop",
-                },
-              ]}
-            />
-          </div>
+    <div className="">
+      {/* BREADCRUMBS */}
+      <div className="mt-20 bg-brand-200 py-4">
+        <div className="wrapper">
+          <BreadCrumbs
+            items={[
+              {
+                name: "Home",
+                link: "/",
+              },
+              {
+                name: "Shop",
+                link: "/shop",
+              },
+            ]}
+          />
         </div>
-        <section className="relative py-6 xl:bg-neutral-100">
-          <div className="wrapper">
-            <div className="mx-auto w-full">
-              <div className="mb-4 flex items-center justify-between border-b border-neutral-400 pb-4 lg:grid lg:grid-cols-[85%_10%] xl:hidden">
+      </div>
+
+      <section className="relative py-6 pb-10 xl:bg-brand-100">
+        <div className="wrapper">
+          <div className="mx-auto w-full">
+            {/* MOBILE PRODUCT DISPLAY */}
+            <div className="mb-4 flex flex-col border-b border-neutral-400 pb-2  xl:hidden">
+              <div className="flex items-start justify-between lg:grid lg:grid-cols-[85%_10%] xl:hidden">
                 <div className="items-center justify-between lg:flex">
-                  <h3 className="text-2xl font-bold text-black">
-                    {" "}
-                    {/* {"" ? captalizedName("") : "All Cakes"} */}
-                    {cat ? captalizedName(cat) : "All Cakes"}
-                    {/* {cat} */}
-                  </h3>
-                  {/* MOBILE PRODUCT DISPLAY */}
-                  <span className="text-sm text-neutral-500 lg:text-base">
-                    Showing {currentPageIndex} - {itemsPerPage} of{" "}
-                    {cakes?.length} results
-                  </span>
+                  <div>
+                    <h3 className="text-2xl font-bold text-black">
+                      {queryCat ? captalizedName(queryCat) : "All Cakes"}
+                    </h3>
+                    <span>{querySubCat && captalizedName(querySubCat)}</span>
+                  </div>
                 </div>
-                <div
-                  onClick={() => setShowFilter(true)}
-                  className="inline-flex cursor-pointer items-center gap-3 border border-black p-2 xl:hidden"
-                >
-                  <span>Filter</span>
-                  <span>
-                    <Shuffle size={20} />
-                  </span>
-                </div>
-              </div>
 
-              <div className="grid gap-8 sm:grid-cols-2 md:gap-5 lg:grid-cols-3 xl:hidden">
-                {chunkArray(cakes, itemsPerPage)[currentPageIndex - 1]?.map(
-                  (cake: any, index: any) => {
-                    return <ProductCard data={cake} key={index} />;
-                  },
-                )}
-              </div>
-
-              <Pagination
-                className="lg:hidden"
-                onNext={handleNext}
-                onPrev={handlePrev}
-                onPaginateClick={handlePaginateClick}
-                itemsPerPage={itemsPerPage}
-                currentPageIndex={currentPageIndex}
-                arr={cakes}
-              />
-
-              {/* DESKTOP PRODUCT DISPLAY */}
-              <div className="hidden xl:grid xl:grid-cols-[300px_1fr] xl:items-start xl:gap-5">
-                <div className="w-full bg-white p-4">
-                  <div className="mb-3 flex items-center justify-between gap-2 text-neutral-500">
-                    <span className="inline-flex items-center gap-2 font-semibold">
-                      <span>
-                        <IoList size={20} />
-                      </span>
-                      Filter
+                <div className="flex flex-col items-end justify-end gap-3">
+                  {/* filter button */}
+                  <button
+                    onClick={() => setShowFilter(true)}
+                    className="inline-flex cursor-pointer items-center gap-3 border border-black border-opacity-10 bg-neutral-50 p-2 "
+                  >
+                    <span>Filter</span>
+                    <span>
+                      <Shuffle size={18} />
                     </span>
-                  </div>
-                  <FilterComp
-                    min={min()}
-                    max={max()}
-                    setSelectedOptions={setSelectedOptions}
-                    selectedOptions={selectedOptions}
-                    onFilter={handleFilter}
-                    category={query?.cat}
-                    subcategory={query?.sub}
-                  />
-                </div>
-                <div className="w-full bg-white p-4">
-                  <div className="mb-4 flex items-center justify-between border-b border-neutral-400 pb-4 lg:grid lg:grid-cols-[85%_10%]">
-                    <div className="items-center justify-between lg:flex">
-                      <h3 className="text-2xl font-bold text-black">
-                        {" "}
-                        {/* {query?.cat ? captalizedName(query?.cat) : "All Cakes"} */}
-                        {cat ? captalizedName(cat) : "All Cakes"}
-                      </h3>
-                      <span className="text-sm text-neutral-500 lg:text-base">
-                        Showing {currentPageIndex} - {itemsPerPage} of{" "}
-                        {cakes?.length} results
-                      </span>
-                    </div>
-                    <div
-                      // onClick={() => setShowFilter(true)}
-                      className="hidden cursor-pointer items-center justify-center gap-3 border border-black border-opacity-10 bg-neutral-50 p-2 xl:inline-flex"
-                    >
-                      <span>Sort</span>
-                      <span>
-                        <ArrowDown2 size={20} />
-                      </span>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-3 gap-5">
-                    {chunkArray(cakes, itemsPerPage)[currentPageIndex - 1]?.map(
-                      (cake: any, index: any) => {
-                        return <ProductCard data={cake} key={index} />;
-                      },
-                    )}
-                  </div>
+                  </button>
 
-                  {cakes?.length < 1 && (
-                    <div className="">No cake products found</div>
-                  )}
-                  {cakes?.length >= 1 && (
-                    <Pagination
-                      onNext={handleNext}
-                      onPrev={handlePrev}
-                      onPaginateClick={handlePaginateClick}
-                      itemsPerPage={itemsPerPage}
-                      currentPageIndex={currentPageIndex}
-                      arr={cakes}
-                    />
-                  )}
+                  {/* sort and order */}
+                  <div className="flex items-center  gap-3">
+                    <span className="text-nowrap">Sort by:</span>
+                    <div className="relative">
+                      <button
+                        className="inline-flex cursor-pointer items-center justify-center gap-3 border border-black border-opacity-10 bg-neutral-50 p-2"
+                        onClick={() =>
+                          setIsMobileDropdownOpen(!isMobileDropdownOpen)
+                        }
+                      >
+                        <span>
+                          {sortBy === "default"
+                            ? "Sort"
+                            : sortBy === "name" && order === "asc"
+                              ? "A-Z"
+                              : sortBy === "name" && order === "desc"
+                                ? "Z-A"
+                                : sortBy === "createdAt" && order === "desc"
+                                  ? "Newest"
+                                  : sortBy === "createdAt" && order === "asc"
+                                    ? "Oldest"
+                                    : sortBy === "maxPrice" && order === "asc"
+                                      ? "Price: High to Low"
+                                      : sortBy === "maxPrice" &&
+                                          order === "desc"
+                                        ? "Price: Low to High"
+                                        : "Sort"}
+                        </span>
+                        <span>
+                          <ArrowDown2 size={18} />
+                        </span>
+                      </button>
+                      {/* Sort Dropdown */}
+                      {isMobileDropdownOpen && (
+                        <div
+                          ref={mobileDropdownRef}
+                          className="absolute right-0 top-full z-10 mt-2 w-fit rounded-lg border border-neutral-200 bg-white shadow-lg"
+                        >
+                          <ul className="py-2">
+                            <li
+                              className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                              onClick={() => handleSortChange("default", "asc")}
+                            >
+                              Default
+                            </li>
+                            <li
+                              className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                              onClick={() => handleSortChange("name", "asc")}
+                            >
+                              A-Z
+                            </li>
+                            <li
+                              className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                              onClick={() => handleSortChange("name", "desc")}
+                            >
+                              Z-A
+                            </li>
+                            <li
+                              className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                              onClick={() =>
+                                handleSortChange("createdAt", "desc")
+                              }
+                            >
+                              Newest
+                            </li>
+                            <li
+                              className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                              onClick={() =>
+                                handleSortChange("createdAt", "asc")
+                              }
+                            >
+                              Oldest
+                            </li>
+                            <li
+                              className="cursor-pointer text-nowrap px-4 py-2 hover:bg-neutral-100"
+                              onClick={() =>
+                                handleSortChange("maxPrice", "asc")
+                              }
+                            >
+                              Price: High to Low
+                            </li>
+                            <li
+                              className="cursor-pointer text-nowrap px-4 py-2 hover:bg-neutral-100"
+                              onClick={() =>
+                                handleSortChange("maxPrice", "desc")
+                              }
+                            >
+                              Price: Low to High
+                            </li>
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
+              </div>
+
+              <div className="">
+                <span className="mt-4 text-sm text-neutral-500 lg:text-base">
+                  Showing {allProducts.length} of {totalProducts} results
+                </span>
               </div>
             </div>
 
-            {/* FILTER SIDEBAR COMP */}
-            <FilterSidebar
-              data={cakes}
-              className="xl:hidden"
-              showFilter={showFilter}
-              setShowFilter={setShowFilter}
-            >
-              <FilterComp
-                min={min()}
-                max={max()}
-                setSelectedOptions={setSelectedOptions}
-                selectedOptions={selectedOptions}
-                onFilter={handleFilter}
-                category={query?.cat}
-                subcategory={query?.sub}
-              />
-            </FilterSidebar>
+            <div className="grid gap-8 sm:grid-cols-2 md:gap-5 lg:grid-cols-3 xl:hidden">
+              {isLoading ? (
+                [...Array(6)].map((_, i) => <ProductCardSkeleton key={i} />)
+              ) : allProducts.length > 0 ? (
+                <EachElement
+                  of={allProducts}
+                  render={(item: IProduct) => {
+                    return <ProductCard data={item} key={item._id} />;
+                  }}
+                />
+              ) : (
+                <div className="col-span-full flex flex-col items-center text-center">
+                  <p className="mt-4 text-lg font-semibold text-gray-600">
+                    No products found
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="xl:hidden">
+              {totalPages > 1 && (
+                <AdminPagination
+                  totalPage={totalPages}
+                  page={currentPageIndex}
+                  setPage={setCurrentPageIndex}
+                />
+              )}
+            </div>
+
+            {/* DESKTOP PRODUCT DISPLAY */}
+            <div className="hidden xl:grid xl:grid-cols-[300px_1fr] xl:items-start xl:gap-5">
+              <div className="w-full bg-white p-4">
+                <div className="mb-3 flex items-center justify-between gap-2 text-neutral-500">
+                  <span className="inline-flex items-center gap-2 font-semibold">
+                    <span>
+                      <IoList size={20} />
+                    </span>
+                    Filter
+                  </span>
+                </div>
+
+                <FilterComp
+                  isPending={isLoading}
+                  categories={categories}
+                  openIndexes={openIndexes}
+                  handleClick={handleClick}
+                  selectedIds={selectedIds}
+                  handleSelectedItem={handleSelectedItem}
+                  handleRangeChange={handleRangeChange}
+                  applyFilter={applyFilter}
+                  handleReset={handleReset}
+                  min={0}
+                  max={20000}
+                  minPrice={minPrice}
+                  maxPrice={maxPrice}
+                />
+              </div>
+
+              {/* product grid */}
+              <div className="w-full bg-white p-4">
+                <div className="mb-4 flex items-start justify-between border-b border-neutral-400 pb-2 lg:grid lg:grid-cols-[75%_25%]">
+                  <div className="flex flex-col">
+                    <div>
+                      <h3 className="text-2xl font-bold text-black">
+                        {queryCat ? captalizedName(queryCat) : "All Cakes"}
+                      </h3>
+                      <span>{querySubCat && captalizedName(querySubCat)}</span>
+                    </div>
+
+                    <span className="mt-4 text-sm text-neutral-500 lg:text-base">
+                      Showing {allProducts.length} of {totalProducts} results
+                    </span>
+                  </div>
+
+                  {/* sort and order */}
+                  <div className="flex items-center justify-end gap-3">
+                    <span className="text-nowrap">Sort by:</span>
+                    <div className="relative">
+                      <button
+                        className="hidden cursor-pointer items-center justify-center gap-3 border border-black border-opacity-10 bg-neutral-50 p-2 xl:inline-flex"
+                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                      >
+                        <span>
+                          {sortBy === "default"
+                            ? "Sort"
+                            : sortBy === "name" && order === "asc"
+                              ? "A-Z"
+                              : sortBy === "name" && order === "desc"
+                                ? "Z-A"
+                                : sortBy === "createdAt" && order === "desc"
+                                  ? "Newest"
+                                  : sortBy === "createdAt" && order === "asc"
+                                    ? "Oldest"
+                                    : sortBy === "maxPrice" && order === "asc"
+                                      ? "Price: High to Low"
+                                      : sortBy === "maxPrice" &&
+                                          order === "desc"
+                                        ? " Price: Low to High"
+                                        : "Sort"}
+                        </span>
+                        <span>
+                          <ArrowDown2 size={18} />
+                        </span>
+                      </button>
+                      {/* Sort Dropdown */}
+                      {isDropdownOpen && (
+                        <div
+                          ref={dropdownRef}
+                          className="absolute right-0 top-full z-10 mt-2 w-fit rounded-lg border border-neutral-200 bg-white shadow-lg"
+                        >
+                          <ul className="py-2">
+                            <li
+                              className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                              onClick={() => handleSortChange("default", "asc")}
+                            >
+                              Default
+                            </li>
+                            <li
+                              className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                              onClick={() => handleSortChange("name", "asc")}
+                            >
+                              A-Z
+                            </li>
+                            <li
+                              className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                              onClick={() => handleSortChange("name", "desc")}
+                            >
+                              Z-A
+                            </li>
+                            <li
+                              className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                              onClick={() =>
+                                handleSortChange("createdAt", "desc")
+                              }
+                            >
+                              Newest
+                            </li>
+                            <li
+                              className="cursor-pointer px-4 py-2 hover:bg-neutral-100"
+                              onClick={() =>
+                                handleSortChange("createdAt", "asc")
+                              }
+                            >
+                              Oldest
+                            </li>
+                            <li
+                              className="cursor-pointer text-nowrap px-4 py-2 hover:bg-neutral-100"
+                              onClick={() =>
+                                handleSortChange("maxPrice", "asc")
+                              }
+                            >
+                              Price: High to Low
+                            </li>
+                            <li
+                              className="cursor-pointer text-nowrap px-4 py-2 hover:bg-neutral-100"
+                              onClick={() =>
+                                handleSortChange("maxPrice", "desc")
+                              }
+                            >
+                              Price: Low to High
+                            </li>
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-5">
+                  {isLoading ? (
+                    [...Array(6)].map((_, i) => <ProductCardSkeleton key={i} />)
+                  ) : allProducts.length > 0 ? (
+                    <EachElement
+                      of={allProducts}
+                      render={(item: any) => {
+                        return <ProductCard data={item} key={item._id} />;
+                      }}
+                    />
+                  ) : (
+                    <div className="col-span-full flex flex-col items-center text-center">
+                      <p className="mt-4 text-lg font-semibold text-gray-600">
+                        No products found
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {totalPages > 1 && (
+                  <AdminPagination
+                    totalPage={totalPages}
+                    page={currentPageIndex}
+                    setPage={setCurrentPageIndex}
+                  />
+                )}
+              </div>
+            </div>
           </div>
-        </section>
-      </>
-    </>
+
+          {/* FILTER SIDEBAR COMP */}
+          <FilterSidebar
+            className="xl:hidden"
+            showFilter={showFilter}
+            setShowFilter={setShowFilter}
+          >
+            <FilterComp
+              isPending={isLoading}
+              categories={categories}
+              openIndexes={openIndexes}
+              handleClick={handleClick}
+              selectedIds={selectedIds}
+              handleSelectedItem={handleSelectedItem}
+              handleRangeChange={handleRangeChange}
+              applyFilter={applyFilter}
+              handleReset={handleReset}
+              onClose={() => setShowFilter(false)}
+              min={0}
+              max={20000}
+              minPrice={minPrice}
+              maxPrice={maxPrice}
+            />
+          </FilterSidebar>
+        </div>
+      </section>
+    </div>
   );
 };
 

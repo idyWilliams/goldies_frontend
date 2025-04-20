@@ -15,6 +15,7 @@ import { handleImageLoad } from "@/helper/handleImageLoad";
 import sortArray from "@/helper/sortArray";
 import AdminPagination from "@/components/admin-component/AdminPagination";
 import { chunkArray } from "@/helper/chunkArray";
+import { slugify } from "@/helper";
 
 const limit = 12;
 
@@ -77,7 +78,7 @@ const Page = () => {
 
   return (
     <>
-      <div className="mt-[65px] bg-neutral-900 py-3 lg:mt-20">
+      <div className=" bg-neutral-900 py-3 ">
         <div className="wrapper">
           <BreadCrumbs
             items={[
@@ -102,7 +103,7 @@ const Page = () => {
         </div>
       </div>
       <div className="wrapper ">
-        <div className="py-6">
+        <div className="py-6 pb-12">
           <h3 className="text-2xl font-semibold">Product Categories</h3>
           {isPending && !categories && <UserCategoriesSkeleton />}
           {isError && !categories && (
@@ -126,7 +127,7 @@ const Page = () => {
                       <Link
                         href={
                           cat.status
-                            ? `/shop/categories/${cat.name}?id=${cat._id}&status=${cat.status}`
+                            ? `/shop/categories/${slugify(cat.name)}?id=${cat._id}&status=${cat.status}`
                             : "#"
                         }
                         key={cat?._id}

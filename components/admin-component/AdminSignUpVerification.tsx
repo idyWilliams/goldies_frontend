@@ -75,8 +75,8 @@ const AdminSignUpVerification = ({ email }: { email: string }) => {
 
   return (
     <div className="flex  flex-col items-center border bg-white p-6 py-12 shadow-lg  sm:mx-auto sm:w-[440px]">
-      <span className="flex h-20 w-20 items-center justify-center rounded-full bg-goldie-300 bg-opacity-35">
-        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-goldie-300 bg-opacity-35">
+      <span className="bg-brand-200/50 flex h-20 w-20 items-center justify-center rounded-full">
+        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-200 text-brand-100">
           <AiOutlineUserAdd size={30} />
         </span>
       </span>
@@ -120,7 +120,7 @@ const AdminSignUpVerification = ({ email }: { email: string }) => {
           )}
           <Button
             disabled={sendOtp.isPending}
-            className="col-span-2 mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300"
+            className="col-span-2 mt-3 h-auto w-full rounded-none bg-brand-200 py-3 text-base text-brand-100 hover:border hover:border-brand-200 hover:bg-transparent hover:text-brand-200"
           >
             {sendOtp.isPending ? (
               <div className="flex items-center justify-center gap-3">
@@ -131,7 +131,7 @@ const AdminSignUpVerification = ({ email }: { email: string }) => {
               "Submit"
             )}
           </Button>
-          <p className="text-center text-base text-goldie-300">Resend code</p>
+          <p className="text-center text-base text-brand-200">Resend code</p>
         </form>
       </div>
     </div>

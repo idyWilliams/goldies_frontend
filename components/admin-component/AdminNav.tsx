@@ -1,36 +1,24 @@
 "use client";
-import Link from "next/link";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { CheckIcon } from "@radix-ui/react-icons";
+import { Bag, Lock1, User, UserCirlceAdd } from "iconsax-react";
 import Image from "next/image";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { BsList, BsSearch, BsX } from "react-icons/bs";
 import { FaRegUserCircle } from "react-icons/fa";
 import {
   IoIosArrowDown,
   IoIosArrowUp,
   IoMdNotificationsOutline,
 } from "react-icons/io";
-import { BsList, BsSearch, BsX } from "react-icons/bs";
-import AdminSideBar from "./AdminSideBar";
 import MobileSideBar from "./MobileSideBar";
-import MenuPopup from "../MenuPopup";
-import { BiHeart, BiStore } from "react-icons/bi";
-import {
-  Bag,
-  Lock1,
-  SearchNormal1,
-  Setting2,
-  User,
-  UserCirlceAdd,
-} from "iconsax-react";
-import moment from "moment";
-import { useRouter } from "next/navigation";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import { BellIcon, CheckIcon } from "@radix-ui/react-icons";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -40,65 +28,37 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { adminLogOut, getAdmin } from "@/services/hooks/admin-auth";
-import { useQuery } from "@tanstack/react-query";
-import useAdmin from "@/services/hooks/admin/use_admin";
+import { useAuth } from "@/context/AuthProvider";
+import { cn } from "@/lib/utils";
+import { adminLogOut } from "@/services/hooks/admin-auth";
+import CurrentTime from "./CurrentTime";
+import Logo from "@/public/assets/new-logo/logo-colored.svg";
 
 export default function AdminNav() {
-  const [admin, setAdmin] = useState<any>();
   const router = useRouter();
-  const [sticky, setSticky] = useState(false);
-  const [open, setIsOpen] = useState(false);
+  const [openSider, setIsOpenSidebar] = useState(false);
   const [isOpen, setOpen] = useState(false);
   const [openSearch, setOpenSearch] = useState(false);
-  const [currentTime, setCurrentTime] = useState(moment().format("H:mm"));
-  const adminStored = useAdmin();
-  console.log(adminStored?._id);
+  const { auth } = useAuth();
 
-  const { data, isPending, isError, isSuccess } = useQuery({
-    queryKey: ["admin"],
-    queryFn: () => getAdmin(adminStored?._id),
-  });
-
-  console.log(data, "adminsns");
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(moment().format("H:mm")), 60000;
-    });
-
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setSticky(window.scrollY >= 300);
-    };
-    window.addEventListener("scroll", handleScroll);
-
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    !isPending && isSuccess ? setAdmin(data?.admin) : setAdmin(null);
-  }, [data?.admin, isPending, isSuccess]);
+  const formatRole = (status: string) => status?.replace(/_/g, " ");
 
   return (
     <>
       <nav
-        className={`${sticky ? "shadow-[0_0_50px_rgba(0,0,0,0.5)] lg:fixed" : "lg:absolute"} sticky left-0 top-0  z-[999] w-full bg-black py-3`}
+        className={` fixed left-0 top-0 z-50 w-full border-b border-neutral-300 bg-white py-3`}
       >
         <div className="flex items-center justify-between px-4">
           <div className="flex items-center gap-3">
             <span
-              className="inline-block text-goldie-300 lg:hidden"
-              onClick={() => setIsOpen(true)}
+              className="inline-block cursor-pointer text-brand-200 lg:hidden"
+              onClick={() => setIsOpenSidebar(true)}
             >
               <BsList size={24} />
             </span>
             <Link href="/admin" className="relative">
               <Image
-                src="/assets/goldis-gold-logo.png"
+                src={Logo}
                 className="w-[100px] lg:w-[130px]"
                 width={175}
                 height={92}
@@ -120,120 +80,113 @@ export default function AdminNav() {
                   autoComplete="off"
                   id="search"
                   placeholder="Search..."
-                  className={`${openSearch ? "w-[400px] px-4" : "w-0 px-0"} border-none bg-transparent text-[13px] text-goldie-300 duration-300 placeholder:text-goldie-300 placeholder:text-opacity-50 focus:border-0 focus:outline-none focus:ring-0`}
+                  className={`${openSearch ? "px-4 lg:w-[400px]" : "w-0 px-0"} border-none bg-transparent text-[13px] text-brand-200 duration-300 placeholder:text-brand-200 placeholder:text-opacity-50 focus:border-0 focus:outline-none focus:ring-0`}
                 />
               </label>
               <span
-                className={`${openSearch ? "rounded-l-none bg-opacity-20" : "rounded-l-md bg-opacity-0"} inline-flex h-10 w-10 items-center justify-center rounded-r-md bg-goldie-300  duration-300`}
+                className={`${openSearch ? "rounded-l-none bg-opacity-20" : "rounded-l-md bg-opacity-0"} inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-r-md  bg-goldie-300 duration-300`}
                 onClick={() => setOpenSearch((prev) => !prev)}
               >
                 {openSearch ? (
-                  <BsX size={18} className="inline-block text-goldie-300" />
+                  <BsX size={18} className="inline-block text-brand-200" />
                 ) : (
-                  <BsSearch
-                    size={18}
-                    className="inline-block text-goldie-300"
-                  />
+                  <BsSearch size={18} className="inline-block text-brand-200" />
                 )}
               </span>
             </div>
             <Popover>
               <PopoverTrigger>
-                <span className="relative inline-block cursor-pointer text-goldie-300">
+                <span className="relative inline-block cursor-pointer text-brand-200">
                   <IoMdNotificationsOutline size={24} />
                   <span className="absolute right-0.5 top-1 inline-block h-1.5 w-1.5 rounded-full bg-red-600 text-sm outline outline-2 outline-black"></span>
                 </span>
               </PopoverTrigger>
-              <PopoverContent className="w-[320px] border-0 bg-neutral-950 p-0 shadow-[0_0_30px_rgb(228,208,100,0.3)]">
+              <PopoverContent className="w-[320px] border border-white/20 bg-brand-200 p-0 shadow-2xl">
                 <NotificationBar />
               </PopoverContent>
             </Popover>
 
             <div className="hidden gap-3  sm:inline-flex">
-              <span className="text-sm font-normal text-goldie-300">
-                {moment().format("ddd D MMM")}
-              </span>
-              <span className="text-sm font-normal text-goldie-300">
-                {currentTime}
-              </span>
+              <CurrentTime text="text-brand-200" />
             </div>
-            <button
-              onClick={() => setOpen((prev) => !prev)}
-              className="flex items-center gap-2 border-l border-goldie-300 border-opacity-40 pl-4 text-goldie-300"
-            >
-              <FaRegUserCircle size={20} />{" "}
-              <span className="hidden text-sm capitalize md:inline-flex md:items-center md:gap-3">
-                {isSuccess && admin ? admin?.userName : "No username"}
-                {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
-              </span>
-            </button>
-            {isOpen && (
-              <MenuPopup className="absolute -right-3 top-10 z-40 w-[190px] rounded-md bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <button
+                  onClick={() => setOpen((prev) => !prev)}
+                  className="flex items-center gap-2 border-l border-goldie-300 border-opacity-40 pl-4 text-brand-200"
+                >
+                  <FaRegUserCircle size={20} />{" "}
+                  <div className="hidden text-sm capitalize md:flex md:items-center md:gap-3">
+                    <div className="flex flex-col">
+                      <span>
+                        {auth?.admin ? auth?.admin?.userName : "No username"}
+                      </span>
+                      <span className="text-xs">
+                        {auth?.admin
+                          ? formatRole(auth?.admin?.role)
+                          : "No Role"}
+                      </span>
+                    </div>
+                    {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
+                  </div>
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-[190px] rounded-md border-brand-200 bg-brand-200 p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
                 <div className="mb-2 flex items-center justify-start gap-3 border-b border-black border-opacity-20 p-2 pb-3 sm:hidden">
-                  <span className="text-sm font-normal text-black">
-                    {moment().format("ddd D MMM")}
-                  </span>
-                  <span>-</span>
-                  <span className="text-sm font-normal text-black">
-                    {currentTime}
-                  </span>
+                  {auth?.admin ? auth?.admin?.userName : "No username"}
                 </div>
                 <div className="">
                   <span
-                    className="flex cursor-pointer items-center gap-2  whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
-                    onClick={() => router.push(`/admin/settings?tab=profile`)}
+                    className="flex cursor-pointer items-center gap-2  whitespace-nowrap rounded-[3px] p-2 text-sm text-brand-100 duration-300 hover:bg-black hover:bg-opacity-20"
+                    onClick={() => {
+                      setOpen(false);
+                      router.push(`/admin/settings?tab=profile`);
+                    }}
                   >
                     <User size={20} />
                     My Account
                   </span>
                   <span
-                    className="flex cursor-pointer items-center gap-2  whitespace-nowrap rounded-[3px] p-2 text-sm duration-300 hover:bg-black hover:bg-opacity-20"
-                    onClick={() =>
-                      router.push(`/admin/settings?tab=change-password`)
-                    }
+                    className="flex cursor-pointer items-center gap-2  whitespace-nowrap rounded-[3px] p-2 text-sm text-brand-100 duration-300 hover:bg-black hover:bg-opacity-20"
+                    onClick={() => {
+                      setOpen(false);
+                      router.push(`/admin/settings?tab=change-password`);
+                    }}
                   >
                     <Lock1 size={20} />
                     Change Password
                   </span>
                 </div>
                 <div className="my-2 border-b border-black border-opacity-50"></div>
-                <span
-                  className="flex w-full cursor-pointer items-center justify-center rounded-sm bg-black  px-7 py-2.5 text-center text-sm  text-[#E4D064] duration-300 hover:bg-neutral-950"
+                <button
+                  className="flex w-full cursor-pointer items-center justify-center rounded-sm bg-brand-100  px-7 py-2.5 text-center text-sm  text-brand-200 duration-300 hover:bg-brand-100"
                   role="button"
                   onClick={() => adminLogOut(router)}
                 >
                   Logout
-                </span>
-              </MenuPopup>
-            )}
+                </button>
+              </PopoverContent>
+            </Popover>
           </div>
         </div>
         <div
-          className={`fixed top-0 h-screen w-full duration-300 ${open ? "left-0" : "-left-full"}`}
+          className={`fixed top-0 h-screen w-full duration-300 lg:hidden ${openSider ? "left-0" : "-left-full"}`}
         >
           <span
-            className="absolute left-3 top-4 z-50 inline-block cursor-pointer text-goldie-300"
-            onClick={() => setIsOpen(false)}
+            className="absolute left-3 top-4 z-50 inline-block cursor-pointer text-brand-200"
+            onClick={() => setIsOpenSidebar(false)}
           >
             <BsX size={30} />
           </span>
           <div
-            onClick={() => setIsOpen(false)}
-            className={`fixed  top-0 z-30 h-screen w-full bg-black bg-opacity-50 ${open ? "left-0" : "-left-full"}`}
+            onClick={() => setIsOpenSidebar(false)}
+            className={`fixed  top-0 z-30 h-screen w-full bg-black bg-opacity-50 ${openSider ? "left-0" : "-left-full"}`}
           ></div>
           <div className="absolute left-0 top-0 z-[40] h-screen w-[250px]">
-            <MobileSideBar />
+            <MobileSideBar onClose={() => setIsOpenSidebar(false)} />
           </div>
         </div>
-        {/* {open && (
-          <div
-            className={`fixed top-0 z-50 bg-black bg-opacity-50 duration-300 ${open ? "left-0" : "-left-full"}`}
-          >
-            <div className="absolute left-0 top-0 h-screen w-[250px]">
-              <MobileSideBar />
-            </div>
-          </div>
-        )} */}
       </nav>
     </>
   );
@@ -282,7 +235,7 @@ const NotificationBar = () => {
               key={index}
               className="grid h-full grid-cols-[40px_1fr] items-center gap-3"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-goldie-400 bg-opacity-20 text-goldie-300">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-100 bg-opacity-20 text-brand-200">
                 {notifyType(notification?.type)}
               </div>
               <div className="space-y-1">
@@ -291,7 +244,7 @@ const NotificationBar = () => {
                 >
                   {notification.title}
                 </p>
-                <p className="text-sm text-neutral-400">
+                <p className="text-sm text-neutral-200">
                   {notification.description}
                 </p>
               </div>
@@ -300,7 +253,7 @@ const NotificationBar = () => {
         </div>
       </CardContent>
       <CardFooter className="px-4">
-        <Button className="w-full bg-goldie-400 text-goldie-950 hover:bg-goldie-300">
+        <Button className="w-full bg-transparent text-brand-100 ring-1 ring-brand-100 hover:bg-transparent">
           <CheckIcon className="mr-2 h-4 w-4" /> Mark all as read
         </Button>
       </CardFooter>

@@ -35,22 +35,22 @@ const chartData = [
 const chartConfig = {
   month: {
     label: "Month",
-    color: "#e4d064",
+    color: "#2a9d90",
   },
   price: {
     label: "Sales",
-    color: "#e4d064",
+    color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig;
 
 export function SaleChart() {
   return (
-    <section className="rounded-xl border-0 bg-neutral-900 p-4">
-      <h3 className="mb-6 text-goldie-300">Sales Revenue Report</h3>
+    <section className="rounded-xl border bg-white p-4">
+      <h3 className="mb-6 text-brand-200">Sales Revenue Report</h3>
       <div className="lg:hidden">
         <ChartContainer
           config={chartConfig}
-          className="sales max-h-[300px] min-h-[200px] w-full"
+          className="max-h-[350px] min-h-[200px] w-full"
         >
           <AreaChart
             accessibilityLayer
@@ -60,42 +60,34 @@ export function SaleChart() {
               right: 0,
             }}
           >
-            <CartesianGrid vertical={false} stroke="#e4d06433" />
+            <CartesianGrid vertical={false} />
             <XAxis
               dataKey="month"
               tickLine={false}
               axisLine={true}
               tickMargin={10}
               tickFormatter={(value) => value.slice(0, 3)}
-              color="#e4d064"
-              stroke="#e4d064"
-              fill="#e4d064"
+              color="#4A90E2"
+              stroke="#4A90E2"
+              fill="#4A90E2"
             />
-            {/* <YAxis
-              dataKey="price"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={20}
-              tickCount={100}
-              tickFormatter={(value) => `€${value}`}
-            /> */}
+
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent indicator="dot" />}
+              content={<ChartTooltipContent indicator="line" />}
             />
             <defs>
               <linearGradient id="sales" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#e4d064" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#e4d064" stopOpacity={0.1} />
+                <stop offset="5%" stopColor="#4A90E2" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#4A90E2" stopOpacity={0.1} />
               </linearGradient>
             </defs>
-
             <Area
               dataKey="price"
               type="natural"
               fill="url(#sales)"
               fillOpacity={0.4}
-              stroke="#e4d064"
+              stroke="#4A90E2"
             />
           </AreaChart>
         </ChartContainer>
@@ -103,52 +95,51 @@ export function SaleChart() {
       <div className="hidden lg:block">
         <ChartContainer
           config={chartConfig}
-          className="sales min-h-[200px] w-full lg:max-h-[500px]"
+          className="min-h-[200px] w-full lg:max-h-[500px]"
         >
           <AreaChart
             accessibilityLayer
             data={chartData}
             margin={{
-              left: 0,
-              right: 0,
+              left: 12,
+              right: 12,
             }}
           >
-            <CartesianGrid vertical={false} stroke="#e4d06433" />
+            <CartesianGrid vertical={false} />
             <XAxis
               dataKey="month"
               tickLine={false}
               axisLine={true}
               tickMargin={10}
               tickFormatter={(value) => value.slice(0, 3)}
-              color="#e4d064"
-              stroke="#e4d064"
-              fill="#e4d064"
+              // color="#4A90E2"
+              // stroke="#4A90E2"
+              // fill="#4A90E2"
             />
             <YAxis
               dataKey="price"
               tickLine={false}
               axisLine={false}
-              tickMargin={20}
-              tickCount={100}
-              tickFormatter={(value) => `€${value}`}
+              tickMargin={30}
+              tickCount={10}
+              tickFormatter={(value) => `₦${value}`}
             />
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent indicator="dot" />}
+              content={<ChartTooltipContent indicator="line" />}
             />
             <defs>
               <linearGradient id="sales" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#e4d064" stopOpacity={0.8} />
-                <stop offset="95%" stopColor="#e4d064" stopOpacity={0.1} />
+                <stop offset="5%" stopColor="#4A90E2" stopOpacity={0.8} />
+                <stop offset="95%" stopColor="#4A90E2" stopOpacity={0.1} />
               </linearGradient>
             </defs>
-
             <Area
               dataKey="price"
               type="natural"
               fill="url(#sales)"
               fillOpacity={0.4}
-              stroke="#e4d064"
+              stroke="#4A90E2"
             />
           </AreaChart>
         </ChartContainer>

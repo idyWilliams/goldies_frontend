@@ -1,5 +1,5 @@
 // utils/fonts.js
-import localFont from "@next/font/local";
+import localFont from "next/font/local";
 
 const tomatoGrotesk = localFont({
   src: [

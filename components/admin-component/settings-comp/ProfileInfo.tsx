@@ -1,26 +1,29 @@
 "use client";
+import { useAuth } from "@/context/AuthProvider";
 import { cn } from "@/helper/cn";
 import { initials } from "@/helper/initials";
 import { updateAdminProfile } from "@/services/hooks/admin-auth";
-import useAdmin from "@/services/hooks/admin/use_admin";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useMutation } from "@tanstack/react-query";
-import { Profile } from "iconsax-react";
-import { startsWith } from "lodash-es";
-import React, { ReactNode, useEffect, useState } from "react";
-import { useForm, FieldError, Controller } from "react-hook-form";
-import PhoneInput from "react-phone-input-2";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { CgSpinner } from "react-icons/cg";
 import "react-phone-input-2/lib/style.css";
 import { toast } from "sonner";
 import * as yup from "yup";
 
 const schema = yup.object().shape({
-  userName: yup.string().required("Fullname is required"),
+  userName: yup.string().required("Username is required"),
   email: yup.string().required("Email is required").email("Email is invalid"),
 });
 
 export default function ProfileInfo() {
-  const admin = useAdmin();
+  const { auth, setAuth } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const storedToken = localStorage.getItem("adminToken");
+
+  const admin = auth?.admin;
+
   const updateUserName = useMutation({
     mutationFn: updateAdminProfile,
     mutationKey: ["update + username"],
@@ -37,17 +40,36 @@ export default function ProfileInfo() {
   // HANDLE SUBMIT
   const handleSave = async (data: any) => {
     const { userName } = data;
-    console.log({ userName, id: admin._id });
+    setIsSubmitting(true);
     try {
       const update = await updateUserName.mutateAsync({
         userName,
-        id: admin._id,
+        id: admin?._id as string,
       });
-      console.log(update);
-      localStorage.setItem("admin", JSON.stringify(update));
-    } catch (error) {}
-    reset();
-    // toast.success("Account information updated successfully");
+      setAuth({
+        admin: {
+          _id: update?.data?.id,
+          ...update?.data,
+        },
+      });
+      localStorage.setItem(
+        "admin",
+        JSON.stringify({
+          token: storedToken,
+          _id: update?.data?.id,
+          userName: update?.data?.userName,
+          email: update?.data?.email,
+          role: update?.data?.role,
+        }),
+      );
+      toast.success("Account information updated successfully");
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error?.response?.data?.message || error?.message);
+    } finally {
+      setIsSubmitting(false);
+      reset();
+    }
   };
   const handleCancel = () => {
     console.log("click cancelled");
@@ -64,9 +86,9 @@ export default function ProfileInfo() {
   return (
     <section className="w-full px-2 lg:w-[48%]">
       <>
-        <div className="mt-5 inline-flex h-10 w-10 items-center justify-center rounded-full bg-black text-main">
+        <div className="mt-5 inline-flex h-10 w-10 items-center justify-center rounded-full bg-brand-200 text-brand-100">
           <span className="items-center justify-center">
-            {initials(admin?.userName)}
+            {initials(admin?.userName as string)}
           </span>
         </div>
         <p className="my-3 font-semibold">{admin?.userName}</p>
@@ -78,7 +100,7 @@ export default function ProfileInfo() {
               type="text"
               autoComplete="off"
               id="userName"
-              placeholder="Your full name"
+              placeholder="Your username"
               className={cn(
                 "form-input w-full rounded-sm border-none bg-gray-100 focus:border focus:border-black focus:ring-black",
                 errors.userName && "border-red-600",
@@ -106,9 +128,16 @@ export default function ProfileInfo() {
           <div className="mb-6 mt-10 grid grid-cols-2 gap-8 lg:mb-0">
             <button
               type="submit"
-              className="items-center justify-center rounded-sm bg-black px-5 py-2 text-sm text-main lg:text-base"
+              className="relative items-center justify-center rounded-sm bg-brand-200 px-5 py-2 text-sm text-brand-100 lg:text-base"
+              disabled={isSubmitting}
             >
-              Save Changes
+              <CgSpinner
+                className={`${isSubmitting ? "block" : "hidden"} absolute left-[45%] top-[20%] h-6 w-6 animate-spin `}
+              />
+
+              <span className={`${isSubmitting ? "opacity-0" : "opacity-100"}`}>
+                Save Changes
+              </span>
             </button>
           </div>
         </form>

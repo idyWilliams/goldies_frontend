@@ -4,7 +4,6 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import BreadCrumbs from "@/components/BreadCrumbs";
-
 import EachElement from "@/helper/EachElement";
 import { getCategory } from "@/services/hooks/category";
 import Image from "next/image";
@@ -14,13 +13,12 @@ import UserCategorySkeleton from "@/components/shop-components/category/UserCate
 import useBoundStore from "@/zustand/store";
 import { Category, SubCategory } from "@/services/types";
 import { Button } from "@/components/ui/button";
-
 import { handleImageLoad } from "@/helper/handleImageLoad";
 import sortArray from "@/helper/sortArray";
 import { chunkArray } from "@/helper/chunkArray";
 import AdminPagination from "@/components/admin-component/AdminPagination";
 
-const limit = 2;
+const limit = 6;
 
 const Page = () => {
   const searchParams = useSearchParams();
@@ -41,7 +39,6 @@ const Page = () => {
     queryFn: async () => getCategory(categoryId),
     placeholderData: category && category,
     enabled: !category || !!category?.status,
-    // staleTime: 60 * 1000,
   });
 
   const categoryData: Category | null = useMemo(() => {
@@ -53,8 +50,6 @@ const Page = () => {
 
   const getSubCategories = useCallback(() => {
     if (categoryData?.subCategories.length > 0) {
-      console.log(categoryData);
-
       const sortedCategories = sortArray(categoryData?.subCategories);
       const paginatedSubCatArr = chunkArray(sortedCategories, limit);
       const pages = paginatedSubCatArr.length;
@@ -93,7 +88,7 @@ const Page = () => {
 
   return (
     <>
-      <div className="mt-[65px] bg-neutral-900 py-3 lg:mt-[80px]">
+      <div className="bg-neutral-900 py-3">
         <div className="wrapper">
           <BreadCrumbs
             items={[
@@ -117,28 +112,31 @@ const Page = () => {
           />
         </div>
       </div>
-      {isPending && !category && <UserCategorySkeleton />}
+
+      {/* Loading Skeleton */}
+      {isPending && <UserCategorySkeleton />}
+
+      {/* Error State */}
       {isError && !category && (
-        <p className="flex  h-[550px] w-full items-center justify-center">
+        <p className="flex h-[550px] w-full items-center justify-center">
           There was an error getting the Categories
         </p>
       )}
 
-      {}
-
-      {category && (
+      {/* Main Content */}
+      {!isPending && category && (
         <>
           <div className="wrapper relative mx-auto h-[200px] w-full py-6 md:my-[16px] md:w-[calc(100%_-_30px)]">
-            <div className="absolute left-0 top-0 z-20 flex h-full w-full flex-col justify-center gap-2  bg-categories px-4 pr-20">
-              {/* <h2 className="font-bold text-goldie-100">Product Category</h2> */}
-              <h1 className="text-lg font-semibold text-goldie-300 sm:text-2xl lg:text-4xl">
+            <div className="absolute left-0 top-0 z-20 flex h-full w-full flex-col justify-center gap-2 bg-categories px-4 pr-20">
+              <h1 className="text-lg font-semibold text-brand-200 sm:text-2xl lg:text-4xl">
                 {category?.name}
               </h1>
-              <p className="max-w-[650px] text-xs text-goldie-75 sm:text-base">
+              <p className="text-goldie-75 max-w-[650px] text-xs sm:text-base">
                 {category?.description}
               </p>
             </div>
 
+            {/* Placeholder Image */}
             {!isLoaded[category?._id] && (
               <Image
                 src={PlaceholderImage}
@@ -150,49 +148,63 @@ const Page = () => {
                 className="animate-pulse object-cover object-center"
               />
             )}
+
+            {/* Actual Image */}
             <Image
               src={category?.image || ""}
               alt={category?.name}
               fill
               priority
-              className={`absolute left-0 top-0 object-cover object-center ${isLoaded[category?._id] ? "opacity-100" : "opacity-0"} `}
+              className={`absolute left-0 top-0 object-cover object-center ${
+                isLoaded[category?._id] ? "opacity-100" : "opacity-0"
+              }`}
               onLoad={() => handleImageLoad(category?._id, setIsLoaded)}
             />
           </div>
 
+          {/* No Subcategories Message */}
           {category?.subCategories && category?.subCategories.length < 1 && (
-            <p className="flex  h-[576px] w-full items-center justify-center text-xl xl:h-[636PX]">
+            <p className="flex h-[576px] w-full items-center justify-center text-xl xl:h-[636px]">
               There are no SubCategories to display
             </p>
           )}
+
+          {/* Subcategories Grid */}
           <div className="mb-10">
             {subCategories && subCategories.length > 0 && (
-              <div className="wrapper mb-28 grid  gap-4 py-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6 xl:px-[2%]">
+              <div className="wrapper mb-28 grid gap-4 py-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6 xl:px-[2%]">
                 <EachElement
                   of={subCategories}
                   render={(sub: any) => {
                     return (
                       <div
                         key={sub?._id}
-                        className=" relative h-[270px] w-full  xl:h-[300px]"
+                        className="relative h-[270px] w-full xl:h-[300px]"
                       >
-                        <div className="absolute left-0 top-0 -z-20 flex h-full w-full flex-col justify-center gap-2 bg-gradient-to-r from-black/20 to-black/20 px-4 "></div>
-                        <figure className="relative z-10 mx-auto flex h-full w-full items-end pb-3 xl:pb-3">
-                          <div className="box-border flex min-h-[180px] w-full flex-col items-start justify-between bg-black bg-opacity-40 p-4 text-white backdrop-blur-sm  ">
-                            <div className=" w-full grow">
+                        {/* Overlay */}
+                        <div className="absolute left-0 top-0 -z-20 flex h-full w-full flex-col justify-center gap-2 bg-gradient-to-r from-black/20 to-black/20 px-4"></div>
+
+                        {/* Content */}
+                        <figure className="relative z-10 mx-auto flex h-full w-full items-end">
+                          <div className="box-border flex min-h-[180px] w-full flex-col items-start justify-between bg-black bg-opacity-40 p-4 text-white backdrop-blur-sm">
+                            <div className="w-full grow">
                               <h3 className="text-xl font-bold sm:text-2xl">
                                 {sub?.name}
                               </h3>
-                              <p className="line-clamp-3 w-full break-all   text-sm text-[#D9D9D9] ">
+                              <p className="line-clamp-3 w-full break-all text-sm text-[#D9D9D9]">
                                 {sub?.description}
                               </p>
                             </div>
                             <Button
-                              className=" mt-3  flex w-full items-center justify-center  rounded-md bg-goldie-300 p-2 text-center text-neutral-900 hover:bg-goldie-200 xl:p-3"
+                              className="mt-3 flex w-full items-center justify-center rounded-md bg-goldie-300 p-2 text-center text-neutral-900 hover:bg-goldie-200 xl:p-3"
                               onClick={() => handleSubCategory(sub)}
                             >
                               <Link
-                                href={`/shop?cat=${encodeURIComponent(category?.name?.toLowerCase())}&sub=${encodeURIComponent(sub?.name?.toLowerCase())}`}
+                                href={`/shop?cat=${encodeURIComponent(
+                                  category?.name?.toLowerCase(),
+                                )}&sub=${encodeURIComponent(
+                                  sub?.name?.toLowerCase(),
+                                )}&subCategoryIds=${sub?._id}`}
                                 className="inline-block w-full text-center font-bold"
                               >
                                 Buy now
@@ -201,6 +213,7 @@ const Page = () => {
                           </div>
                         </figure>
 
+                        {/* Placeholder Image */}
                         {!isLoaded[sub?._id] && (
                           <Image
                             src={PlaceholderImage}
@@ -213,16 +226,17 @@ const Page = () => {
                           />
                         )}
 
+                        {/* Actual Image */}
                         <Image
                           src={sub?.image || ""}
                           alt={sub?.name}
                           fill
                           sizes="(max-width: 1440px) 33vw"
                           priority
-                          className={`-z-50 object-cover object-center ${isLoaded[category?._id] ? "opacity-100" : "opacity-0"} `}
-                          onLoad={() =>
-                            handleImageLoad(category?._id, setIsLoaded)
-                          }
+                          className={`-z-50 object-cover object-center ${
+                            isLoaded[sub?._id] ? "opacity-100" : "opacity-0"
+                          }`}
+                          onLoad={() => handleImageLoad(sub?._id, setIsLoaded)}
                         />
                       </div>
                     );
@@ -231,6 +245,7 @@ const Page = () => {
               </div>
             )}
 
+            {/* Pagination */}
             {totalPages > 1 && (
               <AdminPagination
                 totalPage={totalPages}

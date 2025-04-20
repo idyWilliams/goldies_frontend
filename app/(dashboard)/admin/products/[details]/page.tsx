@@ -1,100 +1,191 @@
 "use client";
-import { ArrowLeft, Edit } from "iconsax-react";
-import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { formatCurrency } from "@/helper/formatCurrency";
+import { IProduct } from "@/interfaces/product.interface";
+import { cn } from "@/lib/utils";
 import coconut from "@/public/assets/AT0213_coconut-cream-cake_s4x3.webp";
+import { getProduct } from "@/services/hooks/products";
+import { useQuery } from "@tanstack/react-query";
+import { Edit, Refresh } from "iconsax-react";
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import { productList } from "@/utils/adminData";
+import { useState } from "react";
 
-type Data = {
-  id: number;
-  name: string;
-  age: number;
-};
-
-export default function Page({ params }: any) {
+export default function Page({ params }: { params: { details: string } }) {
   const [selectedImage, setSelectedImage] = useState(0);
   const router = useRouter();
-  const product = productList.find(
-    (item: any) => String(item.id) === params.details,
-  );
-  console.log(params, "product details", product);
-  return (
-    <section className="h-screen bg-gray-100">
-      <div className="p-5">
+
+  const { data, isError, isPending, refetch } = useQuery({
+    queryKey: ["product", params.details],
+    queryFn: async () => getProduct(params.details),
+  });
+
+  const product = data?.productDetails as IProduct;
+
+  if (isPending)
+    return (
+      <section className="p-5">
         <div className="flex justify-between">
-          <div className="flex items-start gap-2">
-            <span
-              className="inline-flex cursor-pointer gap-2"
-              onClick={() => router.push("/admin/products")}
-            >
-              <ArrowLeft />
-            </span>
-            <div className="">
-              <h1 className="font-semibold uppercase">Product Details</h1>
-              <p>
-                Product -
-                <span className="text-neutral-500">Product Details</span>
-              </p>
-            </div>
+          <div className="w-1/2">
+            <Skeleton className="mb-2 h-6 w-40" />
+            <Skeleton className="h-4 w-32" />
           </div>
-          <div className="mb-2 flex cursor-pointer items-center gap-2">
-            <Edit size={20} />
-            <p className="border-b border-black">Edit Product</p>
-          </div>
+          <Skeleton className="h-10 w-32" />
         </div>
         <hr className="my-5" />
         <div className="grid grid-cols-1 gap-4 md:grid-cols-[55%_1fr]">
-          <div className="rounded-md bg-black">
-            <h1 className="px-6 pb-4 pt-6 font-semibold text-goldie-300">
+          {/* Left Skeleton */}
+          <div className="rounded-md bg-white p-6">
+            <Skeleton className="mb-4 h-6 w-40" />
+            <div className="bg-white p-6">
+              <Skeleton className="mb-4 h-5 w-40" />
+              <Skeleton className="mb-4 h-5 w-full" />
+              <Skeleton className="mb-4 h-5 w-40" />
+              <Skeleton className="mb-4 h-5 w-60" />
+              <Skeleton className="mb-4 h-5 w-40" />
+              <Skeleton className="mb-4 h-5 w-32" />
+            </div>
+          </div>
+
+          {/* Right Skeleton - Images */}
+          <div className="rounded-md bg-white p-6">
+            <Skeleton className="mb-4 h-6 w-40" />
+            <div className="bg-white p-6">
+              <Skeleton className="mb-6 h-[300px] w-full" />
+              <div className="grid grid-cols-4 gap-4">
+                {Array(4)
+                  .fill(0)
+                  .map((_, index) => (
+                    <Skeleton key={index} className="h-[80px] w-[80px]" />
+                  ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+
+  if (isError) {
+    return (
+      <section className="flex h-[50vh] flex-col items-center justify-center p-5">
+        <h1 className="text-xl font-semibold text-red-600">
+          Failed to load product details
+        </h1>
+        <p className="text-neutral-500">
+          An error occurred while fetching data.
+        </p>
+        <Button
+          onClick={() => refetch()}
+          className="mt-4 flex items-center gap-2 rounded-md bg-red-500 text-white hover:bg-red-600"
+        >
+          <Refresh size={20} />
+          Retry
+        </Button>
+      </section>
+    );
+  }
+
+  const formatText = (text: string) => {
+    return text
+      .replace(/_/g, " ")
+      .replace(/\b\w/g, (char) => char.toUpperCase());
+  };
+
+  return (
+    <section className="">
+      <div className="p-5">
+        <div className="flex justify-between">
+          <div className="flex items-start gap-2">
+            <div className="">
+              <h1 className="text-lg font-semibold uppercase">
+                Product Details
+              </h1>
+              <ul className="inline-flex items-center">
+                <Link href="/admin/products" className="hover:underline">
+                  <ol className="mr-1">Products </ol>
+                </Link>
+                /
+                <ol className="pl-1 capitalize text-neutral-500">
+                  {product?.name}
+                </ol>
+              </ul>
+            </div>
+          </div>
+          <Button
+            className="mb-2 rounded-md bg-brand-200 text-brand-100 hover:bg-brand-200"
+            onClick={() =>
+              router.push(`/admin/create-products?edit=${product?._id}`)
+            }
+          >
+            <Edit size={20} className="mr-2" />
+            <span>Edit</span>
+            <span className="ml-1 hidden md:block">Product</span>
+          </Button>
+        </div>
+        <hr className="my-5" />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-[55%_1fr]">
+          <div className="rounded-md bg-brand-200">
+            <h1 className="px-6 pb-4 pt-6 font-semibold text-brand-100">
               Product Information
             </h1>
-            <div className="bg-white px-6 py-3">
+            <div className="bg-brand-100 px-6 py-3">
               <div className="mb-5">
                 <p className="font-semibold capitalize">product name:</p>
-                <p className="capitalize">{product?.productName}</p>
+                <p className="capitalize">{product?.name}</p>
               </div>
               <div className="mb-5">
                 <p className="font-semibold">Product Description:</p>
                 <p>{product?.description}</p>
               </div>
-              <div className="mb-5 flex items-center justify-between">
+              <div className="mb-5 flex flex-wrap items-center justify-between">
                 <div className="mb-5">
                   <p className="font-semibold">Product Price:</p>
                   <p>
-                    &euro;
-                    {product?.priceFrom} - &euro;{product?.priceTo}
+                    {formatCurrency(parseInt(product?.minPrice!), "en-NG")} -{" "}
+                    {formatCurrency(parseInt(product?.maxPrice!), "en-NG")}
                   </p>
                 </div>
                 <div className="mb-5">
-                  <p className="font-semibold">Product ID:</p>
-                  <p>ID:{product?.id}</p>
+                  <p className="font-semibold">Product Code:</p>
+                  <p className="uppercase">{product?.productCode}</p>
                 </div>
                 <div className="mb-5">
                   <p className="font-semibold">Product Category:</p>
-                  <p>{product?.category}</p>
+                  <p>{product?.category?.name}</p>
                 </div>
                 <div className="mb-5">
                   <p className="font-semibold">Subcategory:</p>
-                  <p>{product?.subcategory}</p>
+                  <p>
+                    {product?.subCategories
+                      ?.map((item) => item?.name)
+                      .join(", ")}
+                  </p>
                 </div>
+              </div>
+              <div className="mb-5">
+                <p className="font-semibold capitalize">Product Type</p>
+                <p className="capitalize">{product?.productType}</p>
               </div>
               <div className="mb-5">
                 <p className="font-semibold capitalize">Product Sizes:</p>
                 <p className="capitalize">
-                  {product?.sizes?.map((item: any) => item.name).join(", ")}
+                  {product?.sizes?.map((item: any) => item).join(", ")}
                 </p>
               </div>
               <div className="mb-5">
                 <p className="font-semibold capitalize">Product Shapes:</p>
                 <p className="capitalize">
-                  {product?.shapes?.map((item: any) => item.name).join(", ")}
+                  {product?.shapes?.map((item: any) => item).join(", ")}
                 </p>
               </div>
               <div className="mb-5">
                 <p className="font-semibold capitalize">Product Fillings:</p>
                 <p className="capitalize">
-                  {product?.fillings?.map((item: any) => item.name).join(", ")}
+                  {product?.toppings
+                    ?.map((item: string) => formatText(item))
+                    .join(", ")}
                 </p>
               </div>
               <div className="mb-5">
@@ -102,31 +193,36 @@ export default function Page({ params }: any) {
                   Toppings &amp; Addons:
                 </p>
                 <p className="capitalize">
-                  {product?.toppings?.map((item: any) => item.name).join(", ")}
+                  {product?.toppings
+                    ?.map((item: string) => formatText(item))
+                    .join(", ")}
                 </p>
               </div>
             </div>
           </div>
-          <div className="h-fit rounded-md bg-black">
-            <h1 className="px-6 pb-4 pt-6 font-semibold text-goldie-300">
+          <div className="h-fit rounded-md bg-brand-200">
+            <h1 className="px-6 pb-4 pt-6 font-semibold text-brand-100">
               Product Images
             </h1>
-            <div className="bg-white px-6 py-6">
+            <div className="bg-brand-100 px-6 py-6">
               <div className="">
-                <div className="mb-6 h-[300px]">
+                <div className="mb-6 h-[300px] w-full">
                   <Image
-                    src={product?.image[selectedImage] || coconut}
+                    src={product?.images[selectedImage] || coconut}
                     alt="Coconut Cake"
                     width={250}
                     height={250}
                     className="h-full w-full object-cover"
                   />
                 </div>
-                <div className="grid grid-cols-4 gap-4">
-                  {product?.image.map((item: any, index: number) => (
+                <div className="flex flex-wrap items-center">
+                  {product?.images.map((item: any, index: number) => (
                     <div
                       key={index}
-                      className="h-[120px] cursor-pointer"
+                      className={cn(
+                        "h-[80px] w-[80px] shrink-0 cursor-pointer overflow-hidden border-4 border-transparent",
+                        selectedImage === index && "border-brand-200",
+                      )}
                       onClick={() => setSelectedImage(index)}
                     >
                       <Image

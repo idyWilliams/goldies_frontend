@@ -1,5 +1,6 @@
 "use client";
 import { cn } from "@/helper/cn";
+import { IOrder } from "@/interfaces/order.interface";
 import {
   flexRender,
   getCoreRowModel,
@@ -9,25 +10,26 @@ import { useEffect, useMemo, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { Tooltip } from "react-tooltip";
 
+interface TableProps {
+  columns: any;
+  Tdata: any[];
+  filteredTabs?: string[];
+  statusType?: "order" | "product" | "customer";
+  showSearchBar?: boolean;
+}
+
 export default function ProductTable({
   columns,
   Tdata,
-  filteredTabs,
+  filteredTabs = [],
   statusType,
   showSearchBar = true,
-}: {
-  columns: any;
-  Tdata: any;
-  filteredTabs?: any;
-  statusType?: string;
-  showSearchBar?: boolean;
-}) {
-  const [selectedTabs, setSelectedTabs] = useState(filteredTabs[0]);
-  const [chosenTab, setChosenTab] = useState(filteredTabs[0]);
-  const [TData, setTData] = useState(Tdata);
-  const [data, setData] = useState(TData);
-  // const data = useMemo(() => TData, [TData]);
+}: TableProps) {
+  const [selectedTab, setSelectedTab] = useState(filteredTabs[0] || "All");
+  const [filteredData, setFilteredData] = useState(Tdata);
   const [searchValue, setSearchValue] = useState("");
+
+  const data = useMemo(() => filteredData, [filteredData]);
   const table = useReactTable({
     data,
     columns,
@@ -35,28 +37,37 @@ export default function ProductTable({
   });
 
   useEffect(() => {
-    if (chosenTab === filteredTabs[0]) {
-      setTData(Tdata);
+    if (!selectedTab || selectedTab === "All") {
+      setFilteredData(Tdata);
     } else {
-      if (statusType === "order" || statusType === "product") {
-        setTData(
-          Tdata?.filter(
-            (item: any) =>
-              item?.status.toLowerCase() === chosenTab?.toLowerCase(),
-          ),
-        );
-      }
+      setFilteredData(
+        Tdata.filter((item) => {
+          if (statusType === "order") {
+            return (
+              (item as IOrder).orderStatus?.toLowerCase() ===
+              selectedTab.toLowerCase()
+            );
+          }
+          return item?.status?.toLowerCase() === selectedTab.toLowerCase();
+        }),
+      );
     }
-  }, [chosenTab, filteredTabs, Tdata, statusType]);
+  }, [selectedTab, Tdata, statusType]);
 
   useEffect(() => {
-    const filteredProducts = Tdata?.filter(
-      (item: any) =>
-        item?.productName?.toLowerCase()?.includes(searchValue) ||
-        item?.name?.toLowerCase()?.includes(searchValue) ||
-        item?.id?.toString()?.toLowerCase()?.includes(searchValue),
+    if (!searchValue) {
+      setFilteredData(Tdata);
+      return;
+    }
+    const lowerSearch = searchValue.toLowerCase();
+    setFilteredData(
+      Tdata.filter(
+        (item) =>
+          item?.productName?.toLowerCase()?.includes(lowerSearch) ||
+          item?.name?.toLowerCase()?.includes(lowerSearch) ||
+          item?.id?.toString()?.toLowerCase()?.includes(lowerSearch),
+      ),
     );
-    setTData(filteredProducts);
   }, [searchValue, Tdata]);
 
   const handleChange = (e: any) => {
@@ -74,16 +85,15 @@ export default function ProductTable({
       >
         <div className="flex items-center gap-1">
           {filteredTabs &&
-            filteredTabs.map((tabs: string, index: number) => (
+            filteredTabs.map((tab, index) => (
               <button
                 key={index}
-                className={`w-fit rounded-sm border px-2 ${selectedTabs === tabs ? "bg-black text-goldie-300" : "border-neutral-200 bg-white"}`}
+                className={`w-fit rounded-sm border px-2 ${selectedTab === tab ? "bg-black text-brand-200" : "border-neutral-200 bg-white"}`}
                 onClick={() => {
-                  setSelectedTabs(tabs);
-                  setChosenTab(tabs);
+                  setSelectedTab(tab);
                 }}
               >
-                {tabs}
+                {tab}
               </button>
             ))}
         </div>
@@ -108,11 +118,11 @@ export default function ProductTable({
       <table className="w-full bg-[#fff]">
         <thead>
           {table?.getHeaderGroups()?.map((headerGroup) => (
-            <tr key={headerGroup.id} className="bg-black">
+            <tr key={headerGroup.id} className="bg-brand-200">
               {headerGroup?.headers?.map((header) => (
                 <th
                   key={header.id}
-                  className="p-4 text-left capitalize text-goldie-300"
+                  className="p-4 text-left capitalize text-brand-100"
                 >
                   {header.isPlaceholder
                     ? null
@@ -128,7 +138,7 @@ export default function ProductTable({
         <tbody>
           {table.getRowModel().rows?.map((row) => {
             return (
-              <tr key={row.id} className="odd:bg-goldie-300 odd:bg-opacity-20">
+              <tr key={row.id} className="odd:bg-brand-100 odd:bg-opacity-20">
                 {row.getVisibleCells().map((cell) => (
                   <td key={cell.id} className="px-4 py-4">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

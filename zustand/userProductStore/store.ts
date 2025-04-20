@@ -1,30 +1,34 @@
+import { IProduct } from "@/interfaces/product.interface";
 import { create } from "zustand";
 
 interface Store {
-  products: any[];
-  favProducts: any[];
-  addProduct: (product: any) => void;
-  removeProduct: (productId: number) => void;
-  addFavProduct: (product: any) => void;
+  allProducts: IProduct[];
+  activeProduct: IProduct | null;
+  favProducts: IProduct[];
+  setAllProducts: (products: IProduct[]) => void;
+  removeProduct: (productId: string) => void;
+  setActiveProduct: (product: IProduct | null) => void;
+  setFavProducts: (products: IProduct[]) => void;
+  addFavProduct: (product: IProduct) => void;
   removeFavProduct: (productId: string) => void;
 }
 
 const useUserPdctStore = create<Store>((set) => ({
-  products: [],
+  allProducts: [],
+  activeProduct: null,
   favProducts: [],
-  addProduct: (product) =>
-    set((state) => ({ products: [...state.products, product] })),
+  setAllProducts: (products) => set({ allProducts: products }),
   removeProduct: (productId) =>
     set((state) => ({
-      products: state.products.filter((prod) => prod.id !== productId),
+      allProducts: state.allProducts.filter((prod) => prod._id !== productId),
     })),
+  setActiveProduct: (product) => set({ activeProduct: product }),
+  setFavProducts: (products) => set({ favProducts: products }),
   addFavProduct: (product) =>
-    set((state) => ({ favProducts: [product, ...state.favProducts] })),
+    set((state) => ({ favProducts: [...state.favProducts, product] })),
   removeFavProduct: (productId) =>
     set((state) => ({
-      favProducts: state.favProducts.filter(
-        (prod) => prod.id?.toString() !== productId,
-      ),
+      favProducts: state.favProducts.filter((prod) => prod._id !== productId),
     })),
 }));
 

@@ -56,7 +56,6 @@ const EditAddressModal = ({ onClose }: any) => {
   //    const isMobile = useMediaQuery({ maxWidth: 768 });
   //    return isMobile;
   //  };
-  
 
   const onSubmit = (data: any) => {
     console.log("data: ", data);
@@ -66,7 +65,7 @@ const EditAddressModal = ({ onClose }: any) => {
 
   return (
     <>
-      <div className="border rounded-lg md:p-10 bg-white ">
+      <div className="rounded-lg border bg-white md:p-10 ">
         <div className="mb-4 flex items-center justify-between border-b border-neutral-200 ">
           <h2 className=" text-xl font-semibold">Edit address</h2>
           <button onClick={onClose} className="text-xl">
@@ -236,7 +235,7 @@ const EditAddressModal = ({ onClose }: any) => {
                 Discard Changes
               </button>
               <button
-                className="w-44 rounded border border-neutral-900 bg-neutral-900 px-5 py-2.5 text-goldie-300 "
+                className="w-44 rounded border border-neutral-900 bg-neutral-900 px-5 py-2.5 text-brand-200 "
                 type="submit"
               >
                 Save changes

@@ -1,20 +1,22 @@
 "use client";
-import React, { useContext, useState } from "react";
-import { RiUserSharedLine } from "react-icons/ri";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { Controller, useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import AuthContext, { useAuth } from "@/context/AuthProvider";
+import { useAuth } from "@/context/AuthProvider";
 import { verifyOTP } from "@/services/hooks/admin-auth";
+import { ADMIN_TOKEN_NAME } from "@/utils/constants";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation } from "@tanstack/react-query";
+import Cookies from "js-cookie";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Controller, useForm } from "react-hook-form";
+import { RiUserSharedLine } from "react-icons/ri";
+import { toast } from "sonner";
+import * as yup from "yup";
 
 const validationSchema = yup.object().shape({
   otp: yup.string().required("otp required"),
@@ -22,8 +24,11 @@ const validationSchema = yup.object().shape({
 
 const AdminSignInVerification = ({ email }: { email: string }) => {
   const { setIsLogin, setRole, setAuth } = useAuth();
-
+  const queryParams = useSearchParams();
   const router = useRouter();
+
+  const callbackUrl = queryParams.get("redirect_url") || "/admin";
+
   const otpVerify = useMutation({
     mutationFn: verifyOTP,
   });
@@ -41,35 +46,35 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
     otpVerify
       .mutateAsync({ ...data, email })
       .then((res: any) => {
-        console.log(res);
         // UPDATE THE AUTH PROVIDER
         setIsLogin(true);
         setRole(res?.admin?.role);
         setAuth({ token: res?.token, ...res?.admin });
 
         // UPDATE LOCALSTORAGE
-        localStorage.removeItem("adminToken");
-        localStorage.removeItem("admin");
+        // localStorage.removeItem("adminToken");
+        // localStorage.removeItem("admin");
         localStorage.setItem("isLogin", JSON.stringify(true));
         localStorage.setItem(
           "admin",
           JSON.stringify({ token: res?.token, ...res?.admin }),
         );
         localStorage.setItem("adminToken", res?.token);
-        router.push("/admin");
+
+        Cookies.set(ADMIN_TOKEN_NAME, res?.token);
+        router.replace(callbackUrl);
       })
       .catch((error: any) => {
         console.log(error);
+        toast.error(error?.response?.data?.message || error?.message);
       });
-
-    console.log(data);
   };
 
   return (
     <>
       <div className="flex  flex-col items-center border bg-white p-6 py-12 shadow-lg  sm:mx-auto sm:w-[440px]">
-        <span className="flex h-20 w-20 items-center justify-center rounded-full bg-goldie-300 bg-opacity-35">
-          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-goldie-300 bg-opacity-35">
+        <span className="bg-brand-200 bg-opacity-50 flex h-20 w-20 items-center justify-center rounded-full">
+          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-200 text-brand-100">
             <RiUserSharedLine size={30} />
           </span>
         </span>
@@ -104,18 +109,18 @@ const AdminSignInVerification = ({ email }: { email: string }) => {
             </div>
             <Button
               disabled={otpVerify?.isPending}
-              className="mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300"
+              className="mt-3 h-auto w-full rounded-none bg-brand-200 py-3 text-base text-brand-100 hover:border hover:border-brand-200 hover:bg-transparent hover:text-brand-200"
               type="submit"
             >
               {otpVerify?.isPending ? "Loading...." : "Submit"}
             </Button>
-            {/* <Button className="mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300">
+            {/* <Button className="mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-brand-200">
                                         Submit
                                     </Button> */}
 
             <div className="flex items-center justify-center">
               <Link
-                href="/admin-sign-in"
+                href="/admin-signin"
                 className="text-center text-sm hover:text-goldie-400"
               >
                 Resend code

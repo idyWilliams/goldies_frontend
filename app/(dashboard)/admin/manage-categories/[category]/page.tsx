@@ -8,7 +8,7 @@ import AdminAuth from "@/components/admin-component/AdminAuth";
 const Page = () => {
   return (
     <section>
-      <section className="min-h-screen w-full bg-neutral-100 px-4 py-4">
+      <section className="min-h-screen w-full bg-brand-100 px-4 py-4">
         <CategoryHeader />
 
         <CategoryForm />

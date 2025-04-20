@@ -3,9 +3,10 @@ import {
   CreateUser,
   ForgotPassword,
   LoginUser,
-  ResetPassword,
-  LoginAdmin,
+  ResetPassword
 } from "@/services/types";
+import { USER_DETAILS, USER_TOKEN_NAME } from "@/utils/constants";
+import Cookies from "js-cookie";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 // CREATE A USER
@@ -42,7 +43,9 @@ export const resetPassword = async (data: ResetPassword) => {
 // LOGOUT ADMIN
 export const userLogOut = async (router: AppRouterInstance) => {
   localStorage.setItem("isLogin", JSON.stringify(false));
-  localStorage.removeItem("accessToken");
+  localStorage.removeItem("userToken");
   localStorage.removeItem("user");
+  Cookies.remove(USER_TOKEN_NAME);
+  Cookies.remove(USER_DETAILS);
   router.push("/sign-in");
 };

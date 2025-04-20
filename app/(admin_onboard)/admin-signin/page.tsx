@@ -1,30 +1,26 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { RiUserSharedLine } from "react-icons/ri";
-import { Button } from "@/components/ui/button";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { BsEyeSlash } from "react-icons/bs";
-import { AiOutlineEye } from "react-icons/ai";
-import Link from "next/link";
-import { cn } from "@/helper/cn";
-import { useMutation } from "@tanstack/react-query";
-import AuthContext from "@/context/AuthProvider";
-import { Toaster, toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { useQuery } from "@tanstack/react-query";
 import AdminSignInVerification from "@/components/admin-component/AdminSignInVerification";
+import { Button } from "@/components/ui/button";
+import AuthContext from "@/context/AuthProvider";
+import { cn } from "@/helper/cn";
 import { loginAdmin } from "@/services/hooks/admin-auth";
-import Image from "next/image";
-import { CgSpinner } from "react-icons/cg";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useMutation } from "@tanstack/react-query";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useContext, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { AiOutlineEye } from "react-icons/ai";
+import { BsEyeSlash } from "react-icons/bs";
+import { toast } from "sonner";
+import * as yup from "yup";
 
 const validationSchema = yup.object().shape({
   email: yup.string().required("Email is required"),
   password: yup.string().required("Password is required"),
 });
 
-const Page = () => {
+const AdminLogin = () => {
   const router = useRouter();
   const [visible, setVisible] = useState(false);
   const [email, setEmail] = useState<string>("");
@@ -52,16 +48,13 @@ const Page = () => {
 
   const onSubmit = (data: any) => {
     setEmail(data.email);
-    console.log("Submitted Data:", data);
 
     adminLogin
       .mutateAsync(data)
       .then((res: any) => {
-        console.log("res: ", res.data);
         reset();
       })
       .catch((err: any) => {
-        console.log(err, "Admin sign-in err");
         toast.error(err?.response?.data?.message || err?.message);
       });
   };
@@ -156,14 +149,14 @@ const Page = () => {
                       id="agree"
                       defaultChecked
                       // checked
-                      className="form-checkbox h-4 w-4 checked:bg-goldie-300 checked:hover:bg-neutral-800 focus:ring-neutral-800 checked:focus:ring-neutral-800"
+                      className="form-checkbox h-4 w-4 checked:bg-brand-200 checked:hover:bg-neutral-800 focus:ring-neutral-800 checked:focus:ring-neutral-800"
                     />
                     <span className="text-sm">Keep me signed in</span>
                   </label>
 
                   <Link
-                    href="/forgot-password"
-                    className="text-sm hover:text-goldie-400"
+                    href="/admin-forget-password"
+                    className="text-sm hover:text-brand-200"
                   >
                     Forgot password?
                   </Link>
@@ -171,7 +164,7 @@ const Page = () => {
 
                 <Button
                   disabled={adminLogin?.isPending}
-                  className="mt-3 h-auto w-full rounded-none bg-neutral-800 py-3 text-base text-goldie-300"
+                  className="mt-3 h-auto w-full rounded-none bg-brand-200 py-3 text-base text-brand-100 hover:border hover:border-brand-200 hover:bg-transparent hover:text-brand-200"
                   type="submit"
                 >
                   {adminLogin?.isPending ? "Loading...." : "Sign In"}
@@ -185,4 +178,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default AdminLogin;

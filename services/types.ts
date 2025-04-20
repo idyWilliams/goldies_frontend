@@ -1,5 +1,8 @@
+import { IUser } from "@/interfaces/user.interface";
+
 // types/api.ts
 export interface User {
+  [x: string]: any;
   id: string;
   firstName: string;
   lastName: string;
@@ -81,14 +84,9 @@ export interface Users {
   version: number;
 }
 export interface GetUserResponse {
-  // id: string;
-  // firstName: string;
-  // lastName: string;
-  // email: string;
-  // data: any;
-  user: User;
+  user: IUser;
   message: string;
-  token:string
+  token: string;
 }
 export interface Category {
   [x: string]: any;

@@ -1,4 +1,10 @@
 import { Category } from "@/services/types";
+import { Option } from "react-multi-select-component";
+
+export interface ErrorResponse {
+  message: string;
+  [key: string]: any;
+}
 
 export type ICake = {
   id: number;
@@ -16,7 +22,7 @@ export type ICake = {
   quantity?: number;
 };
 
-type ImagesTypes = {
+export type ImagesTypes = {
   image1: "";
   image2: "";
   image3: "";
@@ -41,6 +47,7 @@ export type formValuesType = {
   productType: string;
   maxPrice: number;
   minPrice: number;
+  status: string;
 };
 
 type CategoryOptionsType =
@@ -56,15 +63,10 @@ type CategoryOptionsType =
 export interface CreatePdctCatAndSubCatPropType {
   categoryOptions: CategoryOptionsType;
   category: string;
-  subcatOptions: {
-    label: string;
-    value: any;
-    id: any;
-    disabled: boolean;
-  }[];
+  subCategoriesOptions: SubCategoriesOption[];
   handleChange: (e: any) => void;
-  subCategory: any[];
-  setSubCategory: React.Dispatch<React.SetStateAction<any[]>>;
+  subCategories: SubCategoriesOption[];
+  setSubCategories: React.Dispatch<React.SetStateAction<SubCategoriesOption[]>>;
 }
 
 export interface CreateProductMobilePropTypes {
@@ -79,12 +81,7 @@ export interface CreateProductMobilePropTypes {
     imagesRef: React.MutableRefObject<(File | null)[]>;
     category: string;
     categoryOptions: CategoryOptionsType;
-    subcatOptions: {
-      label: string;
-      value: any;
-      id: any;
-      disabled: boolean;
-    }[];
+    subCategoriesOptions: SubCategoriesOption[];
     multiSelect: {
       categoryData: {
         name: string;
@@ -96,21 +93,24 @@ export interface CreateProductMobilePropTypes {
           id: string;
         }>
       >;
-      subCategory: any[];
-      setSubCategory: React.Dispatch<React.SetStateAction<any[]>>;
-      shapes: [];
-      setShapes: React.Dispatch<React.SetStateAction<[]>>;
-      flavour: [];
-      setFlavours: React.Dispatch<React.SetStateAction<[]>>;
-      sizes: [];
-      setSizes: React.Dispatch<React.SetStateAction<[]>>;
-      addOn: [];
-      setAddOn: React.Dispatch<React.SetStateAction<[]>>;
+      subCategories: SubCategoriesOption[];
+      setSubCategories: React.Dispatch<
+        React.SetStateAction<SubCategoriesOption[]>
+      >;
+      shapes: Option[];
+      setShapes: React.Dispatch<React.SetStateAction<Option[]>>;
+      flavour: Option[];
+      setFlavours: React.Dispatch<React.SetStateAction<Option[]>>;
+      sizes: Option[];
+      setSizes: React.Dispatch<React.SetStateAction<Option[]>>;
+      addOn: Option[];
+      setAddOn: React.Dispatch<React.SetStateAction<Option[]>>;
     };
   };
+  editId: string;
 }
 
-type ProductSubCategories = {
+export type SubCategoriesOption = {
   label: string;
   value: any;
   id: any;
@@ -126,22 +126,22 @@ type CategoryOptions = {
 };
 export interface InformationAndPricingType {
   category: string;
-  subCategory: any[];
+  subCategories: SubCategoriesOption[];
   categoryOptions: CategoryOptions[] | undefined;
-  subcategories: ProductSubCategories[];
-  setSubCategory: React.Dispatch<React.SetStateAction<any[]>>;
+  subCategoriesOptions: SubCategoriesOption[];
+  setSubCategories: React.Dispatch<React.SetStateAction<SubCategoriesOption[]>>;
   formValues: formValuesType;
   handleChange: (e: any) => void;
 }
 
 export type ProductVariantsPropType = {
-  shapes: [];
-  setShapes: React.Dispatch<React.SetStateAction<[]>>;
-  sizes: [];
-  setSizes: React.Dispatch<React.SetStateAction<[]>>;
-  flavour: [];
-  setFlavours: React.Dispatch<React.SetStateAction<[]>>;
-  addOn: [];
-  setAddOn: React.Dispatch<React.SetStateAction<[]>>;
+  shapes: Option[];
+  setShapes: React.Dispatch<React.SetStateAction<Option[]>>;
+  sizes: Option[];
+  setSizes: React.Dispatch<React.SetStateAction<Option[]>>;
+  flavour: Option[];
+  setFlavours: React.Dispatch<React.SetStateAction<Option[]>>;
+  addOn: Option[];
+  setAddOn: React.Dispatch<React.SetStateAction<Option[]>>;
   productType: string;
 };

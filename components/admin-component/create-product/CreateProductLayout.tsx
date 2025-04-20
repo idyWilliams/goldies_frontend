@@ -1,25 +1,23 @@
-import React, { useEffect, useRef, useState } from "react";
-import Stepper from "./Stepper";
+import { uploadImageToFirebase } from "@/lib/utils";
+import { createNewProduct } from "@/services/hooks/products";
+import { CreateProductMobilePropTypes } from "@/types/products";
+import { useMutation } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
+import { CreateProductContext } from "../../../context/CreateProductContext";
 import InformationAndPricing from "../InformationAndPricing";
 import ProductVariants from "../ProductVariants";
-import { createProductContext } from "../../../context/CreateProductContext";
-import StepperController from "./StepperController";
-import { useMutation } from "@tanstack/react-query";
-import { createNewProduct } from "@/services/hooks/products";
-import { toast } from "sonner";
-import { AxiosError } from "axios";
-import { uploadImageToFirebase } from "@/lib/utils";
-import { CreateProductMobilePropTypes, formValuesType } from "@/types/products";
-import useCategoryOptions from "@/services/hooks/category/useCategoryOptions";
-import useCategories from "@/services/hooks/category/useCategories";
 import CreateProductImages from "./CreateProductImages";
+import Stepper from "./Stepper";
+import StepperController from "./StepperController";
 
 interface ErrorResponse {
   message: string;
   [key: string]: any;
 }
 
-const productStep = ["information", "variants", "images"];
+const productStep = ["Information", "Variants", "Images"];
 
 export default function CreateProductLayout({
   isSubmitting,
@@ -28,7 +26,11 @@ export default function CreateProductLayout({
   // setImages,
   // imagesRef,
   data,
-}: CreateProductMobilePropTypes) {
+  editId,
+  handleRemove,
+}: CreateProductMobilePropTypes & {
+  handleRemove: (imgNo: number) => Promise<void>;
+}) {
   const {
     formValues,
     setFormValues,
@@ -38,14 +40,14 @@ export default function CreateProductLayout({
     imagesRef,
     category,
     categoryOptions,
-    subcatOptions,
+    subCategoriesOptions,
     multiSelect,
   } = data;
 
   const {
     categoryData,
-    subCategory,
-    setSubCategory,
+    subCategories,
+    setSubCategories,
     shapes,
     setShapes,
     flavour,
@@ -70,8 +72,9 @@ export default function CreateProductLayout({
         productType: "",
         maxPrice: 0,
         minPrice: 0,
+        status: formValues.status,
       });
-      setSubCategory([]);
+      setSubCategories([]);
       setFlavours([]);
       setShapes([]);
       setSizes([]);
@@ -120,17 +123,25 @@ export default function CreateProductLayout({
     }
 
     const imageArr = newImageArr.filter((url) => url !== null);
+    const finalImages = [...imageArr, ...Object.values(images)].filter(Boolean);
+
+    // Validation: Ensure at least one image is present
+    if (finalImages.length === 0) {
+      toast.warning("Please upload at least one product image.");
+      setIsSubmitting(false);
+      return;
+    }
 
     const data = {
       name: formValues.productName,
       description: formValues.productDescription,
       category: categoryData,
-      subCategory: [...subCategory].map((sub: any) => ({
+      subCategory: [...subCategories].map((sub: any) => ({
         name: sub.label,
         id: sub.id,
       })),
       productType: formValues.productType,
-      images: [...imageArr],
+      images: finalImages as string[],
       minPrice: Number(formValues.minPrice),
       maxPrice: Number(formValues.maxPrice),
       shapes: [...shapes].map((shape: any) => shape.value),
@@ -154,10 +165,10 @@ export default function CreateProductLayout({
         return (
           <InformationAndPricing
             category={category}
-            subCategory={subCategory}
-            setSubCategory={setSubCategory}
+            subCategories={subCategories}
+            setSubCategories={setSubCategories}
             categoryOptions={categoryOptions}
-            subcategories={subcatOptions}
+            subCategoriesOptions={subCategoriesOptions}
             formValues={formValues}
             handleChange={handleChange}
           />
@@ -185,6 +196,7 @@ export default function CreateProductLayout({
                   images={images}
                   setImages={setImages}
                   imagesRef={imagesRef}
+                  handleRemove={handleRemove}
                 />
               </div>
             </div>
@@ -202,19 +214,19 @@ export default function CreateProductLayout({
     direction === "next" ? newStep++ : newStep--;
     newStep > 0 && newStep <= checkoutStep?.length && setCurrentStep(newStep);
   };
-  console.log(images);
 
-  console.log(checkoutStep, currentStep);
   return (
     <section>
       <div className="">
-        <h1 className="mb-3 font-bold uppercase">Create New Products</h1>
+        <h1 className="mb-3 font-bold uppercase">
+          {editId ? "Edit Product" : "Create New Product"}
+        </h1>
         <hr className="border-1 mb-3 border-black" />
       </div>
       <form ref={formRefMobile} onSubmit={createProductMobile}>
         <Stepper checkoutStep={checkoutStep} currentStep={currentStep} />
 
-        <createProductContext.Provider
+        <CreateProductContext.Provider
           value={{
             checkoutStep,
             currentStep,
@@ -223,7 +235,7 @@ export default function CreateProductLayout({
         >
           {stepDisplay(currentStep)}
           <StepperController isSubmitting={isSubmitting} />
-        </createProductContext.Provider>
+        </CreateProductContext.Provider>
       </form>
     </section>
   );

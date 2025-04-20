@@ -1,3 +1,4 @@
+import { IAdmin, IUser } from "@/interfaces/user.interface";
 import {
   createContext,
   MutableRefObject,
@@ -7,8 +8,8 @@ import {
 } from "react";
 
 interface Auth {
-  user?: any;
-  admin?: any;
+  user?: IUser;
+  admin?: IAdmin;
 }
 interface IProps {
   children: React.ReactNode;

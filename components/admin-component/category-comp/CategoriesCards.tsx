@@ -75,7 +75,7 @@ const CategoriesCards = ({
                 <p className="mt-1">
                   <span className="  font-semibold">Description:&nbsp;</span>
                   <span
-                    className={` ${isClamped ? "line-clamp-7" : "line-clamp-none"} break-all `}
+                    className={` ${isClamped ? "line-clamp-7" : "line-clamp-none"}`}
                     onClick={() => setIsClamped((old) => !old)}
                   >
                     {item?.description}
@@ -99,7 +99,7 @@ const CategoriesCards = ({
                         return (
                           <span
                             key={index}
-                            className="inline-block rounded-md bg-goldie-300 p-2 px-2.5 text-sm capitalize text-neutral-900 xl:text-base"
+                            className="inline-block rounded-md bg-brand-200 p-2 px-2.5 text-sm capitalize text-brand-100 xl:text-base"
                           >
                             {subcategory.name}
                           </span>

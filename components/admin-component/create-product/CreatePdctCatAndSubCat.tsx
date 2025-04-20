@@ -1,18 +1,15 @@
-import { captalizedName } from "@/helper/nameFormat";
-import useCategories from "@/services/hooks/category/useCategories";
-import useCategoryOptions from "@/services/hooks/category/useCategoryOptions";
 import { CreatePdctCatAndSubCatPropType } from "@/types/products";
-import React, { useEffect, useMemo } from "react";
 import { MultiSelect } from "react-multi-select-component";
 
 const CreatePdctCatAndSubCat = ({
   categoryOptions,
   category,
-  subcatOptions,
+  subCategoriesOptions,
   handleChange,
-  subCategory,
-  setSubCategory,
+  subCategories,
+  setSubCategories,
 }: CreatePdctCatAndSubCatPropType) => {
+ 
   return (
     <div className="grid grid-cols-2 gap-4">
       <div className="mt-3 w-full">
@@ -23,11 +20,11 @@ const CreatePdctCatAndSubCat = ({
         <select
           id="category"
           name="category"
-          className="form-select w-full rounded-md border-neutral-300 text-neutral-400"
+          className="form-select w-full rounded-md border-neutral-300 disabled:text-neutral-400"
           onChange={handleChange}
           value={category}
         >
-          <option value={""}>Select category</option>
+          <option value={""} disabled>Select category</option>
           {categoryOptions &&
             categoryOptions.map((option: any, index: number) => (
               <option
@@ -48,11 +45,10 @@ const CreatePdctCatAndSubCat = ({
         </h2>
         <div className={`${!category ? "cursor-not-allowed" : ""}`}>
           <MultiSelect
-            disabled={!category}
-            options={subcatOptions}
-            value={subCategory}
+            options={subCategoriesOptions}
+            value={subCategories}
             labelledBy="Select subcategory"
-            onChange={setSubCategory}
+            onChange={setSubCategories}
             className={`${!category ? "pointer-events-none" : ""}`}
           />
         </div>

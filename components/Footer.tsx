@@ -1,29 +1,47 @@
 "use client";
-import Link from "next/link";
+import { fetchCategories } from "@/services/hooks/category";
+import { subscribeNewsletter } from "@/services/hooks/mail";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Call, Location, Sms } from "iconsax-react";
 import Image from "next/image";
-import Img from "../public/assets/icon (1).svg";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
   BsFacebook,
   BsInstagram,
   BsLinkedin,
   BsTwitterX,
 } from "react-icons/bs";
-import { Call, Location, Sms } from "iconsax-react";
-// import { categories } from "@/utils/cakeCategories";
-import { useEffect, useState } from "react";
-import React from "react";
-import { useQuery } from "@tanstack/react-query";
-import { fetchCategories } from "@/services/hooks/category";
-import { fetchSubCategories } from "@/services/hooks/category";
-import { toast } from "sonner";
+import goldis from "@/public/assets/new-logo/logo-white.svg";
+import { Button } from "./ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
+
+// Contact Details Constants
+const CONTACT_DETAILS = {
+  phone: "+447488855300",
+  email: "johndoe@gmail.com",
+  address: "37 Wallenger Avenue, Romford, Essex, England, RM2 6EP",
+};
+
+const address = encodeURIComponent(CONTACT_DETAILS.address);
+const mapLink = `https://www.google.com/maps/search/?api=1&query=${address}`;
 
 const Footer = () => {
   const [categories, setCategories] = useState<any[]>([]);
-  const [subCategories, setSubCategories] = useState<any[]>([]);
+  const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [openDialog, setOpenDialog] = useState(false);
 
   const { data, isPending, isSuccess } = useQuery({
     queryFn: fetchCategories,
     queryKey: ["all categories"],
+  });
+
+  const subscribeToNewsletter = useMutation({
+    mutationFn: subscribeNewsletter,
+    onSuccess: () => {
+      setNewsletterEmail("");
+      setOpenDialog(true);
+    },
   });
 
   useEffect(() => {
@@ -34,95 +52,150 @@ const Footer = () => {
     }
   }, [isPending, isSuccess, data]);
 
+  const getYear = () => {
+    return new Date().getFullYear();
+  };
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsletterEmail.trim()) return;
+    await subscribeToNewsletter.mutateAsync({ email: newsletterEmail });
+  };
+
+  const SOCIAL_LINKS = [
+    { icon: BsFacebook, href: "#" },
+    { icon: BsInstagram, href: "#" },
+    { icon: BsTwitterX, href: "#" },
+    { icon: BsLinkedin, href: "#" },
+  ];
+
   return (
-    <section className="relative grid min-h-[500px] w-full bg-neutral-900 pt-3">
-      <div className="wrapper relative z-30">
-        <div className="mx-auto grid gap-6 rounded-2xl bg-[#494848] px-4 py-4 md:grid-cols-2 md:items-center md:py-6 xl:w-10/12">
+    <section className="relative mt-auto grid min-h-[500px] w-full bg-brand-200">
+      <div className="wrapper relative py-10 pt-12">
+        <div className="mx-auto grid gap-6  rounded-2xl bg-[#231614] p-8 md:grid-cols-2 md:items-center md:py-6 xl:w-10/12">
           <div>
-            <h1 className="text-2xl font-bold text-goldie-300 lg:text-[32px]">
-              Subscribe to our NewsLetter
+            <h1 className="text-3xl font-semibold text-brand-100 lg:text-[32px]">
+              Subscribe to our Newsletter
             </h1>
-            <p className="text-[16px] text-goldie-300">
+            <p className="mt-1 text-[16px] text-brand-100">
               Be the first to know about updates on new recipes.
             </p>
           </div>
-          <div className="flex h-min items-center rounded-md md:bg-white md:p-2">
+          <div className="flex h-min w-full items-center rounded-md md:bg-white md:p-2">
             <form
-              id="newsLetter"
-              className="flex w-full flex-col gap-2 md:flex-row md:items-center md:justify-center"
+              onSubmit={handleSubscribe}
+              className="flex w-full flex-col items-center gap-4 md:flex-row"
             >
-              <label htmlFor="email" className="flex-grow">
-                <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  placeholder="Enter your email"
-                  className="form-input w-full rounded-md border-none bg-white p-3 placeholder:text-sm focus:ring-0 md:w-auto md:py-0"
-                />
-              </label>
-              <button className="mt-2 w-full rounded-md bg-black px-5 py-2 text-goldie-300 md:mt-0 md:w-auto">
+              <input
+                type="email"
+                name="email"
+                id="email"
+                placeholder="Enter your email"
+                className="w-full rounded-md border-0 focus:ring-0"
+                value={newsletterEmail}
+                onChange={(e) => setNewsletterEmail(e.target.value)}
+              />
+              <Button
+                size={"lg"}
+                type="submit"
+                className=" h-auto w-full bg-brand-200 py-3 text-brand-100 md:mt-0 md:w-auto"
+                aria-label="Subscribe to Newsletter"
+              >
                 Subscribe
-              </button>
+              </Button>
             </form>
           </div>
+
+          {/* Success Dialog */}
+          <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+            <DialogContent className=" border-black bg-black text-center">
+              <DialogHeader>
+                <DialogTitle className="text-center text-brand-100">
+                  <div className="flex justify-between ">
+                    <Image
+                      src={goldis}
+                      className="flex w-[100px] items-center"
+                      alt="Goldis Logo sm"
+                    />
+                  </div>
+                </DialogTitle>
+              </DialogHeader>
+              <div className="py-4">
+                <h2 className="mb-4 text-3xl font-bold text-brand-100">
+                  Success!
+                </h2>
+                <p className="text-white">
+                  Thank you for subscribing to our newsletter!
+                </p>
+                <Button
+                  onClick={() => setOpenDialog(false)}
+                  className="bg-brand-text-brand-100 mx-auto mt-8 w-fit text-[#0F0904] hover:bg-goldie-400"
+                >
+                  Close
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
-        <div className="mt-20 grid justify-between gap-y-8 lg:grid-cols-5">
+
+        <div className="mt-20 grid justify-between gap-y-8 lg:grid-cols-[1.5fr_1fr_1fr_1fr_1fr] lg:gap-x-10">
           <div className="space-y-4">
             <div>
               <Image
-                src={Img}
+                src={goldis}
                 alt="logo"
                 width={100}
                 height={100}
-                className="mb-3"
-                // className="mb-3 w-[200px]"
+                className="mb-4 w-[150px]"
               />
-              <p className="text-goldie-300 ">Goldies Confectionary</p>
-              <p className="mb-2 text-white">
+              <p className="mb-2 text-balance text-white">
                 Your perfect stop to shop yummy and fluffy cakes
               </p>
             </div>
             <div>
               <h3 className="text-white">Social Media</h3>
-              <hr className="w-[35px] border border-goldie-300" />
+              <hr className="border-brand-text-brand-200 bor1er w-[35px]" />
             </div>
             <div className="flex gap-2 text-white">
-              <Link href={""} className="">
-                <BsFacebook />
-              </Link>
-              <Link href={""} className="">
-                <BsInstagram />
-              </Link>
-              <Link href={""} className="">
-                <BsTwitterX />
-              </Link>
-              <Link href={""} className="">
-                <BsLinkedin />
-              </Link>
+              {SOCIAL_LINKS.map(({ icon: Icon, href }, index) => (
+                <Link key={index} href={href}>
+                  <Icon />
+                </Link>
+              ))}
             </div>
           </div>
           <div className="inline-flex flex-col space-y-3 text-white">
             <div>
               <h3 className="font-bold text-white">Company</h3>
-              <hr className="mb-2 w-[35px] border border-goldie-300" />
+              <hr className="border-brand-text-brand-200 bor1er mb-2 w-[35px]" />
             </div>
-            <Link href={"/shop"}>Products</Link>
-            <Link href={"/about-us"}>About Us</Link>
-            <Link href={"/testimonials"}>Testimonies</Link>
-            <Link href={"/contact"}>Contact Us</Link>
+            <Link href={"/shop"} className="w-fit hover:underline">
+              Products
+            </Link>
+            <Link href={"/about-us"} className="w-fit hover:underline">
+              About Us
+            </Link>
+            <Link href={"/testimonials"} className="w-fit hover:underline">
+              Testimonies
+            </Link>
+            <Link href={"/contact"} className="w-fit hover:underline">
+              Contact Us
+            </Link>
           </div>
           <div className="inline-flex flex-col space-y-3 text-white">
             <div>
               <h3 className="text-white">Products</h3>
-              <hr className="mb-2 w-[35px] border border-goldie-300" />
+              <hr className="border-brand-text-brand-200 bor1er mb-2 w-[35px]" />
             </div>
             <div className="flex flex-col gap-3">
               {isPending ? (
-                <div className="flex flex-col gap-2 bg-neutral-900 ">
-                  <div className="h-5 w-4/5 animate-pulse rounded bg-neutral-700"></div>
-                  <div className="h-5 w-4/5 animate-pulse rounded bg-neutral-700"></div>
-                  <div className="h-5 w-4/5 animate-pulse rounded bg-neutral-700"></div>
-                  <div className="h-4 w-3/5 animate-pulse rounded bg-neutral-700"></div>
+                <div className="flex flex-col gap-2">
+                  {Array.from({ length: 4 }).map((_, index) => (
+                    <div
+                      key={index}
+                      className="h-5 w-4/5 animate-pulse rounded bg-neutral-700 "
+                    ></div>
+                  ))}
                 </div>
               ) : categories.length === 0 ? (
                 <p>No categories found.</p>
@@ -135,6 +208,7 @@ const Footer = () => {
                       <Link
                         key={index}
                         href={`/shop?cat=${encodeURIComponent(category?.name?.toLowerCase())}`}
+                        className="w-fit capitalize hover:underline"
                       >
                         {category?.name}
                       </Link>
@@ -146,7 +220,7 @@ const Footer = () => {
           <div className="inline-flex flex-col space-y-3 text-white">
             <div>
               <h3 className="font-bold text-white">Working Hours</h3>
-              <hr className="mb-2 w-[35px] border border-goldie-300" />
+              <hr className="border-brand-text-brand-200 bor1er mb-2 w-[35px]" />
             </div>
             <span>Monday - Friday: 9am-6pm</span>
             <span>Saturdays 9am-4pm</span>
@@ -155,7 +229,7 @@ const Footer = () => {
           <div className="inline-flex flex-col space-y-3 text-white">
             <div>
               <h3 className="font-bold text-white">Contact Us</h3>
-              <hr className="mb-2 w-[35px] border border-goldie-300" />
+              <hr className="border-brand-text-brand-200 bor1er mb-2 w-[35px]" />
             </div>
             <div className="flex items-center justify-center gap-7 self-end text-white">
               <div className="flex flex-col items-start space-y-3">
@@ -163,21 +237,36 @@ const Footer = () => {
                   <span>
                     <Call />
                   </span>
-                  <span className="text-[14px]">+447488855300</span>
+                  <a
+                    href={`tel:${CONTACT_DETAILS.phone}`}
+                    className=" hover:underline"
+                  >
+                    {CONTACT_DETAILS.phone}
+                  </a>
                 </div>
                 <div className="inline-flex items-center gap-5">
                   <span>
                     <Sms />
                   </span>
-                  <span className="text-[14px]">johndoe@gmail.com</span>
+                  <a
+                    href={`mailto:${CONTACT_DETAILS.email}`}
+                    className=" hover:underline"
+                  >
+                    {CONTACT_DETAILS.email}
+                  </a>
                 </div>
                 <div className="inline-flex gap-5">
                   <span>
                     <Location />
                   </span>
-                  <span className="text-balance text-[14px]">
-                    37 Wallenger Avenue, Romford, Essex, England, RM2 6EP
-                  </span>
+                  <a
+                    href={mapLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className=" hover:underline"
+                  >
+                    {CONTACT_DETAILS.address}
+                  </a>
                 </div>
               </div>
               <div className="flex flex-col items-start space-y-7"></div>
@@ -188,13 +277,13 @@ const Footer = () => {
       <div className="mt-5 flex items-center bg-neutral-700 py-3">
         <div className="wrapper flex w-full flex-col-reverse justify-between gap-5 md:flex-row md:items-center">
           <p className="text-xs text-white md:text-sm">
-            ©Goldies 2024 All Rights Reserved
+            {getYear()} &copy; The Cake App. All Rights Reserved
           </p>
           <div className="inline-flex gap-8">
-            <Link href={"/"} className="text-xs text-white md:text-sm">
+            <Link href={"#"} className="text-xs text-white md:text-sm">
               Terms of Service
             </Link>
-            <Link href={"/"} className="text-xs text-white md:text-sm">
+            <Link href={"#"} className="text-xs text-white md:text-sm">
               Privacy Policy
             </Link>
           </div>

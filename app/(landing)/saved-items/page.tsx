@@ -1,43 +1,50 @@
 "use client";
 
 import ProductCard from "@/components/shop-components/ProductCard";
-import Pagination from "@/components/custom-filter/Pagination";
-import { addSlugToCakes } from "@/helper";
 import { chunkArray } from "@/helper/chunkArray";
-import { cakeProducts1, savedItems } from "@/utils/cakeData";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import useUserPdctStore from "@/zustand/userProductStore/store";
+import useSavedItems from "@/services/hooks/products/useSavedItems";
+import EachElement from "@/helper/EachElement";
+import AdminPagination from "@/components/admin-component/AdminPagination";
+import ShopPageSkeleton from "@/components/shop-components/ShopPageSkeleton";
+
+let itemsPerPage = 6;
 
 const Page = () => {
-  let itemsPerPage = 6;
   const favProducts = useUserPdctStore((state) => state.favProducts);
-  console.log(favProducts);
-
-  const [cakes, setCakes] = useState<any[]>(addSlugToCakes(savedItems));
+  const setFavProducts = useUserPdctStore((state) => state.setFavProducts);
   const [currentPageIndex, setCurrentPageIndex] = useState(1);
 
-  const handleNext = () => {
-    if (currentPageIndex !== chunkArray(cakes, itemsPerPage).length) {
-      setCurrentPageIndex(currentPageIndex + 1);
-      window.scroll(0, 0);
-    } else {
-      return;
-    }
-  };
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [totalProducts, setTotalProducts] = useState<number>(
+    favProducts.length,
+  );
 
-  const handlePaginateClick = (index: number) => {
-    setCurrentPageIndex(index + 1);
-    window.scroll(0, 0);
-  };
+  const [currentData, setCurrentData] = useState<any[] | null>(
+    favProducts ? favProducts.slice(0, itemsPerPage) : null,
+  );
+  
+  const startIndex =
+    totalProducts === 0 ? 0 : (currentPageIndex - 1) * itemsPerPage + 1;
+  const endIndex = Math.min(startIndex + itemsPerPage - 1, totalProducts);
 
-  const handlePrev = () => {
-    if (currentPageIndex !== 1) {
-      setCurrentPageIndex(currentPageIndex - 1);
-      window.scroll(0, 0);
-    } else {
-      return;
+  const { favorites, isFetching } = useSavedItems();
+
+  useEffect(() => {
+    if (favorites) {
+      setFavProducts(favorites);
     }
-  };
+  }, [favorites, setFavProducts]);
+
+  useEffect(() => {
+    if (favProducts.length > 0) {
+      setTotalProducts(favProducts.length);
+      const favProductChunks = chunkArray(favProducts, itemsPerPage);
+      setCurrentData(favProductChunks[currentPageIndex - 1]);
+      setTotalPages(favProductChunks.length);
+    }
+  }, [currentPageIndex, favProducts]);
 
   return (
     <>
@@ -46,24 +53,43 @@ const Page = () => {
         <div className="py-8">
           <h2 className="text-center text-2xl font-bold">Favourite Products</h2>
         </div>
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {chunkArray(cakes, itemsPerPage)[currentPageIndex - 1]?.map(
-            (cake: any, index: any) => {
-              return index <= 5 ? (
-                <ProductCard data={cake} key={index} />
-              ) : null;
-            },
-          )}
-        </div>
-        <Pagination
-          className=""
-          onNext={handleNext}
-          onPrev={handlePrev}
-          onPaginateClick={handlePaginateClick}
-          itemsPerPage={itemsPerPage}
-          currentPageIndex={currentPageIndex}
-          arr={cakes}
-        />
+
+        {isFetching && !currentData && <ShopPageSkeleton />}
+
+        {!isFetching && favProducts.length === 0 ? (
+          <div className="h-40 py-8">
+            <p className="text-center text-lg text-gray-500">
+              You have no saved products.
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="mb-4 flex justify-end">
+              <span className="text-sm text-neutral-500 lg:text-base">
+                Showing {startIndex} - {endIndex} of {totalProducts} results
+              </span>
+            </div>
+
+            <div className="grid justify-items-end gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {currentData && (
+                <EachElement
+                  of={currentData}
+                  render={(item: any) => (
+                    <ProductCard data={item} key={item._id} />
+                  )}
+                />
+              )}
+            </div>
+          </>
+        )}
+
+        {totalPages > 1 && (
+          <AdminPagination
+            totalPage={totalPages}
+            page={currentPageIndex}
+            setPage={setCurrentPageIndex}
+          />
+        )}
       </section>
     </>
   );
