@@ -107,7 +107,8 @@
 
   /* TOASTITY */
   .Toastify__progress-bar--info {
-    @apply bg-goldie-500;
+    @apply #e84b51;
+    /* @apply bg-goldie-500; */
   }
 
   .custom.react-toggle:active:not(.react-toggle--disabled) .react-toggle-thumb,

@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import Img from "../public/assets/goldis-gold-logo.png";
+import Img from "../public/assets/icon (1).svg";
 import {
   BsFacebook,
   BsInstagram,
@@ -74,7 +74,8 @@ const Footer = () => {
                 alt="logo"
                 width={100}
                 height={100}
-                className="mb-3 w-[200px]"
+                className="mb-3"
+                // className="mb-3 w-[200px]"
               />
               <p className="text-goldie-300 ">Goldies Confectionary</p>
               <p className="mb-2 text-white">

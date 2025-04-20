@@ -17,6 +17,7 @@ import { useDispatch } from "react-redux";
 import { setProducts } from "@/redux/features/product/productSlice";
 import { IoCartOutline } from "react-icons/io5";
 import Logo from "../public/assets/goldis-logo.png";
+import NewLogo from ".././public/assets/logo-colored (1).svg"
 import AuthContext from "@/context/AuthProvider";
 import { Button } from "./ui/button";
 // import { jwtDecode } from "jwt-decode";
@@ -102,7 +103,7 @@ const Header = () => {
     <>
       <Toaster richColors position="top-right" expand={true} />
       <header
-        className={`${sticky ? "fixed shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "absolute border-b border-neutral-900"} left-0 top-0 z-[999] flex  w-full items-center bg-goldie-300 py-3 lg:h-20`}
+        className={`${sticky ? "fixed shadow-[0_0_50px_rgba(0,0,0,0.5)]" : "absolute border-b border-neutral-900"} left-0 top-0 z-[999] flex  w-full items-center bg-goldie-50 py-3 lg:h-20`}
       >
         <div className="wrapper flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -114,7 +115,7 @@ const Header = () => {
             </span>
             <Link href="/" className="relative">
               <Image
-                src={Logo}
+                src={NewLogo}
                 priority
                 className="w-[130px]"
                 width={175}
@@ -196,7 +197,7 @@ const Header = () => {
                 {!isOpen ? <IoIosArrowDown /> : <IoIosArrowUp />}
               </button>
               {isOpen && (
-                <MenuPopup className="absolute right-0 top-16 z-20 w-[190px] rounded-md bg-[#E4D064] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
+                <MenuPopup className="absolute right-0 top-16 z-20 w-[190px] rounded-md bg-[#f7abaa] p-2.5 pb-3 shadow-[0_0_30px_rgba(0,0,0,0.2)]">
                   <div className="">
                     <Link
                       href={isLogin ? "/my-account" : "/sign-in"}
