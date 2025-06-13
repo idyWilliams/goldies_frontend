@@ -8,8 +8,10 @@ export const getDashBoard = async () => {
   return response.data;
 };
 // GET ADMIN INFO
-export const getExtendedDashBoard = async () => {
-  const response = await instance.get(`/admin-analytics/extended-dashboard`);
+export const getExtendedDashBoard = async (period = "month") => {
+  const response = await instance.get(
+    `/admin-analytics/extended-dashboard?period=${period}`,
+  );
   return response.data;
 };
 

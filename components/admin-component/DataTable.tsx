@@ -1,13 +1,11 @@
 "use client";
-import { cn } from "@/helper/cn";
-import moment from "moment";
 import {
   flexRender,
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
 import { useEffect, useMemo, useState } from "react";
-import { CiSearch } from "react-icons/ci";
+
 import AdminPagination from "./AdminPagination";
 
 interface DataTableProps<T> {

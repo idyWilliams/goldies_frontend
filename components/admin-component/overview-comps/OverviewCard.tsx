@@ -1,8 +1,13 @@
-// OverviewCard.tsx
+// components/OverviewCard.tsx
 import React from "react";
 import { motion } from "framer-motion";
 import { TrendingDown, TrendingUp } from "lucide-react";
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 import { formatCurrency } from "@/helper/formatCurrency";
 
 interface OverviewCardProps {
@@ -13,6 +18,7 @@ interface OverviewCardProps {
     increaseRate: number;
     lastValue: number;
     isPrice: boolean;
+    periodLabel?: string; // Added to show the period comparison text
   };
 }
 
@@ -77,7 +83,8 @@ export const OverviewCard = ({ data }: OverviewCardProps) => {
 
       <CardFooter className="border-t bg-gray-50 px-4 py-2 text-xs text-gray-500">
         {isPositiveChange ? "Increased from" : "Decreased from"}{" "}
-        {formatValue(data.lastValue, data.isPrice)} yesterday
+        {formatValue(data.lastValue, data.isPrice)}{" "}
+        {data.periodLabel || "previous period"}
       </CardFooter>
     </Card>
   );

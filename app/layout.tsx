@@ -92,7 +92,7 @@ export default function RootLayout({
               </StoreProvider>
             </SocketProvider>
           </AuthProvider>
-          <ReactQueryDevtools initialIsOpen={false} />
+          {/* <ReactQueryDevtools initialIsOpen={false} /> */}
         </QueryProvider>
       </body>
     </html>

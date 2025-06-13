@@ -25,7 +25,7 @@ export const CategoryChart = ({ data = [] }: CategoryChartProps) => {
     "#E03131",
     "#95A5A6",
   ];
-
+  console.log(data, "new data");
   // Check if we have valid data or use placeholders
   const chartData =
     data && data.length > 0 && data.some((item) => item.value > 0)

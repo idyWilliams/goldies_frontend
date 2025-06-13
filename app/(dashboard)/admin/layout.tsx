@@ -34,6 +34,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
           {isClient ? children : null}
         </div>
       </div>
+     
     </div>
   );
 }

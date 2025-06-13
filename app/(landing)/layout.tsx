@@ -12,6 +12,8 @@ import Cookies from "js-cookie";
 import { USER_DETAILS, USER_TOKEN_NAME } from "@/utils/constants";
 import ThemeChanger from "@/components/admin-component/ThemeChanger";
 import { UserSessionExpiredDialog } from "@/components/admin-component/settings-comp/UserSessionExpiredDialog";
+import WhatsAppIntegration from "@/components/whatsapp/WhatsAppIntegration";
+import Logo from "@/public/assets/new-logo/logo-colored.svg";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { setAuth } = useAuth();
@@ -87,6 +89,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         onOpenChange={setIsSessionExpired}
       />
       <Footer />
+
+      <WhatsAppIntegration
+        vendorPhone="+2348167993903"
+        vendorName="Cake App"
+        vendorAvatar={Logo}
+        primaryColor="#25D366" // Custom brand color
+        position="right" // Position on left side instead of right
+        showNotificationBadge={true} // Hide the notification badge
+      />
     </div>
   );
 }

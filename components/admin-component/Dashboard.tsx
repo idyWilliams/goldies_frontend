@@ -1,8 +1,13 @@
-// Dashboard.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Home, Moneys, Profile2User, ShoppingBag } from "iconsax-react";
+import {
+  Home,
+  Moneys,
+  Profile2User,
+  ShoppingBag,
+  Receipt,
+} from "iconsax-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
@@ -19,28 +24,45 @@ import { CustomersAnalytics } from "./overview-comps/CustomerAnalytics";
 import { TopProducts } from "./overview-comps/TopProducts";
 import { DashboardSkeleton } from "./dashboardSkeleton";
 import { OverviewCard } from "./overview-comps/OverviewCard";
+import { DateRangeSelector } from "./DateRangeSelector";
 
-// Types for dashboard data
-export interface TodaySummary {
+// Updated types for dashboard data
+export interface TotalSummary {
+  period: {
+    type: string;
+    current: {
+      start: string;
+      end: string;
+    };
+    previous: {
+      start: string;
+      end: string;
+    };
+  };
   totalSales: {
     value: number;
     percentChange: number;
-    yesterday: number;
+    previous: number;
   };
   totalOrders: {
     value: number;
     percentChange: number;
-    yesterday: number;
+    previous: number;
   };
   newCustomers: {
     value: number;
     percentChange: number;
-    yesterday: number;
+    previous: number;
+  };
+  averageOrderValue: {
+    value: number;
+    percentChange: number;
+    previous: number;
   };
 }
 
 export interface DashboardData {
-  todaySummary: TodaySummary;
+  totalSummary: TotalSummary;
   revenueReport: Array<{
     month: string;
     revenue: number;
@@ -66,6 +88,7 @@ export interface DashboardData {
 export default function Dashboard() {
   const router = useRouter();
   const [animateCharts, setAnimateCharts] = useState(false);
+  const [selectedPeriod, setSelectedPeriod] = useState("all");
 
   // Main dashboard data query
   const { data, isError, isLoading, refetch } = useQuery({
@@ -73,14 +96,24 @@ export default function Dashboard() {
     queryFn: getDashBoard,
   });
 
-  // Extended dashboard data query
-  const { data: extData, isLoading: extLoading } = useQuery({
-    queryKey: ["getExtendedDashBoard"],
-    queryFn: getExtendedDashBoard,
+  // Extended dashboard data query with period parameter
+  const {
+    data: extData,
+    isLoading: extLoading,
+    refetch: refetchExtended,
+  } = useQuery({
+    queryKey: ["getExtendedDashBoard", selectedPeriod],
+    queryFn: () => getExtendedDashBoard(selectedPeriod),
   });
 
   // Combined data
   const dashboardData: DashboardData | undefined = extData;
+
+  // Handle period change
+  const handlePeriodChange = (period: string) => {
+    setSelectedPeriod(period);
+    refetchExtended();
+  };
 
   // Trigger animations after initial render
   useEffect(() => {
@@ -113,36 +146,72 @@ export default function Dashboard() {
       </div>
     );
   }
-  console.log(extData, "extData");
+
+  // Get period label for display
+  const getPeriodLabel = () => {
+    switch (selectedPeriod) {
+      case "week":
+        return "last week";
+      case "month":
+        return "last month";
+      case "year":
+        return "last year";
+      case "all":
+        return "all time";
+      default:
+        return "previous period";
+    }
+  };
+
   // Create overview cards data
   const overviewCards = [
     {
       title: "Total Sales",
       icon: Moneys,
-      value: dashboardData?.todaySummary?.totalSales?.value || 0,
-      increaseRate: dashboardData?.todaySummary?.totalSales?.percentChange || 0,
-      lastValue: dashboardData?.todaySummary?.totalSales?.yesterday || 0,
+      value: dashboardData?.totalSummary?.totalSales?.value || 0,
+      increaseRate: dashboardData?.totalSummary?.totalSales?.percentChange || 0,
+      lastValue: dashboardData?.totalSummary?.totalSales?.previous || 0,
       isPrice: true,
+      periodLabel: getPeriodLabel(),
     },
     {
       title: "Total Orders",
       icon: ShoppingBag,
-      value: dashboardData?.todaySummary?.totalOrders?.value || 0,
+      value: dashboardData?.totalSummary?.totalOrders?.value || 0,
       increaseRate:
-        dashboardData?.todaySummary?.totalOrders?.percentChange || 0,
-      lastValue: dashboardData?.todaySummary?.totalOrders?.yesterday || 0,
+        dashboardData?.totalSummary?.totalOrders?.percentChange || 0,
+      lastValue: dashboardData?.totalSummary?.totalOrders?.previous || 0,
       isPrice: false,
+      periodLabel: getPeriodLabel(),
     },
     {
       title: "New Customers",
       icon: Profile2User,
-      value: dashboardData?.todaySummary?.newCustomers?.value || 0,
+      value: dashboardData?.totalSummary?.newCustomers?.value || 0,
       increaseRate:
-        dashboardData?.todaySummary?.newCustomers?.percentChange || 0,
-      lastValue: dashboardData?.todaySummary?.newCustomers?.yesterday || 0,
+        dashboardData?.totalSummary?.newCustomers?.percentChange || 0,
+      lastValue: dashboardData?.totalSummary?.newCustomers?.previous || 0,
       isPrice: false,
+      periodLabel: getPeriodLabel(),
+    },
+    {
+      title: "Average Order Value",
+      icon: Receipt,
+      value: dashboardData?.totalSummary?.averageOrderValue?.value || 0,
+      increaseRate:
+        dashboardData?.totalSummary?.averageOrderValue?.percentChange || 0,
+      lastValue: dashboardData?.totalSummary?.averageOrderValue?.previous || 0,
+      isPrice: true,
+      periodLabel: getPeriodLabel(),
     },
   ];
+
+  const dateRange = dashboardData?.totalSummary?.period?.current || {
+    start: "",
+    end: "",
+  };
+  const periodType =
+    dashboardData?.totalSummary?.period?.type || selectedPeriod;
 
   return (
     <div className="min-h-screen bg-gray-50 pb-8">
@@ -154,29 +223,40 @@ export default function Dashboard() {
         className="mb-5 w-full rounded-xl bg-transparent px-4 py-6 pt-6 lg:bg-white lg:p-6 lg:shadow-sm"
       >
         <div className="rounded-lg">
-          <div className="mb-6 flex items-center justify-between">
+          <div className="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
               <div className="flex items-center gap-2">
                 <Home variant="Bold" className="text-brand-200" />
                 <h1 className="text-xl font-bold text-gray-800">
-                  Today&apos;s Performance
+                  {selectedPeriod === "week"
+                    ? "Weekly Performance"
+                    : selectedPeriod === "month"
+                      ? "Monthly Performance"
+                      : "Yearly Performance"}
                 </h1>
               </div>
               <p className="mt-1 text-sm text-gray-500">
                 Sales and activity summary
               </p>
             </div>
-            <Button
-              onClick={() => router.push("/admin/create-products")}
-              className="bg-brand-200 transition-all hover:bg-brand-300 duration-300"
-            >
-              Create Product
-            </Button>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <DateRangeSelector
+                periodType={periodType}
+                dateRange={dateRange}
+                onPeriodChange={handlePeriodChange}
+              />
+              <Button
+                onClick={() => router.push("/admin/create-products")}
+                className="hover:bg-brand-300 bg-brand-200 transition-all duration-300"
+              >
+                Create Product
+              </Button>
+            </div>
           </div>
 
           {/* Overview cards */}
           <div className="hide-scrollbar w-full overflow-x-auto">
-            <div className="grid w-full gap-4 md:grid-cols-3">
+            <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
               {overviewCards.map((card, index) => (
                 <motion.div
                   key={index}
