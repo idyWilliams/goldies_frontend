@@ -29,7 +29,7 @@ const WhatsAppIntegration: React.FC<WhatsAppIntegrationProps> = ({
   vendorPhone,
   vendorName = "Vendor",
   vendorAvatar,
-  primaryColor = "#25D366", 
+  primaryColor = "#25D366",
   position = "right",
   showNotificationBadge = true,
 }) => {
@@ -348,7 +348,7 @@ const WhatsAppIntegration: React.FC<WhatsAppIntegrationProps> = ({
               transition={{ delay: 0.2 }}
             >
               <div className="flex items-center">
-                <input
+                {/* <input
                   ref={inputRef}
                   type="text"
                   value={message}
@@ -356,7 +356,7 @@ const WhatsAppIntegration: React.FC<WhatsAppIntegrationProps> = ({
                   placeholder="Type a message..."
                   className="flex-1 rounded-full border border-gray-200 px-4 py-2 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-opacity-50"
                   style={{ focusRingColor: primaryColor }}
-                />
+                /> */}
                 <motion.button
                   type="submit"
                   className="ml-2 rounded-full p-2 text-white focus:outline-none"
